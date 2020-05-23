@@ -1,0 +1,1279 @@
+﻿// lexical
+// -------
+
+comments                            : oneline-comment
+                                    | multiline-comment
+                                    ;
+
+oneline-comment                     : '#' unicode characters opt end-of-line
+                                    | '//' unicode characters opt end-of-line
+                                    ;
+
+multiline-comment-opt               : multiline-comment
+                                    | e(psilon)
+                                    ;
+
+multiline-comment                   : '/* unicode characters opt(except '*/' combination)  multiline-comment-opt  unicode characters opt(except '*/' combination) '*/'
+                                    ;
+
+
+
+whitespace-characters               : whitespace-character
+                                    | whitespace-characters whitespace-character
+                                    ;
+
+whitespace-character                : unicode character of class Zs
+                                    | horizontal tab character (U+0009)
+                                    | vertical tab character (U+000B)
+                                    | form feed character (U+000C)
+                                    ;
+
+end-of-line                         : \u000D                \r
+                                    | \u000A                \n
+                                    | \u000D \u000A         \r\n
+                                    | \u000A \u000D         \n\r
+                                    | \u0085
+                                    | \u2028
+                                    | \u2029
+                                    | end-of-file
+                                    ;
+
+end-of-file                         : \u0000
+                                    | \u001A
+                                    ;
+
+indent                              : '  '       2 spaces
+                                    | '    '     4 spaces
+                                    | '        ' 8 spaces
+                                    ;
+
+
+
+// code points
+// \u + 4 hex digits - unicode BMP
+// \U + 8 hex digits - unicode astral planes (full set)
+universal-character-name            : '\u' hexadecimal-digit hexadecimal-digit hexadecimal-digit hexadecimal-digit
+                                    | '\U' hexadecimal-digit hexadecimal-digit hexadecimal-digit hexadecimal-digit hexadecimal-digit hexadecimal-digit hexadecimal-digit hexadecimal-digit
+                                    ;
+
+letter-character                    : unicode character of classes Lu, Ll, Lt, Lm, Lo, or Nl
+                                    | universal-character-name representing a character of classes Lu, Ll, Lt, Lm, Lo, or Nl
+                                    ;
+
+decimal-digit_character             : unicode character of class Nd
+                                    | universal-character-name representing a character of class Nd
+                                    ;
+
+connecting-character                : unicode character of class Pc
+                                    | universal-character-name representing a character of class Pc
+                                    ;
+
+combining-character                 : unicode character of classes Mn or Mc
+                                    | universal-character-name representing a character of classes Mn or Mc
+                                    ;
+
+formatting_character                : unicode character of class Cf
+                                    | universal-character-name representing a character of class Cf
+                                    ;
+
+binary-digit                        : '0' '1'
+                                    ;
+
+octal-digit                         : '0' '1' '2' '3' '4' '5' '6' '7'
+                                    ;
+
+nonzero-decimal-digit               : '1' '2' '3' '4' '5' '6' '7' '8' '9'
+                                    ;
+
+decimal-digit                       : '0' '1' '2' '3' '4' '5' '6' '7' '8' '9'
+                                    ;
+
+hexa-decimal-digit                  : '0' '1' '2' '3' '4' '5' '6' '7' '8' '9' 'a' 'b' 'c' 'd' 'e' 'f' 'A' 'B' 'C' 'D' 'E' 'F'
+                                    ;
+
+
+
+escape-characters                   : simple-escape-character
+                                    | octal-escape-characters
+                                    | hexadecimal-escape-characters
+                                    ;
+
+simple-escape-character             : '\'' '\"' '\\' '\a' '\b' '\f' '\n' '\r' '\t' '\v'
+                                    ;
+
+octal-escape-characters             : '\' octal-digit
+                                    | '\' octal-digit octal-digit
+                                    | '\' octal-digit octal-digit octal-digit
+                                    ;
+
+hexadecimal-escape-characters       : '\x' hexadecimal-digit
+                                    | '\x' hexadecimal-digit hexadecimal-digit
+                                    | '\x' hexadecimal-digit hexadecimal-digit hexadecimal-digit
+                                    | '\x' hexadecimal-digit hexadecimal-digit hexadecimal-digit hexadecimal-digit
+                                    | '\x' hexadecimal-digit hexadecimal-digit hexadecimal-digit hexadecimal-digit hexadecimal-digit
+                                    | '\x' hexadecimal-digit hexadecimal-digit hexadecimal-digit hexadecimal-digit hexadecimal-digit hexadecimal-digit
+                                    | '\x' hexadecimal-digit hexadecimal-digit hexadecimal-digit hexadecimal-digit hexadecimal-digit hexadecimal-digit hexadecimal-digit
+                                    | '\x' hexadecimal-digit hexadecimal-digit hexadecimal-digit hexadecimal-digit hexadecimal-digit hexadecimal-digit hexadecimal-digit hexadecimal-digit
+                                    ;
+
+underscore-characters-opt           : underscore-characters
+                                    | e(psilon)
+                                    ;
+
+underscore-characters               : underscore-character
+                                    | underscore-characters underscore-character
+                                    ;
+
+underscore-character                : '_' (the underscore character U+005F)
+                                    | universal-character-name representing the character U+005F
+                                    ;
+
+
+
+
+literal                             : integer-number-literal
+                                    | real-number-literal
+                                    | string-literal
+                                    | boolean-literal
+                                    ;
+
+integer-number-literal              : binary-number-literal
+                                    | octal-number-literal
+                                    | decimal-number-literal
+                                    | hexadecimal-number-literal
+                                    ;
+
+binary-number-literal               : '0b' binary-digit
+                                    | '0B' binary-digit
+                                    | binary-number-literal underscore-characters-opt binary-digit
+                                    ;
+
+octal-number-literal                : '0'
+                                    | octal-number-literal underscore-characters-opt octal-digit
+                                    ;
+
+decimal-number-literal              : nonzero-decimal-digit
+                                    | decimal-number-literal underscore-characters-opt decimal-digit
+                                    ;
+
+decimal-digits-opt                  : decimal-digits
+                                    | e(psilon)
+                                    ;
+
+decimal-digits                      : decimal-digit
+                                    | decimal-digits underscore-characters-opt decimal-digit
+                                    ;
+
+hexadecimal-number-literal          : '0x' hexadecimal-digits
+                                    | '0X' hexadecimal-digits
+                                    ;
+
+hexadecimal-digits-opt              : hexadecimal-digits
+                                    | e(psilon)
+                                    ;
+
+hexadecimal-digits                  : hexadecimal-digit
+                                    | hexadecimal-digits underscore-characters-opt hexadecimal-digit
+                                    ;
+
+real-number-literal                 : decimal-real-number-literal
+                                    | hexadecimal-real-number-literal
+                                    ;
+
+decimal-real-number-literal         : decimal-digits-opt '.' decimal-digits exponent-part-opt
+                                    | decimal-digits '.' exponent-part-opt
+                                    | decimal-digits exponent-part
+                                    ;
+
+exponent-part-opt                   : exponent-part
+                                    | e(psilon)
+                                    ;
+
+exponent-part                       : 'e' sign-opt decimal-digits
+                                    | 'E' sign-opt decimal-digits
+                                    ;
+
+hexadecimal-real-number-literal     : '0x' hexadecimal-decimal-digits-opt '.' hexadecimal-decimal-digits binary-exponent-part-opt
+                                    | '0X' hexadecimal-decimal-digits-opt '.' hexadecimal-decimal-digits binary-exponent-part-opt
+                                    | '0x' hexadecimal-decimal-digits '.' binary-exponent-part-opt
+                                    | '0X' hexadecimal-decimal-digits '.' binary-exponent-part-opt
+                                    | '0x' hexadecimal-decimal-digits binary-exponent-part
+                                    | '0X' hexadecimal-decimal-digits binary-exponent-part
+                                    ;
+
+binary-exponent-part-opt            : binary-exponent-part
+                                    | e(psilon)
+                                    ;
+
+binary-exponent-part                : 'p' sign-opt decimal-digits
+                                    | 'P' sign-opt decimal-digits
+                                    ;
+
+sign-opt                            : '+'
+                                    | '-'
+                                    | e(psilon)
+                                    ;
+
+string-literal                      : ''' string-characters-opt (except \' (U+0027), \\ (U+005C)) '''
+                                    | '"' string-characters-opt (except \" (U+0022), \\ (U+005C)) '"'
+                                    | r''' string-characters-opt (except \' (U+0027)) '''
+                                    | r'"' string-characters-opt (except \" (U+0022))'"'
+                                    ;
+
+string-characters-opt               : string-characters
+                                    | e(psilon)
+                                    ;
+
+string-characters                   : string-character
+                                    | string-characters string-character
+                                    ;
+
+string-character                    : unicode character opt
+                                    | escape-characters
+                                    | universal-character-name
+                                    ;
+
+boolean-literal                     : 'true'
+                                    | 'false'
+                                    ;
+
+
+
+identifiers                         : identifier
+                                    | identifiers ',' identifier
+                                    ;
+
+identifier                          : identifier-start-character identifier-part-characters-opt
+                                    ;
+
+identifier-start-character          : letter-character
+                                    | underscore-characters
+                                    ;
+
+
+identifier-part-characters          : identifier-part-character
+                                    | identifier-part-characters identifier-part-character
+                                    ;
+
+identifier-part-character           : letter-character
+                                    | decimal-digit-character
+                                    | connecting-character
+                                    | combining-character
+                                    | formatting-character
+                                    ;
+
+fully-qualified-name                : identifier
+                                    | fully-qualified-name '.' identifier
+                                    ;
+
+
+
+keyword                             : 'const' 'byte' 'integer' 'real' 'string' 'boolean' 'true' 'false'
+                                    | 'struct'
+                                    | 'if' 'else' 'for' 'continue' 'break' 'return'
+                                    | 'import' 'namespace'
+                                    | 'is' 'as' 'and' 'or' 'not' 'in'
+                                    ;
+
+punctuator                          : ':' '..' '...' ',' '{' '}' '[' ']' '(' ')' '->'
+                                    ;
+
+operator                            : '+' '-' '*' '/' '>>' '<<' '=' '==' '!=' '<' '<=' '>' '>=' '&' '&&' '|' '||' '^'
+                                    | 'is' 'as' 'and' 'or' 'not' 'in'
+                                    ;
+
+assignment-operator                 : '=' '*=' '/=' '%=' '+=' '-=' '>>=' '<<=' '&=' '^=' '|='
+                                    ;
+
+
+
+// syntax
+// ------
+
+compilation-unit                    : declarations-opt
+                                    ;
+
+declarations-opt                    : declarations
+                                    | e(psilon)
+                                    ;
+
+declarations                        : declaration
+                                    | declarations declaration
+                                    ;
+
+declaration                         : import-declaration
+                                    | type-declaration
+                                    | function-definition
+                                    ;
+
+
+
+import-declaration                  : 'import' fully-qualified-name end-of-line
+                                    ;
+
+
+
+type-declaration                    : struct-declaration
+                                    ;
+
+struct-declaration                  : identifier type-parameters-opt : 'struct' end-of-line struct-members-opt
+                                    ;
+
+struct-members-opt                  : struct-members
+                                    | e(psilon)
+                                    ;
+
+struct-members                      : struct-member
+                                    | struct-members struct-member
+                                    ;
+
+struct-member                       : indent identifier ':' integral-type modifiers-opt array-declaration-opt end-of-line
+                                    | indent identifier ':' integral-type modifiers-opt array-declaration-opt '=' primary-expression end-of-line
+                                    ;
+
+modifiers-opt                       : modifiers
+                                    | e(psilon)
+                                    ;
+
+modifiers                           : modifier
+                                    | modifiers modifier
+                                    ;
+
+modifier                            : const-modifier
+                                    ;
+
+const-modifier                      : 'const'
+                                    ;
+
+array-declaration-opt               : array-declaration
+                                    | e(psilon)
+                                    ;
+
+array-declaration                   : '[' array-dimensions ']'
+                                    | '(' array-dimensions ')'
+                                    ;
+
+array-dimensions                    : array-dimension
+                                    | array-dimensions ';' array-dimension
+                                    ;
+
+array-dimension                     : sign-opt decimal-number-literal
+                                    | sign-opt decimal-number-literal '..' sign-opt decimal-number-literal
+                                    ;
+
+
+
+function-definition                 : identifier type-parameters-opt '(' function-parameters-opt ')' function-return-type-opt end-of-line function-body
+                                    ;
+
+function-parameters-opt             : function-parameters
+                                    | e(psilon)
+                                    ;
+
+function-parameters                 : function-parameter
+                                    | function-parameters ',' function-parameter
+                                    ;
+
+function-parameter                  : identifier ':' integral-type modifiers-opt array-declaration-opt
+                                    | identifier ':' integral-type modifiers-opt array-declaration-opt '=' primary-expression
+                                    ;
+
+function-return-type-opt            : function-return-type
+                                    | e(psilon)
+                                    ;
+
+function-return-type                : '->' integral-type
+                                    | '->' fully-qualified-name
+                                    ;
+
+function-body                       : variable-declarations
+                                    | statements
+                                    ;
+
+
+
+statements                          : statement
+                                    | statements statement
+                                    ;
+
+statement                           : declaration-statement
+                                    | expression-statement
+                                    | selection-statement
+                                    | iteration-statement
+                                    ;
+
+
+declaration-statement               : variable-declaration
+                                    ;
+
+variable-declaration                : indent identifier ':' integral-type modifiers-opt array-declaration-opt end-of-line
+                                    | indent identifier ':' integral-type modifiers-opt array-declaration-opt '=' primary-expression end-of-line
+                                    ;
+
+expression-statement                : indent expression end-of-line
+                                    ;
+
+selection-statement                 : indent 'if' boolean-expression end-of-line statements
+                                    | indent 'if' boolean-expression end-of-line statements 'else' end-of-line statements
+                                    ;
+
+iteration-statement                 : indent 'for' expressions 'in' expression end-of-line statements
+                                    ;
+
+
+
+expressions                         : expression
+                                    | expressions ',' expression
+                                    ;
+
+expression                          : assignment-expression
+                                    ;
+
+boolean-expression                  : expression
+                                    ;
+
+assignment-expression               : conditional-expression
+                                    | logical-or-expression assignment-operator assignment-expression
+                                    ;
+
+conditional-expression              : logical-or-expression
+                                    | logical-or-expression '?' expression ':' logical-or-expression
+                                    ;
+
+logical-or-expression               : logical-and-expression
+                                    | logical-or-expression '||' logical-and-expression
+                                    | logical-or-expression 'or' logical-and-expression
+                                    ;
+
+logical-and-expression              : inclusive-or-expression
+                                    | logical-and-expression '&&' inclusive-or-expression
+                                    | logical-and-expression 'and' inclusive-or-expression
+                                    ;
+
+inclusive-or-expression             : exclusive-or-expression
+                                    | inclusive-or-expression '|' exclusive-or-expression
+                                    ;
+
+exclusive-or-expression             : and-expression
+                                    | exclusive-or-expression '^' and-expression
+                                    ;
+
+and-expression                      : equality-expression
+                                    | and-expression '&' equality-expression
+                                    ;
+
+equality-expression                 : relational-expression
+                                    | equality-expression '==' relational-expression
+                                    | equality-expression '!=' relational-expression
+                                    ;
+
+relational-expression               : relational-expression '<' shift-expression
+                                    | relational-expression '>' shift-expression
+                                    | relational-expression '<=' shift-expression
+                                    | relational-expression '>=' shift-expression
+                                    | relational_expression 'is' type
+                                    | relational_expression 'as' type
+                                    ;
+
+shift-expression                    : additive-expression
+                                    | shift-expression '<<' additive-expression
+                                    | shift-expression '>>' additive-expression
+                                    ;
+
+additive-expression                 : multiplicative-expression
+                                    | additive-expression '+' multiplicative-expression
+                                    | additive-expression '-' multiplicative-expression
+                                    ;
+
+multiplicative-expression           : unary-expression
+                                    | multiplicative-expression '*' unary-expression
+                                    | multiplicative-expression '/' unary-expression
+                                    | multiplicative-expression '%' unary-expression
+                                    ;
+
+unary-expression                    : primary-expression
+                                    | '+' unary-expression
+                                    | '-' unary-expression
+                                    | '!' unary-expression
+                                    | '~' unary-expression
+                                    | 'not' unary-expression
+                                    ;
+
+primary-expression                  : literal
+                                    | fully-qualified-name type-arguments-opt
+                                    | '(' expression ')'
+                                    | primary-expression '(' arguments-opt ')'
+                                    ;
+
+arguments-opt                       : arguments
+                                    | e(psilon)
+                                    ;
+
+arguments                           : argument
+                                    | arguments ',' argument
+                                    ;
+
+argument                            : argument-name-opt expression
+                                    ;
+
+argument-name-opt                   : argument-name
+                                    | e(psilon)
+                                    ;
+
+argument-name                       : identifier ':'
+                                    ;
+
+
+
+type                                : integral-type
+                                    | fully-qualified-name type-arguments-opt
+                                    ;
+
+integral-type-opt                   : integral-type
+                                    | e(psilon)
+                                    ;
+
+integral-type                       : 'byte'
+                                    | 'integer'
+                                    | 'real'
+                                    | 'string'
+                                    | 'boolean'
+                                    ;
+
+type-parameters-opt                 : '<' type-parameters '>'
+                                    | e(psilon)
+                                    ;
+
+type-parameters                     : type-parameter
+                                    | type-parameters ',' type-parameter
+                                    ;
+
+type-parameter                      : identifier
+                                    | identifier '=' literal
+                                    | identifier '=' fully-qualified-name type-arguments-opt
+                                    ;
+
+type-arguments-opt                  : '<' type-arguments '>'
+                                    | e(psilon)
+                                    ;
+
+type-arguments                      : type-argument
+                                    | type-arguments ',' type-argument
+                                    ;
+
+type-argument                       : type
+                                    ;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+structure/record:
+    inheritance?
+
+
+tuple:
+   destructure
+
+enum:
+
+invocation-experession:
+lambda-expression:
+callable:
+    function
+        foo a b c
+    lambda
+        lambda a b c
+
+
+
+
+for
+foreach
+while
+do while
+
+
+if 
+else if
+else if
+else
+
+case
+    when 1
+    when 's'
+    when a is string || a is real && a is customtype
+
+
+
+continue
+break
+return
+yield
+
+
+no null, everything always initialized
+no NULL or NIL, all types have a default ctor so anytime exists a default instance 
+
+
+
+parameters passing types
+
+
+templates/generics
+template <uint16 SHORT_TEXT_SIZE = 64> struct status
+
+
+scalars:
+    let a = 0
+    let b = 10
+    let c = 0x10
+    let d = 4.5
+    let f = 'abc'
+    g = true/false
+    integer
+    real
+    boolean
+
+arrays:
+   a[2]             - checked array
+   a(2)             - raw unchecked array
+   b[-2:3]          - checked ranged-based array
+   b[-2:3, 0:10]    - checked ranged-based array, multidimensional
+   b[-2..3, 0..10]
+   c[-2:3] c[-2..3] - checked ranged-based array
+   c(-2:3, 0:10)    - raw unchecked ranged-based array, multidimensional
+   d[2,c]           - checked array, column based, aka FORTRAN
+   d(2,c)           - raw unchecked array, column based, aka FORTRAN
+   d[2,r]           - checked array, row based, aka C, 'r' is optional
+   d(2,r)           - raw unchecked array, raw based, aka C, 'r' is optional
+   f[-2..3, 0..10]  - checked ranged-based array, multidimensional, alternative syntax as in PASCAL
+
+
+type byte = 0..255
+type sbyte = -127..127
+
+
+type user
+    name = ''
+    age = 50
+    weight = 78.9
+
+
+callable createUser name: string, age: integer, weight: real, kids: user[]
+define createUser(name: string,
+                  age: integer,
+                  weight: real,
+                  kids: user[])
+    user result { name, age, weight, kids }
+    user result { name = name, age = age, weight = weight, kids = kids[1:3] }
+
+    const pi = 3.14
+
+    let a = 0
+    let a: integer
+    let b = 10
+    let b: integer
+    let c = 0x10
+
+    let d = 4.5
+    let d: real
+     let d: real = 4.5
+    let d: real 4.5
+    let d: 4.5 real
+    let d: real(4.5)
+
+    let f = 'abc'
+    let g = true
+    let b[-2:3, 0:10]
+    let d[2,r]
+    let d(2,c)
+
+    let d0 = d[0]
+    let d1 = d[1]
+
+    let b11 = b(1, 1)
+
+    let l = len(d)
+
+    define foo a: integer, b: integer
+        define bar a: integer, b: integer
+            return a + b
+        return bar a, b
+
+    let fooFunc = foo
+    let r = fooFunc(10, 5)
+
+
+    return result
+
+
+define foo name: string, *, **
+define foo (name: string,
+            *,
+            **)
+
+
+
+let a = 0 // type inferred to be integer
+let a : integer
+
+let a b c = foo(1  2  3)
+let a, b, c : integer
+
+         literal only
+         |
+         ....
+let pi = 3.14 real const
+    pi = 3.14 * calculateCoeff()
+         .......................
+         |
+         could be expression
+
+let pi : real const = 3.14
+
+
+
+let pi = 3.14 const     // const, because initialized, type inferred to be real
+let pi : real const     // readonly, because will be initialized
+
+let recordType = (foo : 6, bar : 6) // Record
+let recordType = { foo : 6;  bar : 6 } // Record
+
+let b [-2..3, 0..10,c] : integer
+let b [-2..3, 0..10,r] = [ 0, 1, 2, 3, 4, 5 ]
+
+
+let colvec [] = [1;2;4];   % column vector 
+let crowvec [] = [1,2,4];   % row vector 
+let m = [1,2,3;4,5,6];  % matrix with size 2x3
+
+let x : integer     // initialized to 0
+let x = 1
+
+type byte = 0..255
+type sbyte = -127 ..127
+
+type user
+    name = ''
+    age = 50
+    weight = 78.9
+
+
+type point
+    x: real
+    y: real
+    z: real
+
+let point : point const             // readonly
+    point = 1.0 2.5 3.4
+    point = 1.0, 2.5, 3.4
+
+let point = (1.0, 2.5, 3.4) point
+
+let points [] : point
+let points [-1..0] : point
+let points [-1..0] = [ (1.0, 2.5, 3.4), (1.0, 2.5, 3.4) ] point
+let points = [ (1.0, 2.5, 3.4), (1.0, 2.5, 3.4) ] point
+
+let points [] : point<real>
+let points [-1..0] : point<real>
+let points [-1..0] = [ (1.0, 2.5, 3.4), (1.0, 2.5, 3.4) ] point<real>
+let points = [ (1.0, 2.5, 3.4), (1.0, 2.5, 3.4) ] point<real>
+
+let x, y = y, x
+    x, y = y, x
+
+sinX, cosX = math.Sincos(x)
+
+define foo a: integer, b: integer, u: user
+    define bar a: integer, b: integer
+        return a + b + u.age
+    return bar a, b
+
+user u = {}
+let fooFunc = foo
+let r = fooFunc(10, 5, u)
+
+
+
+let foo : a integer, b integer, u user -> real, integer, string
+    let bar : string (a: integer, b: integer)
+        return string(a + b + u.age * 0.1)
+    return bar
+
+let callFoo = foo(1, 2)
+callFoo
+callFoo(5, 6)
+
+let ee : (RED = 1, GREEN ='green',
+            BLUE = 0xBE)
+
+
+
+
+
+
+
+
+
+
+let ars = [1,2,3] // 0-3
+let ars = [[1], [2], [3]] // 1 element, 2 elements, 3 elements starting from zero
+
+let ars = (1,2,3) // 0-3 uncheked
+let ars = ((1), (2), (3)) // 1 element, 2 elements, 3 elements starting from zero unchecked
+
+
+
+
+
+
+
+statement           : noop-statement
+                    ;
+
+
+
+noop-statement      : 'noop'
+                    ;
+
+
+
+
+let slice = ars[-1:1, -5:45]
+
+
+let a : integer | string
+
+function foo <T=real, U> (a = 1.3, b: integer, c: T)  : integer, real, T, U
+    asaf
+    sdfdsg
+    sdgdsgdsg
+    sdgsd
+    dssdfsd
+    return f
+
+
+let foo = function <T=real, U> (a = 1.3, b: integer, c: T)  : integer | real, T | U, integer
+    asaf
+    sdfdsg
+    sdgdsgdsg
+    sdgsd
+    dssdfsd
+    return f
+
+
+let lambda : 
+
+
+let singleton : integer
+
+
+
+func/function
+proc/procedure
+
+program arcturus
+
+use namespace N1
+use namespace N2
+
+
+
+             namespace N1                   namespace N2
+
+package1                      package2                         package3
+    module1                       module1                          module1
+    module2                       module2                          module2
+    module3                       module3                          module3
+
+
+
+
+
+
+
+-- This is a line-comment
+ 
+# This is a line-comment
+
+#
+    This is a block-comment
+    It goes until de-dent
+ 
+dedent: 0x42 -- The comment block above is now closed
+
+
+(* ... *)
+(* ...
+    *)
+
+
+
+
+program arcturus
+
+use namespace N1
+use namespace N2
+
+type T1<T, U = integer>
+    m1 : real const = 5.0
+    m2 : T
+    m3 : U = 0
+
+procedure main<T=real, U>(a = 1.3, b: integer, c: T, d: U) integer, real, T, U
+    type point
+        x: real
+        y: real
+        z: real
+
+    let points [] : point
+    let points [-1..0] : point
+    let points [-1..0] = [ (1.0, 2.5, 3.4), (1.0, 2.5, 3.4) ] point
+    let points = [ (1.0, 2.5, 3.4), (1.0, 2.5, 3.4) ] point
+
+    function fibonacci<T = integer>(n : T) T
+        if n == 1
+            return 0
+        else n == 2
+            return 1
+        else: 
+            return fibonacci<T>(n - 1) + fibonacci<T>(n-2)
+
+    let fb = fionachi<integer>(10)
+
+    let t : T
+    let u : U
+
+    return 1, 3.14, t, u
+
+
+main<real, integer>(c = 2, a = 3.2, b = -1) // somehow return code to system (to OS)
+
+
+
+function makeList(seperator : string) string
+    let counter = 1
+
+    function makeItem(item : string) string
+        counter = counter + 1
+        return text.toString(counter)
+
+    return makeItem("first") + makeItem("second") + makeItem("third")
+
+    return text.concat(makeItem("first"), makeItem("second"), makeItem("third"))
+
+
+
+package:system
+    module:text
+
+namespace system.text
+
+function concatenate(...) string
+
+
+
+let point = Point { x: 1.0, y: 2.5 };
+
+
+
+
+
+
+package(physical) - spans files - distribution unit
+    modules
+        file1
+        ...
+        fileN
+
+namespace(logical) - spans packages
+
+
+import/using/refer/include
+# // /* /*nested*/ */
+{ Comment 1 (* comment 2 *) }  
+(* Comment 1 { comment 2 } *)  
+{ comment 1 // Comment 2 }  
+(* comment 1 // Comment 2 *)  
+// comment 1 (* comment 2 *)  
+// comment 1 { comment 2 }
+
+
+
+struct/record/data/type (inheritance?)
+nested functions
+yield
+integer/real
+
+
+
+scalars:
+    byte
+    number
+        integer real
+
+    let k:  integer =  { 0 }
+    let PI: real const = { 3.14155 }
+    let i:  integer const = { 123 }
+    let j:  real = { 23.43 }
+
+    x,y,z: real = { 1.2 } - initialization, all have the same value
+    sinX, cosX = math.Sincos(x) - deconstruction because of absent of ':'
+
+
+
+array:
+    row/column access (default)
+    column/row access
+    [] - checked(default)
+    () - unchecked
+
+    let bts: bytes                             - dynamic array (always checked)
+    let bts: bytes [1..5]                      - fixed array
+    let bts: bytes [1..5] = { 3,4,5,6 }        - fixed initialized array, row based
+    let bts: bytes column [1..5] = { 3,4,5,6 } - fixed initialized array, column based
+
+    let aa: integer [1..5] = 3,4,5,6     - default row
+    let aa: integer [1..5] = { 3,4,5,6 } - default row (can be split on next lines)
+    let aa: integer const [1..5] = ( 3,4,5,6 ) - default row (can be split on next lines)
+
+    let aa: integer row [1..5] = { 3,4,5,6 }
+    let ss: string  column, [1..5] = { '3','4','5','6' }
+    let bb: integer [1..5; -1..8; 0..4] = { 3,4; 2,3,3; 5,6,6 }   - 3 dimensional
+
+    let aa: integer row (1..5) { 3,4,5,6 } - uncheked
+    let ss: string  column (1..5) { '3','4','5','6' } - uncheked
+
+
+
+Examples of type definitions:
+    (White, Red, Yellow, Green, Blue, Brown, Black)
+    range 1 .. 72
+    array(1 .. 10) of Integer
+Examples of type declarations:
+    type Color is (White, Red, Yellow, Green, Blue, Brown, Black);
+    type Column is range 1 .. 72;
+    type Table is array(1 .. 10) of Integer;
+
+Examples of subtype declarations:
+    subtype Rainbow is Color range Red .. Blue; -- see 3.2.1
+    subtype Red_Blue is Rainbow;
+    subtype Int is Integer;
+    subtype Small_Int is Integer range -10 .. 10;
+    subtype Up_To_K is Column range 1 .. K; -- see 3.2.1
+    subtype Square is Matrix(1 .. 10, 1 .. 10); -- see 3.6
+    subtype Male is Person(Sex => M); -- see 3.10.1
+    subtype Binop_Ref is not null Binop_Ptr; -- see
+
+Examples of variable declarations:
+    Count, Sum : Integer;
+    Size : Integer range 0 .. 10_000 := 0;
+    Sorted : Boolean := False;
+    Color_Table : array(1 .. Max) of Color;
+    Option : Bit_Vector(1 .. 10) := (others => True);
+    Hello : aliased String := "Hi, world.";
+    θ, φ : Float range -π .. +π;
+
+Examples of enumeration types and subtypes:
+    type Day is (Mon, Tue, Wed, Thu, Fri, Sat, Sun);
+    type Suit is (Clubs, Diamonds, Hearts, Spades);
+    type Gender is (M, F);
+    type Level is (Low, Medium, Urgent);
+    type Color is (White, Red, Yellow, Green, Blue, Brown, Black);
+    type Light is (Red, Amber, Green); -- Red and Green are overloaded
+    type Hexa is ('A', 'B', 'C', 'D', 'E', 'F');
+    type Mixed is ('A', 'B', '*', B, None, '?', '%');
+    subtype Weekday is Day range Mon .. Fri;
+    subtype Major is Suit range Hearts .. Spades;
+    subtype Rainbow is Color range Red .. Blue; -- the Color Red, not the Light
+
+Examples of integer types and subtypes:
+    type Page_Num is range 1 .. 2_000;
+    type Line_Size is range 1 .. Max_Line_Size;
+    subtype Small_Int is Integer range -10 .. 10;
+    subtype Column_Ptr is Line_Size range 1 .. 10;
+    subtype Buffer_Size is Integer range 0 .. Max;
+    type Byte is mod 256; -- an unsigned byte
+    type Hash_Index is mod 97; -- modulus is prime
+
+
+
+
+Examples of case statements:
+case Sensor is
+    when Elevation => Record_Elevation(Sensor_Value);
+    when Azimuth => Record_Azimuth (Sensor_Value);
+    when Distance => Record_Distance (Sensor_Value);
+    when others => null;
+end case;
+case Today is
+    when Mon => Compute_Initial_Balance;
+    when Fri => Compute_Closing_Balance;
+    when Tue .. Thu => Generate_Report(Today);
+    when Sat .. Sun => null;
+end case;
+case Bin_Number(Count) is
+    when 1 => Update_Bin(1);
+    when 2 => Update_Bin(2);
+    when 3 | 4 =>
+        Empty_Bin(1);
+        Empty_Bin(2);
+    when others => raise Error;
+end case;
+
+
+
+
+pattern matching, case/when, switch C# 8
+
+
+
+
+
+
+generics/template
+
+struct/record - might be extended
+union/tuple/variant - cannot be extended
+
+
+
+enum numbers : string
+{
+    odin = "1", dva = "2"
+}
+Direction = ( North, East, South, West )
+EnumType = (one, two, three, forty := 40,fortyone)
+
+
+Subrange types of enumeration types can also be defined:
+Type  
+  Days = (monday,tuesday,wednesday,thursday,friday,  
+          saturday,sunday);  
+  WorkDays = monday .. friday;  
+  WeekEnd = Saturday .. Sunday;
+
+
+
+struct A
+   ...
+
+
+with A:
+   code has access to A instance ...
+
+
+A<T1, T2> : struct
+{
+    f: T1  - default(T1)
+    s: T2  - default(T2)
+}
+
+struct B<T1, T2, T3> : A<T1, T2>
+{
+    f: T1 - default(T1)
+    s: T2 - default(T2)
+    t: T3 - default(T3)
+}
+
+a: A<integer, real> { f = 2, s = 4.5 }
+
+
+namespace uilab.arktur.fe
+
+
+boolean, true, false
+
+
+if condition1:
+
+else if condition2:
+
+else:
+
+
+
+for condition:
+    break
+    continue
+    goto
+
+
+for char in chars:
+
+
+print : function, params(template: string = '{0}', message: string, ...), return(int32, status)
+
+
+function:
+foo(n: integer { 8 },
+    name: string { 'arktur' },
+    real: amount,
+    d: B<integer, real, string> { s = 3.2, t = "text", f = 8 })
+
+
+
+
+
+
+nested function:
+outer(n: integer {10}) -> integer/real/void(can be omitted)
+    def inner(k: integer) -> integer
+        return k + n
+    return inner(5)
+
+
+closure
+outer(n: integer) -> integer/real/void(can be omitted)
+    def inner(k: integer) -> integer
+        return k + n
+    return inner
+
+
+
+function(n: integer)
+    block:
+        ...
+    block:
+        ...
+
+
+strings: always represented as unicode codepoint - 32 bits
+    "path 'c:\\tmp\\arktur\\file.txt'"  'path "c:\\tmp\\arktur\\file.txt"'
+   r"path 'c:\tmp\arktur\file.txt'"    r'path "c:\tmp\arktur\file.txt"'
+    "path {path}", where {path} is substitued by variable 'path'
+
+
+
+
+
+
+
+?????
+do condition-opt ':'
+    break
+    continue
+    goto
+
+
+do char in chars:
+
+do
+    n: integer { 8 }
+    name: string { 'arktur' }
+    real: amount
+    d: B<integer, real, string> { s = 3.2, t = "text", f = 8 }
+
