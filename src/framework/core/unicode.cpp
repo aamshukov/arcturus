@@ -1,5 +1,5 @@
-#include <core\pch.hpp>
-#include <core\domain_helper.hpp>
+#include <core/pch.hpp>
+#include <core/domain_helper.hpp>
 
 /*
  * Copyright 2001-2004 Unicode, Inc.
