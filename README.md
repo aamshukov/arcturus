@@ -1,4 +1,3 @@
-# fe
 **Arcturus**.
 
 **MIT License**
