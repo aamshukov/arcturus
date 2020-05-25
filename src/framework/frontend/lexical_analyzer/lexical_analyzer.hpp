@@ -9,7 +9,7 @@
 BEGIN_NAMESPACE(frontend)
 USINGNAMESPACE(core)
 
-template <typename Token>
+template <typename TToken>
 class lexical_analyzer : private noncopyable
 {
     public:
@@ -18,7 +18,7 @@ class lexical_analyzer : private noncopyable
         using datum_type = text::datum_type;
         using codepoints_type = std::basic_string<datum_type>;
 
-        using token_type = Token;
+        using token_type = TToken;
         using tokens_type = std::queue<token_type>;
 
         using snapshots_type = std::stack<const datum_type*>;
@@ -76,78 +76,79 @@ class lexical_analyzer : private noncopyable
         void                        rewind_to_snapshot(); // backtrack
 };
 
-template <typename Token>
-inline const typename lexical_analyzer<Token>::content_type& lexical_analyzer<Token>::content() const
+template <typename TToken>
+inline const typename lexical_analyzer<TToken>::content_type& lexical_analyzer<TToken>::content() const
 {
     return my_content;
 }
 
-template <typename Token>
-inline typename lexical_analyzer<Token>::content_type& lexical_analyzer<Token>::content()
+template <typename TToken>
+inline typename lexical_analyzer<TToken>::content_type& lexical_analyzer<TToken>::content()
 {
     return const_cast<content_type&>(static_cast<const lexical_analyzer&>(*this).content());
 }
 
-template <typename Token>
-inline typename lexical_analyzer<Token>::datum_type typename lexical_analyzer<Token>::current() const
+template <typename TToken>
+inline typename lexical_analyzer<TToken>::datum_type typename lexical_analyzer<TToken>::current() const
 {
     return *my_ptr;
 }
 
-template <typename Token>
-inline const typename lexical_analyzer<Token>::token_type& lexical_analyzer<Token>::token()
+template <typename TToken>
+inline const typename lexical_analyzer<TToken>::token_type& lexical_analyzer<TToken>::token()
 {
     return my_token;
 }
 
-template <typename Token>
-inline bool lexical_analyzer<Token>::is_eol() const
+template <typename TToken>
+inline bool lexical_analyzer<TToken>::is_eol() const
 {
     return my_token.type == token_type::traits::type::eol;
 }
 
-template <typename Token>
-inline bool lexical_analyzer<Token>::is_eos() const
+template <typename TToken>
+inline bool lexical_analyzer<TToken>::is_eos() const
 {
     return my_token.type == token_type::traits::type::eos;
 }
 
-template <typename Token>
-inline typename lexical_analyzer<Token>::codepoints_type lexical_analyzer<Token>::lexeme_to_codepoints() const
+template <typename TToken>
+inline typename lexical_analyzer<TToken>::codepoints_type lexical_analyzer<TToken>::lexeme_to_codepoints() const
 {
     return my_token.codepoints(my_start_content);
 }
 
-template <typename Token>
-inline typename lexical_analyzer<Token>::codepoints_type lexical_analyzer<Token>::lexeme_to_codepoints(const typename lexical_analyzer<Token>::token_type& token) const
+template <typename TToken>
+inline typename lexical_analyzer<TToken>::codepoints_type lexical_analyzer<TToken>::lexeme_to_codepoints(const typename lexical_analyzer<TToken>::token_type& token) const
 {
     return token.codepoints(my_start_content);
 }
 
-template <typename Token>
-inline string_type lexical_analyzer<Token>::lexeme_to_string() const
+template <typename TToken>
+inline string_type lexical_analyzer<TToken>::lexeme_to_string() const
 {
     return my_token.to_string(my_start_content);
 }
 
-template <typename Token>
-inline string_type lexical_analyzer<Token>::lexeme_to_string(const typename lexical_analyzer<Token>::token_type& token) const
+template <typename TToken>
+inline string_type lexical_analyzer<TToken>::lexeme_to_string(const typename lexical_analyzer<TToken>::token_type& token) const
 {
     return token.to_string(my_start_content);
 }
 
-template <typename Token>
-inline void lexical_analyzer<Token>::take_snapshot()
+template <typename TToken>
+inline void lexical_analyzer<TToken>::take_snapshot()
 {
     my_snapshots.push(my_ptr);
 }
 
-template <typename Token>
-inline void lexical_analyzer<Token>::rewind_to_snapshot()
+template <typename TToken>
+inline void lexical_analyzer<TToken>::rewind_to_snapshot()
 {
     if(!my_snapshots.empty())
     {
         my_ptr = my_snapshots.top();
+
         my_snapshots.pop();
 
         my_tokens.clear();

@@ -48,6 +48,13 @@
 #include <content/content.hpp>
 
 
+#include <frontend/lexical_analyzer/token.hpp>
+
+#include <frontend/lexical_analyzer/lexical_content.hpp>
+#include <frontend/lexical_analyzer/lexical_analyzer.hpp>
+#include <frontend/lexical_analyzer/lexical_analyzer.inl>
+
+
 USINGNAMESPACE(core)
 
 

@@ -12,8 +12,8 @@ USINGNAMESPACE(core)
 class grammar_visualization : private noncopyable
 {
     public:
-        using symbol_type = rule::symbol_type;
-        using symbols_type = rule::symbols_type;
+        using symbol_type = symbol::symbol_type;
+        using symbols_type = symbol::symbols_type;
 
         using set_type = symbol::set_type;
         using sets_type = symbol::sets_type;

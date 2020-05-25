@@ -48,6 +48,14 @@
     <ClInclude Include="..\src\framework\core\vertex.hpp" />
     <ClInclude Include="..\src\framework\core\visitable.hpp" />
     <ClInclude Include="..\src\framework\core\visitor.hpp" />
+    <ClInclude Include="..\src\framework\frontend\grammar\grammar.hpp" />
+    <ClInclude Include="..\src\framework\frontend\grammar\grammar_algorithm.hpp" />
+    <ClInclude Include="..\src\framework\frontend\grammar\grammar_visualization.hpp" />
+    <ClInclude Include="..\src\framework\frontend\grammar\rule.hpp" />
+    <ClInclude Include="..\src\framework\frontend\grammar\symbol.hpp" />
+    <ClInclude Include="..\src\framework\frontend\lexical_analyzer\lexical_analyzer.hpp" />
+    <ClInclude Include="..\src\framework\frontend\lexical_analyzer\lexical_content.hpp" />
+    <ClInclude Include="..\src\framework\frontend\lexical_analyzer\token.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\compiler\compiler.cpp" />
@@ -66,6 +74,15 @@
     <ClCompile Include="..\src\framework\core\text.cpp" />
     <ClCompile Include="..\src\framework\core\timer.cpp" />
     <ClCompile Include="..\src\framework\core\unicode.cpp" />
+    <ClCompile Include="..\src\framework\frontend\grammar\grammar.cpp" />
+    <ClCompile Include="..\src\framework\frontend\grammar\grammar_algorithm.cpp" />
+    <ClCompile Include="..\src\framework\frontend\grammar\grammar_visualization.cpp" />
+    <ClCompile Include="..\src\framework\frontend\grammar\rule.cpp" />
+    <ClCompile Include="..\src\framework\frontend\grammar\symbol.cpp" />
+    <ClCompile Include="..\src\framework\frontend\lexical_analyzer\lexical_content.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\src\framework\frontend\lexical_analyzer\lexical_analyzer.inl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

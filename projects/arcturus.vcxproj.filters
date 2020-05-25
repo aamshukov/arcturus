@@ -156,6 +156,30 @@
     <ClInclude Include="..\src\framework\content\data_provider.hpp">
       <Filter>framework\content</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\framework\frontend\lexical_analyzer\lexical_content.hpp">
+      <Filter>framework\frontend\lexical_analyzer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\frontend\lexical_analyzer\token.hpp">
+      <Filter>framework\frontend\lexical_analyzer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\frontend\lexical_analyzer\lexical_analyzer.hpp">
+      <Filter>framework\frontend\lexical_analyzer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\frontend\grammar\grammar_algorithm.hpp">
+      <Filter>framework\frontend\grammar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\frontend\grammar\grammar_visualization.hpp">
+      <Filter>framework\frontend\grammar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\frontend\grammar\rule.hpp">
+      <Filter>framework\frontend\grammar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\frontend\grammar\symbol.hpp">
+      <Filter>framework\frontend\grammar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\frontend\grammar\grammar.hpp">
+      <Filter>framework\frontend\grammar</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\framework\core\logger.cpp">
@@ -191,5 +215,28 @@
     <ClCompile Include="..\src\framework\content\content.cpp">
       <Filter>framework\content</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\framework\frontend\lexical_analyzer\lexical_content.cpp">
+      <Filter>framework\frontend\lexical_analyzer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\framework\frontend\grammar\grammar_algorithm.cpp">
+      <Filter>framework\frontend\grammar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\framework\frontend\grammar\grammar_visualization.cpp">
+      <Filter>framework\frontend\grammar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\framework\frontend\grammar\rule.cpp">
+      <Filter>framework\frontend\grammar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\framework\frontend\grammar\symbol.cpp">
+      <Filter>framework\frontend\grammar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\framework\frontend\grammar\grammar.cpp">
+      <Filter>framework\frontend\grammar</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\src\framework\frontend\lexical_analyzer\lexical_analyzer.inl">
+      <Filter>framework\frontend\lexical_analyzer</Filter>
+    </None>
   </ItemGroup>
 </Project>

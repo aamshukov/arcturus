@@ -3,15 +3,15 @@
 //..............................
 #include <core/pch.hpp>
 #include <core/noncopyable.hpp>
-#include <core/status.hpp>
+
+#include <core/domain_helper.hpp>
+
 #include <core/unicode.hpp>
 #include <core/text.hpp>
-#include <core/domain_helper.hpp>
-#include <core/logger.hpp>
-#include <core/data_provider.hpp>
-#include <core/file_data_provider.hpp>
-#include <core/content.hpp>
 
+#include <content/data_provider.hpp>
+
+#include <content/content.hpp>
 #include <frontend/lexical_analyzer/lexical_content.hpp>
 
 BEGIN_NAMESPACE(frontend)
@@ -157,9 +157,9 @@ loc_type lexical_content::get_column_number(loc_type position)
     return result;
 }
 
-bool lexical_content::load(data_provider& provider, operation_status& status)
+bool lexical_content::load(data_provider& provider)
 {
-    bool result = content::load(provider, status);
+    bool result = content::load(provider);
 
     build_line_map();
 

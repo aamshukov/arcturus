@@ -1,13 +1,20 @@
 //..............................
 // UI Lab Inc. Arthur Amshukov .
 //..............................
-#include <core\pch.hpp>
-#include <core\noncopyable.hpp>
-#include <core\flags.hpp>
-#include <core\tree.hpp>
+#include <core/pch.hpp>
+#include <core/noncopyable.hpp>
 
-#include <frontend\grammar\symbol.hpp>
-#include <frontend\grammar\rule.hpp>
+#include <core/domain_helper.hpp>
+
+#include <core/factory.hpp>
+
+#include <core/flags.hpp>
+
+#include <core/visitor.hpp>
+#include <core/tree.hpp>
+
+#include <frontend/grammar/symbol.hpp>
+#include <frontend/grammar/rule.hpp>
 
 BEGIN_NAMESPACE(frontend)
 USINGNAMESPACE(core)

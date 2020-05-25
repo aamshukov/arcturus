@@ -11,7 +11,7 @@ BEGIN_NAMESPACE(core)
 class content : private noncopyable
 {
     public:
-        using datum_type = data_provider::datum_type;
+        using datum_type = text::datum_type;
         using data_type = std::shared_ptr<datum_type[]>;
 
         using id_type = int32_t;

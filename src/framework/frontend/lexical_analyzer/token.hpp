@@ -156,8 +156,7 @@ struct token
         {
             string_type result;
             
-            operation_status status; //??
-            text::codepoints_to_string(content + offset, length, result, status);
+            text::codepoints_to_string(content + offset, length, result);
 
             result += L" [" + name() + L"]:" + std::to_wstring(length);
             
