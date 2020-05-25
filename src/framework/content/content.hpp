@@ -37,7 +37,7 @@ class content : private noncopyable
         const datum_type*   data() const;
         size_type           count() const;
 
-        virtual bool        load(data_provider& provider, operation_status& status);
+        virtual bool        load(data_provider& provider);
 };
 
 inline const content::id_type& content::id() const

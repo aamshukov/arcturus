@@ -1,15 +1,16 @@
 //..............................
 // UI Lab Inc. Arthur Amshukov .
 //..............................
-#include <core\pch.hpp>
-#include <core\noncopyable.hpp>
-#include <core\status.hpp>
+#include <core/pch.hpp>
+#include <core/status.hpp>
 
 BEGIN_NAMESPACE(core)
 
 status::status()
       : my_custom_code(status::custom_code::success),
-        my_system_code(SYSTEM_SUCCESS_CODE)
+        my_system_code(SYSTEM_SUCCESS_CODE),
+        my_library_code(0),
+        my_contributer(contributer::core)
 {
 }
     
@@ -23,6 +24,9 @@ status::status(const status& other)
     {
         my_custom_code = other.my_custom_code;
         my_system_code = other.my_system_code;
+        my_library_code = other.my_library_code;
+
+        my_contributer = other.my_contributer;
 
         my_text = other.my_text;
     }
@@ -34,6 +38,9 @@ status::status(status&& other)
     {
         my_custom_code = other.my_custom_code;
         my_system_code = other.my_system_code;
+        my_library_code = other.my_library_code;
+
+        my_contributer = other.my_contributer;
 
         my_text = std::move(other.my_text);
     }
@@ -45,6 +52,9 @@ const status& status::operator = (const status& other)
     {
         my_custom_code = other.my_custom_code;
         my_system_code = other.my_system_code;
+        my_library_code = other.my_library_code;
+
+        my_contributer = other.my_contributer;
 
         my_text = other.my_text;
     }
@@ -58,6 +68,9 @@ status& status::operator = (status&& other)
     {
         my_custom_code = other.my_custom_code;
         my_system_code = other.my_system_code;
+        my_library_code = other.my_library_code;
+
+        my_contributer = other.my_contributer;
 
         my_text = std::move(other.my_text);
     }
@@ -70,7 +83,7 @@ status& status::operator = (status&& other)
 
 string_type status::get_system_error_message()
 {
-#ifdef WINDOWS
+#ifdef WIN32
     LPVOID lpMsgBuf;
     LPVOID lpDisplayBuf;
    
@@ -88,7 +101,11 @@ string_type status::get_system_error_message()
 
     lpDisplayBuf = (LPVOID)LocalAlloc(LMEM_ZEROINIT, bufferSize);
 
-    StringCchPrintf((LPTSTR)lpDisplayBuf, LocalSize(lpDisplayBuf) / sizeof(TCHAR), TEXT("Operation completed with system code '%d': %s"),  lastError, lpMsgBuf); 
+    StringCchPrintf((LPTSTR)lpDisplayBuf,
+                    LocalSize(lpDisplayBuf) / sizeof(TCHAR),
+                    TEXT("Operation completed with system code '%d': %s"),
+                    lastError,
+                    lpMsgBuf);
 
     string_type result((char_type*)lpDisplayBuf);
 

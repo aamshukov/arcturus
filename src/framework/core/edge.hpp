@@ -8,16 +8,16 @@
 
 BEGIN_NAMESPACE(core)
 
-template <typename VertexType, typename EdgeValueType, std::size_t N = 2>
+template <typename TVertex, typename TValue, std::size_t N = 2>
 struct edge : private noncopyable
 {
-    using vertex_type = std::shared_ptr<VertexType>;
-    using edge_value_type = EdgeValueType;
+    using vertex_type = std::shared_ptr<TVertex>;
+    using value_type = TValue; // edge value
 
-    using index_type = int;
+    using index_type = int64_t;
 
     index_type id = 0;
-    edge_value_type value = edge_value_type();
+    value_type value = value_type();
 
     vertex_type endpoints[N]; // usually has two vertices and more vertices in hyper-graphs
 };

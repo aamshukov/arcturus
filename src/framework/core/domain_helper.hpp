@@ -37,12 +37,14 @@ BEGIN_NAMESPACE(core)
 #define DUMMY_EXCEPTION_TEXT (L"Error occurred.")
 
 
-template <typename T, std::size_t N> constexpr std::size_t array_size(T const (&)[N])
+template <typename T, std::size_t N>
+inline constexpr std::size_t array_size(T const (&)[N])
 {
     return N;
 }
 
-template <typename T> inline static T arrange_type(T value)
+template <typename T>
+static T arrange_type(T value)
 {
     T result;
 

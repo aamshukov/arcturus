@@ -1,8 +1,8 @@
 //..............................
 // UI Lab Inc. Arthur Amshukov .
 //..............................
-#include <core\pch.hpp>
-#include <core\domain_helper.hpp>
+#include <core/pch.hpp>
+#include <core/domain_helper.hpp>
 
 BEGIN_NAMESPACE(core)
 
@@ -65,8 +65,11 @@ std::wstring string_to_wstring(const std::string& str, const std::locale& locale
 const char_type* get_indent(uint8_t count)
 {
     const uint8_t size = 128;
+
     assert(count < size);
+
     static const char_type spaces[size + 1] = L"                                                                                                                               ";
+
     return &spaces[(size - 1) - (count & (size - 1))];
 }
 

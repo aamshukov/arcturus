@@ -1,20 +1,27 @@
 //..............................
 // UI Lab Inc. Arthur Amshukov .
 //..............................
-#include <core\pch.hpp>
-#include <core\noncopyable.hpp>
-#include <core\domain_helper.hpp>
-#include <core\status.hpp>
-#include <core\logger.hpp>
-#include <core\unicode.hpp>
-#include <core\text.hpp>
+#include <core/pch.hpp>
+#include <core/noncopyable.hpp>
+
+#include <core/domain_helper.hpp>
+
+#include <core/factory.hpp>
+#include <core/singleton.hpp>
+
+#include <core/status.hpp>
+#include <core/diagnostics.hpp>
+#include <core/statistics.hpp>
+
+#include <core/logger.hpp>
+
+#include <core/unicode.hpp>
+#include <core/text.hpp>
 
 BEGIN_NAMESPACE(core)
 
-bool text::string_to_codepoints0(const string_type& text, std::shared_ptr<typename text::datum_type[]>& codepoints, size_type& count, operation_status& status)
+bool text::string_to_codepoints0(const string_type& text, std::shared_ptr<typename text::datum_type[]>& codepoints, size_type& count)
 {
-    //log_info(L"Converting string (text) to codepoints ...");
-
     count = 0;
 
     bool result = false;
@@ -52,32 +59,40 @@ bool text::string_to_codepoints0(const string_type& text, std::shared_ptr<typena
         {
             if(cr == source_exhausted)
             {
-                OPERATION_FAILED(status::custom_code::error, L"Converting string (text) to codepoints: partial character in source, but hit end.")
+                OPERATION_FAILED_LIB(status::custom_code::error,
+                                     source_exhausted,
+                                     status::contributer::core,
+                                     L"Converting string (text) to codepoints: partial character in source, but hit end.")
             }
             else if(cr == target_exhausted)
             {
-                OPERATION_FAILED(status::custom_code::error, L"Converting string (text) to codepoints: insufficient room in target for conversion.")
+                OPERATION_FAILED_LIB(status::custom_code::error,
+                                     target_exhausted,
+                                     status::contributer::core,
+                                     L"Converting string (text) to codepoints: insufficient room in target for conversion.")
             }
             else if(cr == source_illegal)
             {
-                OPERATION_FAILED(status::custom_code::error, L"Converting string (text) to codepoints: source sequence is illegal/malformed.")
+                OPERATION_FAILED_LIB(status::custom_code::error,
+                                     source_illegal,
+                                     status::contributer::core,
+                                     L"Converting string (text) to codepoints: source sequence is illegal/malformed.")
             }
         }
     }
     catch(const std::exception& ex)
     {
-        OPERATION_FAILED_EX(ex, status::custom_code::error, L"Converting string (text) to codepoints: error occurred.")
+        OPERATION_FAILED_EX(ex,
+                            status::custom_code::error,
+                            status::contributer::core,
+                            L"Converting string (text) to codepoints: error occurred.")
     }
-
-    //log_info(L"Converted string (text) to codepoints.");
 
     return result;
 }
 
-bool text::codepoints_to_string0(const typename text::datum_type* codepoints, size_type count, string_type& result_text, operation_status& status)
+bool text::codepoints_to_string0(const typename text::datum_type* codepoints, size_type count, string_type& result_text)
 {
-    //??log_info(L"Converting codepoints to string ...");
-
     bool result = false;
 
     try
@@ -111,32 +126,40 @@ bool text::codepoints_to_string0(const typename text::datum_type* codepoints, si
         {
             if(cr == source_exhausted)
             {
-                OPERATION_FAILED(status::custom_code::error, L"Converting codepoints to string: partial character in source, but hit end.")
+                OPERATION_FAILED_LIB(status::custom_code::error,
+                                     source_exhausted,
+                                     status::contributer::core,
+                                     L"Converting codepoints to string: partial character in source, but hit end.")
             }
             else if(cr == target_exhausted)
             {
-                OPERATION_FAILED(status::custom_code::error, L"Converting codepoints to string: insufficient room in target for conversion.")
+                OPERATION_FAILED_LIB(status::custom_code::error,
+                                     target_exhausted,
+                                     status::contributer::core,
+                                     L"Converting codepoints to string: insufficient room in target for conversion.")
             }
             else if(cr == source_illegal)
             {
-                OPERATION_FAILED(status::custom_code::error, L"Converting codepoints to string: source sequence is illegal/malformed.")
+                OPERATION_FAILED_LIB(status::custom_code::error,
+                                     source_illegal,
+                                     status::contributer::core,
+                                     L"Converting codepoints to string: source sequence is illegal/malformed.")
             }
         }
     }
     catch(const std::exception& ex)
     {
-        OPERATION_FAILED_EX(ex, status::custom_code::error, L"Converting codepoints to string: error occurred.")
+        OPERATION_FAILED_EX(ex,
+                            status::custom_code::error,
+                            status::contributer::core,
+                            L"Converting codepoints to string: error occurred.")
     }
-
-    //??log_info(L"Converted codepoints to string.");
 
     return result;
 }
 
-bool text::string_to_codepoints(const string_type& text, std::shared_ptr<typename text::datum_type[]>& codepoints, size_type& count, operation_status& status)
+bool text::string_to_codepoints(const string_type& text, std::shared_ptr<typename text::datum_type[]>& codepoints, size_type& count)
 {
-    //log_info(L"Converting string (text) to codepoints ...");
-
     count = 0;
 
     bool result = false;
@@ -167,28 +190,31 @@ bool text::string_to_codepoints(const string_type& text, std::shared_ptr<typenam
             }
             else
             {
-                OPERATION_FAILED(status::custom_code::error, format(L"Converting string (text) to codepoints: ICU error code is '%d'.", error).c_str())
+                OPERATION_FAILED(status::custom_code::error,
+                                 status::contributer::core,
+                                 format(L"Converting string (text) to codepoints: ICU error code is '%d'.", error).c_str())
             }
         }
         else
         {
-            OPERATION_FAILED(status::custom_code::error, L"Converting string (text) to codepoints: invalid input.")
+            OPERATION_FAILED(status::custom_code::error,
+                             status::contributer::core,
+                             L"Converting string (text) to codepoints: invalid input.")
         }
     }
     catch(const std::exception& ex)
     {
-        OPERATION_FAILED_EX(ex, status::custom_code::error, L"Converting string (text) to codepoints: error occurred.")
+        OPERATION_FAILED_EX(ex,
+                            status::custom_code::error,
+                            status::contributer::core,
+                            L"Converting string (text) to codepoints: error occurred.")
     }
-
-    //log_info(L"Converted string (text) to codepoints.");
 
     return result;
 }
 
-bool text::codepoints_to_string(const typename text::datum_type* codepoints, size_type count, string_type& result_text, operation_status& status)
+bool text::codepoints_to_string(const typename text::datum_type* codepoints, size_type count, string_type& result_text)
 {
-    //log_info(L"Converting codepoints to string ...");
-
     bool result = false;
 
     try
@@ -211,15 +237,18 @@ bool text::codepoints_to_string(const typename text::datum_type* codepoints, siz
         }
         else
         {
-            OPERATION_FAILED(status::custom_code::error, L"Converting codepoints to string: invalid input.")
+            OPERATION_FAILED(status::custom_code::error,
+                             status::contributer::core,
+                             L"Converting codepoints to string: invalid input.")
         }
     }
     catch(const std::exception& ex)
     {
-        OPERATION_FAILED_EX(ex, status::custom_code::error, L"Converting codepoints to string: error occurred.")
+        OPERATION_FAILED_EX(ex,
+                            status::custom_code::error,
+                            status::contributer::core,
+                            L"Converting codepoints to string: error occurred.")
     }
-
-    //log_info(L"Converted codepoints to string.");
 
     return result;
 }
@@ -234,8 +263,7 @@ string_type text::codepoint_to_string(typename text::datum_type codepoint)
 
         codepoints[0] = codepoint;
 
-        operation_status status; //??
-        text::codepoints_to_string(codepoints.get(), 1, result, status);
+        text::codepoints_to_string(codepoints.get(), 1, result);
     }
     else
     {
@@ -245,7 +273,7 @@ string_type text::codepoint_to_string(typename text::datum_type codepoint)
     return result;
 }
 
-bool text::codepoint_to_string(typename text::datum_type codepoint, string_type& result_text, operation_status& status)
+bool text::codepoint_to_string(typename text::datum_type codepoint, string_type& result_text)
 {
     bool result = false;
 
@@ -255,7 +283,7 @@ bool text::codepoint_to_string(typename text::datum_type codepoint, string_type&
 
         codepoints[0] = codepoint;
 
-        text::codepoints_to_string(codepoints.get(), 1, result_text, status);
+        text::codepoints_to_string(codepoints.get(), 1, result_text);
     }
     else
     {

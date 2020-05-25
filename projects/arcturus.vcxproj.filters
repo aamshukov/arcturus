@@ -1,0 +1,195 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="framework">
+      <UniqueIdentifier>{3b555e92-e58e-4b36-be36-981cf984818f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="tools">
+      <UniqueIdentifier>{98ec8fb5-7726-49c1-a42e-72641b1fb519}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="tests">
+      <UniqueIdentifier>{c55b4cad-26ea-4129-990b-49e62fb7a149}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="framework\frontend">
+      <UniqueIdentifier>{85374d10-3801-4354-ae52-a7607eb69290}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="framework\backend">
+      <UniqueIdentifier>{e10b3559-254d-4b5d-8a7f-e9ccfec5aa0d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="framework\core">
+      <UniqueIdentifier>{328c029f-e217-4d40-805a-2c7bdc2adbb8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="framework\controller">
+      <UniqueIdentifier>{6f33b4fd-0b61-47b1-918d-bc6d298a32b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="framework\symtable">
+      <UniqueIdentifier>{c71d6524-b631-4832-9c9e-f004ed281dd7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="framework\backend\generator">
+      <UniqueIdentifier>{c4651142-492b-47eb-be94-cee3b7efe20c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="framework\backend\generator\amd64">
+      <UniqueIdentifier>{ed48eebc-ce3c-4887-821c-196a86cf78c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="framework\backend\optimization">
+      <UniqueIdentifier>{a7e328c4-7236-401d-8fe1-7e0377fb26c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="framework\symtable\scope">
+      <UniqueIdentifier>{72e1f63f-d9a0-4d75-80c0-971387e85ed4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="framework\frontend\fsa">
+      <UniqueIdentifier>{dc2e62d8-2a74-417a-ab71-b075bc35b5d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="framework\frontend\grammar">
+      <UniqueIdentifier>{bc0e3d72-862b-40fb-baa3-8c229d922c29}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="framework\frontend\lexical_analyzer">
+      <UniqueIdentifier>{ac86ed98-6f9d-43ad-a706-5f7171a9d0e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="framework\frontend\parser">
+      <UniqueIdentifier>{8529242f-04a6-4a03-bf1b-84cd71afa261}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="framework\semantics">
+      <UniqueIdentifier>{8d284e7a-6e6f-4a9a-ad09-4f48320e162c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="framework\semantics\type">
+      <UniqueIdentifier>{4fc40a7c-4297-44f3-9e4f-88f26b0aeec4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="docs">
+      <UniqueIdentifier>{6dec51ee-0859-4eb8-a202-08e255a4191d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="framework\ir">
+      <UniqueIdentifier>{371660c3-605b-4cb7-8bc1-b60429da3a7e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="compiler">
+      <UniqueIdentifier>{4c923410-e4c4-4aad-bddd-554dead21541}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="framework\content">
+      <UniqueIdentifier>{123a11b0-ba77-48f3-9286-184512f8d45e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\framework\core\edge.hpp">
+      <Filter>framework\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\core\enum.hpp">
+      <Filter>framework\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\core\enumerate.hpp">
+      <Filter>framework\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\core\factory.hpp">
+      <Filter>framework\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\core\flags.hpp">
+      <Filter>framework\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\core\graph.hpp">
+      <Filter>framework\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\core\logger.hpp">
+      <Filter>framework\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\core\noncopyable.hpp">
+      <Filter>framework\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\core\pch.hpp">
+      <Filter>framework\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\core\singleton.hpp">
+      <Filter>framework\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\core\statistics.hpp">
+      <Filter>framework\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\core\status.hpp">
+      <Filter>framework\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\core\text.hpp">
+      <Filter>framework\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\core\tree.hpp">
+      <Filter>framework\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\core\unicode.hpp">
+      <Filter>framework\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\core\vertex.hpp">
+      <Filter>framework\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\core\visitable.hpp">
+      <Filter>framework\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\core\visitor.hpp">
+      <Filter>framework\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\core\configurator.hpp">
+      <Filter>framework\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\core\context.hpp">
+      <Filter>framework\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\core\counter.hpp">
+      <Filter>framework\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\core\dag.hpp">
+      <Filter>framework\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\core\diagnostics.hpp">
+      <Filter>framework\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\core\domain_helper.hpp">
+      <Filter>framework\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\core\timer.hpp">
+      <Filter>framework\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\content\file_data_provider.hpp">
+      <Filter>framework\content</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\content\string_data_provider.hpp">
+      <Filter>framework\content</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\content\content.hpp">
+      <Filter>framework\content</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\content\data_provider.hpp">
+      <Filter>framework\content</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\framework\core\logger.cpp">
+      <Filter>framework\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\framework\core\pch.cpp">
+      <Filter>framework\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\framework\core\status.cpp">
+      <Filter>framework\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\framework\core\text.cpp">
+      <Filter>framework\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\framework\core\unicode.cpp">
+      <Filter>framework\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\framework\core\domain_helper.cpp">
+      <Filter>framework\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\compiler\compiler.cpp">
+      <Filter>compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\framework\core\timer.cpp">
+      <Filter>framework\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\framework\content\file_data_provider.cpp">
+      <Filter>framework\content</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\framework\content\string_data_provider.cpp">
+      <Filter>framework\content</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\framework\content\content.cpp">
+      <Filter>framework\content</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

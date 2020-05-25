@@ -1,15 +1,26 @@
 //..............................
 // UI Lab Inc. Arthur Amshukov .
 //..............................
-#include <core\pch.hpp>
-#include <core\noncopyable.hpp>
-#include <core\status.hpp>
-#include <core\unicode.hpp>
-#include <core\text.hpp>
-#include <core\domain_helper.hpp>
-#include <core\logger.hpp>
-#include <core\data_provider.hpp>
-#include <core\file_data_provider.hpp>
+#include <core/pch.hpp>
+#include <core/noncopyable.hpp>
+
+#include <core/domain_helper.hpp>
+
+#include <core/factory.hpp>
+#include <core/singleton.hpp>
+
+#include <core/status.hpp>
+
+#include <core/diagnostics.hpp>
+#include <core/statistics.hpp>
+
+#include <core/logger.hpp>
+
+#include <core/unicode.hpp>
+#include <core/text.hpp>
+
+#include <content/data_provider.hpp>
+#include <content/file_data_provider.hpp>
 
 BEGIN_NAMESPACE(core)
 
@@ -127,7 +138,10 @@ string_type file_data_provider::get_encoding(const string_type& file_name)
     return result;
 }
 
-bool file_data_provider::read_raw_data(const string_type& file_name, std::shared_ptr<byte[]>& data, size_type& count, offset_type offset, operation_status& status)
+bool file_data_provider::read_raw_data(const string_type& file_name,
+                                       std::shared_ptr<byte[]>& data,
+                                       size_type& count,
+                                       offset_type offset)
 {
     log_info(L"Reading raw content ...");
 
@@ -162,7 +176,10 @@ bool file_data_provider::read_raw_data(const string_type& file_name, std::shared
     }
     catch(const std::exception& ex)
     {
-        OPERATION_FAILED_EX(ex, status::custom_code::error, L"Read raw data: error occurred.")
+        OPERATION_FAILED_EX(ex,
+                            status::custom_code::error,
+                            status::contributer::core,
+                            L"Read raw data: error occurred.")
     }
 
     log_info(L"Read raw content.");
@@ -170,7 +187,10 @@ bool file_data_provider::read_raw_data(const string_type& file_name, std::shared
     return result;
 }
 
-bool file_data_provider::read_utf8_data(std::shared_ptr<byte[]> raw_data, size_type raw_count, std::shared_ptr<datum_type[]>& data, size_type& count, operation_status& status)
+bool file_data_provider::read_utf8_data(std::shared_ptr<byte[]> raw_data,
+                                        size_type raw_count,
+                                        std::shared_ptr<datum_type[]>& data,
+                                        size_type& count)
 {
     log_info(L"Reading UTF-8 content ...");
 
@@ -190,8 +210,11 @@ bool file_data_provider::read_utf8_data(std::shared_ptr<byte[]> raw_data, size_t
         const datum_type** target_start(&target_start_aux);
         const datum_type*  target_end(target_start_aux + raw_count);
             
-        convert_result cr = convert_utf8_to_utf32(source_start, source_end, (UTF32**)target_start, (UTF32*)target_end, conversion_flags::strict_conversion, count);
-
+        convert_result cr = convert_utf8_to_utf32(source_start,
+                                                  source_end,
+                                                  (UTF32**)target_start,
+                                                  (UTF32*)target_end,
+                                                  conversion_flags::strict_conversion, count);
         if(cr == conversion_ok)
         {
             buffer[count] = 0;
@@ -204,21 +227,33 @@ bool file_data_provider::read_utf8_data(std::shared_ptr<byte[]> raw_data, size_t
         {
             if(cr == source_exhausted)
             {
-                OPERATION_FAILED(status::custom_code::error, L"Read UTF16 data: partial character in source, but hit end.")
+                OPERATION_FAILED_LIB(status::custom_code::error,
+                                     source_exhausted,
+                                     status::contributer::core,
+                                     L"Read UTF16 data: partial character in source, but hit end.")
             }
             else if(cr == target_exhausted)
             {
-                OPERATION_FAILED(status::custom_code::error, L"Read UTF16 data: insufficient room in target for conversion.")
+                OPERATION_FAILED_LIB(status::custom_code::error,
+                                     target_exhausted,
+                                     status::contributer::core,
+                                     L"Read UTF16 data: insufficient room in target for conversion.")
             }
             else if(cr == source_illegal)
             {
-                OPERATION_FAILED(status::custom_code::error, L"Read UTF16 data: source sequence is illegal/malformed.")
+                OPERATION_FAILED_LIB(status::custom_code::error,
+                                     source_illegal,
+                                     status::contributer::core,
+                                     L"Read UTF16 data: source sequence is illegal/malformed.")
             }
         }
     }
     catch(const std::exception& ex)
     {
-        OPERATION_FAILED_EX(ex, status::custom_code::error, L"Read UTF8 data: error occurred.")
+        OPERATION_FAILED_EX(ex,
+                            status::custom_code::error,
+                            status::contributer::core,
+                            L"Read UTF8 data: error occurred.")
     }
 
     log_info(L"Read UTF-8 content.");
@@ -226,7 +261,11 @@ bool file_data_provider::read_utf8_data(std::shared_ptr<byte[]> raw_data, size_t
     return result;
 }
 
-bool file_data_provider::read_utf16_data(std::shared_ptr<byte[]> raw_data, size_type raw_count, std::shared_ptr<datum_type[]>& data, size_type& count, bool big_endian, operation_status& status)
+bool file_data_provider::read_utf16_data(std::shared_ptr<byte[]> raw_data,
+                                         size_type raw_count,
+                                         std::shared_ptr<datum_type[]>& data,
+                                         size_type& count,
+                                         bool big_endian)
 {
     log_info(L"Reading UTF-16 content ...");
 
@@ -238,7 +277,9 @@ bool file_data_provider::read_utf16_data(std::shared_ptr<byte[]> raw_data, size_
     {
         if(raw_count % 2 != 0)
         {
-            OPERATION_FAILED(status::custom_code::error, L"Read UTF16 data: invalid input, must be divisible by 2.")
+            OPERATION_FAILED(status::custom_code::error,
+                             status::contributer::core,
+                             L"Read UTF16 data: invalid input, must be divisible by 2.")
         }
         else
         {
@@ -272,22 +313,34 @@ bool file_data_provider::read_utf16_data(std::shared_ptr<byte[]> raw_data, size_
             {
                 if(cr == source_exhausted)
                 {
-                    OPERATION_FAILED(status::custom_code::error, L"Read UTF16 data: partial character in source, but hit end.")
+                    OPERATION_FAILED_LIB(status::custom_code::error,
+                                         source_exhausted,
+                                         status::contributer::core,
+                                         L"Read UTF16 data: partial character in source, but hit end.")
                 }
                 else if(cr == target_exhausted)
                 {
-                    OPERATION_FAILED(status::custom_code::error, L"Read UTF16 data: insufficient room in target for conversion.")
+                    OPERATION_FAILED_LIB(status::custom_code::error,
+                                         target_exhausted,
+                                         status::contributer::core,
+                                         L"Read UTF16 data: insufficient room in target for conversion.")
                 }
                 else if(cr == source_illegal)
                 {
-                    OPERATION_FAILED(status::custom_code::error, L"Read UTF16 data: source sequence is illegal/malformed.")
+                    OPERATION_FAILED_LIB(status::custom_code::error,
+                                         source_illegal,
+                                         status::contributer::core,
+                                         L"Read UTF16 data: source sequence is illegal/malformed.")
                 }
             }
         }
     }
     catch(const std::exception& ex)
     {
-        OPERATION_FAILED_EX(ex, status::custom_code::error, L"Read UTF16 data: error occurred.")
+        OPERATION_FAILED_EX(ex,
+                            status::custom_code::error,
+                            status::contributer::core,
+                            L"Read UTF16 data: error occurred.")
     }
 
     log_info(L"Read UTF-16 content.");
@@ -295,7 +348,11 @@ bool file_data_provider::read_utf16_data(std::shared_ptr<byte[]> raw_data, size_
     return result;
 }
 
-bool file_data_provider::read_utf32_data(std::shared_ptr<byte[]> raw_data, size_type raw_count, std::shared_ptr<datum_type[]>& data, size_type& count, bool big_endian, operation_status& status)
+bool file_data_provider::read_utf32_data(std::shared_ptr<byte[]> raw_data,
+                                         size_type raw_count,
+                                         std::shared_ptr<datum_type[]>& data,
+                                         size_type& count,
+                                         bool big_endian)
 {
     log_info(L"Reading UTF-32 content ...");
 
@@ -307,7 +364,9 @@ bool file_data_provider::read_utf32_data(std::shared_ptr<byte[]> raw_data, size_
     {
         if(raw_count % 4 != 0)
         {
-            OPERATION_FAILED(status::custom_code::error, L"Read UTF32 data: invalid input, must be divisible by 4.")
+            OPERATION_FAILED(status::custom_code::error,
+                             status::contributer::core,
+                             L"Read UTF32 data: invalid input, must be divisible by 4.")
         }
         else
         {
@@ -339,7 +398,10 @@ bool file_data_provider::read_utf32_data(std::shared_ptr<byte[]> raw_data, size_
     }
     catch(const std::exception& ex)
     {
-        OPERATION_FAILED_EX(ex, status::custom_code::error, L"Read UTF32 data: error occurred.")
+        OPERATION_FAILED_EX(ex,
+                            status::custom_code::error,
+                            status::contributer::core,
+                            L"Read UTF32 data: error occurred.")
     }
 
     log_info(L"Read UTF-32 content.");
@@ -347,64 +409,7 @@ bool file_data_provider::read_utf32_data(std::shared_ptr<byte[]> raw_data, size_
     return result;
 }
 
-bool file_data_provider::load0(std::shared_ptr<file_data_provider::datum_type[]>& data, size_type& count, operation_status& status)
-{
-    log_info(L"Loading content ...");
-
-    count = 0;
-
-    bool result = false;
-
-    try
-    {
-        string_type encoding(get_encoding(my_file_name));
-
-        std::shared_ptr<byte[]> raw_data;
-
-        size_type raw_count;
-
-        if(encoding == UTF8_ENCODING)
-        {
-            if(read_raw_data(my_file_name, raw_data, raw_count, 3, status))
-            {
-                read_utf8_data(raw_data, raw_count, data, count, status);
-            }
-        }
-        else if(encoding == UTF16_BE_ENCODING || encoding == UTF16_LE_ENCODING)
-        {
-            if(read_raw_data(my_file_name, raw_data, raw_count, 2, status))
-            {
-                read_utf16_data(raw_data, raw_count, data, count, encoding == UTF16_BE_ENCODING, status);
-            }
-        }
-        else if(encoding == UTF32_BE_ENCODING || encoding == UTF32_LE_ENCODING)
-        {
-            if(read_raw_data(my_file_name, raw_data, raw_count, 4, status))
-            {
-                read_utf32_data(raw_data, raw_count, data, count, encoding == UTF32_BE_ENCODING, status);
-            }
-        }
-        else
-        {
-            if(read_raw_data(my_file_name, raw_data, raw_count, 0, status))
-            {
-                read_utf8_data(raw_data, raw_count, data, count, status);
-            }
-        }
-
-        result = true;
-
-        log_info(L"Loaded content.");
-    }
-    catch(const std::exception& ex)
-    {
-        OPERATION_FAILED_EX(ex, status::custom_code::error, L"Load data: error occurred.")
-    }
-
-    return result;
-}
-
-bool file_data_provider::load(std::shared_ptr<typename file_data_provider::datum_type[]>& data, size_type& count, operation_status& status)
+bool file_data_provider::load(std::shared_ptr<typename file_data_provider::datum_type[]>& data, size_type& count)
 {
     log_info(L"Loading content ...");
 
@@ -428,7 +433,9 @@ bool file_data_provider::load(std::shared_ptr<typename file_data_provider::datum
         {
             if(file_size % 2 != 0)
             {
-                OPERATION_FAILED(status::custom_code::error, L"Read UTF16 data: invalid input, must be divisible by 2.")
+                OPERATION_FAILED(status::custom_code::error,
+                                 status::contributer::core,
+                                 L"Read UTF16 data: invalid input, must be divisible by 2.")
             }
 
             icu_encoding = "UTF-16";
@@ -438,7 +445,9 @@ bool file_data_provider::load(std::shared_ptr<typename file_data_provider::datum
         {
             if(file_size % 4 != 0)
             {
-                OPERATION_FAILED(status::custom_code::error, L"Read UTF32 data: invalid input, must be divisible by 4.")
+                OPERATION_FAILED(status::custom_code::error,
+                                 status::contributer::core,
+                                 L"Read UTF32 data: invalid input, must be divisible by 4.")
             }
 
             icu_encoding = "UTF-32";
@@ -499,7 +508,10 @@ bool file_data_provider::load(std::shared_ptr<typename file_data_provider::datum
     }
     catch(const std::exception& ex)
     {
-        OPERATION_FAILED_EX(ex, status::custom_code::error, L"Load data: error occurred.")
+        OPERATION_FAILED_EX(ex,
+                            status::custom_code::error,
+                            status::contributer::core,
+                            L"Load data: error occurred.")
     }
 
     return result;

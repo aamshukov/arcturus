@@ -25,6 +25,6 @@ class noncopyable
 
 END_NAMESPACE
 
-using noncopyable = COMPANY::core::noncopyable;
+using noncopyable = COMPANY::PROJECT::core::noncopyable;
 
 #endif // __NONCOPYABLE_H__

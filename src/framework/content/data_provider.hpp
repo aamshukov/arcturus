@@ -16,7 +16,7 @@ interface data_provider
     {
     }
 
-    virtual bool load(std::shared_ptr<datum_type[]>& buffer, size_type& count, operation_status& status) = 0;
+    virtual bool load(std::shared_ptr<datum_type[]>& buffer, size_type& count) = 0;
 };
 
 END_NAMESPACE

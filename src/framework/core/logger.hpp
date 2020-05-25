@@ -40,13 +40,18 @@ class logger : private noncopyable
     public:
         static logger&  instance();
 
-        bool            initialize(const string_type& file_name, operation_status& status);
-        bool            uninitialize(operation_status& status);
+        bool            initialize(const string_type& file_name);
+        bool            uninitialize();
 
         void            set_severity(severity level);
         void            set_severity(const string_type& level);
 
-        void            log(const char_type* file_name, uint32_t line, const char_type* function_name, severity level, const char_type* format_template, ...);
+        void            log(const char_type* file_name,
+                            uint32_t line,
+                            const char_type* function_name,
+                            severity level,
+                            const char_type* format_template,
+                            ...);
 };
 
 inline logger& logger::instance()

@@ -24,6 +24,7 @@ struct enumerate_wrapper
     struct enumerate_wrapper_iter
     {
         std::size_t index;
+
         iterator_type value;
 
         bool operator!=(const iterator_type& other) const

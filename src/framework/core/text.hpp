@@ -28,7 +28,7 @@ class text : private noncopyable
         static const datum_type invalid_codepoint = 0x0000FFFD;
 
         // http://www.unicode.org/glossary/#supplementary_code_point
-        static const datum_type kSupplementaryCodePointStart = 0x010000; //?? rename
+        static const datum_type kSupplementaryCodePointStart = 0x010000;
         static const datum_type kSupplementaryCodePointEnd = 0x10FFFF;
 
         // http://www.unicode.org/glossary/#high_surrogate_code_unit
@@ -43,14 +43,14 @@ class text : private noncopyable
         static const datum_type kSurrogateEnd = kLowSurrogateEnd;
 
     public:
-        static bool         string_to_codepoints0(const string_type& text, std::shared_ptr<datum_type[]>& codepoints, size_type& count, operation_status& status);
-        static bool         codepoints_to_string0(const datum_type* codepoints, size_type count, string_type& result_text, operation_status& status);
+        static bool         string_to_codepoints0(const string_type& text, std::shared_ptr<datum_type[]>& codepoints, size_type& count);
+        static bool         codepoints_to_string0(const datum_type* codepoints, size_type count, string_type& result_text);
 
-        static bool         string_to_codepoints(const string_type& text, std::shared_ptr<datum_type[]>& codepoints, size_type& count, operation_status& status);
-        static bool         codepoints_to_string(const datum_type* codepoints, size_type count, string_type& result_text, operation_status& status);
+        static bool         string_to_codepoints(const string_type& text, std::shared_ptr<datum_type[]>& codepoints, size_type& count);
+        static bool         codepoints_to_string(const datum_type* codepoints, size_type count, string_type& result_text);
 
         static string_type  codepoint_to_string(datum_type codepoint);
-        static bool         codepoint_to_string(datum_type codepoint, string_type& result_text, operation_status& status);
+        static bool         codepoint_to_string(datum_type codepoint, string_type& result_text);
 
         static datum_type   epsilon_codepoint();
         static datum_type   bad_codepoint();
@@ -213,7 +213,6 @@ inline bool text::is_java_identifier_start(typename text::datum_type codepoint)
     }
 
     return result;
-    //return u_isJavaIDStart(codepoint);
 }
 
 inline bool text::is_java_identifier_part(typename text::datum_type codepoint)

@@ -72,43 +72,30 @@
 #include <unicode/ustdio.h>
 
 #define COMPANY uilab
+#define PROJECT arcturus
 
-#define BEGIN_NAMESPACE(__x__) namespace COMPANY { ## namespace __x__ {
-#define END_NAMESPACE   }; };
+#define BEGIN_NAMESPACE(__x__) namespace COMPANY { namespace PROJECT { ## namespace __x__ {
+#define END_NAMESPACE   }; }; };
 
-#define USINGNAMESPACE(__x__) using namespace COMPANY::##__x__;
+#define USINGNAMESPACE(__x__) using namespace COMPANY::PROJECT::##__x__;
 
 #ifdef interface
 #   undef interface
 #endif
 #define interface struct
 
-#define UTF8_ENCODING       L"UTF-8"
-#define UTF16_LE_ENCODING   L"UTF-16-LE"
-#define UTF16_BE_ENCODING   L"UTF-16-BE"
-#define UTF32_LE_ENCODING   L"UTF-32-LE"
-#define UTF32_BE_ENCODING   L"UTF-32-BE"
-#define UTF7_ENCODING       L"UTF-7"
-#define UTF1_ENCODING       L"UTF-1"
-#define UTF_EBCDIC_ENCODING L"UTF-EBCDIC"
-#define SDSU_ENCODING       L"SDSU"
-#define BOCU1_ENCODING      L"BOCU-1"
-#define GB18030_ENCODING    L"GB-18030"
-#define DEFAULT_ENCODING    L"DEFAULT"
-
 #define INVALID_VALUE (static_cast<uint32_t>(-1))
 
 BEGIN_NAMESPACE(core)
 
 using byte = uint8_t;
-
 using size_type = std::size_t;
-using char_type = wchar_t;
-using string_type = std::basic_string<char_type>;
 using cp_type = uint32_t;   // code point
 using offset_type = long;   // fseek, etc.
 using loc_type = uint64_t;  // position, locus, location ...
 using hash_type = uint64_t;
+using char_type = wchar_t;
+using string_type = std::basic_string<char_type>;
 
 END_NAMESPACE
 
