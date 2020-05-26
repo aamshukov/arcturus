@@ -9,8 +9,6 @@
 BEGIN_NAMESPACE(frontend)
 USINGNAMESPACE(core)
 
-#define MAX_TRANSITION_RANK (5)
-
 class fsa_transition
 {
     public:

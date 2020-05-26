@@ -64,8 +64,7 @@ class fsa_re : private noncopyable
 
         static bool         infix_to_postfix(const std::shared_ptr<datum_type[]>& infix_re,
                                              size_type count,
-                                             std::shared_ptr<datum_type[]>& postfix_refsa,
-                                             operation_status& status);
+                                             std::shared_ptr<datum_type[]>& postfix_refsa);
         static tree_type    postfix_to_tree(const std::shared_ptr<datum_type[]>& postfix_re,
                                             leaves_type& leaves,
                                             std::size_t& finalpos,
@@ -73,12 +72,12 @@ class fsa_re : private noncopyable
 
         static string_type  postfix_re_to_string(const std::shared_ptr<datum_type[]>& postfix_re, size_type count);
 
-        static bool         process_combine(std::stack<fsa::fsa_type>& fragments, operation_status& status);
-        static bool         process_concatenate(std::stack<fsa::fsa_type>& fragments, operation_status& status);
-        static bool         process_zero_or_more(std::stack<fsa::fsa_type>& fragments, operation_status& status);
-        static bool         process_one_or_more(std::stack<fsa::fsa_type>& fragments, operation_status& status);
-        static bool         process_zero_or_one(std::stack<fsa::fsa_type>& fragments, operation_status& status);
-        static bool         process_literal(const datum_type*& p_src, std::stack<fsa::fsa_type>& fragments, operation_status& status);
+        static bool         process_combine(std::stack<fsa::fsa_type>& fragments);
+        static bool         process_concatenate(std::stack<fsa::fsa_type>& fragments);
+        static bool         process_zero_or_more(std::stack<fsa::fsa_type>& fragments);
+        static bool         process_one_or_more(std::stack<fsa::fsa_type>& fragments);
+        static bool         process_zero_or_one(std::stack<fsa::fsa_type>& fragments);
+        static bool         process_literal(const datum_type*& p_src, std::stack<fsa::fsa_type>& fragments);
 
         static void         adjust_predicates(fsa_type& fsa0);
         static void         add_escape_state(fsa_type& fsa0, token_type escape_token, const string_type& escape_predicate);
@@ -107,14 +106,12 @@ class fsa_re : private noncopyable
                                       token_type token,
                                       token_type escape_token,
                                       const string_type& escape_predicate,
-                                      fsa_type& result_fsa,
-                                      operation_status& status);
+                                      fsa_type& result_fsa);
         static bool         re_to_dfa(const string_type& re,
                                       token_type token,
                                       token_type escape_token,
                                       const string_type& escape_predicate,
-                                      fsa_type& result_fsa,
-                                      operation_status& status);
+                                      fsa_type& result_fsa);
 
         static bool         fsa_to_re_kleene(const fsa_type& fsa, std::basic_string<datum_type>& re);
         static bool         fsa_to_re_state_elimination(const fsa_type& fsa, std::basic_string<datum_type>& re);

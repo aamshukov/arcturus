@@ -11,7 +11,7 @@ BEGIN_NAMESPACE(core)
 class counter : private noncopyable
 {
     public:
-        using size_type = std::size_t;
+        using size_type = uint32_t;
 
     private:
         size_type   my_count;

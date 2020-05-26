@@ -1,21 +1,32 @@
 //..............................
 // UI Lab Inc. Arthur Amshukov .
 //..............................
-#include <core\pch.hpp>
-#include <core\noncopyable.hpp>
-#include <core\status.hpp>
-#include <core\text.hpp>
-#include <core\domain_helper.hpp>
-#include <core\logger.hpp>
-#include <core\counter.hpp>
-#include <core\enumerate.hpp>
-#include <core\flags.hpp>
-#include <core\tree.hpp>
+#include <core/pch.hpp>
+#include <core/noncopyable.hpp>
 
-#include <frontend\fsa\fsa_transition.hpp>
-#include <frontend\fsa\fsa_state.hpp>
-#include <frontend\fsa\fsa.hpp>
-#include <frontend\fsa\fsa_visualization.hpp>
+#include <core/domain_helper.hpp>
+
+#include <core/factory.hpp>
+#include <core/singleton.hpp>
+
+#include <core/status.hpp>
+
+#include <core/diagnostics.hpp>
+#include <core/statistics.hpp>
+
+#include <core/logger.hpp>
+
+#include <core/unicode.hpp>
+#include <core/text.hpp>
+
+#include <core/counter.hpp>
+
+#include <frontend/fsa/fsa_transition.hpp>
+#include <frontend/fsa/fsa_state.hpp>
+#include <frontend/fsa/fsa.hpp>
+#include <frontend/fsa/fsa_state_set.hpp>
+#include <frontend/fsa/fsa_algorithm.hpp>
+#include <frontend/fsa/fsa_visualization.hpp>
 
 BEGIN_NAMESPACE(frontend)
 USINGNAMESPACE(core)

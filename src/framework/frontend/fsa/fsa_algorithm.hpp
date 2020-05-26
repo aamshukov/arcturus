@@ -66,7 +66,7 @@ class fsa_algorithm : private noncopyable
         static void                     build_k_equivalence_classes(const fsa_type& fsa0, equivalence_classes_type& equivalence_classes);
 
     public:
-        static bool                     nfa_to_dfa(const fsa_type& fsa0, fsa_type& result_fsa, operation_status& status);
+        static bool                     nfa_to_dfa(const fsa_type& fsa0, fsa_type& result_fsa);
         static void                     minimize_dfa(const fsa_type& fsa0, fsa_type& result_fsa, bool cleanup = true);
 
         static uint32_t                 validate_dfa(const fsa_type& fsa0, const string_type& input);

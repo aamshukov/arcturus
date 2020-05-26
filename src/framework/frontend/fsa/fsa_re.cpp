@@ -1,27 +1,46 @@
 ﻿//..............................
 // UI Lab Inc. Arthur Amshukov .
 //..............................
-#include <core\pch.hpp>
-#include <core\noncopyable.hpp>
-#include <core\status.hpp>
-#include <core\enumerate.hpp>
-#include <core\unicode.hpp>
-#include <core\text.hpp>
-#include <core\domain_helper.hpp>
-#include <core\logger.hpp>
-#include <core\counter.hpp>
-#include <core\data_provider.hpp>
-#include <core\factory.hpp>
-#include <core\content.hpp>
-#include <core\flags.hpp>
-#include <core\tree.hpp>
+#include <core/pch.hpp>
+#include <core/noncopyable.hpp>
 
-#include <frontend\fsa\fsa_transition.hpp>
-#include <frontend\fsa\fsa_state.hpp>
-#include <frontend\fsa\fsa.hpp>
-#include <frontend\fsa\fsa_re.hpp>
+#include <core/domain_helper.hpp>
 
-#include <frontend\fsa\fsa_visualization.hpp> //??
+#include <core/factory.hpp>
+#include <core/singleton.hpp>
+
+#include <core/status.hpp>
+
+#include <core/diagnostics.hpp>
+#include <core/statistics.hpp>
+
+#include <core/logger.hpp>
+
+#include <core/unicode.hpp>
+#include <core/text.hpp>
+
+#include <core/enum.hpp>
+#include <core/enumerate.hpp>
+
+#include <core/configurator.hpp>
+
+#include <core/flags.hpp>
+
+#include <core/counter.hpp>
+
+#include <core/context.hpp>
+
+#include <core/visitable.hpp>
+#include <core/visitor.hpp>
+
+#include <core/tree.hpp>
+
+#include <frontend/fsa/fsa_transition.hpp>
+#include <frontend/fsa/fsa_state.hpp>
+#include <frontend/fsa/fsa.hpp>
+#include <frontend/fsa/fsa_state_set.hpp>
+#include <frontend/fsa/fsa_algorithm.hpp>
+#include <frontend/fsa/fsa_re.hpp>
 
 #undef min // crappy legacy
 
@@ -43,8 +62,7 @@ bool fsa_re::re_to_fsa(const std::shared_ptr<typename fsa_re::datum_type[]>& re,
                        typename fsa_re::token_type token,
                        typename fsa_re::token_type escape_token,
                        const string_type& escape_predicate,
-                       typename fsa_re::fsa_type& result_fsa,
-                       operation_status& status)
+                       typename fsa_re::fsa_type& result_fsa)
 {
     log_info(L"Generating FSA from RE ...");
 
@@ -58,7 +76,7 @@ bool fsa_re::re_to_fsa(const std::shared_ptr<typename fsa_re::datum_type[]>& re,
 
         std::shared_ptr<datum_type[]> postfix_re;
 
-        if(infix_to_postfix(processed_re, new_count, postfix_re, status))
+        if(infix_to_postfix(processed_re, new_count, postfix_re))
         {
             std::wcout << postfix_re_to_string(postfix_re, new_count) << std::endl;
 
@@ -73,22 +91,22 @@ bool fsa_re::re_to_fsa(const std::shared_ptr<typename fsa_re::datum_type[]>& re,
                 switch(*p_src)
                 {
                     case ALTERNATE_OP:
-                        result = process_combine(fragments, status);
+                        result = process_combine(fragments);
                         break;
                     case CONCATENATE_OP:
-                        result = process_concatenate(fragments, status);
+                        result = process_concatenate(fragments);
                         break;
                     case ZERO_OR_MORE_OP:
-                        result = process_zero_or_more(fragments, status);
+                        result = process_zero_or_more(fragments);
                         break;
                     case ONE_OR_MORE_OP:
-                        result = process_one_or_more(fragments, status);
+                        result = process_one_or_more(fragments);
                         break;
                     case ZERO_OR_ONE_OP:
-                        result = process_zero_or_one(fragments, status);
+                        result = process_zero_or_one(fragments);
                         break;
                     default:
-                        result = process_literal(p_src, fragments, status);
+                        result = process_literal(p_src, fragments);
                         break;
                 }
 
@@ -117,14 +135,22 @@ bool fsa_re::re_to_fsa(const std::shared_ptr<typename fsa_re::datum_type[]>& re,
                 }
                 else
                 {
-                    OPERATION_FAILED(status::custom_code::error, L"Generating FSA from RE: invlaid RE.")
+                    OPERATION_FAILED(status::custom_code::error,
+                                     0,
+                                     status::contributer::fsa,
+                                     L"Generating FSA from RE: invlaid RE.")
+                    log_error(diagnostics::instance().last_status().text().c_str());
                 }
             }
         }
     }
     catch(const std::exception& ex)
     {
-        OPERATION_FAILED_EX(ex, status::custom_code::error, L"Generating FSA from RE: error occurred.")
+        OPERATION_FAILED_EX(ex,
+                            status::custom_code::error,
+                            status::contributer::fsa,
+                            L"Generating FSA from RE: error occurred.")
+        log_exception(ex, diagnostics::instance().last_status().text().c_str());
     }
 
     log_info(L"Generated FSA from RE.");
@@ -136,8 +162,7 @@ bool fsa_re::re_to_dfa(const string_type& re,
                        typename fsa_re::token_type token,
                        typename fsa_re::token_type escape_token,
                        const string_type& escape_predicate,
-                       typename fsa_re::fsa_type& result_fsa,
-                       operation_status& status)
+                       typename fsa_re::fsa_type& result_fsa)
 {
     log_info(L"Generating DFA from RE, direct method ...");
 
@@ -151,7 +176,7 @@ bool fsa_re::re_to_dfa(const string_type& re,
     std::replace(augmented_re_dsp.begin(), augmented_re_dsp.end(), (char_type)text::epsilon_codepoint(), L'e');
     std::wcout << augmented_re_dsp << std::endl;
 
-    bool result = text::string_to_codepoints(augmented_re, re_data, count, status); // (r)#
+    bool result = text::string_to_codepoints(augmented_re, re_data, count); // (r)#
 
     if(result)
     {
@@ -163,7 +188,7 @@ bool fsa_re::re_to_dfa(const string_type& re,
 
             std::shared_ptr<datum_type[]> postfix_re;
 
-            if(infix_to_postfix(processed_re, new_count, postfix_re, status))
+            if(infix_to_postfix(processed_re, new_count, postfix_re))
             {
                 std::wcout << postfix_re_to_string(postfix_re, new_count) << std::endl;
 
@@ -201,7 +226,7 @@ bool fsa_re::re_to_dfa(const string_type& re,
                 auto label(build_state_label((*tree).firstpos));
                 auto start_state(factory::create<fsa_state>(label, 0));
 
-                (*fsa).add_state(start_state, status);
+                (*fsa).add_state(start_state);
 
                 // transitions
                 std::set<std::tuple<std::size_t, std::size_t, datum_type>> transitions;
@@ -254,7 +279,7 @@ bool fsa_re::re_to_dfa(const string_type& re,
                             auto u_label(build_state_label(u_followpos));
                             u_state = factory::create<fsa_state>(u_label, 0);
 
-                            (*fsa).add_state(u_state, status);
+                            (*fsa).add_state(u_state);
 
                             dstates.emplace_back(std::make_pair(u_followpos, u_state));
                         }
@@ -268,7 +293,7 @@ bool fsa_re::re_to_dfa(const string_type& re,
                         {
                             if((*fsa).final_states().find((*u_state).id()) == (*fsa).final_states().end())
                             {
-                                (*fsa).add_final_state(u_state, status);
+                                (*fsa).add_final_state(u_state);
                             }
                         }
 
@@ -277,7 +302,7 @@ bool fsa_re::re_to_dfa(const string_type& re,
 
                         if(transitions.emplace(transition).second)
                         {
-                            (*fsa).add_transition(dstates[k].second, u_state, text::codepoint_to_string((*leaf.first).symbol), status);
+                            (*fsa).add_transition(dstates[k].second, u_state, text::codepoint_to_string((*leaf.first).symbol));
                         }
                     }
                 }
@@ -294,7 +319,11 @@ bool fsa_re::re_to_dfa(const string_type& re,
         }
         catch(const std::exception& ex)
         {
-            OPERATION_FAILED_EX(ex, status::custom_code::error, L"Generating FSA from RE: error occurred.")
+            OPERATION_FAILED_EX(ex,
+                                status::custom_code::error,
+                                status::contributer::fsa,
+                                L"Generating FSA from RE: error occurred.")
+            log_exception(ex, diagnostics::instance().last_status().text().c_str());
         }
     }
 
@@ -426,8 +455,7 @@ size_type fsa_re::preprocess(const std::shared_ptr<typename fsa_re::datum_type[]
 
 bool fsa_re::infix_to_postfix(const std::shared_ptr<typename fsa_re::datum_type[]>& infix_re,
                               size_type count,
-                              std::shared_ptr<typename fsa_re::datum_type[]>& postfix_re,
-                              operation_status& status)
+                              std::shared_ptr<typename fsa_re::datum_type[]>& postfix_re)
 {
     // a(bb)+a ==> abb.+.a.
     //
@@ -479,7 +507,11 @@ bool fsa_re::infix_to_postfix(const std::shared_ptr<typename fsa_re::datum_type[
                 }
                 else
                 {
-                    OPERATION_FAILED(status::custom_code::error, L"Converting infix RE to postfix notation: parens mismatch, missing ')'.")
+                    OPERATION_FAILED(status::custom_code::error,
+                                     0,
+                                     status::contributer::fsa,
+                                     L"Converting infix RE to postfix notation: parens mismatch, missing ')'.")
+                    log_error(diagnostics::instance().last_status().text().c_str());
                     goto error;
                 }
 
@@ -492,7 +524,11 @@ bool fsa_re::infix_to_postfix(const std::shared_ptr<typename fsa_re::datum_type[
             {
                 if(*p_src == ALTERNATE_OP && *(p_src + 1) == 0)
                 {
-                    OPERATION_FAILED(status::custom_code::error, L"Converting infix RE to postfix notation: '|' cannot be the last term.")
+                    OPERATION_FAILED(status::custom_code::error,
+                                     0,
+                                     status::contributer::fsa,
+                                     L"Converting infix RE to postfix notation: '|' cannot be the last term.")
+                    log_error(diagnostics::instance().last_status().text().c_str());
                     goto error;
                 }
 
@@ -679,9 +715,7 @@ string_type fsa_re::postfix_re_to_string(const std::shared_ptr<typename fsa_re::
 {
     string_type result;
 
-    operation_status status; //??
-
-    text::codepoints_to_string(postfix_re.get(), count, result, status);
+    text::codepoints_to_string(postfix_re.get(), count, result);
 
     std::replace(result.begin(), result.end(), (char_type)OPEN_PAREN_OP, L'(');
     std::replace(result.begin(), result.end(), (char_type)CLOSE_PAREN_OP, L')');
@@ -695,7 +729,7 @@ string_type fsa_re::postfix_re_to_string(const std::shared_ptr<typename fsa_re::
     return result;
 }
 
-bool fsa_re::process_combine(std::stack<fsa::fsa_type>& fragments, operation_status& status)
+bool fsa_re::process_combine(std::stack<fsa::fsa_type>& fragments)
 {
     log_info(L"Processing RE combine ...");
 
@@ -705,7 +739,11 @@ bool fsa_re::process_combine(std::stack<fsa::fsa_type>& fragments, operation_sta
     {
         if(fragments.size() < 2)
         {
-            OPERATION_FAILED(status::custom_code::error, L"Processing RE combine: invalid RE, two operands on the stack are required.")
+            OPERATION_FAILED(status::custom_code::error,
+                             0,
+                             status::contributer::fsa,
+                             L"Processing RE combine: invalid RE, two operands on the stack are required.")
+            log_error(diagnostics::instance().last_status().text().c_str());
         }
         else
         {
@@ -717,19 +755,19 @@ bool fsa_re::process_combine(std::stack<fsa::fsa_type>& fragments, operation_sta
 
             fsa_type fsa0;
 
-            fsa::combine(fsa1, fsa2, fsa0, status);
+            fsa::combine(fsa1, fsa2, fsa0);
 
             auto final_state(factory::create<fsa_state>(DUMMY_END_STATE_NAME, 0));
 
-            (*fsa0).add_state(final_state, status);
+            (*fsa0).add_state(final_state);
 
             for(const auto& kvp : (*fsa0).final_states())
             {
-                (*fsa0).add_transition(kvp.second, final_state, fsa_transition::epsilon_predicate(), status);
+                (*fsa0).add_transition(kvp.second, final_state, fsa_transition::epsilon_predicate());
             }
 
             (*fsa0).final_states().clear();
-            (*fsa0).add_final_state(final_state, status);
+            (*fsa0).add_final_state(final_state);
 
             fragments.push(fsa0);
 
@@ -738,7 +776,11 @@ bool fsa_re::process_combine(std::stack<fsa::fsa_type>& fragments, operation_sta
     }
     catch(const std::exception& ex)
     {
-        OPERATION_FAILED_EX(ex, status::custom_code::error, L"Processing RE combine: error occurred.")
+        OPERATION_FAILED_EX(ex,
+                            status::custom_code::error,
+                            status::contributer::fsa,
+                            L"Processing RE combine: error occurred.")
+        log_exception(ex, diagnostics::instance().last_status().text().c_str());
     }
 
     log_info(L"Processed RE combine.");
@@ -746,7 +788,7 @@ bool fsa_re::process_combine(std::stack<fsa::fsa_type>& fragments, operation_sta
     return result;
 }
 
-bool fsa_re::process_concatenate(std::stack<fsa::fsa_type>& fragments, operation_status& status)
+bool fsa_re::process_concatenate(std::stack<fsa::fsa_type>& fragments)
 {
     log_info(L"Processing RE concatenate ...");
 
@@ -756,7 +798,11 @@ bool fsa_re::process_concatenate(std::stack<fsa::fsa_type>& fragments, operation
     {
         if(fragments.size() < 2)
         {
-            OPERATION_FAILED(status::custom_code::error, L"Processing RE concatenate: invalid RE, two operands on the stack are required.")
+            OPERATION_FAILED(status::custom_code::error,
+                             0,
+                             status::contributer::fsa,
+                             L"Processing RE concatenate: invalid RE, two operands on the stack are required.")
+            log_error(diagnostics::instance().last_status().text().c_str());
         }
         else
         {
@@ -771,7 +817,7 @@ bool fsa_re::process_concatenate(std::stack<fsa::fsa_type>& fragments, operation
             // might be two cases,
             //  either merge FSA1-F with FSA2-S
             //  or combine FSA1 and FSA2 with an extra ε connection
-            fsa::concatenate(fsa2, fsa1, fsa0, status); // FSA2 with FSA1 because FSAs are taken from stack
+            fsa::concatenate(fsa2, fsa1, fsa0); // FSA2 with FSA1 because FSAs are taken from stack
 
             fragments.push(fsa0);
 
@@ -780,7 +826,11 @@ bool fsa_re::process_concatenate(std::stack<fsa::fsa_type>& fragments, operation
     }
     catch(const std::exception& ex)
     {
-        OPERATION_FAILED_EX(ex, status::custom_code::error, L"Processing RE concatenate: error occurred.")
+        OPERATION_FAILED_EX(ex,
+                            status::custom_code::error,
+                            status::contributer::fsa,
+                            L"Processing RE concatenate: error occurred.")
+        log_exception(ex, diagnostics::instance().last_status().text().c_str());
     }
 
     log_info(L"Processed RE concatenate.");
@@ -788,7 +838,7 @@ bool fsa_re::process_concatenate(std::stack<fsa::fsa_type>& fragments, operation
     return result;
 }
 
-bool fsa_re::process_zero_or_more(std::stack<fsa::fsa_type>& fragments, operation_status& status)
+bool fsa_re::process_zero_or_more(std::stack<fsa::fsa_type>& fragments)
 {
     log_info(L"Processing RE zero or more ...");
 
@@ -798,7 +848,11 @@ bool fsa_re::process_zero_or_more(std::stack<fsa::fsa_type>& fragments, operatio
     {
         if(fragments.size() < 1)
         {
-            OPERATION_FAILED(status::custom_code::error, L"Processing RE zero or more: invalid RE, one operands on the stack is required.")
+            OPERATION_FAILED(status::custom_code::error,
+                             0,
+                             status::contributer::fsa,
+                             L"Processing RE zero or more: invalid RE, one operands on the stack is required.")
+            log_error(diagnostics::instance().last_status().text().c_str());
         }
         else
         {
@@ -809,7 +863,7 @@ bool fsa_re::process_zero_or_more(std::stack<fsa::fsa_type>& fragments, operatio
 
             auto start_state(factory::create<fsa_state>(DUMMY_START_STATE_NAME, 0));
 
-            (*fsa0).add_state(start_state, status);
+            (*fsa0).add_state(start_state);
             (*fsa0).start_state() = start_state;
 
             using map_type = std::map<uint32_t, uint32_t>;
@@ -821,7 +875,7 @@ bool fsa_re::process_zero_or_more(std::stack<fsa::fsa_type>& fragments, operatio
                 const auto& org_state(kvp.second);
                 auto new_state((*org_state).clone());
 
-                (*fsa0).add_state(new_state, status);
+                (*fsa0).add_state(new_state);
 
                 map.emplace(map_type::value_type((*org_state).id(), (*new_state).id()));
             }
@@ -839,26 +893,26 @@ bool fsa_re::process_zero_or_more(std::stack<fsa::fsa_type>& fragments, operatio
 
             auto final_state(factory::create<fsa_state>(DUMMY_END_STATE_NAME, 0));
 
-            (*fsa0).add_state(final_state, status);
-            (*fsa0).add_final_state(final_state, status);
+            (*fsa0).add_state(final_state);
+            (*fsa0).add_final_state(final_state);
 
             // S --> F
-            (*fsa0).add_transition(start_state, final_state, fsa_transition::epsilon_predicate(), status);
+            (*fsa0).add_transition(start_state, final_state, fsa_transition::epsilon_predicate());
 
             // S --> Sm1
             auto fsa1_start_state((*fsa0).states().at(map.at((*(*fsa1).start_state()).id())));
 
-            (*fsa0).add_transition(start_state, fsa1_start_state, fsa_transition::epsilon_predicate(), status);
+            (*fsa0).add_transition(start_state, fsa1_start_state, fsa_transition::epsilon_predicate());
 
             for(const auto& kvp : (*fsa1).final_states())
             {
                 const auto& fsa1_final_state((*fsa0).states().at(map.at((*kvp.second).id())));
 
                 // Fm1 --> Sm1
-                (*fsa0).add_transition(fsa1_final_state, fsa1_start_state, fsa_transition::epsilon_predicate(), status);
+                (*fsa0).add_transition(fsa1_final_state, fsa1_start_state, fsa_transition::epsilon_predicate());
 
                 // Fm1 --> F
-                (*fsa0).add_transition(fsa1_final_state, final_state, fsa_transition::epsilon_predicate(), status);
+                (*fsa0).add_transition(fsa1_final_state, final_state, fsa_transition::epsilon_predicate());
             }
 
             fragments.push(fsa0);
@@ -868,7 +922,11 @@ bool fsa_re::process_zero_or_more(std::stack<fsa::fsa_type>& fragments, operatio
     }
     catch(const std::exception& ex)
     {
-        OPERATION_FAILED_EX(ex, status::custom_code::error, L"Processing RE zero or more: error occurred.")
+        OPERATION_FAILED_EX(ex,
+                            status::custom_code::error,
+                            status::contributer::fsa,
+                            L"Processing RE zero or more: error occurred.")
+        log_exception(ex, diagnostics::instance().last_status().text().c_str());
     }
 
     log_info(L"Processed RE zero or more.");
@@ -876,7 +934,7 @@ bool fsa_re::process_zero_or_more(std::stack<fsa::fsa_type>& fragments, operatio
     return result;
 }
 
-bool fsa_re::process_one_or_more(std::stack<fsa::fsa_type>& fragments, operation_status& status)
+bool fsa_re::process_one_or_more(std::stack<fsa::fsa_type>& fragments)
 {
     log_info(L"Processing RE one or more ...");
 
@@ -886,7 +944,11 @@ bool fsa_re::process_one_or_more(std::stack<fsa::fsa_type>& fragments, operation
     {
         if(fragments.size() < 1)
         {
-            OPERATION_FAILED(status::custom_code::error, L"Processing RE one or more: invalid RE, one operands on the stack is required.")
+            OPERATION_FAILED(status::custom_code::error,
+                             0,
+                             status::contributer::fsa,
+                             L"Processing RE one or more: invalid RE, one operands on the stack is required.")
+            log_error(diagnostics::instance().last_status().text().c_str());
         }
         else
         {
@@ -897,7 +959,7 @@ bool fsa_re::process_one_or_more(std::stack<fsa::fsa_type>& fragments, operation
 
             auto start_state(factory::create<fsa_state>(DUMMY_START_STATE_NAME, 0));
 
-            (*fsa0).add_state(start_state, status);
+            (*fsa0).add_state(start_state);
             (*fsa0).start_state() = start_state;
 
             using map_type = std::map<uint32_t, uint32_t>;
@@ -909,7 +971,7 @@ bool fsa_re::process_one_or_more(std::stack<fsa::fsa_type>& fragments, operation
                 const auto& org_state(kvp.second);
                 auto new_state((*org_state).clone());
 
-                (*fsa0).add_state(new_state, status);
+                (*fsa0).add_state(new_state);
 
                 map.emplace(map_type::value_type((*org_state).id(), (*new_state).id()));
             }
@@ -927,23 +989,23 @@ bool fsa_re::process_one_or_more(std::stack<fsa::fsa_type>& fragments, operation
 
             auto final_state(factory::create<fsa_state>(DUMMY_END_STATE_NAME, 0));
 
-            (*fsa0).add_state(final_state, status);
-            (*fsa0).add_final_state(final_state, status);
+            (*fsa0).add_state(final_state);
+            (*fsa0).add_final_state(final_state);
 
             // S --> Sm1
             auto fsa1_start_state((*fsa0).states().at(map.at((*(*fsa1).start_state()).id())));
 
-            (*fsa0).add_transition(start_state, fsa1_start_state, fsa_transition::epsilon_predicate(), status);
+            (*fsa0).add_transition(start_state, fsa1_start_state, fsa_transition::epsilon_predicate());
 
             for(const auto& kvp : (*fsa1).final_states())
             {
                 // Fm1 --> F
                 const auto& fsa1_final_state((*fsa0).states().at(map.at((*kvp.second).id())));
-                (*fsa0).add_transition(fsa1_final_state, final_state, fsa_transition::epsilon_predicate(), status);
+                (*fsa0).add_transition(fsa1_final_state, final_state, fsa_transition::epsilon_predicate());
             }
 
             // F --> Sm1
-            (*fsa0).add_transition(final_state, fsa1_start_state, fsa_transition::epsilon_predicate(), status);
+            (*fsa0).add_transition(final_state, fsa1_start_state, fsa_transition::epsilon_predicate());
 
             fragments.push(fsa0);
 
@@ -952,7 +1014,11 @@ bool fsa_re::process_one_or_more(std::stack<fsa::fsa_type>& fragments, operation
     }
     catch(const std::exception& ex)
     {
-        OPERATION_FAILED_EX(ex, status::custom_code::error, L"Processing RE one or more: error occurred.")
+        OPERATION_FAILED_EX(ex,
+                            status::custom_code::error,
+                            status::contributer::fsa,
+                            L"Processing RE one or more: error occurred.")
+        log_exception(ex, diagnostics::instance().last_status().text().c_str());
     }
 
     log_info(L"Processed RE one or more.");
@@ -960,7 +1026,7 @@ bool fsa_re::process_one_or_more(std::stack<fsa::fsa_type>& fragments, operation
     return result;
 }
 
-bool fsa_re::process_zero_or_one(std::stack<fsa::fsa_type>& fragments, operation_status& status)
+bool fsa_re::process_zero_or_one(std::stack<fsa::fsa_type>& fragments)
 {
     log_info(L"Processing RE zero or one ...");
 
@@ -970,7 +1036,11 @@ bool fsa_re::process_zero_or_one(std::stack<fsa::fsa_type>& fragments, operation
     {
         if(fragments.size() < 1)
         {
-            OPERATION_FAILED(status::custom_code::error, L"Processing RE zero or one: invalid RE, one operands on the stack is required.")
+            OPERATION_FAILED(status::custom_code::error,
+                             0,
+                             status::contributer::fsa,
+                             L"Processing RE zero or one: invalid RE, one operands on the stack is required.")
+            log_error(diagnostics::instance().last_status().text().c_str());
         }
         else
         {
@@ -981,7 +1051,7 @@ bool fsa_re::process_zero_or_one(std::stack<fsa::fsa_type>& fragments, operation
 
             auto start_state(factory::create<fsa_state>(DUMMY_START_STATE_NAME, 0));
 
-            (*fsa0).add_state(start_state, status);
+            (*fsa0).add_state(start_state);
             (*fsa0).start_state() = start_state;
 
             using map_type = std::map<uint32_t, uint32_t>;
@@ -993,7 +1063,7 @@ bool fsa_re::process_zero_or_one(std::stack<fsa::fsa_type>& fragments, operation
                 const auto& org_state(kvp.second);
                 auto new_state((*org_state).clone());
 
-                (*fsa0).add_state(new_state, status);
+                (*fsa0).add_state(new_state);
 
                 map.emplace(map_type::value_type((*org_state).id(), (*new_state).id()));
             }
@@ -1011,23 +1081,23 @@ bool fsa_re::process_zero_or_one(std::stack<fsa::fsa_type>& fragments, operation
 
             auto final_state(factory::create<fsa_state>(DUMMY_END_STATE_NAME, 0));
 
-            (*fsa0).add_state(final_state, status);
-            (*fsa0).add_final_state(final_state, status);
+            (*fsa0).add_state(final_state);
+            (*fsa0).add_final_state(final_state);
 
             // S --> F
-            (*fsa0).add_transition(start_state, final_state, fsa_transition::epsilon_predicate(), status);
+            (*fsa0).add_transition(start_state, final_state, fsa_transition::epsilon_predicate());
 
             // S --> Sm1
             auto fsa1_start_state((*fsa0).states().at(map.at((*(*fsa1).start_state()).id())));
 
-            (*fsa0).add_transition(start_state, fsa1_start_state, fsa_transition::epsilon_predicate(), status);
+            (*fsa0).add_transition(start_state, fsa1_start_state, fsa_transition::epsilon_predicate());
 
             for(const auto& kvp : (*fsa1).final_states())
             {
                 auto fsa1_final_state((*fsa0).states().at(map.at((*kvp.second).id())));
 
                 // Fm1 --> F
-                (*fsa0).add_transition(fsa1_final_state, final_state, fsa_transition::epsilon_predicate(), status);
+                (*fsa0).add_transition(fsa1_final_state, final_state, fsa_transition::epsilon_predicate());
             }
 
             fragments.push(fsa0);
@@ -1037,7 +1107,11 @@ bool fsa_re::process_zero_or_one(std::stack<fsa::fsa_type>& fragments, operation
     }
     catch(const std::exception& ex)
     {
-        OPERATION_FAILED_EX(ex, status::custom_code::error, L"Processing RE zero or one: error occurred.")
+        OPERATION_FAILED_EX(ex,
+                            status::custom_code::error,
+                            status::contributer::fsa,
+                            L"Processing RE zero or one: error occurred.")
+        log_exception(ex, diagnostics::instance().last_status().text().c_str());
     }
 
     log_info(L"Processed RE zero or one.");
@@ -1045,7 +1119,7 @@ bool fsa_re::process_zero_or_one(std::stack<fsa::fsa_type>& fragments, operation
     return result;
 }
 
-bool fsa_re::process_literal(const typename fsa_re::datum_type*& p_src, std::stack<fsa::fsa_type>& fragments, operation_status& status)
+bool fsa_re::process_literal(const typename fsa_re::datum_type*& p_src, std::stack<fsa::fsa_type>& fragments)
 {
     log_info(L"Processing RE literal ...");
 
@@ -1057,26 +1131,28 @@ bool fsa_re::process_literal(const typename fsa_re::datum_type*& p_src, std::sta
 
         auto start_state(factory::create<fsa_state>(DUMMY_START_STATE_NAME, 0));
 
-        (*fsa0).add_state(start_state, status);
+        (*fsa0).add_state(start_state);
         (*fsa0).start_state() = start_state;
 
         auto final_state(factory::create<fsa_state>(DUMMY_END_STATE_NAME, 0));
 
-        (*fsa0).add_state(final_state, status);
-        (*fsa0).add_final_state(final_state, status);
+        (*fsa0).add_state(final_state);
+        (*fsa0).add_final_state(final_state);
 
         (*fsa0).add_transition(start_state,
                                final_state,
-                               *p_src, // including fsa_transition::epsilon_predicate() and text::epsilon_codepoint()
-                               status);
-
+                               *p_src); // including fsa_transition::epsilon_predicate() and text::epsilon_codepoint()
         fragments.push(fsa0);
 
         result = true;
     }
     catch(const std::exception& ex)
     {
-        OPERATION_FAILED_EX(ex, status::custom_code::error, L"Processing RE literal: error occurred.")
+        OPERATION_FAILED_EX(ex,
+                            status::custom_code::error,
+                            status::contributer::fsa,
+                            L"Processing RE literal: error occurred.")
+        log_exception(ex, diagnostics::instance().last_status().text().c_str());
     }
 
     log_info(L"Processed RE literal.");
@@ -1098,9 +1174,8 @@ void fsa_re::adjust_predicates(typename fsa_re::fsa_type& fsa0)
             if(!(*transition).is_epsilon_transition() && (*transition).predicate().empty())
             {
                 string_type predicate;
-                operation_status status; //??
 
-                text::codepoint_to_string((*transition).switch_char(), predicate, status);
+                text::codepoint_to_string((*transition).switch_char(), predicate);
 
                 (*transition).predicate() = predicate;
             }
@@ -1114,11 +1189,9 @@ void fsa_re::add_escape_state(typename fsa_re::fsa_type& fsa0,
 {
     if(escape_token != 0) // unknown
     {
-        operation_status status; //??
-
         auto escape_state(factory::create<fsa_state>(DUMMY_END_STATE_NAME, escape_token));
 
-        (*fsa0).add_state(escape_state, status);
+        (*fsa0).add_state(escape_state);
 
         for(const auto& state_kvp: (*fsa0).states())
         {
@@ -1126,18 +1199,18 @@ void fsa_re::add_escape_state(typename fsa_re::fsa_type& fsa0,
 
             if(!(*fsa0).is_start_state(state))
             {
-                (*fsa0).add_transition(state, escape_state, escape_predicate, status);
+                (*fsa0).add_transition(state, escape_state, escape_predicate);
 
                 if(!(*fsa0).is_final_state(state))
                 {
                     (*state).token() = escape_token;
-                    (*fsa0).add_final_state(state, status);
+                    (*fsa0).add_final_state(state);
                 }
             }
         }
 
-        (*fsa0).add_transition(escape_state, escape_state, escape_predicate, status);
-        (*fsa0).add_final_state(escape_state, status);
+        (*fsa0).add_transition(escape_state, escape_state, escape_predicate);
+        (*fsa0).add_final_state(escape_state);
     }
 }
 

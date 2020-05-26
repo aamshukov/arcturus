@@ -66,18 +66,18 @@ class fsa : private noncopyable
 
         predicates_type         predicates() const;
 
-        bool                    add_state(const state_type& state, operation_status& status);
-        bool                    remove_state(uint32_t id, operation_status& status);
+        bool                    add_state(const state_type& state);
+        bool                    remove_state(uint32_t id);
 
-        bool                    add_final_state(const state_type& state, operation_status& status);
+        bool                    add_final_state(const state_type& state);
 
-        bool                    add_transition(const state_type& start_state, const state_type& end_state, const predicate_type& predicate, operation_status& status);
-        bool                    add_transition(const state_type& start_state, const state_type& end_state, datum_type predicate, operation_status& status);
+        bool                    add_transition(const state_type& start_state, const state_type& end_state, const predicate_type& predicate);
+        bool                    add_transition(const state_type& start_state, const state_type& end_state, datum_type predicate);
 
-        static bool             combine(const fsa_type& fsa1, const fsa_type& fsa2, fsa_type& result_fsa, operation_status& status);
-        static bool             combine(const std::vector<fsa_type>& fsas, fsa_type& result_fsa, operation_status& status);
+        static bool             combine(const fsa_type& fsa1, const fsa_type& fsa2, fsa_type& result_fsa);
+        static bool             combine(const std::vector<fsa_type>& fsas, fsa_type& result_fsa);
 
-        static bool             concatenate(const fsa_type& fsa1, const fsa_type& fsa2, fsa_type& result_fsa, operation_status& status);
+        static bool             concatenate(const fsa_type& fsa1, const fsa_type& fsa2, fsa_type& result_fsa);
 };
 
 inline const typename fsa::state_type& fsa::start_state() const

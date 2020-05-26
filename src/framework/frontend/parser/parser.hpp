@@ -13,7 +13,7 @@ template <typename Token, typename TreeTraits>
 class parser : private noncopyable
 {
     public:
-        using token_type = typename parse_tree<Token, TreeTraits>::token_type;
+        using token_type = Token;
         using tokens_type = std::vector<token_type>;
 
         using tree_traits_type = typename parse_tree<Token, TreeTraits>::tree_traits_type;
@@ -51,19 +51,19 @@ class parser : private noncopyable
 };
 
 template <typename Token, typename TreeTraits>
-const typename parser<Token, TreeTraits>::parse_trees_type& parser<Token, TreeTraits>::trees() const
+inline const typename parser<Token, TreeTraits>::parse_trees_type& parser<Token, TreeTraits>::trees() const
 {
     return my_trees;
 }
 
 template <typename Token, typename TreeTraits>
-const operation_status& parser<Token, TreeTraits>::status() const
+inline const operation_status& parser<Token, TreeTraits>::status() const
 {
     return my_status;
 }
 
 template <typename Token, typename TreeTraits>
-operation_status& parser<Token, TreeTraits>::status()
+inline operation_status& parser<Token, TreeTraits>::status()
 {
     return my_status;
 }

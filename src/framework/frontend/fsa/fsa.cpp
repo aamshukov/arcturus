@@ -1,19 +1,29 @@
 //..............................
 // UI Lab Inc. Arthur Amshukov .
 //..............................
-#include <core\pch.hpp>
-#include <core\noncopyable.hpp>
-#include <core\status.hpp>
-#include <core\unicode.hpp>
-#include <core\text.hpp>
-#include <core\domain_helper.hpp>
-#include <core\logger.hpp>
-#include <core\factory.hpp>
-#include <core\counter.hpp>
+#include <core/pch.hpp>
+#include <core/noncopyable.hpp>
 
-#include <frontend\fsa\fsa_transition.hpp>
-#include <frontend\fsa\fsa_state.hpp>
-#include <frontend\fsa\fsa.hpp>
+#include <core/domain_helper.hpp>
+
+#include <core/factory.hpp>
+#include <core/singleton.hpp>
+
+#include <core/status.hpp>
+
+#include <core/diagnostics.hpp>
+#include <core/statistics.hpp>
+
+#include <core/logger.hpp>
+
+#include <core/unicode.hpp>
+#include <core/text.hpp>
+
+#include <core/counter.hpp>
+
+#include <frontend/fsa/fsa_transition.hpp>
+#include <frontend/fsa/fsa_state.hpp>
+#include <frontend/fsa/fsa.hpp>
 
 BEGIN_NAMESPACE(frontend)
 USINGNAMESPACE(core)
@@ -34,8 +44,7 @@ typename fsa::fsa_type fsa::clone()
     {
         auto new_state((*kvp.second).clone());
 
-        operation_status status; //??
-        (*result).add_state(new_state, status);
+        (*result).add_state(new_state);
     }
 
     (*result).start_state() = my_states[(*my_start_state).id()];
@@ -44,8 +53,7 @@ typename fsa::fsa_type fsa::clone()
     {
         const auto& final_state(kvp.second);
 
-        operation_status status; //??
-        (*result).add_final_state((*result).states()[(*final_state).id()], status);
+        (*result).add_final_state((*result).states()[(*final_state).id()]);
     }
 
     (*result).my_state_counter.reset(my_state_counter.value());
@@ -54,7 +62,7 @@ typename fsa::fsa_type fsa::clone()
     return result;
 }
 
-bool fsa::add_state(const state_type& state, operation_status& status)
+bool fsa::add_state(const state_type& state)
 {
     log_info(L"Adding FSA state ...");
 
@@ -72,12 +80,20 @@ bool fsa::add_state(const state_type& state, operation_status& status)
         }
         else
         {
-            OPERATION_FAILED(status::custom_code::error, L"Adding FSA state: state '%s' already exists.", (*state).label().c_str())
+            OPERATION_FAILED(status::custom_code::error,
+                             0,
+                             status::contributer::fsa,
+                             L"Adding FSA state: state '%s' already exists.", (*state).label().c_str())
+            log_error(diagnostics::instance().last_status().text().c_str());
         }
     }
     catch(const std::exception& ex)
     {
-        OPERATION_FAILED_EX(ex, status::custom_code::error, L"Adding FSA state: error occurred.")
+        OPERATION_FAILED_EX(ex,
+                            status::custom_code::error,
+                            status::contributer::fsa,
+                            L"Adding FSA state: error occurred.")
+        log_exception(ex, diagnostics::instance().last_status().text().c_str());
     }
 
     log_info(L"Added FSA state '%s'.", (*state).label().c_str());
@@ -85,7 +101,7 @@ bool fsa::add_state(const state_type& state, operation_status& status)
     return result;
 }
 
-bool fsa::remove_state(uint32_t id, operation_status& status)
+bool fsa::remove_state(uint32_t id)
 {
     log_info(L"Removing FSA state '%ld' ...", id);
 
@@ -122,7 +138,11 @@ bool fsa::remove_state(uint32_t id, operation_status& status)
     }
     catch(const std::exception& ex)
     {
-        OPERATION_FAILED_EX(ex, status::custom_code::error, L"Removed FSA state: error occurred.")
+        OPERATION_FAILED_EX(ex,
+                            status::custom_code::error,
+                            status::contributer::fsa,
+                            L"Removed FSA state: error occurred.")
+        log_exception(ex, diagnostics::instance().last_status().text().c_str());
     }
 
     log_info(L"Removed FSA state '%ld'.", id);
@@ -130,7 +150,7 @@ bool fsa::remove_state(uint32_t id, operation_status& status)
     return result;
 }
 
-bool fsa::add_final_state(const state_type& state, operation_status& status)
+bool fsa::add_final_state(const state_type& state)
 {
     log_info(L"Adding final FSA state ...");
 
@@ -151,7 +171,11 @@ bool fsa::add_final_state(const state_type& state, operation_status& status)
     }
     catch(const std::exception& ex)
     {
-        OPERATION_FAILED_EX(ex, status::custom_code::error, L"Adding final FSA state: error occurred.")
+        OPERATION_FAILED_EX(ex,
+                            status::custom_code::error,
+                            status::contributer::fsa,
+                            L"Adding final FSA state: error occurred.")
+        log_exception(ex, diagnostics::instance().last_status().text().c_str());
     }
 
     log_info(L"Added final FSA state '%s'.", (*state).label().c_str());
@@ -161,8 +185,7 @@ bool fsa::add_final_state(const state_type& state, operation_status& status)
 
 bool fsa::add_transition(const typename fsa::state_type& start_state,
                          const typename fsa::state_type& end_state,
-                         const typename fsa::predicate_type& predicate,
-                         operation_status& status)
+                         const typename fsa::predicate_type& predicate)
 {
     log_info(L"Adding FSA transition ...");
 
@@ -180,7 +203,11 @@ bool fsa::add_transition(const typename fsa::state_type& start_state,
     }
     catch(const std::exception& ex)
     {
-        OPERATION_FAILED_EX(ex, status::custom_code::error, L"Adding FSA transition: error occurred.")
+        OPERATION_FAILED_EX(ex,
+                            status::custom_code::error,
+                            status::contributer::fsa,
+                            L"Adding FSA transition: error occurred.")
+        log_exception(ex, diagnostics::instance().last_status().text().c_str());
     }
 
     log_info(L"Added FSA transition '%s --> %s'.", (*start_state).label().c_str(), (*end_state).label().c_str());
@@ -188,7 +215,7 @@ bool fsa::add_transition(const typename fsa::state_type& start_state,
     return result;
 }
 
-bool fsa::add_transition(const state_type& start_state, const state_type& end_state, typename fsa::datum_type predicate, operation_status& status)
+bool fsa::add_transition(const state_type& start_state, const state_type& end_state, typename fsa::datum_type predicate)
 {
     log_info(L"Adding FSA transition ...");
 
@@ -206,7 +233,11 @@ bool fsa::add_transition(const state_type& start_state, const state_type& end_st
     }
     catch(const std::exception& ex)
     {
-        OPERATION_FAILED_EX(ex, status::custom_code::error, L"Adding FSA transition: error occurred.")
+        OPERATION_FAILED_EX(ex,
+                            status::custom_code::error,
+                            status::contributer::fsa,
+                            L"Adding FSA transition: error occurred.")
+        log_exception(ex, diagnostics::instance().last_status().text().c_str());
     }
 
     log_info(L"Added FSA transition '%s --> %s'.", (*start_state).label().c_str(), (*end_state).label().c_str());
@@ -214,7 +245,7 @@ bool fsa::add_transition(const state_type& start_state, const state_type& end_st
     return result;
 }
 
-bool fsa::combine(const fsa_type& fsa1, const fsa_type& fsa2, fsa_type& result_fsa, operation_status& status)
+bool fsa::combine(const fsa_type& fsa1, const fsa_type& fsa2, fsa_type& result_fsa)
 {
     //  ... 15 ----> 16 ...
     //
@@ -251,7 +282,7 @@ bool fsa::combine(const fsa_type& fsa1, const fsa_type& fsa2, fsa_type& result_f
 
         auto new_start_state(factory::create<fsa_state>(DUMMY_START_STATE_NAME, 0));
 
-        (*fsa0).add_state(new_start_state, status);
+        (*fsa0).add_state(new_start_state);
         (*fsa0).start_state() = new_start_state;
 
         for(size_type k = 0; k < array_size(fsas); k++)
@@ -267,13 +298,13 @@ bool fsa::combine(const fsa_type& fsa1, const fsa_type& fsa2, fsa_type& result_f
 
                 partition.emplace_back(new_state);
 
-                (*fsa0).add_state(new_state, status);
+                (*fsa0).add_state(new_state);
 
                 map.emplace(map_type::value_type((*org_state).id(), (*new_state).id()));
 
                 if((*fsa).is_final_state(org_state))
                 {
-                    (*fsa0).add_final_state(new_state, status);
+                    (*fsa0).add_final_state(new_state);
                 }
             }
 
@@ -292,8 +323,8 @@ bool fsa::combine(const fsa_type& fsa1, const fsa_type& fsa2, fsa_type& result_f
         uint32_t fsa1_s_id = map1.at((*(*fsa1).start_state()).id());
         uint32_t fsa2_s_id = map2.at((*(*fsa2).start_state()).id());
 
-        (*fsa0).add_transition((*fsa0).start_state(), (*fsa0).states().at(fsa1_s_id), fsa_transition::epsilon_predicate(), status);
-        (*fsa0).add_transition((*fsa0).start_state(), (*fsa0).states().at(fsa2_s_id), fsa_transition::epsilon_predicate(), status);
+        (*fsa0).add_transition((*fsa0).start_state(), (*fsa0).states().at(fsa1_s_id), fsa_transition::epsilon_predicate());
+        (*fsa0).add_transition((*fsa0).start_state(), (*fsa0).states().at(fsa2_s_id), fsa_transition::epsilon_predicate());
 
         result_fsa.swap(fsa0);
 
@@ -301,7 +332,11 @@ bool fsa::combine(const fsa_type& fsa1, const fsa_type& fsa2, fsa_type& result_f
     }
     catch(const std::exception& ex)
     {
-        OPERATION_FAILED_EX(ex, status::custom_code::error, L"Combining FSAs: error occurred.")
+        OPERATION_FAILED_EX(ex,
+                            status::custom_code::error,
+                            status::contributer::fsa,
+                            L"Combining FSAs: error occurred.")
+        log_exception(ex, diagnostics::instance().last_status().text().c_str());
     }
 
     log_info(L"Combined FSAs.");
@@ -309,7 +344,7 @@ bool fsa::combine(const fsa_type& fsa1, const fsa_type& fsa2, fsa_type& result_f
     return result;
 }
 
-bool fsa::combine(const std::vector<fsa_type>& fsas, fsa_type& result_fsa, operation_status& status)
+bool fsa::combine(const std::vector<fsa_type>& fsas, fsa_type& result_fsa)
 {
     log_info(L"Combining FSAs ...");
 
@@ -327,7 +362,7 @@ bool fsa::combine(const std::vector<fsa_type>& fsas, fsa_type& result_fsa, opera
 
         auto new_start_state(factory::create<fsa_state>(DUMMY_START_STATE_NAME, 0));
 
-        (*fsa0).add_state(new_start_state, status);
+        (*fsa0).add_state(new_start_state);
         (*fsa0).start_state() = new_start_state;
 
         for(size_type k = 0; k < fsas.size(); k++)
@@ -344,13 +379,13 @@ bool fsa::combine(const std::vector<fsa_type>& fsas, fsa_type& result_fsa, opera
 
                 partition.emplace_back(new_state);
 
-                (*fsa0).add_state(new_state, status);
+                (*fsa0).add_state(new_state);
 
                 map.emplace(map_type::value_type((*org_state).id(), (*new_state).id()));
 
                 if((*fsa).is_final_state(org_state))
                 {
-                    (*fsa0).add_final_state(new_state, status);
+                    (*fsa0).add_final_state(new_state);
                 }
             }
 
@@ -367,7 +402,7 @@ bool fsa::combine(const std::vector<fsa_type>& fsas, fsa_type& result_fsa, opera
 
             uint32_t fsa_s_id = map.at((*(*fsa).start_state()).id());
 
-            (*fsa0).add_transition((*fsa0).start_state(), (*fsa0).states().at(fsa_s_id), fsa_transition::epsilon_predicate(), status);
+            (*fsa0).add_transition((*fsa0).start_state(), (*fsa0).states().at(fsa_s_id), fsa_transition::epsilon_predicate());
         }
 
         result_fsa.swap(fsa0);
@@ -376,7 +411,11 @@ bool fsa::combine(const std::vector<fsa_type>& fsas, fsa_type& result_fsa, opera
     }
     catch(const std::exception& ex)
     {
-        OPERATION_FAILED_EX(ex, status::custom_code::error, L"Combining FSAs: error occurred.")
+        OPERATION_FAILED_EX(ex,
+                            status::custom_code::error,
+                            status::contributer::fsa,
+                            L"Combining FSAs: error occurred.")
+        log_exception(ex, diagnostics::instance().last_status().text().c_str());
     }
 
     log_info(L"Combined FSAs.");
@@ -384,7 +423,7 @@ bool fsa::combine(const std::vector<fsa_type>& fsas, fsa_type& result_fsa, opera
     return result;
 }
 
-bool fsa::concatenate(const fsa_type& fsa1, const fsa_type& fsa2, fsa_type& result_fsa, operation_status& status)
+bool fsa::concatenate(const fsa_type& fsa1, const fsa_type& fsa2, fsa_type& result_fsa)
 {
     //  ... 15 ----> 16 ...
     //
@@ -429,13 +468,13 @@ bool fsa::concatenate(const fsa_type& fsa1, const fsa_type& fsa2, fsa_type& resu
 
                 partition.emplace_back(new_state);
 
-                (*fsa0).add_state(new_state, status);
+                (*fsa0).add_state(new_state);
 
                 map.emplace(map_type::value_type((*org_state).id(), (*new_state).id()));
 
                 if(k > 0 && (*fsa).is_final_state(org_state))
                 {
-                    (*fsa0).add_final_state(new_state, status);
+                    (*fsa0).add_final_state(new_state);
                 }
             }
 
@@ -455,7 +494,7 @@ bool fsa::concatenate(const fsa_type& fsa1, const fsa_type& fsa2, fsa_type& resu
 
         uint32_t fsa1_s_id = map1.at((*(*fsa1).start_state()).id());
 
-        (*fsa0).add_transition((*fsa0).start_state(), (*fsa0).states().at(fsa1_s_id), fsa_transition::epsilon_predicate(), status);
+        (*fsa0).add_transition((*fsa0).start_state(), (*fsa0).states().at(fsa1_s_id), fsa_transition::epsilon_predicate());
 
         uint32_t fsa2_s_id = map2.at((*(*fsa1).start_state()).id());
 
@@ -467,7 +506,7 @@ bool fsa::concatenate(const fsa_type& fsa1, const fsa_type& fsa2, fsa_type& resu
 
             const auto& fsa1_final_state((*fsa0).states().at(fsa1_f_id));
             
-            (*fsa0).add_transition(fsa1_final_state, fsa2_start_state, fsa_transition::epsilon_predicate(), status);
+            (*fsa0).add_transition(fsa1_final_state, fsa2_start_state, fsa_transition::epsilon_predicate());
         }
 
         result_fsa.swap(fsa0);
@@ -476,7 +515,11 @@ bool fsa::concatenate(const fsa_type& fsa1, const fsa_type& fsa2, fsa_type& resu
     }
     catch(const std::exception& ex)
     {
-        OPERATION_FAILED_EX(ex, status::custom_code::error, L"Concatenating FSAs: error occurred.")
+        OPERATION_FAILED_EX(ex,
+                            status::custom_code::error,
+                            status::contributer::fsa,
+                            L"Concatenating FSAs: error occurred.")
+        log_exception(ex, diagnostics::instance().last_status().text().c_str());
     }
 
     log_info(L"Concatenated FSAs.");

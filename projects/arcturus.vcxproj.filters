@@ -49,23 +49,23 @@
     <Filter Include="framework\frontend\parser">
       <UniqueIdentifier>{8529242f-04a6-4a03-bf1b-84cd71afa261}</UniqueIdentifier>
     </Filter>
-    <Filter Include="framework\semantics">
-      <UniqueIdentifier>{8d284e7a-6e6f-4a9a-ad09-4f48320e162c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="framework\semantics\type">
-      <UniqueIdentifier>{4fc40a7c-4297-44f3-9e4f-88f26b0aeec4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="docs">
       <UniqueIdentifier>{6dec51ee-0859-4eb8-a202-08e255a4191d}</UniqueIdentifier>
     </Filter>
     <Filter Include="framework\ir">
       <UniqueIdentifier>{371660c3-605b-4cb7-8bc1-b60429da3a7e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="compiler">
-      <UniqueIdentifier>{4c923410-e4c4-4aad-bddd-554dead21541}</UniqueIdentifier>
-    </Filter>
     <Filter Include="framework\content">
       <UniqueIdentifier>{123a11b0-ba77-48f3-9286-184512f8d45e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="arcturus">
+      <UniqueIdentifier>{082352f7-7140-4771-819a-83c0ea757aef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="framework\frontend\type">
+      <UniqueIdentifier>{4fc40a7c-4297-44f3-9e4f-88f26b0aeec4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="framework\frontend\semantics">
+      <UniqueIdentifier>{8d284e7a-6e6f-4a9a-ad09-4f48320e162c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -180,6 +180,63 @@
     <ClInclude Include="..\src\framework\frontend\grammar\grammar.hpp">
       <Filter>framework\frontend\grammar</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\framework\frontend\fsa\fsa.hpp">
+      <Filter>framework\frontend\fsa</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\frontend\fsa\fsa_algorithm.hpp">
+      <Filter>framework\frontend\fsa</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\frontend\fsa\fsa_re.hpp">
+      <Filter>framework\frontend\fsa</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\frontend\fsa\fsa_state.hpp">
+      <Filter>framework\frontend\fsa</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\frontend\fsa\fsa_state_set.hpp">
+      <Filter>framework\frontend\fsa</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\frontend\fsa\fsa_transition.hpp">
+      <Filter>framework\frontend\fsa</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\frontend\fsa\fsa_visualization.hpp">
+      <Filter>framework\frontend\fsa</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\frontend\fsa\fsa_codegen.hpp">
+      <Filter>framework\frontend\fsa</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\arcturus\arcturus_token.hpp">
+      <Filter>arcturus</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\arcturus\arcturus_lexical_analyzer.hpp">
+      <Filter>arcturus</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\arcturus\arcturus_parser.hpp">
+      <Filter>arcturus</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\frontend\parser\recursive_descent_parser.hpp">
+      <Filter>framework\frontend\parser</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\frontend\parser\parse_dag.hpp">
+      <Filter>framework\frontend\parser</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\frontend\parser\parse_tree.hpp">
+      <Filter>framework\frontend\parser</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\frontend\parser\parser.hpp">
+      <Filter>framework\frontend\parser</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\symtable\symbol_table.hpp">
+      <Filter>framework\symtable</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\symtable\symbol.hpp">
+      <Filter>framework\symtable</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\symtable\scope\scope.hpp">
+      <Filter>framework\symtable\scope</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\frontend\type\type.hpp">
+      <Filter>framework\frontend\type</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\framework\core\logger.cpp">
@@ -199,9 +256,6 @@
     </ClCompile>
     <ClCompile Include="..\src\framework\core\domain_helper.cpp">
       <Filter>framework\core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\compiler\compiler.cpp">
-      <Filter>compiler</Filter>
     </ClCompile>
     <ClCompile Include="..\src\framework\core\timer.cpp">
       <Filter>framework\core</Filter>
@@ -233,10 +287,58 @@
     <ClCompile Include="..\src\framework\frontend\grammar\grammar.cpp">
       <Filter>framework\frontend\grammar</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\framework\frontend\fsa\fsa.cpp">
+      <Filter>framework\frontend\fsa</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\framework\frontend\fsa\fsa_algorithm.cpp">
+      <Filter>framework\frontend\fsa</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\framework\frontend\fsa\fsa_re.cpp">
+      <Filter>framework\frontend\fsa</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\framework\frontend\fsa\fsa_state.cpp">
+      <Filter>framework\frontend\fsa</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\framework\frontend\fsa\fsa_state_set.cpp">
+      <Filter>framework\frontend\fsa</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\framework\frontend\fsa\fsa_transition.cpp">
+      <Filter>framework\frontend\fsa</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\framework\frontend\fsa\fsa_visualization.cpp">
+      <Filter>framework\frontend\fsa</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\framework\frontend\fsa\fsa_codegen.cpp">
+      <Filter>framework\frontend\fsa</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\arcturus\arcturus.cpp">
+      <Filter>arcturus</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\arcturus\arcturus_token.cpp">
+      <Filter>arcturus</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\arcturus\arcturus_lexical_analyzer.cpp">
+      <Filter>arcturus</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\arcturus\arcturus_parser.cpp">
+      <Filter>arcturus</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\src\framework\frontend\lexical_analyzer\lexical_analyzer.inl">
       <Filter>framework\frontend\lexical_analyzer</Filter>
+    </None>
+    <None Include="..\src\framework\frontend\parser\recursive_descent_parser.inl">
+      <Filter>framework\frontend\parser</Filter>
+    </None>
+    <None Include="..\src\framework\frontend\parser\parser.inl">
+      <Filter>framework\frontend\parser</Filter>
+    </None>
+    <None Include="..\src\framework\symtable\symbol_table.inl">
+      <Filter>framework\symtable</Filter>
+    </None>
+    <None Include="..\src\framework\frontend\type\type.inl">
+      <Filter>framework\frontend\type</Filter>
     </None>
   </ItemGroup>
 </Project>

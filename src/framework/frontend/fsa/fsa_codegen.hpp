@@ -6,6 +6,8 @@
 
 #pragma once
 
+#define MAX_TRANSITION_RANK (5)
+
 BEGIN_NAMESPACE(frontend)
 USINGNAMESPACE(core)
 

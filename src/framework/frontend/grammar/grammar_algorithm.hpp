@@ -12,8 +12,8 @@ USINGNAMESPACE(core)
 class grammar_algorithm : private noncopyable
 {
     public:
-        using symbol_type = symbol::symbol_type;
-        using symbols_type = symbol::symbols_type;
+        using symbol_type = grammar::symbol_type;
+        using symbols_type = grammar::symbols_type;
 
         using pool_type = grammar::pool_type;
 

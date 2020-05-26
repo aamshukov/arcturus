@@ -125,6 +125,28 @@ inline void typename diagnostics::add(typename diagnostics::status_type&& status
     }
 }
 
+#define OPERATION_FAILED(__custom_code, __library_code, __contributer, __template, ...)     \
+{                                                                                           \
+    result = false;                                                                         \
+                                                                                            \
+    operation_status status;                                                                \
+                                                                                            \
+    status.custom_code() = __custom_code;                                                   \
+    status.system_code() = ::GetLastError();                                                \
+    status.library_code() = __library_code;                                                 \
+    status.contributer() = __contributer;                                                   \
+                                                                                            \
+    status.text().assign(format(__template, ##__VA_ARGS__));                                \
+    status.text().append(L"\n");                                                            \
+    status.text().append(status.get_system_error_message());                                \
+                                                                                            \
+    diagnostics::instance().state() = false;                                                \
+    diagnostics::instance().add(std::move(status));                                         \
+}
+
+#define OPERATION_FAILED_EX(__ex, __custom_code, __contributer, __template, ...)            \
+    OPERATION_FAILED(__custom_code, 0, __contributer, __template, , ##__VA_ARGS__)
+
 END_NAMESPACE
 
 #endif // __DIAGNOSTICS_H__

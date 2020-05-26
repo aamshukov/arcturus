@@ -25,13 +25,15 @@ class status
         enum class contributer
         {
             core      = 0,
-            lexer     = 1,
-            parser    = 2,
-            semantics = 3,
-            lir       = 4,
-            mir       = 5,
-            hir       = 6,
-            generator = 7
+            grammar   = 1,
+            fsa       = 2,
+            lexer     = 3,
+            parser    = 4,
+            semantics = 5,
+            lir       = 6,
+            mir       = 7,
+            hir       = 8,
+            generator = 9
         };
 
         using custom_code_type = custom_code;
@@ -131,50 +133,5 @@ inline string_type& status::text()
 using operation_status = status;
 
 END_NAMESPACE
-
-#define OPERATION_FAILED(__custom_code, __contributer, __template, ...)                     \
-{                                                                                           \
-    result = false;                                                                         \
-                                                                                            \
-    operation_status status;                                                                \
-                                                                                            \
-    status.custom_code() = __custom_code;                                                   \
-    status.system_code() = ::GetLastError();                                                \
-    status.contributer() = __contributer;                                                   \
-                                                                                            \
-    status.text().assign(format(__template, ##__VA_ARGS__));                                \
-    status.text().append(L"\n");                                                            \
-    status.text().append(status.get_system_error_message());                                \
-                                                                                            \
-    log_error(status.text().c_str());                                                       \
-                                                                                            \
-    diagnostics::instance().state() = false;                                                \
-    diagnostics::instance().add(std::move(status));                                         \
-}
-
-#define OPERATION_FAILED_LIB(__custom_code, __library_code, __contributer, __template, ...) \
-{                                                                                           \
-    result = false;                                                                         \
-                                                                                            \
-    operation_status status;                                                                \
-                                                                                            \
-    status.custom_code() = __custom_code;                                                   \
-    status.system_code() = ::GetLastError();                                                \
-    status.library_code() = __library_code;                                                 \
-    status.contributer() = __contributer;                                                   \
-                                                                                            \
-    status.text().assign(format(__template, ##__VA_ARGS__));                                \
-    status.text().append(L"\n");                                                            \
-    status.text().append(status.get_system_error_message());                                \
-                                                                                            \
-    log_error(status.text().c_str());                                                       \
-                                                                                            \
-    diagnostics::instance().state() = false;                                                \
-    diagnostics::instance().add(std::move(status));                                         \
-}
-
-#define OPERATION_FAILED_EX(__ex, __custom_code, __contributer, __template, ...)            \
-    OPERATION_FAILED(__custom_code, __contributer, __template, , ##__VA_ARGS__)             \
-    log_exception(__ex, DUMMY_EXCEPTION_TEXT);
 
 #endif // __STATUS_H__

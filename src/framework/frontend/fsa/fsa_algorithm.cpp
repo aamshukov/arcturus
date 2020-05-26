@@ -1,25 +1,31 @@
 //..............................
 // UI Lab Inc. Arthur Amshukov .
 //..............................
-#include <core\pch.hpp>
-#include <core\noncopyable.hpp>
-#include <core\status.hpp>
-#include <core\unicode.hpp>
-#include <core\text.hpp>
-#include <core\domain_helper.hpp>
-#include <core\logger.hpp>
-#include <core\counter.hpp>
-#include <core\data_provider.hpp>
-#include <core\factory.hpp>
-#include <core\content.hpp>
+#include <core/pch.hpp>
+#include <core/noncopyable.hpp>
 
-#include <frontend\fsa\fsa_transition.hpp>
-#include <frontend\fsa\fsa_state.hpp>
-#include <frontend\fsa\fsa.hpp>
-#include <frontend\fsa\fsa_state_set.hpp>
-#include <frontend\fsa\fsa_algorithm.hpp>
+#include <core/domain_helper.hpp>
 
-#include <frontend\fsa\fsa_visualization.hpp> //??
+#include <core/factory.hpp>
+#include <core/singleton.hpp>
+
+#include <core/status.hpp>
+
+#include <core/diagnostics.hpp>
+#include <core/statistics.hpp>
+
+#include <core/logger.hpp>
+
+#include <core/unicode.hpp>
+#include <core/text.hpp>
+
+#include <core/counter.hpp>
+
+#include <frontend/fsa/fsa_transition.hpp>
+#include <frontend/fsa/fsa_state.hpp>
+#include <frontend/fsa/fsa.hpp>
+#include <frontend/fsa/fsa_state_set.hpp>
+#include <frontend/fsa/fsa_algorithm.hpp>
 
 #define FSA_MAX_STATES (512)
 
@@ -210,8 +216,7 @@ void fsa_algorithm::remove_useless_states(const fsa_type& fsa0, fsa_type& result
 
     for(auto id : states_to_remove)
     {
-        operation_status status; //??
-        (*fsa1).remove_state(id, status);
+        (*fsa1).remove_state(id);
     }
 
     result_fsa.swap(fsa1);
@@ -250,7 +255,7 @@ typename fsa_algorithm::state_set_type fsa_algorithm::get_dstate(const std::vect
     return result;
 }
 
-bool fsa_algorithm::nfa_to_dfa(const typename fsa_algorithm::fsa_type& fsa0, typename fsa_algorithm::fsa_type& result_fsa, operation_status& status)
+bool fsa_algorithm::nfa_to_dfa(const typename fsa_algorithm::fsa_type& fsa0, typename fsa_algorithm::fsa_type& result_fsa)
 {
     // Conversion of an NFA into a DFA (subset construction)
     // .....................................................
@@ -302,7 +307,7 @@ bool fsa_algorithm::nfa_to_dfa(const typename fsa_algorithm::fsa_type& fsa0, typ
 
             if(dfa_t_state.second)
             {
-                (*fsa1).add_state(dfa_t_state.first, status);
+                (*fsa1).add_state(dfa_t_state.first);
             }
 
             for(const auto& predicate : predicates)
@@ -326,11 +331,11 @@ bool fsa_algorithm::nfa_to_dfa(const typename fsa_algorithm::fsa_type& fsa0, typ
 
                     if(dfa_u_state.second)
                     {
-                        (*fsa1).add_state(dfa_u_state.first, status);
+                        (*fsa1).add_state(dfa_u_state.first);
                     }
                 }
 
-                (*fsa1).add_transition(dfa_t_state.first, dfa_u_state.first, predicate, status);
+                (*fsa1).add_transition(dfa_t_state.first, dfa_u_state.first, predicate);
             }
         }
 
@@ -344,7 +349,7 @@ bool fsa_algorithm::nfa_to_dfa(const typename fsa_algorithm::fsa_type& fsa0, typ
 
                 if((*fsa0).is_final_state(state))
                 {
-                    (*fsa1).add_final_state((*dstate).dfa_state(), status);
+                    (*fsa1).add_final_state((*dstate).dfa_state());
                     (*(*dstate).dfa_state()).token() = (*state).token();
 
                     break; // the first added state has priority, like 'byte'-kw and 'byte_'-identifier
@@ -358,7 +363,11 @@ bool fsa_algorithm::nfa_to_dfa(const typename fsa_algorithm::fsa_type& fsa0, typ
     }
     catch(const std::exception& ex)
     {
-        OPERATION_FAILED_EX(ex, status::custom_code::error, L"Converting NFA to DFA: error occurred.")
+        OPERATION_FAILED_EX(ex,
+                            status::custom_code::error,
+                            status::contributer::fsa,
+                            L"Converting NFA to DFA: error occurred.")
+        log_exception(ex, diagnostics::instance().last_status().text().c_str());
     }
 
     log_info(L"Converted NFA to DFA.");
@@ -836,8 +845,6 @@ void fsa_algorithm::build_fsa_from_equivalence_classes(const typename fsa_algori
                                                        const typename fsa_algorithm::equivalence_classes_type& equivalence_classes,
                                                        typename fsa_algorithm::fsa_type& result_fsa)
 {
-    operation_status status; //??
-
     fsa_type fsa1(factory::create<fsa>());
 
     // build states
@@ -847,7 +854,7 @@ void fsa_algorithm::build_fsa_from_equivalence_classes(const typename fsa_algori
 
         auto new_state(factory::create<fsa_state>(decorate_equivalence_class(equivalence_class), 0));
 
-        (*fsa1).add_state(new_state, status);
+        (*fsa1).add_state(new_state);
 
         if((*fsa1).start_state() == nullptr)
         {
@@ -869,7 +876,7 @@ void fsa_algorithm::build_fsa_from_equivalence_classes(const typename fsa_algori
 
             if((*fsa0).is_final_state(state))
             {
-                (*fsa1).add_final_state(new_state, status);
+                (*fsa1).add_final_state(new_state);
                 (*new_state).token() = (*state).token();
                 break;
             }
@@ -904,7 +911,7 @@ void fsa_algorithm::build_fsa_from_equivalence_classes(const typename fsa_algori
                     // new transition end state in minimized fsa1
                     const auto& min_fsa_end_state((*fsa1).states()[j]);
 
-                    (*fsa1).add_transition(min_fsa_start_state, min_fsa_end_state, (*transition).predicate(), status);
+                    (*fsa1).add_transition(min_fsa_start_state, min_fsa_end_state, (*transition).predicate());
 
                     break;
                 }

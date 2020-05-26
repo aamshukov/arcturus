@@ -12,8 +12,8 @@ USINGNAMESPACE(core)
 class grammar : private noncopyable
 {
     public:
-        using symbol_type = symbol::symbol_type;
-        using symbols_type = symbol::symbols_type;
+        using symbol_type = rule::symbol_type;
+        using symbols_type = rule::symbols_type;
 
         using pool_type = std::map<string_type, symbol_type>;
         using pool_index_type = std::map<uint32_t, symbol_type>;

@@ -17,13 +17,13 @@ inline type::~type()
 }
 
 //template <typename TReturn, typename TParam>
-inline bool type::operator == (const type& other)
+inline bool type::operator == (const type&)
 {
     return false;
 }
 
 //template <typename TReturn, typename TParam>
-inline bool type::operator != (const type& other)
+inline bool type::operator != (const type&)
 {
     return false;
 }
