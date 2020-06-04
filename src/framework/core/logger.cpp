@@ -51,7 +51,7 @@ bool logger::initialize(const string_type& file_name)
         {
             OPERATION_FAILED(status::custom_code::error,
                              0,
-                             status::contributer::core,
+                             status::contributor::core,
                              L"Failed to initialize logger: stream is either open or in a bad condition.")
             log_error(diagnostics::instance().last_status().text().c_str());
         }
@@ -62,7 +62,7 @@ bool logger::initialize(const string_type& file_name)
     {
         OPERATION_FAILED_EX(ex,
                             status::custom_code::error,
-                            status::contributer::core,
+                            status::contributor::core,
                             L"Failed to initialize logger: error occurred.")
         log_exception(ex, diagnostics::instance().last_status().text().c_str());
     }
@@ -88,7 +88,7 @@ bool logger::uninitialize()
     {
         OPERATION_FAILED_EX(ex,
                             status::custom_code::error,
-                            status::contributer::core,
+                            status::contributor::core,
                             L"Failed to uninitialize logger: error occurred.")
         log_exception(ex, diagnostics::instance().last_status().text().c_str());
     }

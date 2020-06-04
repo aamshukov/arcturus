@@ -137,7 +137,7 @@ bool fsa_re::re_to_fsa(const std::shared_ptr<typename fsa_re::datum_type[]>& re,
                 {
                     OPERATION_FAILED(status::custom_code::error,
                                      0,
-                                     status::contributer::fsa,
+                                     status::contributor::fsa,
                                      L"Generating FSA from RE: invlaid RE.")
                     log_error(diagnostics::instance().last_status().text().c_str());
                 }
@@ -148,7 +148,7 @@ bool fsa_re::re_to_fsa(const std::shared_ptr<typename fsa_re::datum_type[]>& re,
     {
         OPERATION_FAILED_EX(ex,
                             status::custom_code::error,
-                            status::contributer::fsa,
+                            status::contributor::fsa,
                             L"Generating FSA from RE: error occurred.")
         log_exception(ex, diagnostics::instance().last_status().text().c_str());
     }
@@ -173,6 +173,7 @@ bool fsa_re::re_to_dfa(const string_type& re,
     string_type augmented_re(L"(" + re + L")#");
 
     string_type augmented_re_dsp(augmented_re);
+
     std::replace(augmented_re_dsp.begin(), augmented_re_dsp.end(), (char_type)text::epsilon_codepoint(), L'e');
     std::wcout << augmented_re_dsp << std::endl;
 
@@ -260,7 +261,9 @@ bool fsa_re::re_to_dfa(const string_type& re,
 
                             if(std::find(dstates[k].first.begin(), dstates[k].first.end(), a_index) != dstates[k].first.end())
                             {
-                                std::for_each(followpos[a_index].begin(), followpos[a_index].end(), [&u_followpos](std::size_t pos){ u_followpos.emplace_back(pos); });
+                                std::for_each(followpos[a_index].begin(),
+                                              followpos[a_index].end(),
+                                              [&u_followpos](std::size_t pos){ u_followpos.emplace_back(pos); });
                             }
                         }
 
@@ -321,7 +324,7 @@ bool fsa_re::re_to_dfa(const string_type& re,
         {
             OPERATION_FAILED_EX(ex,
                                 status::custom_code::error,
-                                status::contributer::fsa,
+                                status::contributor::fsa,
                                 L"Generating FSA from RE: error occurred.")
             log_exception(ex, diagnostics::instance().last_status().text().c_str());
         }
@@ -419,10 +422,18 @@ int8_t fsa_re::get_operator_precedence(typename fsa_re::datum_type op)
 
 bool fsa_re::is_literal(typename fsa_re::datum_type ch)
 {
-    return ch != OPEN_PAREN_OP && ch != CLOSE_PAREN_OP && ch != ALTERNATE_OP && ch != CONCATENATE_OP && ch != ZERO_OR_MORE_OP && ch != ONE_OR_MORE_OP && ch != ZERO_OR_ONE_OP;
+    return ch != OPEN_PAREN_OP &&
+           ch != CLOSE_PAREN_OP &&
+           ch != ALTERNATE_OP &&
+           ch != CONCATENATE_OP &&
+           ch != ZERO_OR_MORE_OP &&
+           ch != ONE_OR_MORE_OP &&
+           ch != ZERO_OR_ONE_OP;
 }
 
-size_type fsa_re::preprocess(const std::shared_ptr<typename fsa_re::datum_type[]>& infix_re, size_type count, std::shared_ptr<typename fsa_re::datum_type[]>& processed_re)
+size_type fsa_re::preprocess(const std::shared_ptr<typename fsa_re::datum_type[]>& infix_re,
+                             size_type count,
+                             std::shared_ptr<typename fsa_re::datum_type[]>& processed_re)
 {
     std::shared_ptr<datum_type[]> buffer(new datum_type[count * 2 + 1]);
     datum_type* p_dst(buffer.get());
@@ -509,7 +520,7 @@ bool fsa_re::infix_to_postfix(const std::shared_ptr<typename fsa_re::datum_type[
                 {
                     OPERATION_FAILED(status::custom_code::error,
                                      0,
-                                     status::contributer::fsa,
+                                     status::contributor::fsa,
                                      L"Converting infix RE to postfix notation: parens mismatch, missing ')'.")
                     log_error(diagnostics::instance().last_status().text().c_str());
                     goto error;
@@ -526,7 +537,7 @@ bool fsa_re::infix_to_postfix(const std::shared_ptr<typename fsa_re::datum_type[
                 {
                     OPERATION_FAILED(status::custom_code::error,
                                      0,
-                                     status::contributer::fsa,
+                                     status::contributor::fsa,
                                      L"Converting infix RE to postfix notation: '|' cannot be the last term.")
                     log_error(diagnostics::instance().last_status().text().c_str());
                     goto error;
@@ -741,7 +752,7 @@ bool fsa_re::process_combine(std::stack<fsa::fsa_type>& fragments)
         {
             OPERATION_FAILED(status::custom_code::error,
                              0,
-                             status::contributer::fsa,
+                             status::contributor::fsa,
                              L"Processing RE combine: invalid RE, two operands on the stack are required.")
             log_error(diagnostics::instance().last_status().text().c_str());
         }
@@ -778,7 +789,7 @@ bool fsa_re::process_combine(std::stack<fsa::fsa_type>& fragments)
     {
         OPERATION_FAILED_EX(ex,
                             status::custom_code::error,
-                            status::contributer::fsa,
+                            status::contributor::fsa,
                             L"Processing RE combine: error occurred.")
         log_exception(ex, diagnostics::instance().last_status().text().c_str());
     }
@@ -800,7 +811,7 @@ bool fsa_re::process_concatenate(std::stack<fsa::fsa_type>& fragments)
         {
             OPERATION_FAILED(status::custom_code::error,
                              0,
-                             status::contributer::fsa,
+                             status::contributor::fsa,
                              L"Processing RE concatenate: invalid RE, two operands on the stack are required.")
             log_error(diagnostics::instance().last_status().text().c_str());
         }
@@ -828,7 +839,7 @@ bool fsa_re::process_concatenate(std::stack<fsa::fsa_type>& fragments)
     {
         OPERATION_FAILED_EX(ex,
                             status::custom_code::error,
-                            status::contributer::fsa,
+                            status::contributor::fsa,
                             L"Processing RE concatenate: error occurred.")
         log_exception(ex, diagnostics::instance().last_status().text().c_str());
     }
@@ -850,7 +861,7 @@ bool fsa_re::process_zero_or_more(std::stack<fsa::fsa_type>& fragments)
         {
             OPERATION_FAILED(status::custom_code::error,
                              0,
-                             status::contributer::fsa,
+                             status::contributor::fsa,
                              L"Processing RE zero or more: invalid RE, one operands on the stack is required.")
             log_error(diagnostics::instance().last_status().text().c_str());
         }
@@ -924,7 +935,7 @@ bool fsa_re::process_zero_or_more(std::stack<fsa::fsa_type>& fragments)
     {
         OPERATION_FAILED_EX(ex,
                             status::custom_code::error,
-                            status::contributer::fsa,
+                            status::contributor::fsa,
                             L"Processing RE zero or more: error occurred.")
         log_exception(ex, diagnostics::instance().last_status().text().c_str());
     }
@@ -946,7 +957,7 @@ bool fsa_re::process_one_or_more(std::stack<fsa::fsa_type>& fragments)
         {
             OPERATION_FAILED(status::custom_code::error,
                              0,
-                             status::contributer::fsa,
+                             status::contributor::fsa,
                              L"Processing RE one or more: invalid RE, one operands on the stack is required.")
             log_error(diagnostics::instance().last_status().text().c_str());
         }
@@ -1016,7 +1027,7 @@ bool fsa_re::process_one_or_more(std::stack<fsa::fsa_type>& fragments)
     {
         OPERATION_FAILED_EX(ex,
                             status::custom_code::error,
-                            status::contributer::fsa,
+                            status::contributor::fsa,
                             L"Processing RE one or more: error occurred.")
         log_exception(ex, diagnostics::instance().last_status().text().c_str());
     }
@@ -1038,7 +1049,7 @@ bool fsa_re::process_zero_or_one(std::stack<fsa::fsa_type>& fragments)
         {
             OPERATION_FAILED(status::custom_code::error,
                              0,
-                             status::contributer::fsa,
+                             status::contributor::fsa,
                              L"Processing RE zero or one: invalid RE, one operands on the stack is required.")
             log_error(diagnostics::instance().last_status().text().c_str());
         }
@@ -1109,7 +1120,7 @@ bool fsa_re::process_zero_or_one(std::stack<fsa::fsa_type>& fragments)
     {
         OPERATION_FAILED_EX(ex,
                             status::custom_code::error,
-                            status::contributer::fsa,
+                            status::contributor::fsa,
                             L"Processing RE zero or one: error occurred.")
         log_exception(ex, diagnostics::instance().last_status().text().c_str());
     }
@@ -1150,7 +1161,7 @@ bool fsa_re::process_literal(const typename fsa_re::datum_type*& p_src, std::sta
     {
         OPERATION_FAILED_EX(ex,
                             status::custom_code::error,
-                            status::contributer::fsa,
+                            status::contributor::fsa,
                             L"Processing RE literal: error occurred.")
         log_exception(ex, diagnostics::instance().last_status().text().c_str());
     }

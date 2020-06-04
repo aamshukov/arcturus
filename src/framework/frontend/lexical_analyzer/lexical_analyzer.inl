@@ -9,9 +9,9 @@
 BEGIN_NAMESPACE(frontend)
 USINGNAMESPACE(core)
 
-template <typename TToken>
-lexical_analyzer<TToken>::lexical_analyzer(const typename lexical_analyzer<TToken>::content_type& content)
-                        : my_content(content),
+template <typename Token>
+lexical_analyzer<Token>::lexical_analyzer(const typename lexical_analyzer<Token>::content_type& content)
+                       : my_content(content),
                           my_start_content((*my_content).data()),
                           my_end_content(my_start_content + (*my_content).count()),
                           my_ptr(my_start_content),
@@ -19,13 +19,13 @@ lexical_analyzer<TToken>::lexical_analyzer(const typename lexical_analyzer<TToke
 {
 }
 
-template <typename TToken>
-lexical_analyzer<TToken>::~lexical_analyzer()
+template <typename Token>
+lexical_analyzer<Token>::~lexical_analyzer()
 {
 }
 
-template <typename TToken>
-void lexical_analyzer<TToken>::next_lexeme()
+template <typename Token>
+void lexical_analyzer<Token>::next_lexeme()
 {
     if(!is_eos())
     {
@@ -46,8 +46,8 @@ void lexical_analyzer<TToken>::next_lexeme()
     }
 }
 
-template <typename TToken>
-const typename lexical_analyzer<TToken>::token_type& lexical_analyzer<TToken>::lookahead_lexeme()
+template <typename Token>
+const typename lexical_analyzer<Token>::token_type& lexical_analyzer<Token>::lookahead_lexeme()
 {
     token_type* result(nullptr);
 
@@ -100,16 +100,16 @@ const typename lexical_analyzer<TToken>::token_type& lexical_analyzer<TToken>::l
     return *result;
 }
 
-template <typename TToken>
-inline void lexical_analyzer<TToken>::prolog()
+template <typename Token>
+inline void lexical_analyzer<Token>::prolog()
 {
     my_token.reset();
 
     my_ptr_lexeme = my_ptr;
 }
 
-template <typename TToken>
-inline void lexical_analyzer<TToken>::epilog()
+template <typename Token>
+inline void lexical_analyzer<Token>::epilog()
 {
     if(my_ptr > my_end_content)
     {

@@ -9,14 +9,13 @@
 BEGIN_NAMESPACE(frontend)
 USINGNAMESPACE(core)
 
-template <typename Token, typename TreeTraits>
+template <typename Token>
 class semantics : private noncopyable
 {
     public:
-        using token_type = typename parser<Token, TreeTraits>::token_type;
-        using tree_traits_type = typename parser<Token, TreeTraits>::tree_traits_type;
+        using token_type = typename parser<Token>::token_type;
 
-        using parse_tree_type = std::shared_ptr<parse_tree<token_type, tree_traits_type>>;
+        using parse_tree_type = std::shared_ptr<parse_tree<token_type>>;
         using parse_trees_type = std::vector<parse_tree_type>;
 
     public:
@@ -27,18 +26,18 @@ class semantics : private noncopyable
 
 };
 
-template <typename Token, typename TreeTraits>
-semantics<Token, TreeTraits>::semantics()
+template <typename Token>
+semantics<Token>::semantics()
 {
 }
 
-template <typename Token, typename TreeTraits>
-semantics<Token, TreeTraits>::~semantics()
+template <typename Token>
+semantics<Token>::~semantics()
 {
 }
 
-template <typename Token, typename TreeTraits>
-void semantics<Token, TreeTraits>::populate_symbol_table(const typename semantics<Token, TreeTraits>::parse_tree_type& tree)
+template <typename Token>
+void semantics<Token>::populate_symbol_table(const typename semantics<Token>::parse_tree_type& tree)
 {
 }
 

@@ -61,7 +61,7 @@ bool text::string_to_codepoints0(const string_type& text, std::shared_ptr<typena
             {
                 OPERATION_FAILED(status::custom_code::error,
                                  source_exhausted,
-                                 status::contributer::core,
+                                 status::contributor::core,
                                  L"Converting string (text) to codepoints: partial character in source, but hit end.")
                 log_error(diagnostics::instance().last_status().text().c_str());
             }
@@ -69,7 +69,7 @@ bool text::string_to_codepoints0(const string_type& text, std::shared_ptr<typena
             {
                 OPERATION_FAILED(status::custom_code::error,
                                  target_exhausted,
-                                 status::contributer::core,
+                                 status::contributor::core,
                                  L"Converting string (text) to codepoints: insufficient room in target for conversion.")
                 log_error(diagnostics::instance().last_status().text().c_str());
             }
@@ -77,7 +77,7 @@ bool text::string_to_codepoints0(const string_type& text, std::shared_ptr<typena
             {
                 OPERATION_FAILED(status::custom_code::error,
                                  source_illegal,
-                                 status::contributer::core,
+                                 status::contributor::core,
                                  L"Converting string (text) to codepoints: source sequence is illegal/malformed.")
                 log_error(diagnostics::instance().last_status().text().c_str());
             }
@@ -87,7 +87,7 @@ bool text::string_to_codepoints0(const string_type& text, std::shared_ptr<typena
     {
         OPERATION_FAILED_EX(ex,
                             status::custom_code::error,
-                            status::contributer::core,
+                            status::contributor::core,
                             L"Converting string (text) to codepoints: error occurred.")
         log_exception(ex, diagnostics::instance().last_status().text().c_str());
     }
@@ -132,7 +132,7 @@ bool text::codepoints_to_string0(const typename text::datum_type* codepoints, si
             {
                 OPERATION_FAILED(status::custom_code::error,
                                  source_exhausted,
-                                 status::contributer::core,
+                                 status::contributor::core,
                                  L"Converting codepoints to string: partial character in source, but hit end.")
                 log_error(diagnostics::instance().last_status().text().c_str());
             }
@@ -140,7 +140,7 @@ bool text::codepoints_to_string0(const typename text::datum_type* codepoints, si
             {
                 OPERATION_FAILED(status::custom_code::error,
                                  target_exhausted,
-                                 status::contributer::core,
+                                 status::contributor::core,
                                  L"Converting codepoints to string: insufficient room in target for conversion.")
                 log_error(diagnostics::instance().last_status().text().c_str());
             }
@@ -148,7 +148,7 @@ bool text::codepoints_to_string0(const typename text::datum_type* codepoints, si
             {
                 OPERATION_FAILED(status::custom_code::error,
                                  source_illegal,
-                                 status::contributer::core,
+                                 status::contributor::core,
                                  L"Converting codepoints to string: source sequence is illegal/malformed.")
                 log_error(diagnostics::instance().last_status().text().c_str());
             }
@@ -158,7 +158,7 @@ bool text::codepoints_to_string0(const typename text::datum_type* codepoints, si
     {
         OPERATION_FAILED_EX(ex,
                             status::custom_code::error,
-                            status::contributer::core,
+                            status::contributor::core,
                             L"Converting codepoints to string: error occurred.")
         log_exception(ex, diagnostics::instance().last_status().text().c_str());
     }
@@ -200,7 +200,7 @@ bool text::string_to_codepoints(const string_type& text, std::shared_ptr<typenam
             {
                 OPERATION_FAILED(status::custom_code::error,
                                  0,
-                                 status::contributer::core,
+                                 status::contributor::core,
                                  format(L"Converting string (text) to codepoints: ICU error code is '%d'.", error).c_str())
                 log_error(diagnostics::instance().last_status().text().c_str());
             }
@@ -209,7 +209,7 @@ bool text::string_to_codepoints(const string_type& text, std::shared_ptr<typenam
         {
             OPERATION_FAILED(status::custom_code::error,
                              0,
-                             status::contributer::core,
+                             status::contributor::core,
                              L"Converting string (text) to codepoints: invalid input.")
             log_error(diagnostics::instance().last_status().text().c_str());
         }
@@ -218,7 +218,7 @@ bool text::string_to_codepoints(const string_type& text, std::shared_ptr<typenam
     {
         OPERATION_FAILED_EX(ex,
                             status::custom_code::error,
-                            status::contributer::core,
+                            status::contributor::core,
                             L"Converting string (text) to codepoints: error occurred.")
         log_exception(ex, diagnostics::instance().last_status().text().c_str());
     }
@@ -252,7 +252,7 @@ bool text::codepoints_to_string(const typename text::datum_type* codepoints, siz
         {
             OPERATION_FAILED(status::custom_code::error,
                              0,
-                             status::contributer::core,
+                             status::contributor::core,
                              L"Converting codepoints to string: invalid input.")
             log_error(diagnostics::instance().last_status().text().c_str());
         }
@@ -261,7 +261,7 @@ bool text::codepoints_to_string(const typename text::datum_type* codepoints, siz
     {
         OPERATION_FAILED_EX(ex,
                             status::custom_code::error,
-                            status::contributer::core,
+                            status::contributor::core,
                             L"Converting codepoints to string: error occurred.")
         log_exception(ex, diagnostics::instance().last_status().text().c_str());
     }

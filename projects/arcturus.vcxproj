@@ -19,13 +19,19 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\arcturus\arcturus_controller.hpp" />
     <ClInclude Include="..\src\arcturus\arcturus_lexical_analyzer.hpp" />
     <ClInclude Include="..\src\arcturus\arcturus_parser.hpp" />
+    <ClInclude Include="..\src\arcturus\arcturus_parse_tree.hpp" />
+    <ClInclude Include="..\src\arcturus\arcturus_parse_tree_variable.hpp" />
     <ClInclude Include="..\src\arcturus\arcturus_token.hpp" />
+    <ClInclude Include="..\src\framework\backend\codegen\activation_record.hpp" />
+    <ClInclude Include="..\src\framework\backend\codegen\amd64\activation_record_amd64.hpp" />
     <ClInclude Include="..\src\framework\content\content.hpp" />
     <ClInclude Include="..\src\framework\content\data_provider.hpp" />
     <ClInclude Include="..\src\framework\content\file_data_provider.hpp" />
     <ClInclude Include="..\src\framework\content\string_data_provider.hpp" />
+    <ClInclude Include="..\src\framework\controller\controller.hpp" />
     <ClInclude Include="..\src\framework\core\configurator.hpp" />
     <ClInclude Include="..\src\framework\core\context.hpp" />
     <ClInclude Include="..\src\framework\core\counter.hpp" />
@@ -71,7 +77,18 @@
     <ClInclude Include="..\src\framework\frontend\parser\parse_dag.hpp" />
     <ClInclude Include="..\src\framework\frontend\parser\parse_tree.hpp" />
     <ClInclude Include="..\src\framework\frontend\parser\recursive_descent_parser.hpp" />
+    <ClInclude Include="..\src\framework\frontend\semantics\semantics.hpp" />
     <ClInclude Include="..\src\framework\frontend\type\type.hpp" />
+    <ClInclude Include="..\src\framework\ir\basic_block.hpp" />
+    <ClInclude Include="..\src\framework\ir\code.hpp" />
+    <ClInclude Include="..\src\framework\ir\control_flow_graph.hpp" />
+    <ClInclude Include="..\src\framework\ir\dag_tac_visitor.hpp" />
+    <ClInclude Include="..\src\framework\ir\ir.hpp" />
+    <ClInclude Include="..\src\framework\ir\ir_visitor.hpp" />
+    <ClInclude Include="..\src\framework\ir\ir_visualization.hpp" />
+    <ClInclude Include="..\src\framework\ir\quadruple.hpp" />
+    <ClInclude Include="..\src\framework\ir\ssa.hpp" />
+    <ClInclude Include="..\src\framework\ir\tree_tac_visitor.hpp" />
     <ClInclude Include="..\src\framework\symtable\scope\scope.hpp" />
     <ClInclude Include="..\src\framework\symtable\symbol.hpp" />
     <ClInclude Include="..\src\framework\symtable\symbol_table.hpp" />
@@ -81,6 +98,8 @@
     <ClCompile Include="..\src\arcturus\arcturus_lexical_analyzer.cpp" />
     <ClCompile Include="..\src\arcturus\arcturus_parser.cpp" />
     <ClCompile Include="..\src\arcturus\arcturus_token.cpp" />
+    <ClCompile Include="..\src\framework\backend\codegen\activation_record.cpp" />
+    <ClCompile Include="..\src\framework\backend\codegen\amd64\activation_record_amd64.cpp" />
     <ClCompile Include="..\src\framework\content\content.cpp" />
     <ClCompile Include="..\src\framework\content\file_data_provider.cpp" />
     <ClCompile Include="..\src\framework\content\string_data_provider.cpp" />
@@ -110,12 +129,18 @@
     <ClCompile Include="..\src\framework\frontend\grammar\rule.cpp" />
     <ClCompile Include="..\src\framework\frontend\grammar\symbol.cpp" />
     <ClCompile Include="..\src\framework\frontend\lexical_analyzer\lexical_content.cpp" />
+    <ClCompile Include="..\src\framework\ir\control_flow_graph.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\src\framework\frontend\lexical_analyzer\lexical_analyzer.inl" />
     <None Include="..\src\framework\frontend\parser\parser.inl" />
     <None Include="..\src\framework\frontend\parser\recursive_descent_parser.inl" />
+    <None Include="..\src\framework\frontend\semantics\semantics.inl" />
     <None Include="..\src\framework\frontend\type\type.inl" />
+    <None Include="..\src\framework\ir\basic_block.inl" />
+    <None Include="..\src\framework\ir\code.inl" />
+    <None Include="..\src\framework\ir\ir.inl" />
+    <None Include="..\src\framework\ir\ir_visualization.inl" />
     <None Include="..\src\framework\symtable\symbol_table.inl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

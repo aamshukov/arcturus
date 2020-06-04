@@ -10,7 +10,7 @@ status::status()
       : my_custom_code(status::custom_code::success),
         my_system_code(SYSTEM_SUCCESS_CODE),
         my_library_code(0),
-        my_contributer(contributer::core)
+        my_contributor(contributor::core)
 {
 }
     
@@ -26,7 +26,7 @@ status::status(const status& other)
         my_system_code = other.my_system_code;
         my_library_code = other.my_library_code;
 
-        my_contributer = other.my_contributer;
+        my_contributor = other.my_contributor;
 
         my_text = other.my_text;
     }
@@ -40,7 +40,7 @@ status::status(status&& other)
         my_system_code = other.my_system_code;
         my_library_code = other.my_library_code;
 
-        my_contributer = other.my_contributer;
+        my_contributor = other.my_contributor;
 
         my_text = std::move(other.my_text);
     }
@@ -54,7 +54,7 @@ const status& status::operator = (const status& other)
         my_system_code = other.my_system_code;
         my_library_code = other.my_library_code;
 
-        my_contributer = other.my_contributer;
+        my_contributor = other.my_contributor;
 
         my_text = other.my_text;
     }
@@ -70,7 +70,7 @@ status& status::operator = (status&& other)
         my_system_code = other.my_system_code;
         my_library_code = other.my_library_code;
 
-        my_contributer = other.my_contributer;
+        my_contributor = other.my_contributor;
 
         my_text = std::move(other.my_text);
     }

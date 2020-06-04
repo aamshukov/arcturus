@@ -25,12 +25,6 @@
     <Filter Include="framework\symtable">
       <UniqueIdentifier>{c71d6524-b631-4832-9c9e-f004ed281dd7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="framework\backend\generator">
-      <UniqueIdentifier>{c4651142-492b-47eb-be94-cee3b7efe20c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="framework\backend\generator\amd64">
-      <UniqueIdentifier>{ed48eebc-ce3c-4887-821c-196a86cf78c4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="framework\backend\optimization">
       <UniqueIdentifier>{a7e328c4-7236-401d-8fe1-7e0377fb26c0}</UniqueIdentifier>
     </Filter>
@@ -66,6 +60,12 @@
     </Filter>
     <Filter Include="framework\frontend\semantics">
       <UniqueIdentifier>{8d284e7a-6e6f-4a9a-ad09-4f48320e162c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="framework\backend\codegen">
+      <UniqueIdentifier>{c4651142-492b-47eb-be94-cee3b7efe20c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="framework\backend\codegen\amd64">
+      <UniqueIdentifier>{ed48eebc-ce3c-4887-821c-196a86cf78c4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -237,6 +237,57 @@
     <ClInclude Include="..\src\framework\frontend\type\type.hpp">
       <Filter>framework\frontend\type</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\framework\controller\controller.hpp">
+      <Filter>framework\controller</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\ir\ir.hpp">
+      <Filter>framework\ir</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\arcturus\arcturus_controller.hpp">
+      <Filter>arcturus</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\arcturus\arcturus_parse_tree.hpp">
+      <Filter>arcturus</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\arcturus\arcturus_parse_tree_variable.hpp">
+      <Filter>arcturus</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\frontend\semantics\semantics.hpp">
+      <Filter>framework\frontend\semantics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\backend\codegen\activation_record.hpp">
+      <Filter>framework\backend\codegen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\backend\codegen\amd64\activation_record_amd64.hpp">
+      <Filter>framework\backend\codegen\amd64</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\ir\control_flow_graph.hpp">
+      <Filter>framework\ir</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\ir\dag_tac_visitor.hpp">
+      <Filter>framework\ir</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\ir\ir_visitor.hpp">
+      <Filter>framework\ir</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\ir\ir_visualization.hpp">
+      <Filter>framework\ir</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\ir\quadruple.hpp">
+      <Filter>framework\ir</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\ir\ssa.hpp">
+      <Filter>framework\ir</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\ir\tree_tac_visitor.hpp">
+      <Filter>framework\ir</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\ir\basic_block.hpp">
+      <Filter>framework\ir</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\ir\code.hpp">
+      <Filter>framework\ir</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\framework\core\logger.cpp">
@@ -323,6 +374,15 @@
     <ClCompile Include="..\src\arcturus\arcturus_parser.cpp">
       <Filter>arcturus</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\framework\backend\codegen\activation_record.cpp">
+      <Filter>framework\backend\codegen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\framework\backend\codegen\amd64\activation_record_amd64.cpp">
+      <Filter>framework\backend\codegen\amd64</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\framework\ir\control_flow_graph.cpp">
+      <Filter>framework\ir</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\src\framework\frontend\lexical_analyzer\lexical_analyzer.inl">
@@ -339,6 +399,21 @@
     </None>
     <None Include="..\src\framework\frontend\type\type.inl">
       <Filter>framework\frontend\type</Filter>
+    </None>
+    <None Include="..\src\framework\ir\ir.inl">
+      <Filter>framework\ir</Filter>
+    </None>
+    <None Include="..\src\framework\frontend\semantics\semantics.inl">
+      <Filter>framework\frontend\semantics</Filter>
+    </None>
+    <None Include="..\src\framework\ir\ir_visualization.inl">
+      <Filter>framework\ir</Filter>
+    </None>
+    <None Include="..\src\framework\ir\basic_block.inl">
+      <Filter>framework\ir</Filter>
+    </None>
+    <None Include="..\src\framework\ir\code.inl">
+      <Filter>framework\ir</Filter>
     </None>
   </ItemGroup>
 </Project>

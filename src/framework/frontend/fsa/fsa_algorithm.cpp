@@ -365,7 +365,7 @@ bool fsa_algorithm::nfa_to_dfa(const typename fsa_algorithm::fsa_type& fsa0, typ
     {
         OPERATION_FAILED_EX(ex,
                             status::custom_code::error,
-                            status::contributer::fsa,
+                            status::contributor::fsa,
                             L"Converting NFA to DFA: error occurred.")
         log_exception(ex, diagnostics::instance().last_status().text().c_str());
     }

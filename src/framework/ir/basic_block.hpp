@@ -28,7 +28,7 @@ class basic_block : private noncopyable
 
     private:
         id_type                     my_id; // 0 - entry-block, 1 - exit-block
-        string_type                 my_name;
+        string_type                 my_label;
 
         quadruples_type             my_code;
 
@@ -42,8 +42,8 @@ class basic_block : private noncopyable
         const id_type&              id() const;
         id_type&                    id();
 
-        const string_type&          name() const;
-        string_type&                name();
+        const string_type&          label() const;
+        string_type&                label();
 
         const quadruples_type&      code() const;
         quadruples_type&            code();
@@ -68,15 +68,15 @@ inline typename basic_block<Token>::id_type& basic_block<Token>::id()
 }
 
 template <typename Token>
-inline const string_type& basic_block<Token>::name() const
+inline const string_type& basic_block<Token>::label() const
 {
-    return my_name;
+    return my_label;
 }
 
 template <typename Token>
-inline string_type& basic_block<Token>::name()
+inline string_type& basic_block<Token>::label()
 {
-    return my_name;
+    return my_label;
 }
 
 template <typename Token>

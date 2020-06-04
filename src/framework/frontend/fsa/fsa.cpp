@@ -82,7 +82,7 @@ bool fsa::add_state(const state_type& state)
         {
             OPERATION_FAILED(status::custom_code::error,
                              0,
-                             status::contributer::fsa,
+                             status::contributor::fsa,
                              L"Adding FSA state: state '%s' already exists.", (*state).label().c_str())
             log_error(diagnostics::instance().last_status().text().c_str());
         }
@@ -91,7 +91,7 @@ bool fsa::add_state(const state_type& state)
     {
         OPERATION_FAILED_EX(ex,
                             status::custom_code::error,
-                            status::contributer::fsa,
+                            status::contributor::fsa,
                             L"Adding FSA state: error occurred.")
         log_exception(ex, diagnostics::instance().last_status().text().c_str());
     }
@@ -140,7 +140,7 @@ bool fsa::remove_state(uint32_t id)
     {
         OPERATION_FAILED_EX(ex,
                             status::custom_code::error,
-                            status::contributer::fsa,
+                            status::contributor::fsa,
                             L"Removed FSA state: error occurred.")
         log_exception(ex, diagnostics::instance().last_status().text().c_str());
     }
@@ -173,7 +173,7 @@ bool fsa::add_final_state(const state_type& state)
     {
         OPERATION_FAILED_EX(ex,
                             status::custom_code::error,
-                            status::contributer::fsa,
+                            status::contributor::fsa,
                             L"Adding final FSA state: error occurred.")
         log_exception(ex, diagnostics::instance().last_status().text().c_str());
     }
@@ -205,7 +205,7 @@ bool fsa::add_transition(const typename fsa::state_type& start_state,
     {
         OPERATION_FAILED_EX(ex,
                             status::custom_code::error,
-                            status::contributer::fsa,
+                            status::contributor::fsa,
                             L"Adding FSA transition: error occurred.")
         log_exception(ex, diagnostics::instance().last_status().text().c_str());
     }
@@ -235,7 +235,7 @@ bool fsa::add_transition(const state_type& start_state, const state_type& end_st
     {
         OPERATION_FAILED_EX(ex,
                             status::custom_code::error,
-                            status::contributer::fsa,
+                            status::contributor::fsa,
                             L"Adding FSA transition: error occurred.")
         log_exception(ex, diagnostics::instance().last_status().text().c_str());
     }
@@ -334,7 +334,7 @@ bool fsa::combine(const fsa_type& fsa1, const fsa_type& fsa2, fsa_type& result_f
     {
         OPERATION_FAILED_EX(ex,
                             status::custom_code::error,
-                            status::contributer::fsa,
+                            status::contributor::fsa,
                             L"Combining FSAs: error occurred.")
         log_exception(ex, diagnostics::instance().last_status().text().c_str());
     }
@@ -413,7 +413,7 @@ bool fsa::combine(const std::vector<fsa_type>& fsas, fsa_type& result_fsa)
     {
         OPERATION_FAILED_EX(ex,
                             status::custom_code::error,
-                            status::contributer::fsa,
+                            status::contributor::fsa,
                             L"Combining FSAs: error occurred.")
         log_exception(ex, diagnostics::instance().last_status().text().c_str());
     }
@@ -517,7 +517,7 @@ bool fsa::concatenate(const fsa_type& fsa1, const fsa_type& fsa2, fsa_type& resu
     {
         OPERATION_FAILED_EX(ex,
                             status::custom_code::error,
-                            status::contributer::fsa,
+                            status::contributor::fsa,
                             L"Concatenating FSAs: error occurred.")
         log_exception(ex, diagnostics::instance().last_status().text().c_str());
     }

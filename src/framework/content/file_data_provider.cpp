@@ -178,7 +178,7 @@ bool file_data_provider::read_raw_data(const string_type& file_name,
     {
         OPERATION_FAILED_EX(ex,
                             status::custom_code::error,
-                            status::contributer::core,
+                            status::contributor::core,
                             L"Read raw data: error occurred.")
         log_exception(ex, diagnostics::instance().last_status().text().c_str());
     }
@@ -230,7 +230,7 @@ bool file_data_provider::read_utf8_data(std::shared_ptr<byte[]> raw_data,
             {
                 OPERATION_FAILED(status::custom_code::error,
                                  source_exhausted,
-                                 status::contributer::core,
+                                 status::contributor::core,
                                      L"Read UTF16 data: partial character in source, but hit end.")
                 log_error(diagnostics::instance().last_status().text().c_str());
             }
@@ -238,7 +238,7 @@ bool file_data_provider::read_utf8_data(std::shared_ptr<byte[]> raw_data,
             {
                 OPERATION_FAILED(status::custom_code::error,
                                  target_exhausted,
-                                 status::contributer::core,
+                                 status::contributor::core,
                                  L"Read UTF16 data: insufficient room in target for conversion.")
                 log_error(diagnostics::instance().last_status().text().c_str());
             }
@@ -246,7 +246,7 @@ bool file_data_provider::read_utf8_data(std::shared_ptr<byte[]> raw_data,
             {
                 OPERATION_FAILED(status::custom_code::error,
                                  source_illegal,
-                                 status::contributer::core,
+                                 status::contributor::core,
                                  L"Read UTF16 data: source sequence is illegal/malformed.")
                 log_error(diagnostics::instance().last_status().text().c_str());
             }
@@ -256,7 +256,7 @@ bool file_data_provider::read_utf8_data(std::shared_ptr<byte[]> raw_data,
     {
         OPERATION_FAILED_EX(ex,
                             status::custom_code::error,
-                            status::contributer::core,
+                            status::contributor::core,
                             L"Read UTF8 data: error occurred.")
         log_exception(ex, diagnostics::instance().last_status().text().c_str());
     }
@@ -284,7 +284,7 @@ bool file_data_provider::read_utf16_data(std::shared_ptr<byte[]> raw_data,
         {
             OPERATION_FAILED(status::custom_code::error,
                              0,
-                             status::contributer::core,
+                             status::contributor::core,
                              L"Read UTF16 data: invalid input, must be divisible by 2.")
             log_error(diagnostics::instance().last_status().text().c_str());
         }
@@ -322,7 +322,7 @@ bool file_data_provider::read_utf16_data(std::shared_ptr<byte[]> raw_data,
                 {
                     OPERATION_FAILED(status::custom_code::error,
                                      source_exhausted,
-                                     status::contributer::core,
+                                     status::contributor::core,
                                      L"Read UTF16 data: partial character in source, but hit end.")
                     log_error(diagnostics::instance().last_status().text().c_str());
                 }
@@ -330,7 +330,7 @@ bool file_data_provider::read_utf16_data(std::shared_ptr<byte[]> raw_data,
                 {
                     OPERATION_FAILED(status::custom_code::error,
                                      target_exhausted,
-                                     status::contributer::core,
+                                     status::contributor::core,
                                      L"Read UTF16 data: insufficient room in target for conversion.")
                     log_error(diagnostics::instance().last_status().text().c_str());
                 }
@@ -338,7 +338,7 @@ bool file_data_provider::read_utf16_data(std::shared_ptr<byte[]> raw_data,
                 {
                     OPERATION_FAILED(status::custom_code::error,
                                      source_illegal,
-                                     status::contributer::core,
+                                     status::contributor::core,
                                      L"Read UTF16 data: source sequence is illegal/malformed.")
                     log_error(diagnostics::instance().last_status().text().c_str());
                 }
@@ -349,7 +349,7 @@ bool file_data_provider::read_utf16_data(std::shared_ptr<byte[]> raw_data,
     {
         OPERATION_FAILED_EX(ex,
                             status::custom_code::error,
-                            status::contributer::core,
+                            status::contributor::core,
                             L"Read UTF16 data: error occurred.")
         log_exception(ex, diagnostics::instance().last_status().text().c_str());
     }
@@ -377,7 +377,7 @@ bool file_data_provider::read_utf32_data(std::shared_ptr<byte[]> raw_data,
         {
             OPERATION_FAILED(status::custom_code::error,
                              0,
-                             status::contributer::core,
+                             status::contributor::core,
                              L"Read UTF32 data: invalid input, must be divisible by 4.")
             log_error(diagnostics::instance().last_status().text().c_str());
         }
@@ -413,7 +413,7 @@ bool file_data_provider::read_utf32_data(std::shared_ptr<byte[]> raw_data,
     {
         OPERATION_FAILED_EX(ex,
                             status::custom_code::error,
-                            status::contributer::core,
+                            status::contributor::core,
                             L"Read UTF32 data: error occurred.")
         log_exception(ex, diagnostics::instance().last_status().text().c_str());
     }
@@ -449,7 +449,7 @@ bool file_data_provider::load(std::shared_ptr<typename file_data_provider::datum
             {
                 OPERATION_FAILED(status::custom_code::error,
                                  0,
-                                 status::contributer::core,
+                                 status::contributor::core,
                                  L"Read UTF16 data: invalid input, must be divisible by 2.")
                 log_error(diagnostics::instance().last_status().text().c_str());
             }
@@ -463,7 +463,7 @@ bool file_data_provider::load(std::shared_ptr<typename file_data_provider::datum
             {
                 OPERATION_FAILED(status::custom_code::error,
                                  0,
-                                 status::contributer::core,
+                                 status::contributor::core,
                                  L"Read UTF32 data: invalid input, must be divisible by 4.")
                 log_error(diagnostics::instance().last_status().text().c_str());
             }
@@ -528,7 +528,7 @@ bool file_data_provider::load(std::shared_ptr<typename file_data_provider::datum
     {
         OPERATION_FAILED_EX(ex,
                             status::custom_code::error,
-                            status::contributer::core,
+                            status::contributor::core,
                             L"Load data: error occurred.")
         log_exception(ex, diagnostics::instance().last_status().text().c_str());
     }

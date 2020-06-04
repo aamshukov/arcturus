@@ -1,6 +1,6 @@
-//..............................
-// UI Lab Inc. Arthur Amshukov .
-//..............................
+//........................................................
+// Undeground Intelligence (UI) Lab Inc. Arthur Amshukov .
+//........................................................
 // Recursive descent parser with backtracking
 //
 #ifndef __RECURSIVE_DESCENT_PARSER_INL__
@@ -11,14 +11,14 @@
 BEGIN_NAMESPACE(frontend)
 USINGNAMESPACE(core)
 
-template <typename Token, typename TreeTraits>
-recursive_descent_parser<Token, TreeTraits>::recursive_descent_parser(const typename recursive_descent_parser<Token, TreeTraits>::lexical_analyzer_type& lexical_analyzer)
-                                           : parser<Token, TreeTraits>(lexical_analyzer)
+template <typename Token>
+recursive_descent_parser<Token>::recursive_descent_parser(const typename recursive_descent_parser<Token>::lexical_analyzer_type& lexical_analyzer)
+                               : parser<Token>(lexical_analyzer)
 {
 }
 
-template <typename Token, typename TreeTraits>
-recursive_descent_parser<Token, TreeTraits>::~recursive_descent_parser()
+template <typename Token>
+recursive_descent_parser<Token>::~recursive_descent_parser()
 {
 }
 

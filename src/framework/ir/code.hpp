@@ -24,7 +24,7 @@ class code : private noncopyable
         using quadruples_type = std::list<quadruple_type>;
 
     private:
-        quadruples_type         my_quadruples;
+        quadruples_type         my_code;
 
     public:
                                 code();

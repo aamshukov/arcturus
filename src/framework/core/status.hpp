@@ -14,15 +14,24 @@ BEGIN_NAMESPACE(core)
 class status
 {
     public:
-        enum class custom_code
+        static const uint64_t info_mask = 0x0001'0000'0000'0000;
+        static const uint64_t warning_mask = 0x0010'0000'0000'0000;
+        static const uint64_t error_mask = 0x0100'0000'0000'0000;
+        static const uint64_t fatal_error_mask = 0x1000'0000'0000'0000;
+
+        enum class custom_code : uint64_t
         {
-            success = 1,
-            info    = 2,
-            warning = 3,
-            error   = -1
+            success             = 1,
+            info                = (2 | info_mask),
+            warning             = (3 | warning_mask),
+            error               = (0 | error_mask),
+            fatal_error         = (0 | fatal_error_mask),
+
+            invalid_literal     = (1024 | error_mask),
+            status_deprecated   = (1025 | warning_mask),
         };
 
-        enum class contributer
+        enum class contributor
         {
             core      = 0,
             grammar   = 1,
@@ -40,14 +49,14 @@ class status
         using system_code_type = uint32_t;
         using library_code_type = uint32_t;
 
-        using contributer_type = contributer;
+        using contributor_type = contributor;
 
     private:
         custom_code_type    my_custom_code;
         system_code_type    my_system_code;
         library_code_type   my_library_code;
 
-        contributer_type    my_contributer;
+        contributor_type    my_contributor;
 
         string_type         my_text;
 
@@ -70,8 +79,8 @@ class status
         library_code_type   library_code() const;
         library_code_type&  library_code();
 
-        contributer_type    contributer() const;
-        contributer_type&   contributer();
+        contributor_type    contributor() const;
+        contributor_type&   contributor();
 
         const string_type&  text() const;
         string_type&        text();
@@ -110,14 +119,14 @@ inline status::library_code_type& status::library_code()
     return my_library_code;
 }
 
-inline status::contributer_type status::contributer() const
+inline status::contributor_type status::contributor() const
 {
-    return my_contributer;
+    return my_contributor;
 }
 
-inline status::contributer_type& status::contributer()
+inline status::contributor_type& status::contributor()
 {
-    return my_contributer;
+    return my_contributor;
 }
 
 inline const string_type& status::text() const

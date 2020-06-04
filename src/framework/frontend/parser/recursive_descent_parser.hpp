@@ -11,14 +11,13 @@
 BEGIN_NAMESPACE(frontend)
 USINGNAMESPACE(core)
 
-template <typename Token, typename TreeTraits>
-class recursive_descent_parser : private parser<Token, TreeTraits>
+template <typename Token>
+class recursive_descent_parser : private parser<Token>
 {
     public:
         using token_type = Token;
-        using tree_traits_type = typename parser<Token, TreeTraits>::tree_traits_type;
 
-        using lexical_analyzer_type = typename parser<token_type, tree_traits_type>::lexical_analyzer_type;
+        using lexical_analyzer_type = typename parser<token_type>::lexical_analyzer_type;
 
     public:
                 recursive_descent_parser(const lexical_analyzer_type& lexical_analyzer);
