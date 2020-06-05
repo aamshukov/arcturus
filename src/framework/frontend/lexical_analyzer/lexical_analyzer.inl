@@ -61,6 +61,8 @@ const typename lexical_analyzer<Token>::token_type& lexical_analyzer<Token>::loo
         // push state
         const datum_type* aux_ptr(my_ptr);
 
+        auto number_of_lexems = statistics::instance().number_of_lexems();
+
         token_type aux_token(my_token);
 
         // update state
@@ -93,6 +95,8 @@ const typename lexical_analyzer<Token>::token_type& lexical_analyzer<Token>::loo
 
         my_ptr = aux_ptr;
 
+        statistics::instance().number_of_lexems() = number_of_lexems;
+
         // result
         result = &my_tokens.back();
     }
@@ -123,6 +127,9 @@ inline void lexical_analyzer<Token>::epilog()
 
     my_token.flags = token_type::flags::clear;
     my_token.source = (*my_content).id();
+
+    // update stats
+    statistics::instance().number_of_lexems()++;
 }
 
 END_NAMESPACE

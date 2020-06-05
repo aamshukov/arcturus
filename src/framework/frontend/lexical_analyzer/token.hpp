@@ -37,7 +37,8 @@ struct token
     enum class flags : uint64_t
     {
         clear     = 0x00,
-        genuine   = 0x02,
+        genuine   = 0x01,
+        contextual= 0x02, // contextual, recognized in specific contexts, similar to C# get/set, async/await ...
         synthetic = 0x04  // additional (artificial) tokens which are inserted into the token stream ...
     };
 

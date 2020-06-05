@@ -32,7 +32,20 @@ class statistics : public singleton<statistics>
         statistics() = default;
 
         //?? performance timer
+
+        size_type   number_of_lexems() const;
+        size_type&  number_of_lexems();
 };
+
+inline typename statistics::size_type statistics::number_of_lexems() const
+{
+    return my_number_of_lexems;
+}
+
+inline typename statistics::size_type& statistics::number_of_lexems()
+{
+    return my_number_of_lexems;
+}
 
 END_NAMESPACE
 
