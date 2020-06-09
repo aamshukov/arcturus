@@ -23,7 +23,11 @@ class lexical_analyzer : private noncopyable
 
         using snapshots_type = std::stack<const datum_type*>;
 
+        using id_type = std::size_t;
+
     protected:
+        id_type                     my_id;              // master lexer, id = 0
+
         content_type                my_content;         // loaded content
 
         const datum_type*           my_start_content;   // begining of content
@@ -53,6 +57,9 @@ class lexical_analyzer : private noncopyable
                                     lexical_analyzer(const content_type& content);
                                    ~lexical_analyzer();
 
+        id_type                     id() const;
+        id_type&                    id();
+
         const content_type&         content() const;
         content_type&               content();
 
@@ -75,6 +82,18 @@ class lexical_analyzer : private noncopyable
         void                        take_snapshot();
         void                        rewind_to_snapshot(); // backtrack
 };
+
+template <typename Token>
+inline typename lexical_analyzer<Token>::id_type lexical_analyzer<Token>::id() const
+{
+    return my_id;
+}
+
+template <typename Token>
+inline typename lexical_analyzer<Token>::id_type& lexical_analyzer<Token>::id()
+{
+    return my_id;
+}
 
 template <typename Token>
 inline const typename lexical_analyzer<Token>::content_type& lexical_analyzer<Token>::content() const

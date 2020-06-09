@@ -11,11 +11,12 @@ USINGNAMESPACE(core)
 
 template <typename Token>
 lexical_analyzer<Token>::lexical_analyzer(const typename lexical_analyzer<Token>::content_type& content)
-                       : my_content(content),
-                          my_start_content((*my_content).data()),
-                          my_end_content(my_start_content + (*my_content).count()),
-                          my_ptr(my_start_content),
-                          my_ptr_lexeme(nullptr)
+                       : my_id(0),
+                         my_content(content),
+                         my_start_content((*my_content).data()),
+                         my_end_content(my_start_content + (*my_content).count()),
+                         my_ptr(my_start_content),
+                         my_ptr_lexeme(nullptr)
 {
 }
 

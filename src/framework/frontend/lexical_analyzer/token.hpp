@@ -34,6 +34,8 @@ struct token
     using datum_type = text::datum_type;
     using codepoints_type = std::basic_string<datum_type>;
 
+    using id_type = std::size_t; // should be in sync with lexical_analyzer's
+
     enum class flags : uint64_t
     {
         clear     = 0x00,
@@ -52,11 +54,11 @@ struct token
     loc_type        offset;  // offset in context (absolute address)
     uint32_t        length;  // length of lexeme
 
-    codepoints_type literal; // string or char literal, numeric value
+    codepoints_type literal; // string or char literal (if unicode - always decoded), numeric value
 
     flags_type      flags;
 
-    int32_t         source;  // lexical analyser which recognizes this lexeme
+    id_type         source;  // lexical analyser which recognizes this lexeme, could be from a different file
 
     private:
         void accept(const token& other)

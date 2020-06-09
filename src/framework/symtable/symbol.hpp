@@ -20,7 +20,7 @@ class symbol : private noncopyable
         using datum_type = text::datum_type;
         using codepoints_type = std::basic_string<datum_type>;
 
-        using index_type = std::size_t;
+        using index_type = int32_t;
         using size_type = std::size_t;
 
         using value_type = std::variant<int8_t,
@@ -46,49 +46,79 @@ class symbol : private noncopyable
 
         using flags_type = tmpl_flags<flags>;
 
+        using attributes_type = std::unordered_map<string_type, value_type>;
+
     private:
-        token_type          my_token;           // link with content
-        value_type          my_value;           // inffered value if any, might be integer value, real value or identifier
+        token_type              my_token;               // link with content
+        value_type              my_value;               // inffered value if any, might be integer value, real value or identifier
 
-        std::size_t         my_ssa_id;          // 0 - unassigned, 1+
+        std::size_t             my_ssa_id;              // 0 - unassigned, 1+
 
-        type_type           my_type;
-        string_type         my_machine_type; //??
+        type_type               my_type;
+        string_type             my_machine_type; //??
 
-        size_type           my_offset;          // runtime offset
+        size_type               my_offset;              // runtime offset
 
-        size_type           my_size;            // runtime size in bytes, might be aligned
-        size_type           my_bitsize;         // runtime size in bits
+        size_type               my_size;                // runtime size in bytes, might be aligned
+        size_type               my_bitsize;             // runtime size in bits
 
-        //class_type          my_storage_class; //??
+        //class_type              my_storage_class;     //??
 
-        flags_type          my_flags;           // flags
+        flags_type              my_flags;               // flags
+
+        size_type               my_cardinality;         // scalar (0), vector/1D-array(1), matrix/2D-array(2), etc.
+
+        index_type              my_array_lower_bound;   //  [-10..10]
+        index_type              my_array_upper_bound;   //
+
+        attributes_type         my_attributes;          // custom attributes
 
     public:
-                            symbol() = default;
-                           ~symbol() = default;
+                                symbol();
+                               ~symbol();
 
-        const token_type&   token() const;
-        token_type&         token();
+        const token_type&       token() const;
+        token_type&             token();
 
-        const value_type&   value() const;
-        value_type&         value();
+        const value_type&       value() const;
+        value_type&             value();
 
-        std::size_t         ssa_id() const;
-        std::size_t&        ssa_id();
+        std::size_t             ssa_id() const;
+        std::size_t&            ssa_id();
 
-        const type_type&    type() const;
-        type_type&          type();
+        const type_type&        type() const;
+        type_type&              type();
 
-        std::size_t         offset() const;
-        std::size_t&        offset();
+        std::size_t             offset() const;
+        std::size_t&            offset();
 
-        std::size_t         size() const;
-        std::size_t&        size();
+        std::size_t             size() const;
+        std::size_t&            size();
 
-        flags_type          flags() const;
-        flags_type&         flags();
+        flags_type              flags() const;
+        flags_type&             flags();
+
+        const attributes_type&  attributes() const;
+        attributes_type&        attributes();
 };
+
+template <typename Token>
+symbol<Token>::symbol()
+             : my_ssa_id(0),
+               my_offset(0),
+               my_size(0),
+               my_bitsize(0),
+               my_flags(flags_type::clear),
+               my_cardinality(0),
+               my_array_lower_bound(0),
+               my_array_upper_bound(0)
+{
+}
+
+template <typename Token>
+symbol<Token>::~symbol()
+{
+}
 
 template <typename Token>
 inline const typename symbol<Token>::token_type& symbol<Token>::token() const
@@ -172,6 +202,18 @@ template <typename Token>
 inline typename symbol<Token>::flags_type& symbol<Token>::flags()
 {
     return my_flags;
+}
+
+template <typename Token>
+inline const typename symbol<Token>::attributes_type& symbol<Token>::attributes() const
+{
+    return my_attributes;
+}
+
+template <typename Token>
+inline typename symbol<Token>::attributes_type& symbol<Token>::attributes()
+{
+    return my_attributes;
 }
 
 END_NAMESPACE

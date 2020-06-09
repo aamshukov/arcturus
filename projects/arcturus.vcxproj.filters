@@ -288,6 +288,9 @@
     <ClInclude Include="..\src\framework\ir\code.hpp">
       <Filter>framework\ir</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\arcturus\arcturus_lexical_tools.hpp">
+      <Filter>arcturus</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\framework\core\logger.cpp">
@@ -383,6 +386,9 @@
     <ClCompile Include="..\src\framework\ir\control_flow_graph.cpp">
       <Filter>framework\ir</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\arcturus\arcturus_lexical_tools.cpp">
+      <Filter>arcturus</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\src\framework\frontend\lexical_analyzer\lexical_analyzer.inl">
@@ -415,5 +421,16 @@
     <None Include="..\src\framework\ir\code.inl">
       <Filter>framework\ir</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\docs\arcturus-grammar.dev.txt">
+      <Filter>docs</Filter>
+    </Text>
+    <Text Include="..\docs\arcturus-grammar.txt">
+      <Filter>docs</Filter>
+    </Text>
+    <Text Include="..\docs\arcturus-grammar.dev - 0.txt">
+      <Filter>docs</Filter>
+    </Text>
   </ItemGroup>
 </Project>

@@ -23,10 +23,10 @@ class parser : private noncopyable
         using parse_dags_type = std::vector<parse_dag_type>;
 
         using lexical_analyzer_type = std::shared_ptr<lexical_analyzer<token_type>>;
-        using lexical_analyzers_type = std::vector<lexical_analyzer_type>;
+        using lexical_analyzers_type = std::unordered_map<typename lexical_analyzer<token_type>::id_type, lexical_analyzer_type>;
 
     protected:
-        lexical_analyzer_type   my_lexical_analyzer;    // master lexer
+        lexical_analyzer_type   my_lexical_analyzer;    // master lexer, id = 0
         lexical_analyzers_type  my_lexical_analyzers;   // slave lexers, for example migh be introduced by #include(C/C++) or by import(arktur)
 
         parse_trees_type        my_trees;

@@ -14,7 +14,7 @@ class content : private noncopyable
         using datum_type = text::datum_type;
         using data_type = std::shared_ptr<datum_type[]>;
 
-        using id_type = int32_t;
+        using id_type = std::size_t;
         using source_type = string_type;
 
     protected:

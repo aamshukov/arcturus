@@ -20,23 +20,24 @@ class type : public noncopyable
 
 
     private:
-        size_type   my_size; // size in bits, width for runtime allocation
+        size_type       my_size; // size in bits, width for runtime allocation
 
 
         //flags       my_flags;
     //private:
     //    hash_type   hashcode();
 
-
+        bool            is_function() const; //??
+        bool            is_procedure() const; //??
 
     public:
-                    type();
-                   ~type();
+                        type();
+                       ~type();
 
-        bool        operator == (const type& other);
-        bool        operator != (const type& other);
+        bool            operator == (const type& other);
+        bool            operator != (const type& other);
 
-    size_type       size() const;
+    size_type           size() const;
 
 
     //    return_type accept(const type_visitor_type<return_type, param_type>& visitor, param_type visitor_param);

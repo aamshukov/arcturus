@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClInclude Include="..\src\arcturus\arcturus_controller.hpp" />
     <ClInclude Include="..\src\arcturus\arcturus_lexical_analyzer.hpp" />
+    <ClInclude Include="..\src\arcturus\arcturus_lexical_tools.hpp" />
     <ClInclude Include="..\src\arcturus\arcturus_parser.hpp" />
     <ClInclude Include="..\src\arcturus\arcturus_parse_tree.hpp" />
     <ClInclude Include="..\src\arcturus\arcturus_parse_tree_variable.hpp" />
@@ -96,6 +97,7 @@
   <ItemGroup>
     <ClCompile Include="..\src\arcturus\arcturus.cpp" />
     <ClCompile Include="..\src\arcturus\arcturus_lexical_analyzer.cpp" />
+    <ClCompile Include="..\src\arcturus\arcturus_lexical_tools.cpp" />
     <ClCompile Include="..\src\arcturus\arcturus_parser.cpp" />
     <ClCompile Include="..\src\arcturus\arcturus_token.cpp" />
     <ClCompile Include="..\src\framework\backend\codegen\activation_record.cpp" />
@@ -142,6 +144,11 @@
     <None Include="..\src\framework\ir\ir.inl" />
     <None Include="..\src\framework\ir\ir_visualization.inl" />
     <None Include="..\src\framework\symtable\symbol_table.inl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\docs\arcturus-grammar.dev - 0.txt" />
+    <Text Include="..\docs\arcturus-grammar.dev.txt" />
+    <Text Include="..\docs\arcturus-grammar.txt" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

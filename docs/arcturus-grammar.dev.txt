@@ -268,11 +268,16 @@ fully-qualified-name                : identifier
 
 
 
-keyword                             : 'const' 'byte' 'integer' 'real' 'string' 'boolean' 'true' 'false'
+keyword                             : 'byte' 'integer' 'real' 'string' 'boolean'
+                                    | 'true' 'false'
                                     | 'struct'
-                                    | 'if' 'else' 'for' 'continue' 'break' 'return'
-                                    | 'import' 'namespace'
-                                    | 'is' 'as' 'and' 'or' 'not' 'in'
+                                    | 'const' 'partial'
+                                    | 'if' 'else' 'for'
+                                    | 'continue' 'break' 'return'
+                                    | 'import'
+                                    | 'namespace'
+                                    | 'is' 'as'?? 'and' 'or' 'not' 'in'
+                                    | 'link'?? 'pointer'??
                                     ;
 
 punctuator                          : ':' '..' '...' ',' '{' '}' '[' ']' '(' ')' '->'

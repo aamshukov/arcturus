@@ -100,7 +100,7 @@ struct quadruple
     {
         symbol_type     symbol;
         quadruple_type  target; // target label used with 'goto' op code
-        label_type      label;  //  label number used with 'label' op code
+        label_type      label;  // label number used with 'label' op code
     };
 
     using result_type = quadruple::result;
