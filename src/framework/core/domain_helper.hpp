@@ -72,6 +72,13 @@ inline T modify_enum_flags(T flags, T add, T remove)
     return (T)((static_cast<std::underlying_type_t<T>>(flags) & ~static_cast<std::underlying_type_t<T>>(remove)) | static_cast<std::underlying_type_t<T>>(add));
 }
 
+template <typename T = std::size_t>
+inline bool is_enum_flag_set(T flag, T flags)
+{
+    static_assert(std::is_enum<T>::value, "Non enum has been provided.");
+    return ((static_cast<std::underlying_type_t<T>>(flags) & static_cast<std::underlying_type_t<T>>(flag)) == static_cast<std::underlying_type_t<T>>(flag));
+}
+
 inline string_type const& empty_string()
 {
     static string_type result;
