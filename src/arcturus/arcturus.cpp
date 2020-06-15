@@ -112,17 +112,6 @@ USINGNAMESPACE(frontend)
 USINGNAMESPACE(backend)
 USINGNAMESPACE(orchestration)
 
-struct my_token_traits : public token_traits
-{
-    DECLARE_ENUM
-    (
-        type,
-        uint32_t,
-        unknown = 0,                                
-        size
-    )
-};
-
 int main()
 {
     logger::instance().initialize(LR"(d:\tmp\arcturus.log)");
