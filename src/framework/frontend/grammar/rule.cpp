@@ -8,8 +8,6 @@
 
 #include <core/factory.hpp>
 
-#include <core/flags.hpp>
-
 #include <core/visitor.hpp>
 #include <core/tree.hpp>
 

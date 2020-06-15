@@ -24,8 +24,6 @@
 
 #include <core/configurator.hpp>
 
-#include <core/flags.hpp>
-
 #include <core/counter.hpp>
 
 #include <core/context.hpp>
@@ -71,8 +69,8 @@
 #include <frontend/type/type.hpp>
 #include <frontend/type/type.inl>
 
-#include <symtable/scope/scope.hpp>
 #include <symtable/symbol.hpp>
+#include <symtable/scope/scope.hpp>
 #include <symtable/symbol_table.hpp>
 #include <symtable/symbol_table.inl>
 
@@ -113,6 +111,17 @@ USINGNAMESPACE(symtable)
 USINGNAMESPACE(frontend)
 USINGNAMESPACE(backend)
 USINGNAMESPACE(orchestration)
+
+struct my_token_traits : public token_traits
+{
+    DECLARE_ENUM
+    (
+        type,
+        uint32_t,
+        unknown = 0,                                
+        size
+    )
+};
 
 int main()
 {

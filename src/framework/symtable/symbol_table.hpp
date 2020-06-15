@@ -26,8 +26,10 @@ class symbol_table : public singleton<symbol_table<Token>>
     //    stack_type              stack; // display
 
     public:
+        using token_type = Token;
+
         using size_type = std::size_t;
-        using scope_type = std::shared_ptr<scope>;
+        using scope_type = std::shared_ptr<scope<token_type>>;
 
     private:
         scope_type              my_root;    // root of scope tree, might represent 'global' scope

@@ -3,6 +3,7 @@ grammars
 libs
 build
 projects/.vs
+tmp/
 x64
 tmp
 *.user

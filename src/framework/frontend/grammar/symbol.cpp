@@ -8,8 +8,6 @@
 
 #include <core/factory.hpp>
 
-#include <core/flags.hpp>
-
 #include <frontend/grammar/symbol.hpp>
 
 BEGIN_NAMESPACE(frontend)

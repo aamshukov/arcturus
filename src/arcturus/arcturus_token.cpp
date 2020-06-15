@@ -24,8 +24,6 @@
 
 #include <core/configurator.hpp>
 
-#include <core/flags.hpp>
-
 #include <frontend/lexical_analyzer/token.hpp>
 #include <arcturus_token.hpp>
 

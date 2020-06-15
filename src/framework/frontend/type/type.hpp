@@ -18,6 +18,20 @@ class type : public noncopyable
         //using return_type = TReturn;
         //using param_type = TParam;
 
+    public:
+        enum class kind : uint16_t
+        {
+            unknown       = 0,
+            integer       = 1,
+            real          = 2,
+            boolean       = 3,
+            byte          = 4,
+            string        = 5,
+            pointer       = 6,
+            type_variable = 7, // struct, enum
+            namespacee    = 8,
+            module        = 9
+        };
 
     private:
         size_type       my_size; // size in bits, width for runtime allocation

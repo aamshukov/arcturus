@@ -16,6 +16,7 @@ class symbol : private noncopyable
 {
     public:
         using token_type = Token;
+        using symbol_type = std::shared_ptr<symbol<token_type>>;
 
         using datum_type = text::datum_type;
         using codepoints_type = std::basic_string<datum_type>;
@@ -44,11 +45,15 @@ class symbol : private noncopyable
             reg   = 0x0001  // if the symbol's value is in a register
         };
 
-        using flags_type = tmpl_flags<flags>;
+        using flags_type = flags;
 
         using attributes_type = std::unordered_map<string_type, value_type>;
 
+        using counter_type = counter;
+
     private:
+        codepoints_type         my_name;
+
         token_type              my_token;               // link with content
         value_type              my_value;               // inffered value if any, might be integer value, real value or identifier
 
@@ -73,9 +78,14 @@ class symbol : private noncopyable
 
         attributes_type         my_attributes;          // custom attributes
 
+        static counter_type     my_tmp_counter;
+
     public:
                                 symbol();
                                ~symbol();
+
+        const codepoints_type&  name() const;
+        codepoints_type&        name();
 
         const token_type&       token() const;
         token_type&             token();
@@ -100,7 +110,12 @@ class symbol : private noncopyable
 
         const attributes_type&  attributes() const;
         attributes_type&        attributes();
+
+        static symbol_type      get_new_temporary();
 };
+
+template <typename Token>
+typename symbol<Token>::counter_type symbol<Token>::my_tmp_counter;
 
 template <typename Token>
 symbol<Token>::symbol()
@@ -118,6 +133,18 @@ symbol<Token>::symbol()
 template <typename Token>
 symbol<Token>::~symbol()
 {
+}
+
+template <typename Token>
+inline const typename symbol<Token>::codepoints_type& symbol<Token>::name() const
+{
+    return my_name;
+}
+
+template <typename Token>
+inline typename symbol<Token>::codepoints_type& symbol<Token>::name()
+{
+    return my_name;
 }
 
 template <typename Token>
@@ -214,6 +241,36 @@ template <typename Token>
 inline typename symbol<Token>::attributes_type& symbol<Token>::attributes()
 {
     return my_attributes;
+}
+
+template <typename Token>
+typename symbol<Token>::symbol_type symbol<Token>::get_new_temporary()
+{
+    symbol_type result;
+
+    auto num = my_tmp_counter.value();
+
+    if(num < 999999)
+    {
+        datum_type t [] = { '0', '0', '0', '0', '0', '0', '~', '$', '_', 'T', 'M', 'P', '_', '$', '~' }; // 15 + 0 = 16
+
+        char b [] = { '0', '0', '0', '0', '0', '0' };
+
+        auto n = array_size(b);
+
+        _itoa_s(num, b, n, 10);
+
+        for(auto k = 0; k < n; k++)
+        {
+            t[k] = b[k];
+        }
+
+        result = factory::create<symbol<token_type>>();
+
+        (*result).name() = t;
+    }
+
+    return result;
 }
 
 END_NAMESPACE

@@ -20,7 +20,7 @@ class rule
             clear = 0x00
         };
 
-        using flags_type = tmpl_flags<flags>;
+        using flags_type = flags;
         using ast_operators_type = std::map<std::size_t, tree::flags_type>;
 
     private:

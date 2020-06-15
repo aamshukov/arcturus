@@ -43,7 +43,6 @@
     <ClInclude Include="..\src\framework\core\enum.hpp" />
     <ClInclude Include="..\src\framework\core\enumerate.hpp" />
     <ClInclude Include="..\src\framework\core\factory.hpp" />
-    <ClInclude Include="..\src\framework\core\flags.hpp" />
     <ClInclude Include="..\src\framework\core\graph.hpp" />
     <ClInclude Include="..\src\framework\core\logger.hpp" />
     <ClInclude Include="..\src\framework\core\noncopyable.hpp" />
@@ -146,7 +145,6 @@
     <None Include="..\src\framework\symtable\symbol_table.inl" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="..\docs\arcturus-grammar.dev - 0.txt" />
     <Text Include="..\docs\arcturus-grammar.dev.txt" />
     <Text Include="..\docs\arcturus-grammar.txt" />
   </ItemGroup>

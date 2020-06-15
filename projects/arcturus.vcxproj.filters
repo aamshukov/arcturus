@@ -81,9 +81,6 @@
     <ClInclude Include="..\src\framework\core\factory.hpp">
       <Filter>framework\core</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\framework\core\flags.hpp">
-      <Filter>framework\core</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\framework\core\graph.hpp">
       <Filter>framework\core</Filter>
     </ClInclude>
@@ -427,9 +424,6 @@
       <Filter>docs</Filter>
     </Text>
     <Text Include="..\docs\arcturus-grammar.txt">
-      <Filter>docs</Filter>
-    </Text>
-    <Text Include="..\docs\arcturus-grammar.dev - 0.txt">
       <Filter>docs</Filter>
     </Text>
   </ItemGroup>

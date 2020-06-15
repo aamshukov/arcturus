@@ -49,7 +49,7 @@ class symbol
             clear = 0x0000
         };
 
-        using flags_type = tmpl_flags<flags>;
+        using flags_type = flags;
 
         static symbol_type              epsilon;
         static symbol_type              eof;

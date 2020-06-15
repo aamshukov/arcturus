@@ -24,8 +24,6 @@
 
 #include <core/configurator.hpp>
 
-#include <core/flags.hpp>
-
 #include <core/counter.hpp>
 
 #include <core/context.hpp>

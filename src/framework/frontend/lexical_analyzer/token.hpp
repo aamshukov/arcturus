@@ -44,7 +44,7 @@ struct token
         synthetic = 0x04  // additional (artificial) tokens which are inserted into the token stream ...
     };
 
-    using flags_type = tmpl_flags<flags>;
+    using flags_type = flags;
 
     using traits = Traits;
     using token_type = typename traits::type;

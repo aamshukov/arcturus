@@ -18,7 +18,7 @@ struct tree : private noncopyable
         not_in_ast  = 0x0004  // aka ANTLR, expr : mexpr (’+’^ mexpr)* EOF! ;  /
     };
 
-    using flags_type = tmpl_flags<flags>;
+    using flags_type = flags;
 
     using tree_type = std::shared_ptr<tree>;
     using trees_type = std::vector<tree_type>;

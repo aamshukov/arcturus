@@ -17,7 +17,7 @@ struct dag : private noncopyable
         processed = 0x0008
     };
 
-    using flags_type = tmpl_flags<flags>;
+    using flags_type = flags;
 
     using dag_type = std::shared_ptr<dag>;
     using dags_type = std::vector<dag_type>;
