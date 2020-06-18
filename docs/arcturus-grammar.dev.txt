@@ -270,6 +270,7 @@ fully-qualified-name                : identifier
 
 keyword                             : 'byte' 'integer' 'real' 'string' 'boolean'
                                     | 'true' 'false'
+                                    | 'enum'
                                     | 'struct'
                                     | 'const' 'partial'
                                     | 'if' 'else' 'for'
@@ -277,10 +278,12 @@ keyword                             : 'byte' 'integer' 'real' 'string' 'boolean'
                                     | 'import'
                                     | 'namespace'
                                     | 'is' 'as'?? 'and' 'or' 'not' 'in'
-                                    | 'link'?? 'pointer'??
+                                    | 'link'?? 'pointer'?? 'reference'?? 'ref'??
+                                    | 'lazy'
+                                    | 'pass'?? 'noop'??
                                     ;
 
-punctuator                          : ':' '..' '...' ',' '{' '}' '[' ']' '(' ')' '->'
+punctuator                          : ':' '..' '...' ',' '{' '}' '[' ']' '(' ')' '->'??
                                     ;
 
 operator                            : '+' '-' '*' '/' '>>' '<<' '=' '==' '!=' '<' '<=' '>' '>=' '&' '&&' '|' '||' '^'
@@ -572,51 +575,325 @@ type-argument                       : type
 
 
 
-//??
+//
+compilation composition
+    imports all deps into one compilation-unit and then processed
+
+                              program arcturus
+
+                 namespace N1                   namespace N2
+
+    package1                      package2                         package3
+        module1                       module1                          module1
+        module2                       module2                          module2
+        module3                       module3                          module3
+
+    package(physical) - spans compilation-units (might be files) - distribution unit
+        modules
+            module1 - compilation-unit1 (file)
+            ...
+            moduleN - compilation-unitN (file)
+
+    namespace(logical) - spans packages
 
 
 
+namespace
+    namespace sample
+        namespace nested
+    using sample.nested
+    import sample.nested
+    a : sample.nested.point
+
+    alias
+        using sn = sample.nested
+        import sample.nested as sn
+    a : sn.point
+
+    namespace n1.n2.n3
+        namespace w
+    a : n1.n2.n3.w.point
 
 
 
+comment
+    #  single line comment
+    // single line comment
+    /* /* miltiline nested comment */ */
 
 
 
+declarations:
+    let a : integer | string
+
+    byte
+        flags: byte = 0xDA
+        bits : byte = 0b1_0_00_10_1
+        line : byte [0..256]
+
+    boolean
+        flag: boolean                               default = false
+        flag: boolean = true
+
+    number
+        integer
+            i, j, k : integer                        uninitialized, all have the same value which is default - 0
+            i, j, k : integer = 1_2_345_678_90       initialization, all have the same value
+            i, j, k : integer = 1'2'34'5'67'890      initialization, all have the same value
+            i, j, k : integer const = 100            initialization of constants, all have the same value, must be assigned
+            i, j, k : const integer = 100
+            i, j, k : 0                              initialization, all have the same value, type integer is inferred
+            i, j, k : const = 100                    initialization of constants, all have the same value, type integer is inferred
+            i, j, k : integer readonly               uninitialized variables of read-only constants, might be called later after declaration, all have the same value
+            i, j, k : integer readonly = 100         initialization of read-only constants, might be called later after declaration, all have the same value
+            i, j, k : readonly integer = 100
+            i, j, k : integer -10 .. 100             uninitialized, all have the same range [-10:100], range's bounddary must be const expression
+            i, j, k : integer -10 .. 100 = 5         initialized range, initialized with 5, all have the same vaue in the range
+
+            i, j, k = foo()                         deconstruction, types are inferred from foo() return values
+            i, j, k = 10
+
+            row/column access (default)
+            column/row access
+            [] - checked(default)
+            () - unchecked
+            c  - column based suffix
+            a, b, c: integer [1..5]              =  3,4                 ----- checked array, row based
+            a, b, c: integer (1..5)              =  3,4                 ----- unchecked array, row based
+            a, b, c: integer [1..5; -1..8; 0..4] =  3,4; 2,3,3; 5,6,6   ---- 3D
+            a, b, c: integer [1..5; -1..8; 0..4] =  ( 3,4; 2,3,3;
+                                                        5,6,6 )
+            a, b, c: integer [1..5; -1..8; 0..4] =  ( 3,4; 2,3,3; 5,6,6 )
+            a, b, c: integer [1..5, -1..8, 0..4] =  ( (3,4), (2,3,3), (5,6,6) )
+            a, b, c: integer [1..5] c            =  3,4                 ----- checked array, column based
+            a, b, c: integer (1..5) c            =  3,4                 ----- unchecked array, column based
+
+            a[2, -1, 0] = 5
+            a[2, -1, 0] = 5
+
+            a : integer [0..2; 0..3; 0..4] = ( ( ( 3, 4, 2, 3 ), (0, -3, 9, 11), (23, 12, 23, 2) ), ( ( 13, 4, 56, 3 ), ( 5, 9, 3, 5 ), ( 3, 1, 4, 9 ) ) )
+
+            slices, APL?? and python
+            slice = a[-1:1; -5:45;]
+
+        real
+            θ, φ, π : real
+            θ, φ, π : 0.1                           inferred as real
+            θ, φ, π : real = 0.1
+            θ, φ, π : real const = 0.1
+            θ, φ, π : const real = 0.1
+            θ, φ, π : real readonly = 0.1
+            θ, φ, π : readonly real = 0.1
+            π       : real const = 3.14159
+            θ, φ    : real -π .. +π                 π must be const expression
+            θ, φ    : real -π .. +π = π/2           might be initialized with expression
+            θ, φ    : const real -π .. +π = π/2     might be initialized with expression
+            θ, φ    : real const -π .. +π = π/2     might be initialized with expression
 
 
-structure/record:
-    inheritance?
+    string (always represented as unicode codepoint - 32 bits), " '' " or ' "" '
+        name, nickname : string
+        name, nickname : string = "Art"
+        name, nickname : string const = "Art"       must be initialized
+        name, nickname : const string = "Art"       must be initialized
+        name, nickname : string readonly = "Art"
+        name, nickname : readonly string = "Art"
+
+        "path 'c:\\tmp\\arktur\\file.txt' exists"  'path "c:\\tmp\\arktur\\file.txt" exists'
+        r"path 'c:\tmp\arktur\file.txt' exists"    r'path "c:\tmp\arktur\file.txt" exists'
+        "path is {path}, where path is substitued by variable 'path'"
+        r"path is {path}, where path is substitued by variable 'path'"
+        "\' \" \n \r \t \\ \b \f \v \017 \x8C \X8C \uD83C\uDF4C \U0001f34c"
+        "balance {0:.2f} is as {1:YYMMDD}"              positional
+        "balance {amount:.2f} is as {today:YYMMDD}"     keyword
+        "balance {0:.2f} is as {1:YYMMDD} for {user}"   positional keyword mixture
+        DOES NOT support f-strings (python) or interpolated $"" (c#) strings on purpose (hard to debug)
 
 
-tuple:
-   deconstructur creates record/structure automatically or just a set of variables?
+    enum
+        direction enum [integer]
+            north,
+            east,
+            south,
+            west
 
-enum:
+        numbers enum ( one, two, three,
+                       forty = 40, fortyone)
 
-invocation-experession:
-lambda-expression:
-callable:
-    function
-        foo a b c
-    lambda
-        lambda a b c
+        numbers enum string
+            ( odin = "1", dva = "2" )  ------------ when non-integer - all must be initialized
+        numbers enum real
+            ( r1 = 0.23, r2 = 3.45 )   ------------ when non-integer - all must be initialized
+        days enum integer ( monday, tuesday, wednesday,
+                            thursday, friday, saturday, sunday )
+        workdays enum days
+            monday .. friday
+        weekend enum days
+            saturday .. sunday
+        weekend enum days ( saturday .. sunday )
+        odddays enum days
+            monday,
+            tuesday .. wednesday,
+            friday,
+            weekend
 
 
+    struct [<Ts>][partial] [readonly|const]
+            [readonly ------- values can be assigned only once]
+            [const ------- values must be assigned in declaration]
+            each struct defines one defaulet instance of this struct - static sentinel = default
+
+        point struct
+            x : real = 0.0,
+            y : real = 0.0,
+            z : real = 0.0,
+            w : real = 1.0
+
+        point<T> struct
+            x : T,
+            y : T,
+            z : T,
+            w : real = 1.0
+
+        point<T> struct
+            x, y, z : T
+            w : real = 1.0
+
+        point<T> struct ( x : T, y : T,
+                          z : T, w : real = 1.0 )
+
+        node<T> struct
+            value : T,
+            point : point<T>,
+            next : node,          ---- when parse mark as ref field, by default it set to the 'default' sentinel
+            prev : node
+
+        node<T> struct
+            value : T,
+            point : point<T>,
+            next, prev : node
+
+        tree<T> struct
+            gr_symbol : grammar.symbol
+            ir_symbol : ir.symbol
+            value : T,
+            papa : tree
+            kids : tree
+            flags : byte = 0x00
+
+        status<T, P, R, TSize integer = 64, TWeight real = 1.4, TText string = "message"> struct
+            code : T,
+            param : P,
+            return : R,
+            size : TSize,
+            weight : TWeight,
+            text : TText
+
+        user<T> struct extends tree<T>
+            name : string,
+            age : integer,
+            married : boolean = false,
+            status : string = 'active',
+            salary : real = 1.0
+
+        manager<T> struct extends user<T>
+            occupation : string,
+            bonus : real
+
+        boss<T> struct extends manager<T>
+            rank : string,
+            big_bonus : real
+
+        myboss : boss<string> = ( name = 'Arthur', age = 50, married = true, status = 'active',
+                                  salary = 10000000.0, occupation = 'R&D', bonus = 1231211.2,
+                                  rank = 'highest', big_bonus = 656545234.923432 )
+
+        pp0 : point<real>
+        pp0 : point<real> = ( 1.2, 3.2,
+                              5.0, 3.12 )
+        pp0 : point<real> = 1.2, 3.2, 5.0, 3.12
+        pp1 : point<real> = x = 1.2, y = 3.2, z = 5.0, w = 3.12
+        pp2 : point<real> = z = 1.2, w = 3.2, y = 5.0, z = 3.12
+        pp2 : point<real> = ( z = 1.2, w = 3.2,
+                                y = 5.0, z = 3.12 )
+        pp3 : point<real> = ( x = 1.2, w = 3.12 )
+        pp4 : point<integer> = ( z = 1 )
+
+        n1 : node<integer> = ( 5, pp4 )
+        n1 : node<integer> = ( 5, pp4, default, default )
+        n1 : node<integer> = ( value = 5, point = pp4, next = n1, prev = n1 )
+        n2 : node<integer> = ( value = 5, point = ( x = 1.2, w = 3.12 ), n2, n1 ) ---
+                                                    anonymous struct
+        n3 : node<integer> = ( value = 5, point = get_point(), next = n3, prev = n2 )
 
 
-for expression
-for (
-        expression)
+    callable
+        parameters passing method
+            by value
+                byte, integer, real, boolean
+            by ref
+                string, array, enum, struct, callable
 
-foreach
-while
-do while
+        function
+            func/proc
+                name[<T>] func/proc ([params]) [lazy] [ -> (returns) | returns]
+
+                foo func(i : integer, r : real = π, s : string = "", n1 : node<integer> = ( 5, pp4 )) lazy returns i, j, k: integer, pp2 : point<real>
+                foo func(i : integer, r : real = π, s : string = "", n1 : node<integer> = ( 5, pp4 )) lazy -> ( i, j, k: integer,
+                                                                                                                pp2 : point<real> )
+                foo(1)                  ------- after call variables i,j,k and pp2 are avaiable automatically
+                i1,j1,k1,pp20 = foo(1)  ------- after call variables i,j,k and pp2 can have different names
+
+                foo<T> func(t : T, r : real = π, s : string = "") lazy -> (i, j, k: T, pp2 : point<T>)
+                    body or { body }
+
+                foo<real>(1.23, φ, "test")
+                foo<real>(t : 1.23, s : "test", r : φ) lazy??
+
+                foo func(i : integer,
+                         r : real = π,
+                         s : string = "",
+                         n1 : node<integer> = ( 5, pp4 ),
+                         ...) ------- variable number of params
+                            lazy returns (i, j, k: integer, pp2 : point<real>)
+                                 ->
+                    body or { body }
+
+                nested
+                    num1 func(x : integer) -> integer
+                       num2 func(y : integer) -> (integer)
+                          return x * y
+                       return num2
+                    res = num1(10)
+                    print(res(5))
+
+                block
+                    block ------ new scope
+                        ...
+                    block ------ new scope
+                        ...
 
 
-if expression
-else if
-else if
-else
+        lambda (no templates/generics)
+                (t : integer, r : real = π, s : string = "") lazy -> i, j, k: real, pp2 : point<real> => expression body
+                (t : integer, r : real = π, s : string = "") lazy -> (i, j, k: real, pp2 : point<real>) => { statements body }
+
+
+    contracts
+        interface
+
+
+    statement
+        selection
+            if condition                                    if (condition)      ----- might be split across lines
+                statements                                      { statements }  ----- free layout
+            else if condition                               else if (condition)
+                statements                                      { statements }
+            else                                            else
+                statements                                      { statements }
+
+
+        case/switch
 
 case(s):
     when 1
@@ -624,510 +901,6 @@ case(s):
     when a is string || a is real && a is customtype
 
 
-
-continue
-break
-return ----- only one return per func/proc?
-yield
-
-
-no null, everything always initialized
-no NULL or NIL, all types have a default ctor so anytime exists a default instance 
-
-
-
-parameters passing types
-
-
-templates/generics
-template <uint16 SHORT_TEXT_SIZE = 64> struct status
-status : struct<T, P, R, integer SHORT_TEXT_SIZE = 64>
-
-
-scalars:
-    let a = 0
-    let b = 10
-    let c = 0x10
-    let d = 4.5
-    let f = 'abc'
-    g = true/false
-    integer
-    real
-    boolean
-
-arrays:
-   a[2]             - checked array
-   a(2)             - raw unchecked array
-   b[-2:3]          - checked ranged-based array
-   b[-2:3, 0:10]    - checked ranged-based array, multidimensional
-   b[-2..3, 0..10]
-   c[-2:3] c[-2..3] - checked ranged-based array
-   c(-2:3, 0:10)    - raw unchecked ranged-based array, multidimensional
-   d[2,c]           - checked array, column based, aka FORTRAN
-   d(2,c)           - raw unchecked array, column based, aka FORTRAN
-   d[2,r]           - checked array, row based, aka C, 'r' is optional
-   d(2,r)           - raw unchecked array, raw based, aka C, 'r' is optional
-   f[-2..3, 0..10]  - checked ranged-based array, multidimensional, alternative syntax as in PASCAL
-
-
-type byte = 0..255
-type sbyte = -127..127
-
-
-type user
-    name = ''
-    age = 50
-    weight = 78.9
-
-
-callable createUser name: string, age: integer, weight: real, kids: user[]
-define createUser(name: string,
-                  age: integer,
-                  weight: real,
-                  kids: user[])
-    user result { name, age, weight, kids }
-    user result { name = name, age = age, weight = weight, kids = kids[1:3] }
-
-    const pi = 3.14
-
-    let a = 0
-    let a: integer
-    let b = 10
-    let b: integer
-    let c = 0x10
-
-    let d = 4.5
-    let d: real
-     let d: real = 4.5
-    let d: real 4.5
-    let d: 4.5 real
-    let d: real(4.5)
-
-    let f = 'abc'
-    let g = true
-    let b[-2:3, 0:10]
-    let d[2,r]
-    let d(2,c)
-
-    let d0 = d[0]
-    let d1 = d[1]
-
-    let b11 = b(1, 1)
-
-    let l = len(d)
-
-    define foo a: integer, b: integer
-        define bar a: integer, b: integer
-            return a + b
-        return bar a, b
-
-    let fooFunc = foo
-    let r = fooFunc(10, 5)
-
-
-    return result
-
-
-define foo name: string, *, **
-define foo (name: string,
-            *,
-            **)
-
-
-
-let a = 0 // type inferred to be integer
-let a : integer
-
-let a b c = foo(1  2  3)
-let a, b, c : integer
-
-         literal only
-         |
-         ....
-let pi = 3.14 real const
-    pi = 3.14 * calculateCoeff()
-         .......................
-         |
-         could be expression
-
-let pi : real const = 3.14
-
-
-
-let pi = 3.14 const     // const, because initialized, type inferred to be real
-let pi : real const     // readonly, because will be initialized
-
-let recordType = (foo : 6, bar : 6) // Record
-let recordType = { foo : 6;  bar : 6 } // Record
-
-let b [-2..3, 0..10,c] : integer
-let b [-2..3, 0..10,r] = [ 0, 1, 2, 3, 4, 5 ]
-
-
-let colvec [] = [1;2;4];   % column vector 
-let crowvec [] = [1,2,4];   % row vector 
-let m = [1,2,3;4,5,6];  % matrix with size 2x3
-
-let x : integer     // initialized to 0
-let x = 1
-
-type byte = 0..255
-type sbyte = -127 ..127
-
-type user
-    name = ''
-    age = 50
-    weight = 78.9
-
-
-type point
-    x: real
-    y: real
-    z: real
-
-let point : point const             // readonly
-    point = 1.0 2.5 3.4
-    point = 1.0, 2.5, 3.4
-
-let point = (1.0, 2.5, 3.4) point
-
-let points [] : point
-let points [-1..0] : point
-let points [-1..0] = [ (1.0, 2.5, 3.4), (1.0, 2.5, 3.4) ] point
-let points [-1..0] = [ 1.0, 2.5, 3.4 ; 1.0, 2.5, 3.4 ] point
-let points = [ (1.0, 2.5, 3.4), (1.0, 2.5, 3.4) ] point
-
-let points [] : point<real>
-let points [-1..0] : point<real>
-let points [-1..0] = [ (1.0, 2.5, 3.4), (1.0, 2.5, 3.4) ] point<real>
-let points = [ (1.0, 2.5, 3.4), (1.0, 2.5, 3.4) ] point<real>
-
-let x, y = y, x
-    x, y = y, x
-
-sinX, cosX = math.Sincos(x)
-
-define foo a: integer, b: integer, u: user
-    define bar a: integer, b: integer
-        return a + b + u.age
-    return bar a, b
-
-user u = {}
-let fooFunc = foo
-let r = fooFunc(10, 5, u)
-
-
-
-let foo : a integer, b integer, u user -> real, integer, string
-    let bar : string (a: integer, b: integer)
-        return string(a + b + u.age * 0.1)
-    return bar
-
-let callFoo = foo(1, 2)
-callFoo
-callFoo(5, 6)
-
-let ee : (RED = 1, GREEN ='green',
-            BLUE = 0xBE)
-
-
-
-
-
-
-
-
-
-
-let ars = [1,2,3] // 0-3
-let ars = [[1], [2], [3]] // 1 element, 2 elements, 3 elements starting from zero
-
-let ars = (1,2,3) // 0-3 uncheked
-let ars = ((1), (2), (3)) // 1 element, 2 elements, 3 elements starting from zero unchecked
-
-
-
-
-
-
-
-statement           : noop-statement
-                    ;
-
-
-
-noop-statement      : 'noop'
-                    ;
-
-
-
-
-let slice = ars[-1:1, -5:45]
-
-
-let a : integer | string
-
-function foo <T=real, U> (a = 1.3, b: integer, c: T)  : integer, real, T, U
-    asaf
-    sdfdsg
-    sdgdsgdsg
-    sdgsd
-    dssdfsd
-    return f
-
-
-let foo = function <T=real, U> (a = 1.3, b: integer, c: T)  : integer | real, T | U, integer
-    asaf
-    sdfdsg
-    sdgdsgdsg
-    sdgsd
-    dssdfsd
-    return f
-
-
-let lambda : 
-
-
-let singleton : integer
-
-
-
-func/function
-proc/procedure
-
-program arcturus
-
-use namespace N1
-use namespace N2
-
-
-
-             namespace N1                   namespace N2
-
-package1                      package2                         package3
-    module1                       module1                          module1
-    module2                       module2                          module2
-    module3                       module3                          module3
-
-module1: file.arctur
-    Point : struct partial
-        x: real = 0.1
-        y: real = 0.1
-        z: real = 0.1
-        w: integer = 1
-
-
-
-
-
--- This is a line-comment
- 
-# This is a line-comment
-
-#
-    This is a block-comment
-    It goes until de-dent
- 
-dedent: 0x42 -- The comment block above is now closed
-
-
-(* ... *)
-(* ...
-    *)
-
-
-
-
-program arcturus
-
-use namespace N1
-use namespace N2
-
-type T1<T, U = integer>
-    m1 : real const = 5.0
-    m2 : T
-    m3 : U = 0
-
-procedure main<T=real, U>(a = 1.3, b: integer, c: T, d: U) integer, real, T, U
-    type point
-        x: real
-        y: real
-        z: real
-
-    let points [] : point
-    let points [-1..0] : point
-    let points [-1..0] = [ (1.0, 2.5, 3.4), (1.0, 2.5, 3.4) ] point
-    let points = [ (1.0, 2.5, 3.4), (1.0, 2.5, 3.4) ] point
-
-    function fibonacci<T = integer>(n : T) T
-        if n == 1
-            return 0
-        else n == 2
-            return 1
-        else: 
-            return fibonacci<T>(n - 1) + fibonacci<T>(n-2)
-
-    let fb = fionachi<integer>(10)
-
-    let t : T
-    let u : U
-
-    return 1, 3.14, t, u
-
-
-main<real, integer>(c = 2, a = 3.2, b = -1) // somehow return code to system (to OS)
-
-
-
-function makeList(seperator : string) string
-    let counter = 1
-
-    function makeItem(item : string) string
-        counter = counter + 1
-        return text.toString(counter)
-
-    return makeItem("first") + makeItem("second") + makeItem("third")
-
-    return text.concat(makeItem("first"), makeItem("second"), makeItem("third"))
-
-
-
-package:system
-    module:text
-
-namespace system.text
-
-function concatenate(...) string
-
-
-
-let point = Point { x: 1.0, y: 2.5 };
-
-
-
-
-
-
-package(physical) - spans files - distribution unit
-    modules
-        file1
-        ...
-        fileN
-
-namespace(logical) - spans packages
-
-
-import/using/refer/include
-# // /* /*nested*/ */
-{ Comment 1 (* comment 2 *) }  
-(* Comment 1 { comment 2 } *)  
-{ comment 1 // Comment 2 }  
-(* comment 1 // Comment 2 *)  
-// comment 1 (* comment 2 *)  
-// comment 1 { comment 2 }
-
-
-
-struct/record/data/type (inheritance?)
-nested functions
-yield
-integer/real
-
-
-
-scalars:
-    byte
-    number
-        integer real
-
-    let k:  integer =  { 0 }
-    let PI: real const = { 3.14155 }
-    let i:  integer const = { 123 }
-    let j:  real = { 23.43 }
-
-    x,y,z: real = { 1.2 } - initialization, all have the same value
-    sinX, cosX = math.Sincos(x) - deconstruction because of absent of ':'
-
-
-
-array:
-    row/column access (default)
-    column/row access
-    [] - checked(default)
-    () - unchecked
-
-    let bts: bytes                             - dynamic array (always checked)
-    let bts: bytes [1..5]                      - fixed array
-    let bts: bytes [1..5] = { 3,4,5,6 }        - fixed initialized array, row based
-    let bts: bytes column [1..5] = { 3,4,5,6 } - fixed initialized array, column based
-
-    let aa: integer [1..5] = 3,4,5,6     - default row
-    let aa: integer [1..5] = { 3,4,5,6 } - default row (can be split on next lines)
-    let aa: integer const [1..5] = ( 3,4,5,6 ) - default row (can be split on next lines)
-
-    let aa: integer row [1..5] = { 3,4,5,6 }
-    let ss: string  column, [1..5] = { '3','4','5','6' }
-    let bb: integer [1..5; -1..8; 0..4] = { 3,4; 2,3,3; 5,6,6 }   - 3 dimensional
-
-    let aa: integer row (1..5) { 3,4,5,6 } - uncheked
-    let ss: string  column (1..5) { '3','4','5','6' } - uncheked
-
-
-
-Examples of type definitions:
-    (White, Red, Yellow, Green, Blue, Brown, Black)
-    range 1 .. 72
-    array(1 .. 10) of Integer
-Examples of type declarations:
-    type Color is (White, Red, Yellow, Green, Blue, Brown, Black);
-    type Column is range 1 .. 72;
-    type Table is array(1 .. 10) of Integer;
-
-Examples of subtype declarations:
-    subtype Rainbow is Color range Red .. Blue; -- see 3.2.1
-    subtype Red_Blue is Rainbow;
-    subtype Int is Integer;
-    subtype Small_Int is Integer range -10 .. 10;
-    subtype Up_To_K is Column range 1 .. K; -- see 3.2.1
-    subtype Square is Matrix(1 .. 10, 1 .. 10); -- see 3.6
-    subtype Male is Person(Sex => M); -- see 3.10.1
-    subtype Binop_Ref is not null Binop_Ptr; -- see
-
-Examples of variable declarations:
-    Count, Sum : Integer;
-    Size : Integer range 0 .. 10_000 := 0;
-    Sorted : Boolean := False;
-    Color_Table : array(1 .. Max) of Color;
-    Option : Bit_Vector(1 .. 10) := (others => True);
-    Hello : aliased String := "Hi, world.";
-    θ, φ : Float range -π .. +π;
-
-Examples of enumeration types and subtypes:
-    type Day is (Mon, Tue, Wed, Thu, Fri, Sat, Sun);
-    type Suit is (Clubs, Diamonds, Hearts, Spades);
-    type Gender is (M, F);
-    type Level is (Low, Medium, Urgent);
-    type Color is (White, Red, Yellow, Green, Blue, Brown, Black);
-    type Light is (Red, Amber, Green); -- Red and Green are overloaded
-    type Hexa is ('A', 'B', 'C', 'D', 'E', 'F');
-    type Mixed is ('A', 'B', '*', B, None, '?', '%');
-    subtype Weekday is Day range Mon .. Fri;
-    subtype Major is Suit range Hearts .. Spades;
-    subtype Rainbow is Color range Red .. Blue; -- the Color Red, not the Light
-
-Examples of integer types and subtypes:
-    type Page_Num is range 1 .. 2_000;
-    type Line_Size is range 1 .. Max_Line_Size;
-    subtype Small_Int is Integer range -10 .. 10;
-    subtype Column_Ptr is Line_Size range 1 .. 10;
-    subtype Buffer_Size is Integer range 0 .. Max;
-    type Byte is mod 256; -- an unsigned byte
-    type Hash_Index is mod 97; -- modulus is prime
-
-
-
-
-Examples of case statements:
 case Sensor is
     when Elevation => Record_Elevation(Sensor_Value);
     when Azimuth => Record_Azimuth (Sensor_Value);
@@ -1149,9 +922,6 @@ case Bin_Number(Count) is
     when others => raise Error;
 end case;
 
-
-
-
 pattern matching, case/when, switch C# 8
 
 
@@ -1159,839 +929,24 @@ pattern matching, case/when, switch C# 8
 
 
 
-generics/template
+        iteration
+            for k, name in enumerate(names)                 for (k, name) in enumerate(names)
+                statements                                      { statements }
+            for k in 1..5    ------ next value              for k in 1..5       ------ next value
+                statements                                      { statements }
 
-struct/record - might be extended
-union/tuple/variant - cannot be extended
+            while condition  ------ expression is true      while (condition)   ------ expression is true
+                statements                                      { statements }
 
+            continue
+            break
+            yield ----- ??
+            return
+            goto
 
 
-enum numbers : string
-{
-    odin = "1", dva = "2"
-}
-Direction = ( North, East, South, West )
-EnumType = (one, two, three, forty := 40,fortyone)
 
-
-Subrange types of enumeration types can also be defined:
-Type  
-  Days = (monday,tuesday,wednesday,thursday,friday,  
-          saturday,sunday);  
-  WorkDays = monday .. friday;  
-  WeekEnd = Saturday .. Sunday;
-
-
-
-struct A
-   ...
-
-
-with A:
-   code has access to A instance ...
-
-
-A<T1, T2> : struct
-{
-    f: T1  - default(T1)
-    s: T2  - default(T2)
-}
-
-struct B<T1, T2, T3> : A<T1, T2>
-{
-    f: T1 - default(T1)
-    s: T2 - default(T2)
-    t: T3 - default(T3)
-}
-
-a: A<integer, real> { f = 2, s = 4.5 }
-
-
-namespace uilab.arktur.fe
-
-
-boolean, true, false
-
-
-if condition1:
-
-else if condition2:
-
-else:
-
-
-
-for condition:
-    break
-    continue
-    goto
-
-
-for char in chars:
-
-
-print : function, params(template: string = '{0}', message: string, ...), return(int32, status)
-
-
-function:
-foo(n: integer { 8 },
-    name: string { 'arktur' },
-    real: amount,
-    d: B<integer, real, string> { s = 3.2, t = "text", f = 8 })
-
-
-
-
-
-
-nested function:
-outer(n: integer {10}) -> integer/real/void(can be omitted)
-    def inner(k: integer) -> integer
-        return k + n
-    return inner(5)
-
-
-closure
-outer(n: integer) -> integer/real/void(can be omitted)
-    def inner(k: integer) -> integer
-        return k + n
-    return inner
-
-
-
-function(n: integer)
-    block:
-        ...
-    block:
-        ...
-
-
-strings: always represented as unicode codepoint - 32 bits
-    "path 'c:\\tmp\\arktur\\file.txt'"  'path "c:\\tmp\\arktur\\file.txt"'
-   r"path 'c:\tmp\arktur\file.txt'"    r'path "c:\tmp\arktur\file.txt"'
-    "path {path}", where {path} is substitued by variable 'path'
-
-
-
-
-
-
-
-?????
-do condition-opt ':'
-    break
-    continue
-    goto
-
-
-do char in chars:
-
-do
-    n: integer { 8 }
-    name: string { 'arktur' }
-    real: amount
-    d: B<integer, real, string> { s = 3.2, t = "text", f = 8 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-structure/record:
-    inheritance?
-
-
-tuple:
-   destructure
-
-enum:
-
-invocation-experession:
-lambda-expression:
-callable:
-    function
-        foo a b c
-    lambda
-        lambda a b c
-
-
-
-
-for
-foreach
-while
-do while
-
-
-if 
-else if
-else if
-else
-
-case
-    when 1
-    when 's'
-    when a is string || a is real && a is customtype
-
-
-
-continue
-break
-return
-yield
-
-
-no null, everything always initialized
-no NULL or NIL, all types have a default ctor so anytime exists a default instance 
-
-
-
-parameters passing types
-
-
-templates/generics
-template <uint16 SHORT_TEXT_SIZE = 64> struct status
-
-
-scalars:
-    let a = 0
-    let b = 10
-    let c = 0x10
-    let d = 4.5
-    let f = 'abc'
-    g = true/false
-    integer
-    real
-    boolean
-
-arrays:
-   a[2]             - checked array
-   a(2)             - raw unchecked array
-   b[-2:3]          - checked ranged-based array
-   b[-2:3, 0:10]    - checked ranged-based array, multidimensional
-   b[-2..3, 0..10]
-   c[-2:3] c[-2..3] - checked ranged-based array
-   c(-2:3, 0:10)    - raw unchecked ranged-based array, multidimensional
-   d[2,c]           - checked array, column based, aka FORTRAN
-   d(2,c)           - raw unchecked array, column based, aka FORTRAN
-   d[2,r]           - checked array, row based, aka C, 'r' is optional
-   d(2,r)           - raw unchecked array, raw based, aka C, 'r' is optional
-   f[-2..3, 0..10]  - checked ranged-based array, multidimensional, alternative syntax as in PASCAL
-
-
-type byte = 0..255
-type sbyte = -127..127
-
-
-type user
-    name = ''
-    age = 50
-    weight = 78.9
-
-
-callable createUser name: string, age: integer, weight: real, kids: user[]
-define createUser(name: string,
-                  age: integer,
-                  weight: real,
-                  kids: user[])
-    user result { name, age, weight, kids }
-    user result { name = name, age = age, weight = weight, kids = kids[1:3] }
-
-    const pi = 3.14
-
-    let a = 0
-    let a: integer
-    let b = 10
-    let b: integer
-    let c = 0x10
-
-    let d = 4.5
-    let d: real
-     let d: real = 4.5
-    let d: real 4.5
-    let d: 4.5 real
-    let d: real(4.5)
-
-    let f = 'abc'
-    let g = true
-    let b[-2:3, 0:10]
-    let d[2,r]
-    let d(2,c)
-
-    let d0 = d[0]
-    let d1 = d[1]
-
-    let b11 = b(1, 1)
-
-    let l = len(d)
-
-    define foo a: integer, b: integer
-        define bar a: integer, b: integer
-            return a + b
-        return bar a, b
-
-    let fooFunc = foo
-    let r = fooFunc(10, 5)
-
-
-    return result
-
-
-define foo name: string, *, **
-define foo (name: string,
-            *,
-            **)
-
-
-
-let a = 0 // type inferred to be integer
-let a : integer
-
-let a b c = foo(1  2  3)
-let a, b, c : integer
-
-         literal only
-         |
-         ....
-let pi = 3.14 real const
-    pi = 3.14 * calculateCoeff()
-         .......................
-         |
-         could be expression
-
-let pi : real const = 3.14
-
-
-
-let pi = 3.14 const     // const, because initialized, type inferred to be real
-let pi : real const     // readonly, because will be initialized
-
-let recordType = (foo : 6, bar : 6) // Record
-let recordType = { foo : 6;  bar : 6 } // Record
-
-let b [-2..3, 0..10,c] : integer
-let b [-2..3, 0..10,r] = [ 0, 1, 2, 3, 4, 5 ]
-
-
-let colvec [] = [1;2;4];   % column vector 
-let crowvec [] = [1,2,4];   % row vector 
-let m = [1,2,3;4,5,6];  % matrix with size 2x3
-
-let x : integer     // initialized to 0
-let x = 1
-
-type byte = 0..255
-type sbyte = -127 ..127
-
-type user
-    name = ''
-    age = 50
-    weight = 78.9
-
-
-type point
-    x: real
-    y: real
-    z: real
-
-let point : point const             // readonly
-    point = 1.0 2.5 3.4
-    point = 1.0, 2.5, 3.4
-
-let point = (1.0, 2.5, 3.4) point
-
-let points [] : point
-let points [-1..0] : point
-let points [-1..0] = [ (1.0, 2.5, 3.4), (1.0, 2.5, 3.4) ] point
-let points = [ (1.0, 2.5, 3.4), (1.0, 2.5, 3.4) ] point
-
-let points [] : point<real>
-let points [-1..0] : point<real>
-let points [-1..0] = [ (1.0, 2.5, 3.4), (1.0, 2.5, 3.4) ] point<real>
-let points = [ (1.0, 2.5, 3.4), (1.0, 2.5, 3.4) ] point<real>
-
-let x, y = y, x
-    x, y = y, x
-
-sinX, cosX = math.Sincos(x)
-
-define foo a: integer, b: integer, u: user
-    define bar a: integer, b: integer
-        return a + b + u.age
-    return bar a, b
-
-user u = {}
-let fooFunc = foo
-let r = fooFunc(10, 5, u)
-
-
-
-let foo : a integer, b integer, u user -> real, integer, string
-    let bar : string (a: integer, b: integer)
-        return string(a + b + u.age * 0.1)
-    return bar
-
-let callFoo = foo(1, 2)
-callFoo
-callFoo(5, 6)
-
-let ee : (RED = 1, GREEN ='green',
-            BLUE = 0xBE)
-
-
-
-
-
-
-
-
-
-
-let ars = [1,2,3] // 0-3
-let ars = [[1], [2], [3]] // 1 element, 2 elements, 3 elements starting from zero
-
-let ars = (1,2,3) // 0-3 uncheked
-let ars = ((1), (2), (3)) // 1 element, 2 elements, 3 elements starting from zero unchecked
-
-
-
-
-
-
-
-statement           : noop-statement
-                    ;
-
-
-
-noop-statement      : 'noop'
-                    ;
-
-
-
-
-let slice = ars[-1:1, -5:45]
-
-
-let a : integer | string
-
-function foo <T=real, U> (a = 1.3, b: integer, c: T)  : integer, real, T, U
-    asaf
-    sdfdsg
-    sdgdsgdsg
-    sdgsd
-    dssdfsd
-    return f
-
-
-let foo = function <T=real, U> (a = 1.3, b: integer, c: T)  : integer | real, T | U, integer
-    asaf
-    sdfdsg
-    sdgdsgdsg
-    sdgsd
-    dssdfsd
-    return f
-
-
-let lambda : 
-
-
-let singleton : integer
-
-
-
-func/function
-proc/procedure
-
-program arcturus
-
-use namespace N1
-use namespace N2
-
-
-
-             namespace N1                   namespace N2
-
-package1                      package2                         package3
-    module1                       module1                          module1
-    module2                       module2                          module2
-    module3                       module3                          module3
-
-
-
-
-
-
-
--- This is a line-comment
- 
-# This is a line-comment
-
-#
-    This is a block-comment
-    It goes until de-dent
- 
-dedent: 0x42 -- The comment block above is now closed
-
-
-(* ... *)
-(* ...
-    *)
-
-
-
-
-program arcturus
-
-use namespace N1
-use namespace N2
-
-type T1<T, U = integer>
-    m1 : real const = 5.0
-    m2 : T
-    m3 : U = 0
-
-procedure main<T=real, U>(a = 1.3, b: integer, c: T, d: U) integer, real, T, U
-    type point
-        x: real
-        y: real
-        z: real
-
-    let points [] : point
-    let points [-1..0] : point
-    let points [-1..0] = [ (1.0, 2.5, 3.4), (1.0, 2.5, 3.4) ] point
-    let points = [ (1.0, 2.5, 3.4), (1.0, 2.5, 3.4) ] point
-
-    function fibonacci<T = integer>(n : T) T
-        if n == 1
-            return 0
-        else n == 2
-            return 1
-        else: 
-            return fibonacci<T>(n - 1) + fibonacci<T>(n-2)
-
-    let fb = fionachi<integer>(10)
-
-    let t : T
-    let u : U
-
-    return 1, 3.14, t, u
-
-
-main<real, integer>(c = 2, a = 3.2, b = -1) // somehow return code to system (to OS)
-
-
-
-function makeList(seperator : string) string
-    let counter = 1
-
-    function makeItem(item : string) string
-        counter = counter + 1
-        return text.toString(counter)
-
-    return makeItem("first") + makeItem("second") + makeItem("third")
-
-    return text.concat(makeItem("first"), makeItem("second"), makeItem("third"))
-
-
-
-package:system
-    module:text
-
-namespace system.text
-
-function concatenate(...) string
-
-
-
-let point = Point { x: 1.0, y: 2.5 };
-
-
-
-
-
-
-package(physical) - spans files - distribution unit
-    modules
-        file1
-        ...
-        fileN
-
-namespace(logical) - spans packages
-
-
-import/using/refer/include
-# // /* /*nested*/ */
-{ Comment 1 (* comment 2 *) }  
-(* Comment 1 { comment 2 } *)  
-{ comment 1 // Comment 2 }  
-(* comment 1 // Comment 2 *)  
-// comment 1 (* comment 2 *)  
-// comment 1 { comment 2 }
-
-
-
-struct/record/data/type (inheritance?)
-nested functions
-yield
-integer/real
-
-
-
-scalars:
-    byte
-    number
-        integer real
-
-    k:  integer =  { 0 }
-    PI: real const = { 3.14155 }
-    i:  integer const = { 123 }
-    j:  real = { 23.43 }
-
-    x,y,z: real = { 1.2 } - initialization, all have the same value
-    sinX, cosX = math.Sincos(x) - deconstruction because of absent of ':'
-
-
-
-array:
-    row/column access (default)
-    column/row access
-    [] - checked(default)
-    () - unchecked
-
-    bts: bytes                             - dynamic array (always checked)
-    bts: bytes [1..5]                      - fixed array
-    bts: bytes [1..5] = { 3,4,5,6 }        - fixed initialized array, row based
-    bts: bytes column [1..5] = { 3,4,5,6 } - fixed initialized array, column based
-
-    aa: integer [1..5] = 3,4,5,6     - default row
-    aa: integer [1..5] = { 3,4,5,6 } - default row (can be split on next lines)
-    aa: integer [1..5] = ( 3,4,5,6 ) - default row (can be split on next lines)
-
-    aa: integer row [1..5] = { 3,4,5,6 }
-    ss: string  column, [1..5] = { '3','4','5','6' }
-    bb: integer [1..5; -1..8; 0..4] = { 3,4; 2,3,3; 5,6,6 }   - 3 dimensional
-
-    aa: integer row (1..5) { 3,4,5,6 } - uncheked
-    ss: string  column (1..5) { '3','4','5','6' } - uncheked
-
-
-
-Examples of type definitions:
-    (White, Red, Yellow, Green, Blue, Brown, Black)
-    range 1 .. 72
-    array(1 .. 10) of Integer
-Examples of type declarations:
-    type Color is (White, Red, Yellow, Green, Blue, Brown, Black);
-    type Column is range 1 .. 72;
-    type Table is array(1 .. 10) of Integer;
-
-Examples of subtype declarations:
-    subtype Rainbow is Color range Red .. Blue; -- see 3.2.1
-    subtype Red_Blue is Rainbow;
-    subtype Int is Integer;
-    subtype Small_Int is Integer range -10 .. 10;
-    subtype Up_To_K is Column range 1 .. K; -- see 3.2.1
-    subtype Square is Matrix(1 .. 10, 1 .. 10); -- see 3.6
-    subtype Male is Person(Sex => M); -- see 3.10.1
-    subtype Binop_Ref is not null Binop_Ptr; -- see
-
-Examples of variable declarations:
-    Count, Sum : Integer;
-    Size : Integer range 0 .. 10_000 := 0;
-    Sorted : Boolean := False;
-    Color_Table : array(1 .. Max) of Color;
-    Option : Bit_Vector(1 .. 10) := (others => True);
-    Hello : aliased String := "Hi, world.";
-    θ, φ : Float range -π .. +π;
-
-Examples of enumeration types and subtypes:
-    type Day is (Mon, Tue, Wed, Thu, Fri, Sat, Sun);
-    type Suit is (Clubs, Diamonds, Hearts, Spades);
-    type Gender is (M, F);
-    type Level is (Low, Medium, Urgent);
-    type Color is (White, Red, Yellow, Green, Blue, Brown, Black);
-    type Light is (Red, Amber, Green); -- Red and Green are overloaded
-    type Hexa is ('A', 'B', 'C', 'D', 'E', 'F');
-    type Mixed is ('A', 'B', '*', B, None, '?', '%');
-    subtype Weekday is Day range Mon .. Fri;
-    subtype Major is Suit range Hearts .. Spades;
-    subtype Rainbow is Color range Red .. Blue; -- the Color Red, not the Light
-
-Examples of integer types and subtypes:
-    type Page_Num is range 1 .. 2_000;
-    type Line_Size is range 1 .. Max_Line_Size;
-    subtype Small_Int is Integer range -10 .. 10;
-    subtype Column_Ptr is Line_Size range 1 .. 10;
-    subtype Buffer_Size is Integer range 0 .. Max;
-    type Byte is mod 256; -- an unsigned byte
-    type Hash_Index is mod 97; -- modulus is prime
-
-
-
-
-Examples of case statements:
-case Sensor is
-    when Elevation => Record_Elevation(Sensor_Value);
-    when Azimuth => Record_Azimuth (Sensor_Value);
-    when Distance => Record_Distance (Sensor_Value);
-    when others => null;
-end case;
-case Today is
-    when Mon => Compute_Initial_Balance;
-    when Fri => Compute_Closing_Balance;
-    when Tue .. Thu => Generate_Report(Today);
-    when Sat .. Sun => null;
-end case;
-case Bin_Number(Count) is
-    when 1 => Update_Bin(1);
-    when 2 => Update_Bin(2);
-    when 3 | 4 =>
-        Empty_Bin(1);
-        Empty_Bin(2);
-    when others => raise Error;
-end case;
-
-
-
-
-pattern matching, case/when, switch C# 8
-
-
-
-
-
-
-generics/template
-
-struct/record - might be extended
-union/tuple/variant - cannot be extended
-
-
-
-enum numbers : string
-{
-    odin = "1", dva = "2"
-}
-Direction = ( North, East, South, West )
-EnumType = (one, two, three, forty := 40,fortyone)
-
-
-Subrange types of enumeration types can also be defined:
-Type  
-  Days = (monday,tuesday,wednesday,thursday,friday,  
-          saturday,sunday);  
-  WorkDays = monday .. friday;  
-  WeekEnd = Saturday .. Sunday;
-
-
-
-struct A
-   ...
-
-
-with A:
-   code has access to A instance ...
-
-
-struct A<T1, T2>
-{
-    f: T1  - default(T1)
-    s: T2  - default(T2)
-}
-
-struct B<T1, T2, T3> : A<T1, T2>
-{
-    f: T1 - default(T1)
-    s: T2 - default(T2)
-    t: T3 - default(T3)
-}
-
-a: A<integer, real> { f = 2, s = 4.5 }
-
-
-namespace uilab.arktur.fe
-
-
-boolean, true, false
-
-
-if condition1:
-
-else if condition2:
-
-else:
-
-
-
-for condition:
-    break
-    continue
-    goto
-
-
-for char in chars:
-
-
-print : function, params(template: string = '{0}', message: string, ...), return(int32, status)
-
-
-function:
-foo(n: integer { 8 },
-    name: string { 'arktur' },
-    real: amount,
-    d: B<integer, real, string> { s = 3.2, t = "text", f = 8 })
-
-
-
-
-
-
-nested function:
-outer(n: integer {10}) -> integer/real/void(can be omitted)
-    def inner(k: integer) -> integer
-        return k + n
-    return inner(5)
-
-
-closure
-outer(n: integer) -> integer/real/void(can be omitted)
-    def inner(k: integer) -> integer
-        return k + n
-    return inner
-
-
-
-function(n: integer)
-    block:
-        ...
-    block:
-        ...
-
-
-strings: always represented as unicode codepoint - 32 bits
-    "path 'c:\\tmp\\arktur\\file.txt'"  'path "c:\\tmp\\arktur\\file.txt"'
-   r"path 'c:\tmp\arktur\file.txt'"    r'path "c:\tmp\arktur\file.txt"'
-    "path {path}", where {path} is substitued by variable 'path'
-
-
-
-
-
-
-
-
-
+    expression
 
 
 

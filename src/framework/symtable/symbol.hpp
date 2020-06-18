@@ -76,6 +76,9 @@ class symbol : private noncopyable
         index_type              my_array_lower_bound;   //  [-10..10]
         index_type              my_array_upper_bound;   //
 
+        bool                    my_checked_array;       //?? checked or unchecked array, default is checked
+        bool                    my_rowbased_array;      //?? row or column based array, default is row based
+
         attributes_type         my_attributes;          // custom attributes
 
         static counter_type     my_tmp_counter;
