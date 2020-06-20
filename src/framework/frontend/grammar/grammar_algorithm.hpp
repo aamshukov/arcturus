@@ -108,6 +108,8 @@ class grammar_algorithm : private noncopyable
         static void         apply_left_factoring(grammar& gr);
 
         static void         renumber_grammar(grammar& gr);
+
+        static void         build_synch_set(const grammar& gr, set_type& result);
 };
 
 END_NAMESPACE

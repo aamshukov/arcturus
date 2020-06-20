@@ -2643,4 +2643,17 @@ void grammar_algorithm::make_vector_unique(typename grammar_algorithm::sets_type
     sequence.erase(std::unique(sequence.begin(), sequence.end() ), sequence.end());
 }
 
+void grammar_algorithm::build_synch_set(const grammar& gr, typename grammar_algorithm::set_type& result)
+{
+    //  Building SYNCH:
+    //    1. a ∈ FOLLOW(A) => a ∈SYNCH(A)
+    //    2. place keywords that start statements in SYNCH(A)
+    //    3. add symbols in FIRST(A) to SYNCH(A)
+    set_type synch_set;
+
+    gr;//??
+
+    result.swap(synch_set);
+}
+
 END_NAMESPACE

@@ -310,6 +310,7 @@ declarations                        : declaration
                                     ;
 
 declaration                         : import-declaration
+            namespace-declaration??
                                     | type-declaration
                                     | function-definition
                                     ;

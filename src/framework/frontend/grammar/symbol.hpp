@@ -71,6 +71,8 @@ class symbol
         associativity_type              my_associativity;   // associativity of terminals (shift/reduce parsers)
 
         bool                            my_erroneous;       // if a non-terminal can be part of a A -> 'error' rule
+        bool                            my_synched;         // true if the keyword belongs to the synch set for error recovery,
+                                                            // keywords that start statements in SYNCH(A)
 
         sets_type                       my_first_sets;      // 'first set' is the set of terminals that can start a string that is derivable from this non-terminal
         sets_type                       my_eff_sets;        // 'epsilon-free first set', EFF
@@ -119,6 +121,9 @@ class symbol
 
         bool                            erroneous() const;
         bool&                           erroneous();
+
+        bool                            synched() const;
+        bool&                           synched();
 
         const sets_type&                first_sets() const;
         sets_type&                      first_sets();
@@ -229,6 +234,16 @@ inline bool symbol::erroneous() const
 inline bool& symbol::erroneous()
 {
     return my_erroneous;
+}
+
+inline bool symbol::synched() const
+{
+    return my_synched;
+}
+
+inline bool& symbol::synched()
+{
+    return my_synched;
 }
 
 inline const symbol::sets_type& symbol::first_sets() const
