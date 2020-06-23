@@ -269,21 +269,30 @@ fully-qualified-name                : identifier
 
 
 keyword                             : 'byte' 'integer' 'real' 'string' 'boolean'
+                                    | 'c'
                                     | 'true' 'false'
                                     | 'enum'
                                     | 'struct'
-                                    | 'const' 'partial'
+                                    | 'extends'
+                                    | 'const' 'readonly'
+                                    | 'partial'
                                     | 'if' 'else' 'for'
-                                    | 'continue' 'break' 'return'
+                                    | 'switch' 'case' 'when' 
+                                    | 'continue' 'break' 'return' 'goto' 'yield'
                                     | 'import'
+                                    | 'using'
                                     | 'namespace'
-                                    | 'is' 'as'?? 'and' 'or' 'not' 'in'
+                                    | 'is' 'as'
+                                    | 'and' 'or' 'xor' 'not'
+                                    | 'in'
                                     | 'link'?? 'pointer'?? 'reference'?? 'ref'??
                                     | 'lazy'
                                     | 'pass'?? 'noop'??
+                                    | 'func' 'proc'
+                                    | 'returns'
                                     ;
 
-punctuator                          : ':' '..' '...' ',' '{' '}' '[' ']' '(' ')' '->'??
+punctuator                          : ':' '..' '...' ',' '{' '}' '[' ']' '(' ')' '->'?? '=>'
                                     ;
 
 operator                            : '+' '-' '*' '/' '>>' '<<' '=' '==' '!=' '<' '<=' '>' '>=' '&' '&&' '|' '||' '^'
@@ -742,7 +751,7 @@ declarations:
     struct [<Ts>][partial] [readonly|const]
             [readonly ------- values can be assigned only once]
             [const ------- values must be assigned in declaration]
-            each struct defines one defaulet instance of this struct - static sentinel = default
+            each struct defines one default instance of this struct - static sentinel = default
 
         point struct
             x : real = 0.0,

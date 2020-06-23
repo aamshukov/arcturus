@@ -9,61 +9,53 @@
 BEGIN_NAMESPACE(frontend)
 USINGNAMESPACE(core)
 
-//template <typename TReturn, typename TParam>
-class type : public noncopyable
+class type : private noncopyable
 {
     public:
         using size_type = std::size_t;
 
-        //using return_type = TReturn;
-        //using param_type = TParam;
-
-    public:
-        enum class kind : uint16_t
+        enum class flags : uint64_t
         {
-            unknown       = 0,
-            integer       = 1,
-            real          = 2,
-            boolean       = 3,
-            byte          = 4,
-            string        = 5,
-            pointer       = 6,
-            type_variable = 7, // struct, enum
-            namespacee    = 8,
-            module        = 9
+            clear = 0x00
         };
 
+        using flags_type = flags;
+
     private:
-        size_type       my_size; // size in bits, width for runtime allocation
-
-
-        //flags       my_flags;
-    //private:
-    //    hash_type   hashcode();
-
-        bool            is_function() const; //??
-        bool            is_procedure() const; //??
+        size_type       my_size;    // size in bits, width for runtime allocation
+        flags_type      my_flags;
 
     public:
                         type();
-                       ~type();
+        virtual        ~type() = 0;
 
-        bool            operator == (const type& other);
-        bool            operator != (const type& other);
+        virtual bool    operator == (const type& other) = 0;
+        virtual bool    operator != (const type& other) = 0;
 
-    size_type           size() const;
+        size_type       size() const;
+        size_type&      size();
 
-
-    //    return_type accept(const type_visitor_type<return_type, param_type>& visitor, param_type visitor_param);
-
+        flags_type      flags() const;
+        flags_type&     flags();
 };
 
-//template <typename TReturn, typename TParam>
-//inline typename type<TReturn, TParam>::size_type type<TReturn, TParam>::size() const
-inline typename type::size_type type::size() const
+template <typename Traits>
+class abstract_type : public type
 {
-    return my_size;
-}
+    public:
+        using traits_type = Traits;
+        using kind_type = typename traits_type::kind;
+
+    private:
+        kind_type       my_kind; // kind of type
+
+    public:
+                        abstract_type();
+        virtual        ~abstract_type() = 0;
+
+        kind_type       kind() const;
+        kind_type&      kind();
+};
 
 END_NAMESPACE
 

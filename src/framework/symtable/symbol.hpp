@@ -18,6 +18,8 @@ class symbol : private noncopyable
         using token_type = Token;
         using symbol_type = std::shared_ptr<symbol<token_type>>;
 
+        using type_type = std::shared_ptr<type>;
+
         using datum_type = text::datum_type;
         using codepoints_type = std::basic_string<datum_type>;
 
@@ -37,7 +39,6 @@ class symbol : private noncopyable
                                         void*,
                                         datum_type,
                                         codepoints_type>;
-        using type_type = type;
 
         enum class flags : uint64_t
         {

@@ -26,8 +26,10 @@
     <ClInclude Include="..\src\arcturus\arcturus_parse_tree.hpp" />
     <ClInclude Include="..\src\arcturus\arcturus_parse_tree_variable.hpp" />
     <ClInclude Include="..\src\arcturus\arcturus_token.hpp" />
+    <ClInclude Include="..\src\arcturus\arcturus_type.hpp" />
     <ClInclude Include="..\src\framework\backend\codegen\activation_record.hpp" />
     <ClInclude Include="..\src\framework\backend\codegen\amd64\activation_record_amd64.hpp" />
+    <ClInclude Include="..\src\framework\backend\codegen\codegen.hpp" />
     <ClInclude Include="..\src\framework\content\content.hpp" />
     <ClInclude Include="..\src\framework\content\data_provider.hpp" />
     <ClInclude Include="..\src\framework\content\file_data_provider.hpp" />
@@ -99,8 +101,10 @@
     <ClCompile Include="..\src\arcturus\arcturus_lexical_tools.cpp" />
     <ClCompile Include="..\src\arcturus\arcturus_parser.cpp" />
     <ClCompile Include="..\src\arcturus\arcturus_token.cpp" />
+    <ClCompile Include="..\src\arcturus\arcturus_type.cpp" />
     <ClCompile Include="..\src\framework\backend\codegen\activation_record.cpp" />
     <ClCompile Include="..\src\framework\backend\codegen\amd64\activation_record_amd64.cpp" />
+    <ClCompile Include="..\src\framework\backend\codegen\codegen.cpp" />
     <ClCompile Include="..\src\framework\content\content.cpp" />
     <ClCompile Include="..\src\framework\content\file_data_provider.cpp" />
     <ClCompile Include="..\src\framework\content\string_data_provider.cpp" />

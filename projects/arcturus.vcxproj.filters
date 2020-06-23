@@ -288,6 +288,12 @@
     <ClInclude Include="..\src\arcturus\arcturus_lexical_tools.hpp">
       <Filter>arcturus</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\framework\backend\codegen\codegen.hpp">
+      <Filter>framework\backend\codegen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\arcturus\arcturus_type.hpp">
+      <Filter>arcturus</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\framework\core\logger.cpp">
@@ -384,6 +390,12 @@
       <Filter>framework\ir</Filter>
     </ClCompile>
     <ClCompile Include="..\src\arcturus\arcturus_lexical_tools.cpp">
+      <Filter>arcturus</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\framework\backend\codegen\codegen.cpp">
+      <Filter>framework\backend\codegen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\arcturus\arcturus_type.cpp">
       <Filter>arcturus</Filter>
     </ClCompile>
   </ItemGroup>
