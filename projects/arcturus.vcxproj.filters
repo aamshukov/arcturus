@@ -294,6 +294,9 @@
     <ClInclude Include="..\src\arcturus\arcturus_type.hpp">
       <Filter>arcturus</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\framework\frontend\parser\parse_tree_base.hpp">
+      <Filter>framework\frontend\parser</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\framework\core\logger.cpp">
@@ -397,6 +400,15 @@
     </ClCompile>
     <ClCompile Include="..\src\arcturus\arcturus_type.cpp">
       <Filter>arcturus</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\framework\core\tree.cpp">
+      <Filter>framework\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\arcturus\arcturus_parse_tree.cpp">
+      <Filter>arcturus</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\framework\core\dag.cpp">
+      <Filter>framework\core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

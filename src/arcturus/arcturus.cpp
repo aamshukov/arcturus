@@ -74,6 +74,7 @@
 #include <symtable/symbol_table.hpp>
 #include <symtable/symbol_table.inl>
 
+#include <frontend/parser/parse_tree_base.hpp>
 #include <frontend/parser/parse_tree.hpp>
 #include <frontend/parser/parse_dag.hpp>
 #include <frontend/parser/parser.hpp>
@@ -102,7 +103,7 @@
 #include <arcturus_token.hpp>
 #include <arcturus_lexical_analyzer.hpp>
 #include <arcturus_parse_tree.hpp>
-#include <arcturus_parse_tree_variable.hpp>
+#include <arcturus_parse_tree_variable.hpp> //??
 #include <arcturus_parser.hpp>
 #include <arcturus_type.hpp>
 

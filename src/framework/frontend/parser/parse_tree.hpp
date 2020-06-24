@@ -12,24 +12,32 @@ USINGNAMESPACE(core)
 USINGNAMESPACE(symtable)
 
 template <typename Token>
-struct parse_tree : public tree, public visitable
+class parse_tree : public parse_tree_base<Token>, public tree, public visitable
 {
-    using token_type = Token;
+    public:
+        using token_type = Token;
 
-    using gr_symbol_type = grammar::symbol_type;
+        using gr_symbol_type = parse_tree_base<token_type>::gr_symbol_type;
 
-    using ir_symbol_type = std::shared_ptr<symtable::symbol<token_type>>;
-    using ir_symbols_type = std::vector<ir_symbol_type>;
+        using ir_symbol_type = parse_tree_base<token_type>::ir_symbol_type;
+        using ir_symbols_type = parse_tree_base<token_type>::ir_symbols_type;
 
-    gr_symbol_type gr_symbol;
-    ir_symbol_type ir_symbol;
+    public:
+                    parse_tree();
+        virtual    ~parse_tree();
 
-    virtual ~parse_tree()
-    {
-    }
-
-    ACCEPT_METHOD;
+        ACCEPT_METHOD;
 };
+
+template <typename Token>
+parse_tree<Token>::parse_tree()
+{
+}
+
+template <typename Token>
+parse_tree<Token>::~parse_tree()
+{
+}
 
 END_NAMESPACE
 

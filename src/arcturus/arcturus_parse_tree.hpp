@@ -12,15 +12,16 @@ USINGNAMESPACE(core)
 USINGNAMESPACE(symtable)
 USINGNAMESPACE(frontend)
 
-struct arcturus_parse_tree : public parse_tree<token<arcturus_token_traits>>
+class arcturus_parse_tree : public parse_tree<token<arcturus_token_traits>>
 {
-    using token_type = token<arcturus_token_traits>;
+    public:
+        using token_type = token<arcturus_token_traits>;
 
-    virtual ~arcturus_parse_tree()
-    {
-    }
+    public:
+                    arcturus_parse_tree();
+        virtual    ~arcturus_parse_tree();
 
-    ACCEPT_METHOD;
+        ACCEPT_METHOD;
 };
 
 END_NAMESPACE

@@ -637,14 +637,14 @@ typename fsa_re::tree_type fsa_re::postfix_to_tree(const std::shared_ptr<typenam
 
                 if(left_operand != nullptr)
                 {
-                    (*node).kids.emplace_back(left_operand);
-                    (*left_operand).papa = node;
+                    (*node).kids().emplace_back(left_operand);
+                    (*left_operand).papa() = node;
                 }
 
                 if(right_operand != nullptr)
                 {
-                    (*node).kids.emplace_back(right_operand);
-                    (*right_operand).papa = node;
+                    (*node).kids().emplace_back(right_operand);
+                    (*right_operand).papa() = node;
                 }
 
                 nodes.push(node);
@@ -671,8 +671,8 @@ typename fsa_re::tree_type fsa_re::postfix_to_tree(const std::shared_ptr<typenam
 
                 if(operand != nullptr)
                 {
-                    (*node).kids.emplace_back(operand);
-                    (*operand).papa = node;
+                    (*node).kids().emplace_back(operand);
+                    (*operand).papa() = node;
                 }
 
                 nodes.push(node);
@@ -1225,7 +1225,7 @@ void fsa_re::add_escape_state(typename fsa_re::fsa_type& fsa0,
 
 void fsa_re::calculate_nullable(typename fsa_re::tree_type& tree)
 {
-    for(const auto& kid : (*tree).kids)
+    for(const auto& kid : (*tree).kids())
     {
         auto kid_tree(std::dynamic_pointer_cast<fsa_tree>(kid));
         calculate_nullable(kid_tree);
@@ -1242,15 +1242,15 @@ void fsa_re::calculate_nullable(typename fsa_re::tree_type& tree)
             bool left_operand_nullable = false;
             bool right_operand_nullable = false;
 
-            if((*tree).kids.size() > 0)
+            if((*tree).kids().size() > 0)
             {
-                left_operand = std::dynamic_pointer_cast<fsa_tree>((*tree).kids[0]);
+                left_operand = std::dynamic_pointer_cast<fsa_tree>((*tree).kids()[0]);
                 left_operand_nullable = (*left_operand).nullable;
             }
 
-            if((*tree).kids.size() > 1)
+            if((*tree).kids().size() > 1)
             {
-                right_operand = std::dynamic_pointer_cast<fsa_tree>((*tree).kids[1]);
+                right_operand = std::dynamic_pointer_cast<fsa_tree>((*tree).kids()[1]);
                 right_operand_nullable = (*right_operand).nullable;
             }
 
@@ -1280,7 +1280,7 @@ void fsa_re::calculate_nullable(typename fsa_re::tree_type& tree)
 
 void fsa_re::calculate_first_position(typename fsa_re::tree_type& tree)
 {
-    for(const auto& kid : (*tree).kids)
+    for(const auto& kid : (*tree).kids())
     {
         auto kid_tree(std::dynamic_pointer_cast<fsa_tree>(kid));
         calculate_first_position(kid_tree);
@@ -1289,15 +1289,15 @@ void fsa_re::calculate_first_position(typename fsa_re::tree_type& tree)
     switch((*tree).symbol)
     {
         case ALTERNATE_OP:
-            if((*tree).kids.size() > 0)
+            if((*tree).kids().size() > 0)
             {
-                const auto& firstpos((*std::dynamic_pointer_cast<fsa_tree>((*tree).kids[0])).firstpos);
+                const auto& firstpos((*std::dynamic_pointer_cast<fsa_tree>((*tree).kids()[0])).firstpos);
                 std::for_each(firstpos.begin(), firstpos.end(), [&tree](std::size_t index){ (*tree).firstpos.emplace_back(index); });
             }
 
-            if((*tree).kids.size() > 1)
+            if((*tree).kids().size() > 1)
             {
-                const auto& firstpos((*std::dynamic_pointer_cast<fsa_tree>((*tree).kids[1])).firstpos);
+                const auto& firstpos((*std::dynamic_pointer_cast<fsa_tree>((*tree).kids()[1])).firstpos);
                 std::for_each(firstpos.begin(), firstpos.end(), [&tree](std::size_t index){ (*tree).firstpos.emplace_back(index); });
             }
 
@@ -1308,18 +1308,18 @@ void fsa_re::calculate_first_position(typename fsa_re::tree_type& tree)
         {
             tree_type left_operand;
 
-            if((*tree).kids.size() > 0)
+            if((*tree).kids().size() > 0)
             {
-                left_operand = std::dynamic_pointer_cast<fsa_tree>((*tree).kids[0]);
+                left_operand = std::dynamic_pointer_cast<fsa_tree>((*tree).kids()[0]);
                 const auto& firstpos((*left_operand).firstpos);
                 std::for_each(firstpos.begin(), firstpos.end(), [&tree](std::size_t index){ (*tree).firstpos.emplace_back(index); });
             }
 
             if(left_operand != nullptr && (*left_operand).nullable)
             {
-                if((*tree).kids.size() > 1)
+                if((*tree).kids().size() > 1)
                 {
-                    const auto& right_operand = std::dynamic_pointer_cast<fsa_tree>((*tree).kids[1]);
+                    const auto& right_operand = std::dynamic_pointer_cast<fsa_tree>((*tree).kids()[1]);
                     const auto& firstpos((*right_operand).firstpos);
                     std::for_each(firstpos.begin(), firstpos.end(), [&tree](std::size_t index){ (*tree).firstpos.emplace_back(index); });
                 }
@@ -1332,9 +1332,9 @@ void fsa_re::calculate_first_position(typename fsa_re::tree_type& tree)
         case ONE_OR_MORE_OP:
         case ZERO_OR_MORE_OP:
         case ZERO_OR_ONE_OP:
-            if((*tree).kids.size() > 0)
+            if((*tree).kids().size() > 0)
             {
-                (*tree).firstpos = (*std::dynamic_pointer_cast<fsa_tree>((*tree).kids[0])).firstpos;
+                (*tree).firstpos = (*std::dynamic_pointer_cast<fsa_tree>((*tree).kids()[0])).firstpos;
             }
             break;
         default:
@@ -1348,7 +1348,7 @@ void fsa_re::calculate_first_position(typename fsa_re::tree_type& tree)
 
 void fsa_re::calculate_last_position(typename fsa_re::tree_type& tree)
 {
-    for(const auto& kid : (*tree).kids)
+    for(const auto& kid : (*tree).kids())
     {
         auto kid_tree(std::dynamic_pointer_cast<fsa_tree>(kid));
         calculate_last_position(kid_tree);
@@ -1357,15 +1357,15 @@ void fsa_re::calculate_last_position(typename fsa_re::tree_type& tree)
     switch((*tree).symbol)
     {
         case ALTERNATE_OP:
-            if((*tree).kids.size() > 0)
+            if((*tree).kids().size() > 0)
             {
-                const auto& lastpos((*std::dynamic_pointer_cast<fsa_tree>((*tree).kids[0])).lastpos);
+                const auto& lastpos((*std::dynamic_pointer_cast<fsa_tree>((*tree).kids()[0])).lastpos);
                 std::for_each(lastpos.begin(), lastpos.end(), [&tree](std::size_t index){ (*tree).lastpos.emplace_back(index); });
             }
 
-            if((*tree).kids.size() > 1)
+            if((*tree).kids().size() > 1)
             {
-                const auto& lastpos((*std::dynamic_pointer_cast<fsa_tree>((*tree).kids[1])).lastpos);
+                const auto& lastpos((*std::dynamic_pointer_cast<fsa_tree>((*tree).kids()[1])).lastpos);
                 std::for_each(lastpos.begin(), lastpos.end(), [&tree](std::size_t index){ (*tree).lastpos.emplace_back(index); });
             }
 
@@ -1376,16 +1376,16 @@ void fsa_re::calculate_last_position(typename fsa_re::tree_type& tree)
         {
             tree_type right_operand;
 
-            if((*tree).kids.size() > 1)
+            if((*tree).kids().size() > 1)
             {
-                right_operand = std::dynamic_pointer_cast<fsa_tree>((*tree).kids[1]);
+                right_operand = std::dynamic_pointer_cast<fsa_tree>((*tree).kids()[1]);
                 const auto& lastpos((*right_operand).lastpos);
                 std::for_each(lastpos.begin(), lastpos.end(), [&tree](std::size_t index){ (*tree).lastpos.emplace_back(index); });
             }
 
             if(right_operand != nullptr && (*right_operand).nullable)
             {
-                const auto& left_operand = std::dynamic_pointer_cast<fsa_tree>((*tree).kids[0]);
+                const auto& left_operand = std::dynamic_pointer_cast<fsa_tree>((*tree).kids()[0]);
                 const auto& lastpos((*left_operand).lastpos);
                 std::for_each(lastpos.begin(), lastpos.end(), [&tree](std::size_t index){ (*tree).lastpos.emplace_back(index); });
             }
@@ -1397,9 +1397,9 @@ void fsa_re::calculate_last_position(typename fsa_re::tree_type& tree)
         case ONE_OR_MORE_OP:
         case ZERO_OR_MORE_OP:
         case ZERO_OR_ONE_OP:
-            if((*tree).kids.size() > 0)
+            if((*tree).kids().size() > 0)
             {
-                (*tree).lastpos = (*std::dynamic_pointer_cast<fsa_tree>((*tree).kids[0])).lastpos;
+                (*tree).lastpos = (*std::dynamic_pointer_cast<fsa_tree>((*tree).kids()[0])).lastpos;
             }
             break;
         default:
@@ -1413,7 +1413,7 @@ void fsa_re::calculate_last_position(typename fsa_re::tree_type& tree)
 
 void fsa_re::calculate_follow_position(const typename fsa_re::tree_type& node, typename fsa_re::followpos_type& followpos)
 {
-    for(const auto& kid : (*node).kids)
+    for(const auto& kid : (*node).kids())
     {
         auto kid_tree(std::dynamic_pointer_cast<fsa_tree>(kid));
         calculate_follow_position(kid_tree, followpos);
@@ -1426,14 +1426,14 @@ void fsa_re::calculate_follow_position(const typename fsa_re::tree_type& node, t
             tree_type left_operand;
             tree_type right_operand;
 
-            if((*node).kids.size() > 0)
+            if((*node).kids().size() > 0)
             {
-                left_operand = std::dynamic_pointer_cast<fsa_tree>((*node).kids[0]);
+                left_operand = std::dynamic_pointer_cast<fsa_tree>((*node).kids()[0]);
             }
 
-            if((*node).kids.size() > 1)
+            if((*node).kids().size() > 1)
             {
-                right_operand = std::dynamic_pointer_cast<fsa_tree>((*node).kids[1]);
+                right_operand = std::dynamic_pointer_cast<fsa_tree>((*node).kids()[1]);
             }
 
             if(left_operand != nullptr && right_operand != nullptr)
@@ -1577,7 +1577,7 @@ void fsa_re::print_fsa_tree(const typename fsa_re::tree_type& tree, std::size_t 
 
     stream << std::endl;
 
-    for(const auto& kid : (*tree).kids)
+    for(const auto& kid : (*tree).kids())
     {
         print_fsa_tree(std::dynamic_pointer_cast<fsa_tree>(kid), level + 1, stream);
     }
