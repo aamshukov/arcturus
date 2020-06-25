@@ -1,4 +1,4 @@
-//..............................
+﻿//..............................
 // UI Lab Inc. Arthur Amshukov .
 //..............................
 #include <core/pch.hpp>
@@ -97,30 +97,67 @@
 
 #include <backend/codegen/activation_record.hpp>
 #include <backend/codegen/amd64/activation_record_amd64.hpp>
+#include <backend/codegen/codegen.hpp>
+
+#include <backend/optimization/pass.hpp>
+
+#include <controller/controller.hpp>
 
 #include <arcturus_token.hpp>
 #include <arcturus_lexical_analyzer.hpp>
 #include <arcturus_parse_tree.hpp>
-#include <arcturus_parse_tree_variable.hpp> //??
 #include <arcturus_parser.hpp>
+#include <arcturus_type.hpp>
+
+#include <arcturus_controller.hpp>
 
 BEGIN_NAMESPACE(arcturus)
 
 USINGNAMESPACE(core)
+USINGNAMESPACE(symtable)
 USINGNAMESPACE(frontend)
+USINGNAMESPACE(backend)
+USINGNAMESPACE(orchestration)
 
-arcturus_parser::arcturus_parser(const lexical_analyzer_type& lexical_analyzer)
-               : recursive_descent_parser<arcturus_token>(lexical_analyzer)
+arcturus_controller::arcturus_controller(const parser_type& parser,
+                                         const ir_type& ir,
+                                         const passes_type& passes,
+                                         const codegen_type& codegen)
+                   : controller<arcturus_token>(parser, ir, passes, codegen)
 {
 }
 
-arcturus_parser::~arcturus_parser()
+arcturus_controller::~arcturus_controller()
+{
+    finalize();
+}
+
+void arcturus_controller::initialize()
 {
 }
 
-void arcturus_parser::parse()
+void arcturus_controller::parse()
 {
-    //auto& lexer(*my_lexical_analyzer);
+}
+
+void arcturus_controller::converge()
+{
+}
+
+void arcturus_controller::optimize()
+{
+}
+
+void arcturus_controller::codegen()
+{
+}
+
+void arcturus_controller::finalize()
+{
+}
+
+void arcturus_controller::compile()
+{
 }
 
 END_NAMESPACE

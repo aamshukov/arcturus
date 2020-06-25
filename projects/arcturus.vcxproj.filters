@@ -297,6 +297,9 @@
     <ClInclude Include="..\src\framework\frontend\parser\parse_tree_base.hpp">
       <Filter>framework\frontend\parser</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\framework\backend\optimization\pass.hpp">
+      <Filter>framework\backend\optimization</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\framework\core\logger.cpp">
@@ -409,6 +412,12 @@
     </ClCompile>
     <ClCompile Include="..\src\framework\core\dag.cpp">
       <Filter>framework\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\framework\backend\optimization\pass.cpp">
+      <Filter>framework\backend\optimization</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\arcturus\arcturus_controller.cpp">
+      <Filter>arcturus</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

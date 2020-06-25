@@ -19,35 +19,52 @@ class controller : private noncopyable
     public:
         using token_type = Token;
 
-        using lexical_analyzer_type = std::shared_ptr<lexical_analyzer<token_type>>;
         using parser_type = std::shared_ptr<parser<token_type>>;
 
-        //using ir_type = std::shared_ptr<ir<token_type>>;
+        using ir_type = std::shared_ptr<ir<token_type>>;
 
-        //using optimization_type = std::shared_ptr<optimization<token_type>>;
-        //using codegen_type = std::shared_ptr<codegen<token_type>>;
+        using pass_type = std::shared_ptr<pass>;
+        using passes_type = std::vector<pass_type>;
+
+        using codegen_type = std::shared_ptr<codegen>;
 
     private:
-        //lexical_analyzer_type   my_lexer;
-        //parser_type             my_parser;
-        //ir_type                 my_ir;
+        parser_type             my_parser;
+        ir_type                 my_ir;
+        passes_type             my_passes; // optimization
+        codegen_type            my_codegen;
 
-        //optimization_type       my_optimization;
-        //codegen_type            my_codegen;
-         
+    protected:
+        virtual void            initialize() = 0;
+        virtual void            parse() = 0;
+        virtual void            converge() = 0;
+        virtual void            optimize() = 0;
+        virtual void            codegen() = 0;
+        virtual void            finalize() = 0;
+
+        virtual void            compile() = 0;
+
     public:
-    controller() //??
-    {}
-
-
-    public:
-        virtual void initialize() = 0;
-        virtual void parse() = 0;
-        virtual void converge() = 0;
-        virtual void optimize() = 0;
-        virtual void codegen() = 0;
-        virtual void finalize() = 0;
+                                controller(const parser_type& parser,
+                                           const ir_type& ir,
+                                           const passes_type& passes,
+                                           const codegen_type& codegen);
+        virtual                ~controller();
 };
+
+template <typename Token>
+controller<Token>::controller(const parser_type& parser,
+                              const ir_type& ir,
+                              const passes_type& passes,
+                              const codegen_type& codegen)
+                 : my_parser(parser), my_ir(ir), my_passes(passes), my_codegen(codegen)
+{
+}                 
+
+template <typename Token>
+controller<Token>::~controller()
+{
+}
 
 END_NAMESPACE
 

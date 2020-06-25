@@ -12,7 +12,7 @@ BEGIN_NAMESPACE(frontend)
 USINGNAMESPACE(core)
 
 template <typename Token>
-class recursive_descent_parser : private parser<Token>
+class recursive_descent_parser : public parser<Token>
 {
     public:
         using token_type = Token;

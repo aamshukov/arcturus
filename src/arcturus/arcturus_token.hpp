@@ -167,6 +167,8 @@ struct arcturus_token_traits : public token_traits
     )
 };
 
+using arcturus_token = token<arcturus_token_traits>;
+
 END_NAMESPACE
 
 #endif // __ARCTURUS_TOKEN_H__

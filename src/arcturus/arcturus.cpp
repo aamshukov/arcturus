@@ -97,13 +97,16 @@
 
 #include <backend/codegen/activation_record.hpp>
 #include <backend/codegen/amd64/activation_record_amd64.hpp>
+#include <backend/codegen/codegen.hpp>
+
+#include <backend/optimization/pass.hpp>
 
 #include <controller/controller.hpp>
 
 #include <arcturus_token.hpp>
 #include <arcturus_lexical_analyzer.hpp>
 #include <arcturus_parse_tree.hpp>
-#include <arcturus_parse_tree_variable.hpp> //??
+//#include <arcturus_parse_tree_variable.hpp> //??
 #include <arcturus_parser.hpp>
 #include <arcturus_type.hpp>
 
@@ -120,4 +123,8 @@ int main()
 {
     logger::instance().initialize(LR"(d:\tmp\arcturus.log)");
     arcturus_type tt;
+
+    //arcturus_controller controller;
+
+    //controller.compile();
 }

@@ -19,33 +19,31 @@ class arcturus_controller : public controller<token<arcturus_token_traits>>
     public:
         using token_type = token<arcturus_token_traits>;
 
-    //    using lexical_analyzer_type = std::shared_ptr<lexical_analyzer<token_type>>;
-    //    using parser_type = std::shared_ptr<parser<token_type>>;
+        using parser_type = controller<token<arcturus_token_traits>>::parser_type;
 
-    //    using ir_type = std::shared_ptr<ir<token_type>>;
+        using ir_type = controller<token<arcturus_token_traits>>::ir_type;
 
-    //    //using optimization_type = std::shared_ptr<optimization<token_type>>;
-    //    //using codegen_type = std::shared_ptr<codegen<token_type>>;
+        using pass_type = controller<token<arcturus_token_traits>>::pass_type;
+        using passes_type = controller<token<arcturus_token_traits>>::passes_type;
 
+        using codegen_type = controller<token<arcturus_token_traits>>::codegen_type;
 
-
-    //private:
-    //    //lexical_analyzer_type   my_lexer;
-    //    //parser_type             my_parser;
-    //    //ir_type                 my_ir;
-
-    //    //optimization_type       my_optimization;
-    //    //codegen_type            my_codegen;
-
-                    arcturus_controller() {} //??
+    private:
+        void        initialize() override;
+        void        parse() override;
+        void        converge() override;
+        void        optimize() override;
+        void        codegen() override;
+        void        finalize() override;
 
     public:
-        virtual void initialize() override {}
-        virtual void parse() override {}
-        virtual void converge() override {}
-        virtual void optimize() override {}
-        virtual void codegen() override {}
-        virtual void finalize() override {}
+                    arcturus_controller(const parser_type& parser,
+                                        const ir_type& ir,
+                                        const passes_type& passes,
+                                        const codegen_type& codegen);
+        virtual    ~arcturus_controller();
+
+        void        compile() override;
 };
 
 END_NAMESPACE

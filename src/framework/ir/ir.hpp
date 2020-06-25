@@ -11,10 +11,10 @@ BEGIN_NAMESPACE(backend)
 USINGNAMESPACE(core)
 USINGNAMESPACE(frontend)
 USINGNAMESPACE(symtable)
-//
-//template <typename Token>
-//class ir : private noncopyable
-//{
+
+template <typename Token>
+class ir : private noncopyable
+{
 //    public:
 //        using token_type = Token;
 //
@@ -69,7 +69,7 @@ USINGNAMESPACE(symtable)
 //    public:
 //        static void             cst_to_ast(parse_tree_type& cst);
 //        static void             ast_to_asd(const parse_tree_type& ast, parse_dag_type& result_asd);
-//};
+};
 
 END_NAMESPACE
 
