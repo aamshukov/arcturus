@@ -103,13 +103,12 @@
 
 #include <controller/controller.hpp>
 
+#include <arcturus_configurator.hpp>
 #include <arcturus_token.hpp>
 #include <arcturus_lexical_analyzer.hpp>
 #include <arcturus_parse_tree.hpp>
-//#include <arcturus_parse_tree_variable.hpp> //??
 #include <arcturus_parser.hpp>
 #include <arcturus_type.hpp>
-
 #include <arcturus_controller.hpp>
 
 USINGNAMESPACE(core)
@@ -119,7 +118,7 @@ USINGNAMESPACE(backend)
 USINGNAMESPACE(orchestration)
 USINGNAMESPACE(arcturus)
 
-int main()
+int _tmain(int argc, _TCHAR *argv[])
 {
     logger::instance().initialize(LR"(d:\tmp\arcturus.log)");
     arcturus_type tt;
@@ -127,4 +126,6 @@ int main()
     //arcturus_controller controller;
 
     //controller.compile();
+
+    arcturus_configurator::instance().configure(argc, argv);
 }

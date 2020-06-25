@@ -20,6 +20,111 @@
 
 BEGIN_NAMESPACE(core)
 
+bool text::chars_to_string(const char* text, string_type& result_text)
+{
+    bool result = false;
+
+    try
+    {
+        UnicodeString ustr(text, static_cast<int32_t>(std::strlen(text)));
+
+        if(!ustr.isBogus())
+        {
+            int32_t size = ustr.length();
+
+            std::unique_ptr<char16_t[]> buffer(new char16_t[size + 1]);
+
+            ustr.extractBetween(0, static_cast<int32_t>(size), buffer.get(), 0);
+
+            buffer.get()[size] = 0;
+
+            result_text.assign(reinterpret_cast<const char_type*>(buffer.get()));
+
+            result = true;
+        }
+        else
+        {
+            OPERATION_FAILED(status::custom_code::error,
+                             0,
+                             status::contributor::core,
+                             L"Converting codepoints to string: invalid input.")
+            log_error(diagnostics::instance().last_status().text().c_str());
+        }
+    }
+    catch(const std::exception& ex)
+    {
+        OPERATION_FAILED_EX(ex,
+                            status::custom_code::error,
+                            status::contributor::core,
+                            L"Converting codepoints to string: error occurred.")
+        log_exception(ex, diagnostics::instance().last_status().text().c_str());
+    }
+
+    return result;
+}
+
+bool text::chars_to_codepoints(const char* text, std::shared_ptr<typename text::datum_type[]>& codepoints, size_type& count)
+{
+    count = 0;
+
+    bool result = false;
+
+    try
+    {
+        auto len = static_cast<int32_t>(std::strlen(text));
+
+        UnicodeString ustr(text, len);
+
+        if(!ustr.isBogus())
+        {
+            int32_t size = ustr.length() + 1;
+
+            std::shared_ptr<datum_type[]> buffer(new datum_type[size]);
+
+            UErrorCode error = U_ZERO_ERROR;
+
+            int32_t length = ustr.toUTF32(reinterpret_cast<UChar32*>(buffer.get()), static_cast<int32_t>(size), error);
+
+            if(error == U_ZERO_ERROR)
+            {
+                buffer[length] = 0;
+
+                count = length;
+
+                codepoints.swap(buffer);
+
+                result = true;
+            }
+            else
+            {
+                OPERATION_FAILED(status::custom_code::error,
+                                 0,
+                                 status::contributor::core,
+                                 format(L"Converting string (text) to codepoints: ICU error code is '%d'.", error).c_str())
+                log_error(diagnostics::instance().last_status().text().c_str());
+            }
+        }
+        else
+        {
+            OPERATION_FAILED(status::custom_code::error,
+                             0,
+                             status::contributor::core,
+                             L"Converting string (text) to codepoints: invalid input.")
+            log_error(diagnostics::instance().last_status().text().c_str());
+        }
+    }
+    catch(const std::exception& ex)
+    {
+        OPERATION_FAILED_EX(ex,
+                            status::custom_code::error,
+                            status::contributor::core,
+                            L"Converting string (text) to codepoints: error occurred.")
+        log_exception(ex, diagnostics::instance().last_status().text().c_str());
+    }
+
+    return result;
+}
+
 bool text::string_to_codepoints0(const string_type& text, std::shared_ptr<typename text::datum_type[]>& codepoints, size_type& count)
 {
     count = 0;

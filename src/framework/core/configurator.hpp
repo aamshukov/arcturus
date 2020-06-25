@@ -8,57 +8,63 @@
 
 BEGIN_NAMESPACE(core)
 
-class configurator : public singleton<configurator>
+class configurator : private noncopyable
 {
     public:
-        using kvp_type = std::unordered_map<string_type, string_type>;
+        using datum_type = text::datum_type;
+        using data_type = std::shared_ptr<datum_type[]>;
+
+        using text_type = std::basic_string<datum_type>;
+
+        using options_type = std::unordered_map<string_type, string_type>;
+        using flags_type = std::unordered_map<string_type, bool>;
+
+                                                    //                                 no spaces
+    protected:                                      //                                      |
+        options_type            my_options;         // option with argument: -c red  --color=red  --color red
+        flags_type              my_flags;           // option (switch) without argument (boolean): --debug  -d 
+
+        text_type               my_application;
+
+        options_type            my_master_options;  // compare against
+        flags_type              my_master_flags;    // compare against
 
     private:
-        kvp_type    my_options;
-        kvp_type    my_flags;
-        kvp_type    my_features;
+        void                    populate();
+
+        virtual void            populate_options() = 0;
+        virtual void            populate_flags() = 0;
 
     public:
-                            configurator() = default;
+                                configurator() = default;
 
-        const kvp_type&     options() const;
-        kvp_type&           options();
+        const options_type&     options() const;
+        options_type&           options();
 
-        const kvp_type&     flags() const;
-        kvp_type&           flags();
+        const flags_type&       flags() const;
+        flags_type&             flags();
 
-        const kvp_type&     features() const;
-        kvp_type&           features();
+        bool                    configure(int argc, char_type *argv[]);
 };
 
-inline const typename configurator::kvp_type& configurator::options() const
+inline const typename configurator::options_type& configurator::options() const
 {
     return my_options;
 }
 
-inline typename configurator::kvp_type& configurator::options()
+inline typename configurator::options_type& configurator::options()
 {
     return my_options;
 }
 
-inline const typename configurator::kvp_type& configurator::flags() const
+inline const typename configurator::flags_type& configurator::flags() const
 {
     return my_flags;
 }
 
-inline typename configurator::kvp_type& configurator::flags()
+inline typename configurator::flags_type& configurator::flags()
 {
     return my_flags;
-}
-
-inline const typename configurator::kvp_type& configurator::features() const
-{
-    return my_features;
-}
-
-inline typename configurator::kvp_type& configurator::features()
-{
-    return my_features;
 }
 
 END_NAMESPACE

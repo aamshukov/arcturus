@@ -300,6 +300,9 @@
     <ClInclude Include="..\src\framework\backend\optimization\pass.hpp">
       <Filter>framework\backend\optimization</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\arcturus\arcturus_configurator.hpp">
+      <Filter>arcturus</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\framework\core\logger.cpp">
@@ -418,6 +421,12 @@
     </ClCompile>
     <ClCompile Include="..\src\arcturus\arcturus_controller.cpp">
       <Filter>arcturus</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\arcturus\arcturus_configurator.cpp">
+      <Filter>arcturus</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\framework\core\configurator.cpp">
+      <Filter>framework\core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

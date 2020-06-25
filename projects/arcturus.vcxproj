@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\arcturus\arcturus_configurator.hpp" />
     <ClInclude Include="..\src\arcturus\arcturus_controller.hpp" />
     <ClInclude Include="..\src\arcturus\arcturus_lexical_analyzer.hpp" />
     <ClInclude Include="..\src\arcturus\arcturus_lexical_tools.hpp" />
@@ -99,6 +100,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\arcturus\arcturus.cpp" />
+    <ClCompile Include="..\src\arcturus\arcturus_configurator.cpp" />
     <ClCompile Include="..\src\arcturus\arcturus_controller.cpp" />
     <ClCompile Include="..\src\arcturus\arcturus_lexical_analyzer.cpp" />
     <ClCompile Include="..\src\arcturus\arcturus_lexical_tools.cpp" />
@@ -113,6 +115,7 @@
     <ClCompile Include="..\src\framework\content\content.cpp" />
     <ClCompile Include="..\src\framework\content\file_data_provider.cpp" />
     <ClCompile Include="..\src\framework\content\string_data_provider.cpp" />
+    <ClCompile Include="..\src\framework\core\configurator.cpp" />
     <ClCompile Include="..\src\framework\core\dag.cpp" />
     <ClCompile Include="..\src\framework\core\domain_helper.cpp" />
     <ClCompile Include="..\src\framework\core\logger.cpp" />
