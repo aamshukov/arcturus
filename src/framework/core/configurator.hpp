@@ -16,7 +16,9 @@ class configurator : private noncopyable
 
         using text_type = std::basic_string<datum_type>;
 
+        using master_options_type = std::unordered_multimap<string_type, std::tuple<string_type, bool, bool>>; // bool -> multi-value, validate argument
         using options_type = std::unordered_multimap<string_type, string_type>;
+
         using flags_type = std::unordered_multimap<string_type, bool>;
 
                                                     //                                 no spaces
@@ -26,7 +28,7 @@ class configurator : private noncopyable
 
         text_type               my_application;
 
-        options_type            my_master_options;  // compare against
+        master_options_type     my_master_options;  // compare against
         flags_type              my_master_flags;    // compare against
 
     private:

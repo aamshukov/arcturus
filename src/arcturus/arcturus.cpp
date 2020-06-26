@@ -120,9 +120,6 @@ USINGNAMESPACE(arcturus)
 
 int _tmain(int argc, _TCHAR *argv[])
 {
-    logger::instance().initialize(LR"(d:\tmp\arcturus.log)");
-
-
     arcturus_type tt;
 
     //arcturus_controller controller;
@@ -131,5 +128,18 @@ int _tmain(int argc, _TCHAR *argv[])
 
     arcturus_configurator::instance().configure(argc, argv);
 
-    string_type u = uniqueue_file_name();
+    auto it_file = arcturus_configurator::instance().options().find(L"output-file-name");
+    auto path = (*it_file).second;
+    auto file = std::filesystem::path(path).filename();
+    auto log_path = std::filesystem::path(path).parent_path();
+    auto log_file = uniqueue_file_name(file, L".log");
+    
+    log_path /= log_file;
+
+    arcturus_configurator::instance().options().insert(std::pair(L"output-log-file-name", log_path));
+
+    auto& cfg = arcturus_configurator::instance();
+    cfg;
+
+    logger::instance().initialize(log_path);
 }

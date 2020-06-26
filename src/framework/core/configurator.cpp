@@ -88,28 +88,51 @@ bool configurator::configure(int argc, char_type *argv[])
                     }
                 }
 
-                if(my_master_options.find(option) != my_master_options.end())
+                if(auto it_opt = my_master_options.find(option); it_opt != my_master_options.end())
                 {
-                    if(my_options.find(option) == my_options.end())
+                    auto multi_value = std::get<1>((*it_opt).second);
+                    auto validate = std::get<2>((*it_opt).second);
+
+                    auto opt_exist = my_options.find(option) != my_options.end();
+                    auto opt_add = true;
+
+                    if(!multi_value && opt_exist)
                     {
-                        if(!argument.empty())
-                        {
-                            my_options.insert(std::pair(option, argument));
-                        }
-                        else
-                        {
-                            OPERATION_FAILED(status::custom_code::error,
-                                             0,
-                                             status::contributor::core,
-                                             L"Invalid command line: missing argument for the '%s' option.", option.c_str())
-                        }
-                    }
-                    else
-                    {
+                        opt_add = false;
+
                         OPERATION_FAILED(status::custom_code::error,
                                          0,
                                          status::contributor::core,
-                                         L"Invalid command line: the option '%s'='%s' is already specified.", option.c_str(), argument.c_str())
+                                         L"Invalid command line: the option '%s'='%s' already specified.", option.c_str(), argument.c_str())
+                    }
+                    else if(validate)
+                    {
+                        opt_add = false;
+
+                        if(!argument.empty())
+                        {
+                            // check if argument is valid
+                            for(auto it_arg = my_master_options.find(option); it_arg != my_master_options.end(); ++it_arg) 
+                            {
+                                if(std::get<0>((*it_arg).second) == argument)
+                                {
+                                    opt_add = true;
+                                    goto __found_arg;
+                                }
+                            }
+                        }
+
+                        OPERATION_FAILED(status::custom_code::error,
+                                         0,
+                                         status::contributor::core,
+                                         L"Invalid command line: invalid argument for the '%s' option.", option.c_str())
+__found_arg:
+                        ;
+                    }
+
+                    if(opt_add)
+                    {
+                        my_options.insert(std::pair(option, argument));
                     }
                 }
                 else if(my_master_flags.find(option) != my_master_flags.end())
@@ -123,15 +146,15 @@ bool configurator::configure(int argc, char_type *argv[])
                         OPERATION_FAILED(status::custom_code::error,
                                          0,
                                          status::contributor::core,
-                                         L"Invalid command line: the flag '%s' is already specified.", option.c_str())
+                                         L"Invalid command line: the flag '%s' already specified.", option.c_str())
                     }
                 }
                 else
                 {
                     OPERATION_FAILED(status::custom_code::error,
-                                        0,
-                                        status::contributor::core,
-                                        L"Invalid command line: unknown option '%s'.", option.c_str())
+                                     0,
+                                     status::contributor::core,
+                                     L"Invalid command line: unknown option '%s'.", option.c_str())
                 }
             }
         }

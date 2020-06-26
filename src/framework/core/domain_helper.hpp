@@ -185,7 +185,7 @@ std::wstring string_to_wstring(const std::string& str, const std::locale& locale
 
 const char_type* get_indent(uint8_t count);
 
-string_type uniqueue_file_name();
+string_type uniqueue_file_name(const string_type& file_name, const string_type& extension);
 
 END_NAMESPACE
 
