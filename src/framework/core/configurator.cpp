@@ -14,8 +14,6 @@
 #include <core/diagnostics.hpp>
 #include <core/statistics.hpp>
 
-#include <core/logger.hpp>
-
 #include <core/unicode.hpp>
 #include <core/text.hpp>
 
@@ -96,7 +94,7 @@ bool configurator::configure(int argc, char_type *argv[])
                     {
                         if(!argument.empty())
                         {
-                            my_options[option] = argument;
+                            my_options.insert(std::pair(option, argument));
                         }
                         else
                         {
@@ -104,7 +102,6 @@ bool configurator::configure(int argc, char_type *argv[])
                                              0,
                                              status::contributor::core,
                                              L"Invalid command line: missing argument for the '%s' option.", option.c_str())
-                            log_error(diagnostics::instance().last_status().text().c_str());
                         }
                     }
                     else
@@ -113,14 +110,13 @@ bool configurator::configure(int argc, char_type *argv[])
                                          0,
                                          status::contributor::core,
                                          L"Invalid command line: the option '%s'='%s' is already specified.", option.c_str(), argument.c_str())
-                        log_error(diagnostics::instance().last_status().text().c_str());
                     }
                 }
                 else if(my_master_flags.find(option) != my_master_flags.end())
                 {
                     if(my_flags.find(option) == my_flags.end())
                     {
-                        my_flags[option] = true;
+                        my_flags.insert(std::pair(option, true));
                     }
                     else
                     {
@@ -128,7 +124,6 @@ bool configurator::configure(int argc, char_type *argv[])
                                          0,
                                          status::contributor::core,
                                          L"Invalid command line: the flag '%s' is already specified.", option.c_str())
-                        log_error(diagnostics::instance().last_status().text().c_str());
                     }
                 }
                 else
@@ -137,7 +132,6 @@ bool configurator::configure(int argc, char_type *argv[])
                                         0,
                                         status::contributor::core,
                                         L"Invalid command line: unknown option '%s'.", option.c_str())
-                    log_error(diagnostics::instance().last_status().text().c_str());
                 }
             }
         }

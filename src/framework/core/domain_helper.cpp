@@ -73,4 +73,23 @@ const char_type* get_indent(uint8_t count)
     return &spaces[(size - 1) - (count & (size - 1))];
 }
 
+string_type uniqueue_file_name()
+{
+    string_type result(empty_string());
+
+    time_t current_time;
+
+    time(&current_time);
+    time(&current_time);
+    time(&current_time);
+    time(&current_time);
+    time(&current_time);
+
+    std::size_t hash = std::hash<time_t> {} (current_time);
+
+    result = format(L"$$_arcturus-%I64u-arcturus_$$.log", hash);
+
+    return result;
+}
+
 END_NAMESPACE

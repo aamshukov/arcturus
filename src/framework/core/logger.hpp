@@ -27,31 +27,31 @@ class logger : private noncopyable
         };
 
     private:
-        std::wofstream  my_stream;
-        severity        my_severity;
+        std::wofstream      my_stream;
+        severity            my_severity;
 
     private:
-        static void     format_time(char_type* buffer, uint16_t buffer_size);
+        static void         format_time(char_type* buffer, uint16_t buffer_size);
 
     public:
-                        logger();
-                       ~logger();
+                            logger();
+                           ~logger();
 
     public:
-        static logger&  instance();
+        static logger&      instance();
 
-        bool            initialize(const string_type& file_name);
-        bool            uninitialize();
+        bool                initialize(const string_type& file_name);
+        bool                uninitialize();
 
-        void            set_severity(severity level);
-        void            set_severity(const string_type& level);
+        void                set_severity(severity level);
+        void                set_severity(const string_type& level);
 
-        void            log(const char_type* file_name,
-                            uint32_t line,
-                            const char_type* function_name,
-                            severity level,
-                            const char_type* format_template,
-                            ...);
+        void                log(const char_type* file_name,
+                                uint32_t line,
+                                const char_type* function_name,
+                                severity level,
+                                const char_type* format_template,
+                                ...);
 };
 
 inline logger& logger::instance()

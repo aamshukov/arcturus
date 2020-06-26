@@ -16,8 +16,8 @@ class configurator : private noncopyable
 
         using text_type = std::basic_string<datum_type>;
 
-        using options_type = std::unordered_map<string_type, string_type>;
-        using flags_type = std::unordered_map<string_type, bool>;
+        using options_type = std::unordered_multimap<string_type, string_type>;
+        using flags_type = std::unordered_multimap<string_type, bool>;
 
                                                     //                                 no spaces
     protected:                                      //                                      |

@@ -121,6 +121,8 @@ USINGNAMESPACE(arcturus)
 int _tmain(int argc, _TCHAR *argv[])
 {
     logger::instance().initialize(LR"(d:\tmp\arcturus.log)");
+
+
     arcturus_type tt;
 
     //arcturus_controller controller;
@@ -128,4 +130,6 @@ int _tmain(int argc, _TCHAR *argv[])
     //controller.compile();
 
     arcturus_configurator::instance().configure(argc, argv);
+
+    string_type u = uniqueue_file_name();
 }
