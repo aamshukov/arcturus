@@ -7,7 +7,9 @@ BEGIN_NAMESPACE(frontend)
 USINGNAMESPACE(core)
 
 inline type::type()
-           : my_size(0), my_flags(type::flags::clear)
+           : my_size(0),
+             my_flags(type::flags::clear),
+             my_cardinality(0)
 {
 }
 
@@ -35,9 +37,21 @@ inline typename type::flags_type& type::flags()
     return my_flags;
 }
 
+
+inline typename type::size_type type::cardinality() const
+{
+    return my_cardinality;
+}
+
+inline typename type::size_type& type::cardinality()
+{
+    return my_cardinality;
+}
+
+
 template <typename Traits>
-abstract_type<Traits>::abstract_type()
-                     : my_kind(abstract_type<Traits>::kind_type::unknown_type)
+abstract_type<Traits>::abstract_type(typename abstract_type<Traits>::kind_type kind)
+                     : my_kind(kind)
 {
 }
 

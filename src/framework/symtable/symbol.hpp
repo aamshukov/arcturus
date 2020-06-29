@@ -72,13 +72,15 @@ class symbol : private noncopyable
 
         flags_type              my_flags;               // flags
 
-        size_type               my_cardinality;         // scalar (0), vector/1D-array(1), matrix/2D-array(2), etc.
+        //size_type               my_cardinality;         // scalar (0), vector/1D-array(1), matrix/2D-array(2), etc.
 
-        index_type              my_array_lower_bound;   //  [-10..10]
-        index_type              my_array_upper_bound;   //
+//?? move to type?
+        //index_type              my_array_lower_bound;   //  [-10..10]
+        //index_type              my_array_upper_bound;   //
 
-        bool                    my_checked_array;       //?? checked or unchecked array, default is checked
-        bool                    my_rowbased_array;      //?? row or column based array, default is row based
+        //bool                    my_checked_array;       //?? checked or unchecked array, default is checked
+        //bool                    my_rowbased_array;      //?? row or column based array, default is row based
+//??
 
         attributes_type         my_attributes;          // custom attributes
 
@@ -127,10 +129,10 @@ symbol<Token>::symbol()
                my_offset(0),
                my_size(0),
                my_bitsize(0),
-               my_flags(flags_type::clear),
-               my_cardinality(0),
-               my_array_lower_bound(0),
-               my_array_upper_bound(0)
+               my_flags(flags_type::clear)
+               //my_cardinality(0),
+               //my_array_lower_bound(0),
+               //my_array_upper_bound(0)
 {
 }
 

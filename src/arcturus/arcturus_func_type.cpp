@@ -28,20 +28,30 @@
 #include <frontend/type/type.inl>
 
 #include <arcturus_type.hpp>
+#include <arcturus_func_type.hpp>
 
 BEGIN_NAMESPACE(arcturus)
 
 USINGNAMESPACE(core)
 USINGNAMESPACE(frontend)
 
-typename arcturus_type_traits::enum_map_type arcturus_type_traits::mapping;
-
-arcturus_type::arcturus_type(kind_type kind) : abstract_type<arcturus_type_traits>(kind)
+arcturus_func_type::arcturus_func_type(kind_type kind)
+                  : arcturus_type(kind)
 {
 }
 
-arcturus_type::~arcturus_type()
+arcturus_func_type::~arcturus_func_type()
 {
+}
+
+bool arcturus_func_type::operator == (const arcturus_type&)
+{
+    return false; //??
+}
+
+bool arcturus_func_type::operator != (const arcturus_type&)
+{
+    return false; //??
 }
 
 END_NAMESPACE

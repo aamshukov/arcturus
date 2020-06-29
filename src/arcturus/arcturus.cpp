@@ -109,6 +109,11 @@
 #include <arcturus_parse_tree.hpp>
 #include <arcturus_parser.hpp>
 #include <arcturus_type.hpp>
+#include <arcturus_scalar_type.hpp>
+#include <arcturus_array_type.hpp>
+#include <arcturus_struct_type.hpp>
+#include <arcturus_enum_type.hpp>
+#include <arcturus_func_type.hpp>
 #include <arcturus_controller.hpp>
 
 USINGNAMESPACE(core)
@@ -120,7 +125,8 @@ USINGNAMESPACE(arcturus)
 
 int _tmain(int argc, _TCHAR *argv[])
 {
-    arcturus_type tt;
+    auto st(factory::create<arcturus_scalar_type>(arcturus_type::kind_type::integer_type));
+    arcturus_array_type at(st);
 
     //arcturus_controller controller;
 

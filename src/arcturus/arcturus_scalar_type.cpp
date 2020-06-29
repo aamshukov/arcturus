@@ -28,20 +28,30 @@
 #include <frontend/type/type.inl>
 
 #include <arcturus_type.hpp>
+#include <arcturus_scalar_type.hpp>
 
 BEGIN_NAMESPACE(arcturus)
 
 USINGNAMESPACE(core)
 USINGNAMESPACE(frontend)
 
-typename arcturus_type_traits::enum_map_type arcturus_type_traits::mapping;
-
-arcturus_type::arcturus_type(kind_type kind) : abstract_type<arcturus_type_traits>(kind)
+arcturus_scalar_type::arcturus_scalar_type(kind_type kind)
+                    : arcturus_type(kind)
 {
 }
 
-arcturus_type::~arcturus_type()
+arcturus_scalar_type::~arcturus_scalar_type()
 {
+}
+
+bool arcturus_scalar_type::operator == (const arcturus_type& other)
+{
+    return kind() == other.kind();
+}
+
+bool arcturus_scalar_type::operator != (const arcturus_type& other)
+{
+    return kind() != other.kind();
 }
 
 END_NAMESPACE

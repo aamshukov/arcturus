@@ -26,6 +26,8 @@ struct arcturus_type_traits
         boolean_type     = 104,
         pointer_type     = 105, // ref
 
+        array_type       = 150,
+
         structure_type   = 200,
         enumeration_type = 201,
 
@@ -44,11 +46,11 @@ struct arcturus_type_traits
 class arcturus_type : public abstract_type<arcturus_type_traits>
 {
     public:
-                arcturus_type();
-               ~arcturus_type();
+                        arcturus_type(kind_type kind);
+                       ~arcturus_type();
 
-        bool    operator == (const type& other) override;
-        bool    operator != (const type& other) override;
+        virtual bool    operator == (const arcturus_type& other) = 0;
+        virtual bool    operator != (const arcturus_type& other) = 0;
 };
 
 END_NAMESPACE

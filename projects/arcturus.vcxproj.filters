@@ -67,6 +67,9 @@
     <Filter Include="framework\backend\codegen\amd64">
       <UniqueIdentifier>{ed48eebc-ce3c-4887-821c-196a86cf78c4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="arcturus\type">
+      <UniqueIdentifier>{d4861b9b-eea3-4939-a6db-b858dcfd0387}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\framework\core\edge.hpp">
@@ -291,9 +294,6 @@
     <ClInclude Include="..\src\framework\backend\codegen\codegen.hpp">
       <Filter>framework\backend\codegen</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\arcturus\arcturus_type.hpp">
-      <Filter>arcturus</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\framework\frontend\parser\parse_tree_base.hpp">
       <Filter>framework\frontend\parser</Filter>
     </ClInclude>
@@ -302,6 +302,24 @@
     </ClInclude>
     <ClInclude Include="..\src\arcturus\arcturus_configurator.hpp">
       <Filter>arcturus</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\arcturus\arcturus_type.hpp">
+      <Filter>arcturus\type</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\arcturus\arcturus_scalar_type.hpp">
+      <Filter>arcturus\type</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\arcturus\arcturus_array_type.hpp">
+      <Filter>arcturus\type</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\arcturus\arcturus_struct_type.hpp">
+      <Filter>arcturus\type</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\arcturus\arcturus_enum_type.hpp">
+      <Filter>arcturus\type</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\arcturus\arcturus_func_type.hpp">
+      <Filter>arcturus\type</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -404,9 +422,6 @@
     <ClCompile Include="..\src\framework\backend\codegen\codegen.cpp">
       <Filter>framework\backend\codegen</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\arcturus\arcturus_type.cpp">
-      <Filter>arcturus</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\framework\core\tree.cpp">
       <Filter>framework\core</Filter>
     </ClCompile>
@@ -427,6 +442,24 @@
     </ClCompile>
     <ClCompile Include="..\src\framework\core\configurator.cpp">
       <Filter>framework\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\arcturus\arcturus_type.cpp">
+      <Filter>arcturus\type</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\arcturus\arcturus_array_type.cpp">
+      <Filter>arcturus\type</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\arcturus\arcturus_scalar_type.cpp">
+      <Filter>arcturus\type</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\arcturus\arcturus_struct_type.cpp">
+      <Filter>arcturus\type</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\arcturus\arcturus_enum_type.cpp">
+      <Filter>arcturus\type</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\arcturus\arcturus_func_type.cpp">
+      <Filter>arcturus\type</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
