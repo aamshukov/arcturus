@@ -321,6 +321,9 @@
     <ClInclude Include="..\src\arcturus\arcturus_func_type.hpp">
       <Filter>arcturus\type</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\arcturus\arcturus_symbol.hpp">
+      <Filter>arcturus</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\framework\core\logger.cpp">
@@ -460,6 +463,9 @@
     </ClCompile>
     <ClCompile Include="..\src\arcturus\arcturus_func_type.cpp">
       <Filter>arcturus\type</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\arcturus\arcturus_symbol.cpp">
+      <Filter>arcturus</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

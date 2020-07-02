@@ -15,12 +15,15 @@ class rule
         using symbol_type = symbol::symbol_type;
         using symbols_type = symbol::symbols_type;
 
-        enum class flags : uint64_t
+        enum class flagss : uint64_t
         {
             clear = 0x00
         };
 
-        using flags_type = flags;
+        DECLARE_ENUM_OPERATORS(flagss)
+
+        using flags_type = flagss;
+
         using ast_operators_type = std::map<std::size_t, tree::flags_type>;
 
     private:
@@ -51,7 +54,7 @@ class rule
 
                                    ~rule();
 
-        const rule&                 operator = (const rule& other);
+        rule&                       operator = (const rule& other);
         rule&                       operator = (rule&& other);
 
         uint32_t                    id() const;

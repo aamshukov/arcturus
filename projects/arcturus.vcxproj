@@ -31,6 +31,7 @@
     <ClInclude Include="..\src\arcturus\arcturus_parse_tree_variable.hpp" />
     <ClInclude Include="..\src\arcturus\arcturus_scalar_type.hpp" />
     <ClInclude Include="..\src\arcturus\arcturus_struct_type.hpp" />
+    <ClInclude Include="..\src\arcturus\arcturus_symbol.hpp" />
     <ClInclude Include="..\src\arcturus\arcturus_token.hpp" />
     <ClInclude Include="..\src\arcturus\arcturus_type.hpp" />
     <ClInclude Include="..\src\framework\backend\codegen\activation_record.hpp" />
@@ -116,6 +117,7 @@
     <ClCompile Include="..\src\arcturus\arcturus_parse_tree.cpp" />
     <ClCompile Include="..\src\arcturus\arcturus_scalar_type.cpp" />
     <ClCompile Include="..\src\arcturus\arcturus_struct_type.cpp" />
+    <ClCompile Include="..\src\arcturus\arcturus_symbol.cpp" />
     <ClCompile Include="..\src\arcturus\arcturus_token.cpp" />
     <ClCompile Include="..\src\arcturus\arcturus_type.cpp" />
     <ClCompile Include="..\src\framework\backend\codegen\activation_record.cpp" />

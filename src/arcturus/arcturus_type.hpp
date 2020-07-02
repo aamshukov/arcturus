@@ -47,10 +47,14 @@ class arcturus_type : public abstract_type<arcturus_type_traits>
 {
     public:
                         arcturus_type(kind_type kind);
+
+                        arcturus_type(const arcturus_type& other) = default;
+                        arcturus_type(arcturus_type&& other) = default;
+
                        ~arcturus_type();
 
-        virtual bool    operator == (const arcturus_type& other) = 0;
-        virtual bool    operator != (const arcturus_type& other) = 0;
+        arcturus_type&  operator = (const arcturus_type& other) = default;
+        arcturus_type&  operator = (arcturus_type&& other) = default;
 };
 
 END_NAMESPACE

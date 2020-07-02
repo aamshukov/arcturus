@@ -36,7 +36,7 @@ struct token
 
     using id_type = std::size_t; // should be in sync with lexical_analyzer's
 
-    enum class flags : uint64_t
+    enum class flagss : uint64_t
     {
         clear     = 0x00,
         genuine   = 0x01,
@@ -44,7 +44,9 @@ struct token
         synthetic = 0x04  // additional (artificial) tokens which are inserted into the token stream ...
     };
 
-    using flags_type = flags;
+    DECLARE_ENUM_OPERATORS(flagss)
+
+    using flags_type = flagss;
 
     using traits = Traits;
     using token_type = typename traits::type;
@@ -103,7 +105,7 @@ struct token
             source = other.source;
         }
 
-        const token& operator = (const token& other)
+        token& operator = (const token& other)
         {
             accept(other);
             return *this;
@@ -142,8 +144,8 @@ struct token
             offset = INVALID_VALUE;
             length = INVALID_VALUE;
 
-            flags = flags::clear;
-            flags |= flags::genuine;
+            flags = flags_type::clear;
+            flags |= flags_type::genuine;
 
             source = 0;
         }

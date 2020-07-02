@@ -71,7 +71,7 @@ fsa_transition::fsa_transition(fsa_transition&& other)
     }
 }
 
-const fsa_transition& fsa_transition::operator = (const fsa_transition& other)
+fsa_transition& fsa_transition::operator = (const fsa_transition& other)
 {
     if(this != &other)
     {

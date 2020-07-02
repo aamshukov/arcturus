@@ -29,8 +29,8 @@ class arcturus_array_type : public arcturus_type
                         arcturus_array_type(const base_type& base_type);
                        ~arcturus_array_type();
 
-        bool            operator == (const arcturus_type& other) override;
-        bool            operator != (const arcturus_type& other) override;
+        friend bool     operator == (const arcturus_array_type& lhs, const arcturus_array_type& rhs);
+        friend bool     operator != (const arcturus_array_type& lhs, const arcturus_array_type& rhs);
 
         base_type       base() const;
 

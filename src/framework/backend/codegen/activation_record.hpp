@@ -17,8 +17,23 @@ class access; //??
 class activation_record : private noncopyable
 {
     // abstract class to implement activationrecord/frame interface
+    private:
+        // saved data (regs, etc.)
+
+        // actual params (arguments)
+
+        // local variables
+        // temporary variables
+
+        // dynamic/control link (old BP)
+        // static/access link
+
+        // return address
+
+        // result
+
     public:
-        virtual access add_local(bool escape) = 0; // true - escapes (goes into frame), false - goes into register
+        virtual access  add_local(bool escape) = 0; // true - escapes (goes into frame), false - goes into register
 };
 
 END_NAMESPACE

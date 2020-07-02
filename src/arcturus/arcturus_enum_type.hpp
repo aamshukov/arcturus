@@ -11,14 +11,14 @@ BEGIN_NAMESPACE(arcturus)
 USINGNAMESPACE(core)
 USINGNAMESPACE(frontend)
 
-class arcturus_enum_type : public arcturus_type
+class arcturus_enum_type : public arcturus_scalar_type
 {
     public:
-                        arcturus_enum_type();
-                       ~arcturus_enum_type();
+                    arcturus_enum_type();
+                   ~arcturus_enum_type();
 
-        bool            operator == (const arcturus_type& other) override;
-        bool            operator != (const arcturus_type& other) override;
+        friend bool operator == (const arcturus_enum_type& lhs, const arcturus_enum_type& rhs);
+        friend bool operator != (const arcturus_enum_type& lhs, const arcturus_enum_type& rhs);
 };
 
 END_NAMESPACE

@@ -52,7 +52,7 @@ fsa_state_set::fsa_state_set(fsa_state_set&& other)
     }
 }
 
-const fsa_state_set& fsa_state_set::operator = (const fsa_state_set& other)
+fsa_state_set& fsa_state_set::operator = (const fsa_state_set& other)
 {
     if(this != &other)
     {

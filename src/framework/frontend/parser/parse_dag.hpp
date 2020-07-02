@@ -23,8 +23,8 @@ class parse_dag : public parse_tree_base<Token>, public dag, public visitable
         using ir_symbols_type = parse_tree_base<token_type>::ir_symbols_type;
 
     public:
-                                parse_dag();
-        virtual                ~parse_dag();
+                    parse_dag();
+        virtual    ~parse_dag();
 
         ACCEPT_METHOD;
 };

@@ -4,6 +4,10 @@
 #include <core/pch.hpp>
 #include <core/noncopyable.hpp>
 
+#include <core/unicode.hpp>
+#include <core/text.hpp>
+#include <core/enum.hpp>
+
 #include <core/domain_helper.hpp>
 
 #include <core/factory.hpp>
@@ -252,12 +256,12 @@ void grammar::load(const string_type& file_name)
                         if(rhs_symbol_name[rhs_symbol_name.size() - 1] == L'^')
                         {
                             rhs_symbol_name = rhs_symbol_name.substr(0, rhs_symbol_name.size() - 1);
-                            (*rule0).ast_operators()[(*rule0).rhs().size()] = tree::flags::root_in_ast;
+                            (*rule0).ast_operators()[(*rule0).rhs().size()] = tree::flags_type::root_in_ast;
                         }
                         else if(rhs_symbol_name[rhs_symbol_name.size() - 1] == L'!')
                         {
                             rhs_symbol_name = rhs_symbol_name.substr(0, rhs_symbol_name.size() - 1);
-                            (*rule0).ast_operators()[(*rule0).rhs().size()] = tree::flags::not_in_ast;
+                            (*rule0).ast_operators()[(*rule0).rhs().size()] = tree::flags_type::not_in_ast;
                         }
 
                         if(rhs_symbol_name[0] == L'\'' && rhs_symbol_name.size() > 1)

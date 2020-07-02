@@ -41,7 +41,7 @@ class fsa_transition
                                         fsa_transition(const fsa_transition& other);
                                         fsa_transition(fsa_transition&& other);
 
-        const fsa_transition&           operator = (const fsa_transition& other);
+        fsa_transition&                 operator = (const fsa_transition& other);
         fsa_transition&                 operator = (fsa_transition&& other);
 
         uint32_t                        id() const;

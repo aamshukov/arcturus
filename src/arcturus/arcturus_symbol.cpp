@@ -106,51 +106,29 @@
 #include <arcturus_configurator.hpp>
 #include <arcturus_token.hpp>
 #include <arcturus_type.hpp>
+#include <arcturus_lexical_analyzer.hpp>
+#include <arcturus_parse_tree.hpp>
+#include <arcturus_parser.hpp>
+#include <arcturus_type.hpp>
 #include <arcturus_scalar_type.hpp>
 #include <arcturus_array_type.hpp>
 #include <arcturus_struct_type.hpp>
 #include <arcturus_enum_type.hpp>
 #include <arcturus_func_type.hpp>
 #include <arcturus_symbol.hpp>
-#include <arcturus_lexical_analyzer.hpp>
-#include <arcturus_parse_tree.hpp>
-#include <arcturus_parser.hpp>
-#include <arcturus_controller.hpp>
+
+BEGIN_NAMESPACE(arcturus)
 
 USINGNAMESPACE(core)
-USINGNAMESPACE(symtable)
 USINGNAMESPACE(frontend)
-USINGNAMESPACE(backend)
-USINGNAMESPACE(orchestration)
-USINGNAMESPACE(arcturus)
+USINGNAMESPACE(symtable)
 
-int _tmain(int argc, _TCHAR *argv[])
+arcturus_symbol::arcturus_symbol()
 {
-    auto st(factory::create<arcturus_scalar_type>(arcturus_type::kind_type::integer_type));
-    auto at(factory::create<arcturus_array_type>(st));
-
-    //arcturus_controller controller;
-
-    //controller.compile();
-
-    arcturus_configurator::instance().configure(argc, argv);
-
-    auto it_file = arcturus_configurator::instance().options().find(L"output-file-name");
-    auto path = (*it_file).second;
-    auto file = std::filesystem::path(path).filename();
-    auto log_path = std::filesystem::path(path).parent_path();
-    auto log_file = uniqueue_file_name(file, L".log");
-    
-    log_path /= log_file;
-
-    arcturus_configurator::instance().options().insert(std::pair(L"output-log-file-name", log_path));
-
-    auto& cfg = arcturus_configurator::instance();
-    cfg;
-
-    logger::instance().initialize(log_path);
-
-    arcturus_symbol sym;
-    sym.type() = st;
-    sym.type() = at;
 }
+
+arcturus_symbol::~arcturus_symbol()
+{
+}
+
+END_NAMESPACE

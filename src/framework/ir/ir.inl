@@ -30,19 +30,19 @@ USINGNAMESPACE(frontend)
 //        queue.pop();
 //
 //        // ignore 'deleted' nodes
-//        if(((*node).flags & tree::flags::deleted) == tree::flags::deleted)
+//        if(((*node).flags & tree::flags_type::deleted) == tree::flags_type::deleted)
 //        {
 //            continue;
 //        }
 //
-//        if(((*node).flags & tree::flags::not_in_ast) == tree::flags::not_in_ast)
+//        if(((*node).flags & tree::flags_type::not_in_ast) == tree::flags_type::not_in_ast)
 //        {
 //            auto papa((*node).papa);
 //
 //            if(papa != nullptr)
 //            {
 //                (*papa).kids.erase((std::remove((*papa).kids.begin(), (*papa).kids.end(), node)));
-//                (*node).flags |= tree::flags::deleted;
+//                (*node).flags |= tree::flags_type::deleted;
 //            }
 //
 //            continue;
@@ -81,7 +81,7 @@ USINGNAMESPACE(frontend)
 //        stack.pop();
 //
 //        // ignore 'deleted' nodes
-//        if(((*node).flags & tree::flags::deleted) == tree::flags::deleted)
+//        if(((*node).flags & tree::flags_type::deleted) == tree::flags_type::deleted)
 //        {
 //            continue;
 //        }
@@ -107,7 +107,7 @@ USINGNAMESPACE(frontend)
 //
 //            if((*papa).kids.size() == 1)
 //            {
-//                (*(*node).papa).flags |= tree::flags::deleted;
+//                (*(*node).papa).flags |= tree::flags_type::deleted;
 //
 //                auto it = std::find((*(*papa).papa).kids.begin(), (*(*papa).papa).kids.end(), (*node).papa);
 //
@@ -152,12 +152,12 @@ USINGNAMESPACE(frontend)
 //        stack.pop();
 //
 //        // ignore 'deleted' nodes
-//        if(((*node).flags & tree::flags::deleted) == tree::flags::deleted)
+//        if(((*node).flags & tree::flags_type::deleted) == tree::flags_type::deleted)
 //        {
 //            continue;
 //        }
 //
-//        if(((*node).flags & tree::flags::root_in_ast) == tree::flags::root_in_ast)
+//        if(((*node).flags & tree::flags_type::root_in_ast) == tree::flags_type::root_in_ast)
 //        {
 //            auto papa((*node).papa);
 //
@@ -166,7 +166,7 @@ USINGNAMESPACE(frontend)
 //                continue;
 //            }
 //
-//            (*papa).flags |= tree::flags::deleted;
+//            (*papa).flags |= tree::flags_type::deleted;
 //
 //            std::for_each((*papa).kids.begin(),
 //                          (*papa).kids.end(),

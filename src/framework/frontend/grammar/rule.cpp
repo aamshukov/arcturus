@@ -4,6 +4,10 @@
 #include <core/pch.hpp>
 #include <core/noncopyable.hpp>
 
+#include <core/unicode.hpp>
+#include <core/text.hpp>
+#include <core/enum.hpp>
+
 #include <core/domain_helper.hpp>
 
 #include <core/factory.hpp>
@@ -26,7 +30,7 @@ rule::rule(uint32_t id, const string_type& name)
       my_rhs_nonterminal_count(0),
       my_precedence(0),
       my_precedences(0),
-      my_flags(flags::clear)
+      my_flags(flags_type::clear)
 {
 }
 
@@ -80,7 +84,7 @@ rule::~rule()
 {
 }
 
-const rule& rule::operator = (const rule& other)
+rule& rule::operator = (const rule& other)
 {
     if(this != &other)
     {

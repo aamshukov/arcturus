@@ -14,14 +14,16 @@ class dag : private noncopyable
         using dag_type = std::shared_ptr<dag>;
         using dags_type = std::vector<dag_type>;
 
-        enum class flags : uint64_t
+        enum class flagss : uint64_t
         {
             clear     = 0x0000,
             deleted   = 0x0001,
             processed = 0x0008
         };
 
-        using flags_type = flags;
+        DECLARE_ENUM_OPERATORS(flagss)
+
+        using flags_type = flagss;
 
         struct dag_key_comparator
         {

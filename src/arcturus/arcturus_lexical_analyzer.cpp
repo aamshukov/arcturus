@@ -825,7 +825,7 @@ USINGNAMESPACE(frontend)
 //            my_token.type = token_type::traits::type::indent;
 //        }
 //
-//        my_token.flags.modify_flags(token_type::flags::synthetic, token_type::flags::genuine);
+//        my_token.flags.modify_flags(token_type::flags_type::synthetic, token_type::flags_type::genuine);
 //    }
 //}
 //

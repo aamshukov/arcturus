@@ -15,14 +15,15 @@ class arcturus_parser : public recursive_descent_parser<arcturus_token>
 {
     public:
         using token_type = arcturus_token;
+
         using lexical_analyzer_type = typename parser<token_type>::lexical_analyzer_type;
 
     private:
-                void    parse() override;
+        void    parse() override;
 
     public:
-                        arcturus_parser(const lexical_analyzer_type& lexical_analyzer);
-                       ~arcturus_parser();
+                arcturus_parser(const lexical_analyzer_type& lexical_analyzer);
+               ~arcturus_parser();
 };
 
 END_NAMESPACE

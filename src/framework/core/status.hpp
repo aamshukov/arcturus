@@ -67,7 +67,7 @@ class status
                             status(const status& other);
                             status(status&& other);
 
-        const status&       operator = (const status& other);
+        status&             operator = (const status& other);
         status&             operator = (status&& other);
 
         custom_code_type    custom_code() const;

@@ -43,7 +43,7 @@ class fsa_state
                                 fsa_state(const fsa_state& other);
                                 fsa_state(fsa_state&& other);
 
-        const fsa_state&        operator = (const fsa_state& other);
+        fsa_state&              operator = (const fsa_state& other);
         fsa_state&              operator = (fsa_state&& other);
 
         uint32_t                id() const;

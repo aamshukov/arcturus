@@ -46,7 +46,7 @@ status::status(status&& other)
     }
 }
 
-const status& status::operator = (const status& other)
+status& status::operator = (const status& other)
 {
     if(this != &other)
     {

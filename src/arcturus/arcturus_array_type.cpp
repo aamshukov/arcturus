@@ -49,14 +49,15 @@ arcturus_array_type::~arcturus_array_type()
 {
 }
 
-bool arcturus_array_type::operator == (const arcturus_type&)
+bool operator == (const arcturus_array_type& lhs, const arcturus_array_type& rhs)
 {
+    lhs; rhs;
     return false; //??
 }
 
-bool arcturus_array_type::operator != (const arcturus_type&)
+bool operator != (const arcturus_array_type& lhs, const arcturus_array_type& rhs)
 {
-    return false; //??
+    return !(lhs == rhs);
 }
 
 END_NAMESPACE

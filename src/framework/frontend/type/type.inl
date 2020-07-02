@@ -8,13 +8,23 @@ USINGNAMESPACE(core)
 
 inline type::type()
            : my_size(0),
-             my_flags(type::flags::clear),
+             my_flags(type::flags_type::clear),
              my_cardinality(0)
 {
 }
 
 inline type::~type()
 {
+}
+
+inline const string_type& type::name() const
+{
+    return my_name;
+}
+
+inline string_type& type::name()
+{
+    return my_name;
 }
 
 inline typename type::size_type type::size() const
@@ -25,6 +35,16 @@ inline typename type::size_type type::size() const
 inline typename type::size_type& type::size()
 {
     return my_size;
+}
+
+inline typename type::size_type type::platform_size() const
+{
+    return my_platform_size;
+}
+
+inline typename type::size_type& type::platform_size()
+{
+    return my_platform_size;
 }
 
 inline typename type::flags_type type::flags() const

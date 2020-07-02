@@ -97,6 +97,8 @@ using hash_type = uint64_t;
 using char_type = wchar_t;
 using string_type = std::basic_string<char_type>;
 
+const int bits_in_byte = 8;
+
 END_NAMESPACE
 
 #endif // __PCH_H__

@@ -11,34 +11,41 @@ BEGIN_NAMESPACE(arcturus)
 USINGNAMESPACE(core)
 USINGNAMESPACE(frontend)
 
-class arcturus_struct_type : public arcturus_type
+class arcturus_struct_type : public arcturus_scalar_type
 {
     public:
-        using field_type = std::shared_ptr<arcturus_type>;
-        using fields_type = std::vector<field_type>;
+        using member_type = std::shared_ptr<arcturus_type>;
+        using members_type = std::vector<member_type>;
 
     private:
-        fields_type         my_fields;
+        members_type            my_members;
 
     public:
-                            arcturus_struct_type();
-                           ~arcturus_struct_type();
+                                arcturus_struct_type();
 
-        bool                operator == (const arcturus_type& other) override;
-        bool                operator != (const arcturus_type& other) override;
+                                arcturus_struct_type(const arcturus_struct_type& other) = default;
+                                arcturus_struct_type(arcturus_struct_type&& other) = default;
 
-        const fields_type&  fields() const;
-        fields_type&        fields();
+                               ~arcturus_struct_type();
+
+        arcturus_struct_type&   operator = (const arcturus_struct_type& other) = default;
+        arcturus_struct_type&   operator = (arcturus_struct_type&& other) = default;
+
+        friend bool             operator == (const arcturus_struct_type& lhs, const arcturus_struct_type& rhs);
+        friend bool             operator != (const arcturus_struct_type& lhs, const arcturus_struct_type& rhs);
+
+        const members_type&     members() const;
+        members_type&           members();
 };
 
-inline const typename arcturus_struct_type::fields_type& arcturus_struct_type::fields() const
+inline const typename arcturus_struct_type::members_type& arcturus_struct_type::members() const
 {
-    return my_fields;
+    return my_members;
 }
 
-inline typename arcturus_struct_type::fields_type& arcturus_struct_type::fields()
+inline typename arcturus_struct_type::members_type& arcturus_struct_type::members()
 {
-    return my_fields;
+    return my_members;
 }
 
 END_NAMESPACE

@@ -28,6 +28,7 @@
 #include <frontend/type/type.inl>
 
 #include <arcturus_type.hpp>
+#include <arcturus_scalar_type.hpp>
 #include <arcturus_struct_type.hpp>
 
 BEGIN_NAMESPACE(arcturus)
@@ -36,7 +37,7 @@ USINGNAMESPACE(core)
 USINGNAMESPACE(frontend)
 
 arcturus_struct_type::arcturus_struct_type()
-                    : arcturus_type(abstract_type<traits_type>::kind_type::structure_type)
+                    : arcturus_scalar_type(abstract_type<traits_type>::kind_type::structure_type)
 {
 }
 
@@ -44,14 +45,15 @@ arcturus_struct_type::~arcturus_struct_type()
 {
 }
 
-bool arcturus_struct_type::operator == (const arcturus_type&)
+bool operator == (const arcturus_struct_type& lhs, const arcturus_struct_type& rhs)
 {
+    lhs; rhs;
     return false; //??
 }
 
-bool arcturus_struct_type::operator != (const arcturus_type&)
+bool operator != (const arcturus_struct_type& lhs, const arcturus_struct_type& rhs)
 {
-    return false; //??
+    return !(lhs == rhs);
 }
 
 END_NAMESPACE

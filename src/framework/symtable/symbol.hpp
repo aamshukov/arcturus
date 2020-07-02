@@ -18,8 +18,6 @@ class symbol : private noncopyable
         using token_type = Token;
         using symbol_type = std::shared_ptr<symbol<token_type>>;
 
-        using type_type = std::shared_ptr<type>;
-
         using datum_type = text::datum_type;
         using codepoints_type = std::basic_string<datum_type>;
 
@@ -40,49 +38,47 @@ class symbol : private noncopyable
                                         datum_type,
                                         codepoints_type>;
 
-        enum class flags : uint64_t
+        using type_type = std::shared_ptr<type>;
+
+        enum class flagss : uint64_t
         {
-            clear = 0x0000,
-            reg   = 0x0001  // if the symbol's value is in a register
+            clear       = 0x0000,
+            reg         = 0x0001, // if the symbol's value is in a register
+            referenced  = 0x0002  // mark variable as referenced
         };
 
-        using flags_type = flags;
+        DECLARE_ENUM_OPERATORS(flagss)
 
-        using attributes_type = std::unordered_map<string_type, value_type>;
+        using flags_type = flagss;
+
+        using metadata_type = std::unordered_map<string_type, value_type>;
 
         using counter_type = counter;
 
-    private:
+    protected:
         codepoints_type         my_name;
 
         token_type              my_token;               // link with content
         value_type              my_value;               // inffered value if any, might be integer value, real value or identifier
 
-        std::size_t             my_ssa_id;              // 0 - unassigned, 1+
-
         type_type               my_type;
+
         string_type             my_machine_type; //??
 
         size_type               my_offset;              // runtime offset
 
         size_type               my_size;                // runtime size in bytes, might be aligned
         size_type               my_bitsize;             // runtime size in bits
+        bool                    my_align_required; //??
 
         //class_type              my_storage_class;     //??
 
         flags_type              my_flags;               // flags
 
-        //size_type               my_cardinality;         // scalar (0), vector/1D-array(1), matrix/2D-array(2), etc.
+        metadata_type           my_metadata;            // custom attributes
 
-//?? move to type?
-        //index_type              my_array_lower_bound;   //  [-10..10]
-        //index_type              my_array_upper_bound;   //
-
-        //bool                    my_checked_array;       //?? checked or unchecked array, default is checked
-        //bool                    my_rowbased_array;      //?? row or column based array, default is row based
-//??
-
-        attributes_type         my_attributes;          // custom attributes
+        std::size_t             my_ssa_id;              // 0 - unassigned, 1+
+        static counter_type     my_ssa_counter;
 
         static counter_type     my_tmp_counter;
 
@@ -99,11 +95,11 @@ class symbol : private noncopyable
         const value_type&       value() const;
         value_type&             value();
 
-        std::size_t             ssa_id() const;
-        std::size_t&            ssa_id();
-
         const type_type&        type() const;
         type_type&              type();
+
+        std::size_t             ssa_id() const;
+        std::size_t&            ssa_id();
 
         std::size_t             offset() const;
         std::size_t&            offset();
@@ -114,8 +110,8 @@ class symbol : private noncopyable
         flags_type              flags() const;
         flags_type&             flags();
 
-        const attributes_type&  attributes() const;
-        attributes_type&        attributes();
+        const metadata_type&    metadata() const;
+        metadata_type&          metadata();
 
         static symbol_type      get_new_temporary();
 };
@@ -125,14 +121,12 @@ typename symbol<Token>::counter_type symbol<Token>::my_tmp_counter;
 
 template <typename Token>
 symbol<Token>::symbol()
-             : my_ssa_id(0),
-               my_offset(0),
-               my_size(0),
-               my_bitsize(0),
-               my_flags(flags_type::clear)
-               //my_cardinality(0),
-               //my_array_lower_bound(0),
-               //my_array_upper_bound(0)
+                   : my_ssa_id(0),
+                     //??my_type(type_type::kind_type::unknown_type),
+                     my_offset(0),
+                     my_size(0),
+                     my_bitsize(0),
+                     my_flags(flags_type::clear)
 {
 }
 
@@ -178,18 +172,6 @@ inline typename symbol<Token>::value_type& symbol<Token>::value()
 }
 
 template <typename Token>
-inline std::size_t symbol<Token>::ssa_id() const
-{
-    return my_ssa_id;
-}
-
-template <typename Token>
-inline std::size_t& symbol<Token>::ssa_id()
-{
-    return my_ssa_id;
-}
-
-template <typename Token>
 inline const typename symbol<Token>::type_type& symbol<Token>::type() const
 {
     return my_type;
@@ -199,6 +181,18 @@ template <typename Token>
 inline typename symbol<Token>::type_type& symbol<Token>::type()
 {
     return my_type;
+}
+
+template <typename Token>
+inline std::size_t symbol<Token>::ssa_id() const
+{
+    return my_ssa_id;
+}
+
+template <typename Token>
+inline std::size_t& symbol<Token>::ssa_id()
+{
+    return my_ssa_id;
 }
 
 template <typename Token>
@@ -238,15 +232,15 @@ inline typename symbol<Token>::flags_type& symbol<Token>::flags()
 }
 
 template <typename Token>
-inline const typename symbol<Token>::attributes_type& symbol<Token>::attributes() const
+inline const typename symbol<Token>::metadata_type& symbol<Token>::metadata() const
 {
-    return my_attributes;
+    return my_metadata;
 }
 
 template <typename Token>
-inline typename symbol<Token>::attributes_type& symbol<Token>::attributes()
+inline typename symbol<Token>::metadata_type& symbol<Token>::metadata()
 {
-    return my_attributes;
+    return my_metadata;
 }
 
 template <typename Token>

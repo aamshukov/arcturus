@@ -20,7 +20,7 @@ class code : private noncopyable
     public:
         using id_type = std::size_t;
 
-        using quadruple_type = std::shared_ptr<quadruple<token_traits>>;
+        using quadruple_type = std::shared_ptr<quadruple<token_type>>;
         using quadruples_type = std::list<quadruple_type>;
 
     private:

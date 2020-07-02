@@ -126,7 +126,7 @@ inline void lexical_analyzer<Token>::epilog()
 
     my_token.literal.assign(my_ptr_lexeme, my_token.length);
 
-    my_token.flags = token_type::flags::clear;
+    my_token.flags = token_type::flags_type::clear;
     my_token.source = (*my_content).id();
 
     // update stats

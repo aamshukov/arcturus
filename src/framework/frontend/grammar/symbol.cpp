@@ -4,6 +4,10 @@
 #include <core/pch.hpp>
 #include <core/noncopyable.hpp>
 
+#include <core/unicode.hpp>
+#include <core/text.hpp>
+#include <core/enum.hpp>
+
 #include <core/domain_helper.hpp>
 
 #include <core/factory.hpp>
@@ -21,7 +25,7 @@ symbol::symbol(uint32_t id, const string_type& name, symbol::kind type)
       : my_id(id),
         my_name(name),
         my_kind(type),
-        my_flags(flags::clear),
+        my_flags(flags_type::clear),
         my_nullable(false),
         my_productive(false),
         my_accessible(false),
@@ -97,7 +101,7 @@ symbol::~symbol()
 {
 }
 
-const symbol& symbol::operator = (const symbol& other)
+symbol& symbol::operator = (const symbol& other)
 {
     if(this != &other)
     {

@@ -34,6 +34,7 @@ class scope : public tree
         //    scope_structure = 2,
         //    scope_function  = 3,
         //    scope_parameter = 4
+        //    scope_block = 5,
         //};
 
     private:

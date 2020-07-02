@@ -4,6 +4,10 @@
 #include <core/pch.hpp>
 #include <core/noncopyable.hpp>
 
+#include <core/unicode.hpp>
+#include <core/text.hpp>
+#include <core/enum.hpp>
+
 #include <core/domain_helper.hpp>
 
 #include <core/factory.hpp>

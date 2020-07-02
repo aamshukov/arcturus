@@ -89,7 +89,7 @@ struct quadruple
     using symbol_type = std::shared_ptr<symtable::symbol<token_type>>;
     using symbols_type = std::vector<symbol_type>;
 
-    using quadruple_type = std::shared_ptr<quadruple<token_type>>;
+    using quadruple_type = std::shared_ptr<quadruple<token_type, traits>>;
 
     using index_type = std::size_t;
     using size_type = std::size_t;
@@ -164,7 +164,7 @@ struct quadruple
         }
     }
 
-    const quadruple& operator = (const quadruple& other)
+    quadruple& operator = (const quadruple& other)
     {
         if(this != &other)
         {

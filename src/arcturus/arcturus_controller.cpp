@@ -103,12 +103,18 @@
 
 #include <controller/controller.hpp>
 
+#include <arcturus_configurator.hpp>
 #include <arcturus_token.hpp>
+#include <arcturus_type.hpp>
+#include <arcturus_scalar_type.hpp>
+#include <arcturus_array_type.hpp>
+#include <arcturus_struct_type.hpp>
+#include <arcturus_enum_type.hpp>
+#include <arcturus_func_type.hpp>
+#include <arcturus_symbol.hpp>
 #include <arcturus_lexical_analyzer.hpp>
 #include <arcturus_parse_tree.hpp>
 #include <arcturus_parser.hpp>
-#include <arcturus_type.hpp>
-
 #include <arcturus_controller.hpp>
 
 BEGIN_NAMESPACE(arcturus)
@@ -119,10 +125,10 @@ USINGNAMESPACE(frontend)
 USINGNAMESPACE(backend)
 USINGNAMESPACE(orchestration)
 
-arcturus_controller::arcturus_controller(const parser_type& parser,
-                                         const ir_type& ir,
-                                         const passes_type& passes,
-                                         const codegen_type& codegen)
+arcturus_controller::arcturus_controller(const typename arcturus_controller::parser_type& parser,
+                                         const typename arcturus_controller::ir_type& ir,
+                                         const typename arcturus_controller::passes_type& passes,
+                                         const typename arcturus_controller::codegen_type& codegen)
                    : controller<arcturus_token>(parser, ir, passes, codegen)
 {
 }

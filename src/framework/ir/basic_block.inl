@@ -14,7 +14,7 @@ USINGNAMESPACE(symtable)
 
 template <typename Token>
 basic_block<Token>::basic_block(const typename basic_block<Token>::id_type& id, const string_type& label)
-                  : my_id(id), my_label(label)
+                        : my_id(id), my_label(label)
 {
 }
 

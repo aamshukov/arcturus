@@ -99,9 +99,9 @@
 #include <backend/codegen/amd64/activation_record_amd64.hpp>
 
 #include <arcturus_token.hpp>
+#include <arcturus_type.hpp>
 #include <arcturus_lexical_analyzer.hpp>
 #include <arcturus_parse_tree.hpp>
-#include <arcturus_parse_tree_variable.hpp> //??
 #include <arcturus_parser.hpp>
 
 BEGIN_NAMESPACE(arcturus)

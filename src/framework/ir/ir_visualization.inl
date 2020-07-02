@@ -139,12 +139,12 @@ void ir_visualization<Token, TreeTraits>::build_dag_dot_graph(const typename ir_
 
         queue.pop();
 
-        if(((*node).flags & dag::flags::processed) == dag::flags::processed)
+        if(((*node).flags & dag::flags_type::processed) == dag::flags_type::processed)
         {
             continue;
         }
 
-        (*node).flags |= dag::flags::processed;
+        (*node).flags |= dag::flags_type::processed;
 
         for(auto kid : (*node).kids)
         {

@@ -28,14 +28,13 @@ class symbol_table : public singleton<symbol_table<Token>>
     public:
         using token_type = Token;
 
-        using size_type = std::size_t;
         using scope_type = std::shared_ptr<scope<token_type>>;
+
+        using size_type = std::size_t;
 
     private:
         scope_type              my_root;    // root of scope tree, might represent 'global' scope
-
-        size_type               my_level;   // current scope level
-        scope_type              my_scope;   // current scope
+        scope_type              my_scope;   // current scope, level
 
     public:
                                 symbol_table();
