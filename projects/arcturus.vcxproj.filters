@@ -508,4 +508,9 @@
       <Filter>docs</Filter>
     </Text>
   </ItemGroup>
+  <ItemGroup>
+    <NASM Include="..\src\framework\backend\codegen\amd64\masm.test.asm">
+      <Filter>framework\backend\codegen\amd64</Filter>
+    </NASM>
+  </ItemGroup>
 </Project>

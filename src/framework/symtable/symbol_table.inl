@@ -13,7 +13,6 @@ USINGNAMESPACE(frontend)
 
 template <typename Token>
 symbol_table<Token>::symbol_table()
-                         : my_level(0)
 {
 }
 

@@ -159,6 +159,12 @@
     <ClCompile Include="..\src\framework\ir\control_flow_graph.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <MASM Include="..\src\framework\backend\codegen\amd64\masm.test.asm">
+      <FileType>Document</FileType>
+      <TreatWarningsAsErrors Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</TreatWarningsAsErrors>
+      <TreatWarningsAsErrors Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</TreatWarningsAsErrors>
+      <MakeAllSymbolsPublic Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</MakeAllSymbolsPublic>
+    </MASM>
     <None Include="..\src\framework\frontend\lexical_analyzer\lexical_analyzer.inl" />
     <None Include="..\src\framework\frontend\parser\parser.inl" />
     <None Include="..\src\framework\frontend\parser\recursive_descent_parser.inl" />
@@ -210,6 +216,7 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.props" />
   </ImportGroup>
   <ImportGroup Label="Shared">
   </ImportGroup>
@@ -331,5 +338,6 @@ xcopy $(SolutionDir)..\libs\ICU\icu4c-60_2\bin64\*.dll $(SolutionDir)..\build\$(
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.targets" />
   </ImportGroup>
 </Project>
