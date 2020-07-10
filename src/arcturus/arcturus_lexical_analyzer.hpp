@@ -11,7 +11,7 @@ BEGIN_NAMESPACE(arcturus)
 USINGNAMESPACE(core)
 USINGNAMESPACE(frontend)
 
-class arcturus_lexical_analyzer : public lexical_analyzer<token<arcturus_token_traits>>
+class arcturus_lexical_analyzer : public lexical_analyzer<arcturus_token>
 {
     //public:
     //    using fsa_type = fsa::fsa_type;

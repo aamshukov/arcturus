@@ -44,7 +44,8 @@ class symbol : private noncopyable
         {
             clear       = 0x0000,
             reg         = 0x0001, // if the symbol's value is in a register
-            referenced  = 0x0002  // mark variable as referenced
+            referenced  = 0x0002, // mark variable as referenced
+            reachable   = 0x0004  // mark variable as reachable
         };
 
         DECLARE_ENUM_OPERATORS(flagss)
@@ -59,8 +60,8 @@ class symbol : private noncopyable
         codepoints_type         my_name;
 
         token_type              my_token;               // link with content
-        value_type              my_value;               // inffered value if any, might be integer value, real value or identifier
-
+        value_type              my_value;               // inffered value if any, might be integer value, real value or
+                                                        // identifier (correlated with name)
         type_type               my_type;
 
         string_type             my_machine_type; //??

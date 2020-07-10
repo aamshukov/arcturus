@@ -14,33 +14,38 @@ USINGNAMESPACE(frontend)
 USINGNAMESPACE(backend)
 USINGNAMESPACE(orchestration)
 
-class arcturus_controller : public controller<token<arcturus_token_traits>>
+class arcturus_controller : public controller<arcturus_token>
 {
     public:
-        using token_type = token<arcturus_token_traits>;
+        using token_type = arcturus_token;
 
-        using parser_type = controller<token<arcturus_token_traits>>::parser_type;
+        using parser_type = controller<arcturus_token>::parser_type;
 
-        using ir_type = controller<token<arcturus_token_traits>>::ir_type;
+        using ir_type = controller<arcturus_token>::ir_type;
 
-        using pass_type = controller<token<arcturus_token_traits>>::pass_type;
-        using passes_type = controller<token<arcturus_token_traits>>::passes_type;
+        using context_type = controller<arcturus_token>::context_type;
 
-        using codegen_type = controller<token<arcturus_token_traits>>::codegen_type;
+        using pass_type = controller<arcturus_token>::pass_type;
+        using passes_type = controller<arcturus_token>::passes_type;
+
+        using codegen_type = controller<arcturus_token>::codegen_type;
 
     private:
-        void        initialize() override;
-        void        parse() override;
-        void        converge() override;
-        void        optimize() override;
-        void        codegen() override;
-        void        finalize() override;
+
+    private:
+        void        initialize(const context_type& context) override;
+        void        parse(const context_type& context) override;
+        void        converge(const context_type& context) override;
+        void        optimize(const context_type& context) override;
+        void        codegen(const context_type& context) override;
+        void        finalize(const context_type& context) override;
 
     public:
                     arcturus_controller(const parser_type& parser,
                                         const ir_type& ir,
                                         const passes_type& passes,
-                                        const codegen_type& codegen);
+                                        const codegen_type& codegen,
+                                        const context_type& context);
         virtual    ~arcturus_controller();
 
         void        compile() override;

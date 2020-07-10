@@ -324,6 +324,15 @@
     <ClInclude Include="..\src\arcturus\arcturus_symbol.hpp">
       <Filter>arcturus</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\framework\frontend\parser\parse_context.hpp">
+      <Filter>framework\frontend\parser</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\arcturus\arcturus_parse_context.hpp">
+      <Filter>arcturus</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\arcturus\arcturus_pass.hpp">
+      <Filter>arcturus</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\framework\core\logger.cpp">
@@ -467,6 +476,12 @@
     <ClCompile Include="..\src\arcturus\arcturus_symbol.cpp">
       <Filter>arcturus</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\arcturus\arcturus_parse_context.cpp">
+      <Filter>arcturus</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\arcturus\arcturus_pass.cpp">
+      <Filter>arcturus</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\src\framework\frontend\lexical_analyzer\lexical_analyzer.inl">
@@ -509,8 +524,6 @@
     </Text>
   </ItemGroup>
   <ItemGroup>
-    <NASM Include="..\src\framework\backend\codegen\amd64\masm.test.asm">
-      <Filter>framework\backend\codegen\amd64</Filter>
-    </NASM>
+    <MASM Include="..\src\framework\backend\codegen\amd64\masm.test.asm" />
   </ItemGroup>
 </Project>

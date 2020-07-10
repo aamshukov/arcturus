@@ -24,7 +24,7 @@ struct arcturus_type_traits
         real_type        = 102,
         string_type      = 103,
         boolean_type     = 104,
-        pointer_type     = 105, // ref
+        pointer_type     = 105, // ref/ptr
 
         array_type       = 150,
 

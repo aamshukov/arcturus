@@ -14,6 +14,15 @@ USINGNAMESPACE(frontend)
 
 class pass : private noncopyable
 {
+    public:
+        using context_type = std::shared_ptr<context>;
+
+    protected:
+        virtual void    execute(const context_type& context) = 0;
+
+    public:
+                        pass() = default;
+        virtual        ~pass() = 0;
 };
 
 END_NAMESPACE

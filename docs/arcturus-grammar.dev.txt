@@ -143,9 +143,12 @@ integer-number-literal              : binary-number-literal
                                     | hexadecimal-number-literal
                                     ;
 
-binary-number-literal               : '0b' binary-digit
-                                    | '0B' binary-digit
-                                    | binary-number-literal underscore-characters-opt binary-digit
+binary-number-literal               : '0b' binary-digits
+                                    | '0B' binary-digits
+                                    ;
+
+binary-digits                       : binary-digit
+                                    | binary-digits underscore-characters-opt binary-digit
                                     ;
 
 octal-number-literal                : '0'
@@ -193,12 +196,12 @@ exponent-part                       : 'e' sign-opt decimal-digits
                                     | 'E' sign-opt decimal-digits
                                     ;
 
-hexadecimal-real-number-literal     : '0x' hexadecimal-decimal-digits-opt '.' hexadecimal-decimal-digits binary-exponent-part-opt
-                                    | '0X' hexadecimal-decimal-digits-opt '.' hexadecimal-decimal-digits binary-exponent-part-opt
-                                    | '0x' hexadecimal-decimal-digits '.' binary-exponent-part-opt
-                                    | '0X' hexadecimal-decimal-digits '.' binary-exponent-part-opt
-                                    | '0x' hexadecimal-decimal-digits binary-exponent-part
-                                    | '0X' hexadecimal-decimal-digits binary-exponent-part
+hexadecimal-real-number-literal     : '0x' hexadecimal-digits-opt '.' hexadecimal-digits binary-exponent-part-opt
+                                    | '0X' hexadecimal-digits-opt '.' hexadecimal-digits binary-exponent-part-opt
+                                    | '0x' hexadecimal-digits '.' binary-exponent-part-opt
+                                    | '0X' hexadecimal-digits '.' binary-exponent-part-opt
+                                    | '0x' hexadecimal-digits binary-exponent-part
+                                    | '0X' hexadecimal-digits binary-exponent-part
                                     ;
 
 binary-exponent-part-opt            : binary-exponent-part
@@ -627,14 +630,15 @@ namespace
 
 
 comment
-    #  single line comment
-    // single line comment
+    #   single line comment
+    //  single line comment
+    --- single line comment
     /* /* miltiline nested comment */ */
 
 
 
 declarations:
-    let a : integer | string
+    let a : integer | string  --- first assignement freezes type
 
     byte
         flags: byte = 0xDA
@@ -701,7 +705,7 @@ declarations:
             θ, φ    : real const -π .. +π = π/2     might be initialized with expression
 
 
-    string (always represented as unicode codepoint - 32 bits), " '' " or ' "" '
+    string (always represented as unicode codepoints - 32 bits), " '' " or ' "" '
         name, nickname : string
         name, nickname : string = "Art"
         name, nickname : string const = "Art"       must be initialized
@@ -799,7 +803,7 @@ declarations:
             weight : TWeight,
             text : TText
 
-        user<T> struct extends tree<T>
+        user struct <T> extends tree<T>
             name : string,
             age : integer,
             married : boolean = false,
@@ -847,6 +851,7 @@ declarations:
         function
             func/proc
                 name[<T>] func/proc ([params]) [lazy] [ -> (returns) | returns]
+                name func/proc[<T>] ([params]) [lazy] [ [->] (returns) | returns]
 
                 foo func(i : integer, r : real = π, s : string = "", n1 : node<integer> = ( 5, pp4 )) lazy returns i, j, k: integer, pp2 : point<real>
                 foo func(i : integer, r : real = π, s : string = "", n1 : node<integer> = ( 5, pp4 )) lazy -> ( i, j, k: integer,
@@ -855,6 +860,12 @@ declarations:
                 i1,j1,k1,pp20 = foo(1)  ------- after call variables i,j,k and pp2 can have different names
 
                 foo<T> func(t : T, r : real = π, s : string = "") lazy -> (i, j, k: T, pp2 : point<T>)
+                    body or { body }
+
+                foo func<T>(t : T, r : real = π, s : string = "") lazy -> (i, j, k: T, pp2 : point<T>)
+                    body or { body }
+
+                foo func<T> (t : T, r : real = π, s : string = "") lazy (T, T, T, point<T>)
                     body or { body }
 
                 foo<real>(1.23, φ, "test")
@@ -959,4 +970,31 @@ pattern matching, case/when, switch C# 8
     expression
 
 
+
+    point struct<T>
+        x : T = 0.0,
+        y : T = 0.0,
+        z : T = 0.0,
+        w : T = 1.0
+
+    geometry interface
+        distance : func<T>(p1 : point<T>, p2 : point<T>) -> real
+        slope : func<T>(p1 : point<T>, p2 : point<T>) -> real
+
+
+
+
+    
+    p1 : point<real> = ( 1.2, 3.2, 5.0, 3.12 )
+    p2 : point<real> = ( 1.2, 3.2, 5.0, 3.12 )
+    p3 : point<real> = ( 1.2, 3.2, 5.0, 3.12 )
+
+    with p1, p2, p3
+        any method has access to p1,p2, p3, no need to pass, they will be placed in a special 'with' context with its own scope
+
+
+    with (p1,
+          p2 : point<real> = ( 1.2, 3.2, 5.0, 3.12 ),
+          p3)
+        foo() --- has access to p1,p2, p3, no need to pass, name collisions are resolved/reported in usual way
 
