@@ -129,8 +129,6 @@ underscore-character                : '_' (the underscore character U+005F)
                                     ;
 
 
-
-
 literal                             : integer-number-literal
                                     | real-number-literal
                                     | string-literal
@@ -240,6 +238,10 @@ boolean-literal                     : 'true'
                                     | 'false'
                                     ;
 
+range-literal                       : integer-number-literal
+                                    | real-number-literal
+                                    ;
+
 
 
 identifiers                         : identifier
@@ -270,7 +272,6 @@ fully-qualified-name                : identifier
                                     ;
 
 
-
 keyword                             : 'byte' 'integer' 'real' 'string' 'boolean'
                                     | 'c'
                                     | 'true' 'false'
@@ -291,7 +292,7 @@ keyword                             : 'byte' 'integer' 'real' 'string' 'boolean'
                                     | 'link'?? 'pointer'?? 'reference'?? 'ref'??
                                     | 'lazy'
                                     | 'pass'?? 'noop'??
-                                    | 'func' 'proc'
+                                    | 'func' 'proc'??
                                     | 'returns'
                                     ;
 
@@ -310,34 +311,179 @@ assignment-operator                 : '=' '*=' '/=' '%=' '+=' '-=' '>>=' '<<=' '
 // syntax
 // ------
 
-compilation-unit                    : declarations-opt
-                                    ;
-
-declarations-opt                    : declarations
+type-opt                            : type
                                     | e(psilon)
                                     ;
 
-declarations                        : declaration
-                                    | declarations declaration
+type                                : integral-type array-specifier-opt
+                                    | fully-qualified-name type-arguments-opt array-specifier-opt
+                                    | fully-qualified-name
                                     ;
 
-declaration                         : import-declaration
-            namespace-declaration??
-                                    | type-declaration
-                                    | function-definition
+integral-type-opt                   : integral-type
+                                    | e(psilon)
+                                    ;
+
+integral-type                       : 'byte'
+                                    | 'integer'
+                                    | 'real'
+                                    | 'string'
+                                    | 'boolean'
+                                    ;
+
+type-parameters-opt                 : '<' type-parameters '>'
+                                    | e(psilon)
+                                    ;
+
+type-parameters                     : type-parameter
+                                    | type-parameters ',' type-parameter
+                                    ;
+
+type-parameter                      : fully-qualified-name
+                                    ;
+
+type-arguments-opt                  : '<' type-arguments '>'
+                                    | e(psilon)
+                                    ;
+
+type-arguments                      : type-argument
+                                    | type-arguments ',' type-argument
+                                    ;
+
+type-argument                       : type
+                                    ;
+
+array-specifier-opt                 : array-specifier
+                                    | e(psilon)
+                                    ;
+
+array-specifier                     : '[' array-dimensions ']' c-opt                --- checked array, row based, optionaly column based
+                                    | '(' array-dimensions ')' c-opt                --- unchecked array, row based, optionaly column based
+                                    ;
+
+array-dimensions                    : array-dimension
+                                    | array-dimensions ',' array-dimension          --- all ','
+                                    | array-dimensions ';' array-dimension          --- a;; ';'
+                                    ;
+
+array-dimension                     : sign-opt decimal-number-literal
+                                    | sign-opt decimal-number-literal '..' sign-opt decimal-number-literal
+                                    ;
+
+c-opt                               : 'c'
+                                    | e(psilon)
+                                    ;
+
+type-modifiers-opt                  : type-modifiers
+                                    | e(psilon)
+                                    ;
+
+type-modifiers                      : type-modifier
+                                    | type-modifiers type-modifier
+                                    ;
+
+type-modifier                       : const-type-modifier                  --- mutual exclusive
+                                    | readonly-type-modifier               --- mutual exclusive
+                                    ;
+
+const-type-modifier                 : 'const'
+                                    ;
+
+readonly-type-modifier              : 'readonly'
                                     ;
 
 
+initializer                         : expression-initializer
+                                    | array-initializer
+                                    | struct-initializer
+                                    ;
 
-import-declaration                  : 'import' fully-qualified-name end-of-line
+expression-initializer              : expression
+                                    ;
+
+array-initializer                   : array-member-initializations
+                                    ;
+
+array-member-initializations        : array-member-initialization
+                                    | array-member-initializations ',' array-member-initialization
+                                    | array-member-initializations ';' array-member-initialization
+                                    ;
+
+array-member-initialization         : array-dimension-initialization
+                                    | array-member-initialization ' ' array-dimension-initialization    --- if dimensions are delimited with ','
+                                    | array-member-initialization ',' array-dimension-initialization    --- if dimensions are delimited with ';'
+                                    ;
+
+array-dimension-initialization      : initializer
+                                    ;
+
+struct-initializer                  : struct-member-initializations
+                                    ;
+
+struct-member-initializations       : struct-member-initialization
+                                    | struct-member-initializations ',' struct-member-initialization
+                                    ;
+
+struct-member-initialization        : initializer
+                                    | identifier '=' initializer
                                     ;
 
 
-
-type-declaration                    : struct-declaration
+compilation-unit                    : compilation-unit-declarations-opt
                                     ;
 
-struct-declaration                  : identifier type-parameters-opt : 'struct' end-of-line struct-members-opt
+compilation-unit-declarations-opt   : compilation-unit-declarations
+                                    | e(psilon)
+                                    ;
+
+compilation-unit-declarations       : compilation-unit-declaration
+                                    | compilation-unit-declarations compilation-unit-declaration
+                                    ;
+
+compilation-unit-declaration        : import-declarations
+                                    : namespace-alias-definitions
+                                    : namespace-definitions
+                                    ;
+
+import-declarations                 : import-declaration
+                                    | import-declarations import-declaration
+                                    ;
+
+import-declaration                  : 'import' fully-qualified-name
+                                    ;
+
+namespace-alias-definitions         : namespace-alias-definition
+                                    | namespace-alias-definitions namespace-alias-definition
+                                    ;
+
+namespace-alias-definition          : 'namespace' identifier '=' fully-qualified-name
+                                    ;
+
+namespace-definitions               : namespace-definition
+                                    | namespace-definitions namespace-definition
+                                    ;
+
+namespace-definition                : 'namespace' fully-qualified-name namespace-body-opt
+                                    ;
+
+namespace-body-opt                  : namespace-body
+                                    | e(psilon)
+                                    ;
+
+namespace-body                      : struct-declarations
+                                    | enum-declarations
+                                    | function-declarations
+                                    ;
+
+struct-declarations                 : struct-declaration
+                                    | struct-declarations struct-declaration
+                                    ;
+
+struct-declaration                  : identifier 'struct' type-parameters-opt partial-opt struct-members-opt
+                                    ;
+
+partial-opt                         : 'partial'
+                                    | e(psilon)
                                     ;
 
 struct-members-opt                  : struct-members
@@ -345,46 +491,40 @@ struct-members-opt                  : struct-members
                                     ;
 
 struct-members                      : struct-member
-                                    | struct-members struct-member
+                                    | struct-members ',' struct-member
                                     ;
 
-struct-member                       : indent identifier ':' integral-type modifiers-opt array-declaration-opt end-of-line
-                                    | indent identifier ':' integral-type modifiers-opt array-declaration-opt '=' primary-expression end-of-line
+struct-member                       : identifiers ':' type type-modifiers-opt
+                                    | identifiers ':' type type-modifiers-opt '=' initializer
                                     ;
 
-modifiers-opt                       : modifiers
+
+enum-declarations                   : enum-declaration
+                                    | enum-declarations enum-declaration
+                                    ;
+
+enum-declaration                    : identifier 'enum' integral-type-opt enum-members-opt                  --- default integer
+                                    ;
+
+enum-members-opt                    : enum-members
                                     | e(psilon)
                                     ;
 
-modifiers                           : modifier
-                                    | modifiers modifier
+enum-members                        : enum-member
+                                    | enum-members ',' enum-member
                                     ;
 
-modifier                            : const-modifier
-                                    ;
-
-const-modifier                      : 'const'
-                                    ;
-
-array-declaration-opt               : array-declaration
-                                    | e(psilon)
-                                    ;
-
-array-declaration                   : '[' array-dimensions ']'
-                                    | '(' array-dimensions ')'
-                                    ;
-
-array-dimensions                    : array-dimension
-                                    | array-dimensions ';' array-dimension
-                                    ;
-
-array-dimension                     : sign-opt decimal-number-literal
-                                    | sign-opt decimal-number-literal '..' sign-opt decimal-number-literal
+enum-member                         : identifier
+                                    | identifier '=' literal
+                                    | fully-qualified-name '..' fully-qualified-name                        --- fully-qualified-name must be from enum members
                                     ;
 
 
+function-declarations               : function-declaration
+                                    | function-declarations function-declaration
+                                    ;
 
-function-definition                 : identifier type-parameters-opt '(' function-parameters-opt ')' function-return-type-opt end-of-line function-body
+function-declaration                : identifier 'func' type-parameters-opt '(' function-parameters-opt ')' lazy-opt function-returns-opt function-body
                                     ;
 
 function-parameters-opt             : function-parameters
@@ -395,115 +535,127 @@ function-parameters                 : function-parameter
                                     | function-parameters ',' function-parameter
                                     ;
 
-function-parameter                  : identifier ':' integral-type modifiers-opt array-declaration-opt
-                                    | identifier ':' integral-type modifiers-opt array-declaration-opt '=' primary-expression
+function-parameter                  : identifier ':' type type-modifiers-opt
+                                    | identifier ':' type type-modifiers-opt '=' initializer
+                                    | '...'                                                             --- must be the last
                                     ;
 
-function-return-type-opt            : function-return-type
+lazy-opt                            : 'lazy'                                                            --- lazy parameters evaluation
                                     | e(psilon)
                                     ;
 
-function-return-type                : '->' integral-type
-                                    | '->' fully-qualified-name
+function-returns-opt                : function-returns
+                                    | e(psilon)
                                     ;
 
-function-body                       : variable-declarations
+function-returns                    : function-return
+                                    | function-returns ',' function-return
+                                    ;
+
+function-return                     : type
+                                    ;
+
+function-body                       : function-declarations                                             --- nested functions
+                                    | '(' statements-opt ')'                                            --- multiline definition
                                     | statements
                                     ;
 
+lambda-declaration                  : 'lambda' type-parameters-opt '(' function-parameters-opt ')' lazy-opt function-returns-opt function-body
+                                    ;
 
+lambda-body                         : '(' statements-opt ')'                                            --- multiline definition
+                                    ;
+
+
+statements-opt                      : statements
+                                    | e(psilon)
+                                    ;
 
 statements                          : statement
                                     | statements statement
                                     ;
 
 statement                           : declaration-statement
+                                    | with-statement
                                     | expression-statement
-                                    | selection-statement
-                                    | iteration-statement
+                                    | if-statement
+                                    | match-statement
+                                    | while-statement
+                                    | for-statement
+                                    | break-statement
+                                    | continue-statement
+                                    | return-statement
+                                    | goto-statement
+                                    | label-statement
+                                    | finally-statement
+                                    | namespace-alias-definition
+                                    | 'noop'
                                     ;
-
 
 declaration-statement               : variable-declaration
                                     ;
 
-variable-declaration                : indent identifier ':' integral-type modifiers-opt array-declaration-opt end-of-line
-                                    | indent identifier ':' integral-type modifiers-opt array-declaration-opt '=' primary-expression end-of-line
+variable-declaration                : identifiers ':' type type-modifiers-opt                                   --- θ, φ, π : real
+                                    | identifiers ':' type-opt type-modifiers-opt '=' initializer               --- θ, φ, π : real const = 0.1
+                                    | identifiers ':' initializer                                               --- θ, φ, π : 0.1
                                     ;
 
-expression-statement                : indent expression end-of-line
+with-statement                      : //?? think as of interface
                                     ;
 
-selection-statement                 : indent 'if' boolean-expression end-of-line statements
-                                    | indent 'if' boolean-expression end-of-line statements 'else' end-of-line statements
+expression-statement                : expression
                                     ;
 
-iteration-statement                 : indent 'for' expressions 'in' expression end-of-line statements
+if-statement                        : 'if' expression statements                                                --- expression must be boolean
+                                    | 'if' expression statements 'else' statements
                                     ;
 
-
-
-expressions                         : expression
-                                    | expressions ',' expression
+match-statement                     : //??
                                     ;
+
+while-statement                     : 'while' expression statements                                             --- expression must be boolean
+                                    ;
+
+for-statement                       : 'for' variable-declaration 'in' expression statements
+                                    ;
+
+break-statement                     : 'break'                                                                   --- innner most
+                                    ;
+
+continue-statement                  : 'continue'                                                                --- innner most
+                                    ;
+
+return-statement                    : 'return' expression
+                                    ;
+
+goto-statement                      : 'goto' identifier                                                 --- inter-procedure only
+                                    ;
+
+label-statement                     : identifier ':'                                                    --- inter-procedure only
+                                    | identifier ':' statement
+                                    ;
+
+finally-statement                   : 'finally' statements
+                                    ;
+
 
 expression                          : assignment-expression
                                     ;
 
-boolean-expression                  : expression
+assignment-expression               : unary-expression assignment-operator assignment-expression
                                     ;
 
-assignment-expression               : conditional-expression
-                                    | logical-or-expression assignment-operator assignment-expression
+primary-expression                  : literal                                                           --- 5, 'text'
+                                    | fully-qualified-name type-arguments-opt                           --- point<T>, point<int>
+                                    | '(' expression ')'
                                     ;
 
-conditional-expression              : logical-or-expression
-                                    | logical-or-expression '?' expression ':' logical-or-expression
-                                    ;
-
-logical-or-expression               : logical-and-expression
-                                    | logical-or-expression '||' logical-and-expression
-                                    | logical-or-expression 'or' logical-and-expression
-                                    ;
-
-logical-and-expression              : inclusive-or-expression
-                                    | logical-and-expression '&&' inclusive-or-expression
-                                    | logical-and-expression 'and' inclusive-or-expression
-                                    ;
-
-inclusive-or-expression             : exclusive-or-expression
-                                    | inclusive-or-expression '|' exclusive-or-expression
-                                    ;
-
-exclusive-or-expression             : and-expression
-                                    | exclusive-or-expression '^' and-expression
-                                    ;
-
-and-expression                      : equality-expression
-                                    | and-expression '&' equality-expression
-                                    ;
-
-equality-expression                 : relational-expression
-                                    | equality-expression '==' relational-expression
-                                    | equality-expression '!=' relational-expression
-                                    ;
-
-relational-expression               : relational-expression '<' shift-expression
-                                    | relational-expression '>' shift-expression
-                                    | relational-expression '<=' shift-expression
-                                    | relational-expression '>=' shift-expression
-                                    | relational_expression 'is' type
-                                    | relational_expression 'as' type
-                                    ;
-
-shift-expression                    : additive-expression
-                                    | shift-expression '<<' additive-expression
-                                    | shift-expression '>>' additive-expression
-                                    ;
-
-additive-expression                 : multiplicative-expression
-                                    | additive-expression '+' multiplicative-expression
-                                    | additive-expression '-' multiplicative-expression
+unary-expression                    : primary-expression
+                                    | '+' unary-expression
+                                    | '-' unary-expression
+                                    | '!' unary-expression
+                                    | '++' unary-expression
+                                    | '--' unary-expression
                                     ;
 
 multiplicative-expression           : unary-expression
@@ -512,18 +664,60 @@ multiplicative-expression           : unary-expression
                                     | multiplicative-expression '%' unary-expression
                                     ;
 
-unary-expression                    : primary-expression
-                                    | '+' unary-expression
-                                    | '-' unary-expression
-                                    | '!' unary-expression
-                                    | '~' unary-expression
-                                    | 'not' unary-expression
+additive-expression                 : multiplicative-expression
+                                    | additive-expression '+' multiplicative-expression
+                                    | additive-expression '-' multiplicative-expression
                                     ;
 
-primary-expression                  : literal
-                                    | fully-qualified-name type-arguments-opt
-                                    | '(' expression ')'
-                                    | primary-expression '(' arguments-opt ')'
+shift-expression                    : additive-expression
+                                    | shift-expression '<<' additive-expression
+                                    | shift-expression '>>' additive-expression                         --- right shift operator
+                                    ;
+
+relational-expression               : relational-expression '<' shift-expression
+                                    | relational-expression '>' shift-expression
+                                    | relational-expression '<=' shift-expression
+                                    | relational-expression '>=' shift-expression
+                                    | relational_expression 'is' type
+                                    ;
+
+equality-expression                 : relational-expression
+                                    | equality-expression '==' relational-expression
+                                    | equality-expression '!=' relational-expression
+                                    ;
+
+and-expression                      : equality-expression
+                                    | and-expression '&' equality-expression
+                                    ;
+
+exclusive-or-expression             : and-expression
+                                    | exclusive-or-expression '^' and-expression
+                                    ;
+
+inclusive-or-expression             : exclusive-or-expression
+                                    | inclusive-or-expression '|' exclusive-or-expression
+                                    ;
+
+logical-and-expression              : inclusive-or-expression
+                                    | logical-and-expression '&&' inclusive-or-expression
+                                    | logical-and-expression 'and' inclusive-or-expression
+                                    ;
+
+logical-or-expression               : logical-and-expression
+                                    | logical-or-expression '||' logical-and-expression
+                                    | logical-or-expression 'or' logical-and-expression
+                                    ;
+
+conditional-expression              : logical-or-expression
+                                    | logical-or-expression '?' expression ':' logical-or-expression
+                                    ;
+
+postfix-expression                  : primary-expression
+                                    | postfix-expression '.' identifier                                 --- member access
+                                    | postfix-expression '[' arguments-opt ']                           --- array element access
+                                    | postfix-expression '(' arguments-opt ')'                          --- function invocation
+                                    | postfix-expression '++'
+                                    | postfix-expression '--'
                                     ;
 
 arguments-opt                       : arguments
@@ -546,44 +740,12 @@ argument-name                       : identifier ':'
 
 
 
-type                                : integral-type
-                                    | fully-qualified-name type-arguments-opt
-                                    ;
 
-integral-type-opt                   : integral-type
-                                    | e(psilon)
-                                    ;
 
-integral-type                       : 'byte'
-                                    | 'integer'
-                                    | 'real'
-                                    | 'string'
-                                    | 'boolean'
-                                    ;
 
-type-parameters-opt                 : '<' type-parameters '>'
-                                    | e(psilon)
-                                    ;
 
-type-parameters                     : type-parameter
-                                    | type-parameters ',' type-parameter
-                                    ;
 
-type-parameter                      : identifier
-                                    | identifier '=' literal
-                                    | identifier '=' fully-qualified-name type-arguments-opt
-                                    ;
 
-type-arguments-opt                  : '<' type-arguments '>'
-                                    | e(psilon)
-                                    ;
-
-type-arguments                      : type-argument
-                                    | type-arguments ',' type-argument
-                                    ;
-
-type-argument                       : type
-                                    ;
 
 
 
@@ -678,6 +840,7 @@ declarations:
             a, b, c: integer [1..5; -1..8; 0..4] =  ( 3,4; 2,3,3;
                                                         5,6,6 )
             a, b, c: integer [1..5; -1..8; 0..4] =  ( 3,4; 2,3,3; 5,6,6 )
+            a, b, c: integer [1..5, -1..8, 0..4] =  ( 3 4, 2 3 3, 5 6 6 )
             a, b, c: integer [1..5, -1..8, 0..4] =  ( (3,4), (2,3,3), (5,6,6) )
             a, b, c: integer [1..5] c            =  3,4                 ----- checked array, column based
             a, b, c: integer (1..5) c            =  3,4                 ----- unchecked array, column based
@@ -732,7 +895,7 @@ declarations:
             west
 
         numbers enum ( one, two, three,
-                       forty = 40, fortyone)
+                       forty = 40, fortyone )
 
         numbers enum string
             ( odin = "1", dva = "2" )  ------------ when non-integer - all must be initialized
