@@ -24,8 +24,6 @@ BEGIN_NAMESPACE(core)
 class file_data_provider : public data_provider, private noncopyable
 {
     public:
-        using datum_type = text::datum_type;
-
         using callback_type = std::function<bool(std::shared_ptr<datum_type[]>, void*, size_type&)>;
 
     private:

@@ -31,7 +31,6 @@ struct token_traits
 template <typename Traits = token_traits>
 struct token
 {
-    using datum_type = text::datum_type;
     using codepoints_type = std::basic_string<datum_type>;
 
     using id_type = std::size_t; // should be in sync with lexical_analyzer's

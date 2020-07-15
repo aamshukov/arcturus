@@ -10,8 +10,6 @@ BEGIN_NAMESPACE(core)
 
 interface data_provider
 {
-    using datum_type = text::datum_type;
-
     virtual ~data_provider() = 0
     {
     }

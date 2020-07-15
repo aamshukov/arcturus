@@ -12,7 +12,6 @@ USINGNAMESPACE(core)
 class lexical_content : public content
 {
     public:
-        using datum_type = text::datum_type;
         using data_type = std::shared_ptr<datum_type[]>;
 
         using line_map_type = std::unique_ptr<loc_type[]>;

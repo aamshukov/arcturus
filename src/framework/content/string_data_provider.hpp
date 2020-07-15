@@ -10,9 +10,6 @@ BEGIN_NAMESPACE(core)
 
 class string_data_provider : public data_provider, private noncopyable
 {
-    public:
-        using datum_type = data_provider::datum_type;
-
     private:
         string_type     my_data_content;
 

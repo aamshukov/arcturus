@@ -34,7 +34,7 @@ fsa_transition::fsa_transition(uint32_t start_state, uint32_t end_state, const t
 {
 }
 
-fsa_transition::fsa_transition(uint32_t start_state, uint32_t end_state, typename fsa_transition::datum_type switch_predicate)
+fsa_transition::fsa_transition(uint32_t start_state, uint32_t end_state, datum_type switch_predicate)
               : my_id(0), my_start_state(start_state), my_end_state(end_state), my_switch_predicate(switch_predicate), my_rank(0)
 {
 }

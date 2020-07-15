@@ -13,9 +13,6 @@ BEGIN_NAMESPACE(core)
 class text : private noncopyable
 {
     public:
-        using datum_type = cp_type;
-
-    public:
         static constexpr datum_type ascii_numbers[128] =
         {
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -100,73 +97,73 @@ class text : private noncopyable
 
     public:
         template <typename T>
-        static T parse(const text::datum_type* lexeme, uint32_t length, int base);
+        static T parse(const datum_type* lexeme, uint32_t length, int base);
 
         template <>
-        static int8_t parse<int8_t>(const text::datum_type* lexeme, uint32_t  length, int base);
+        static int8_t parse<int8_t>(const datum_type* lexeme, uint32_t  length, int base);
 
         template <>
-        static uint8_t parse<uint8_t>(const text::datum_type* lexeme, uint32_t length, int base);
+        static uint8_t parse<uint8_t>(const datum_type* lexeme, uint32_t length, int base);
 
         template <>
-        static int16_t parse<int16_t>(const text::datum_type* lexeme, uint32_t length, int base);
+        static int16_t parse<int16_t>(const datum_type* lexeme, uint32_t length, int base);
 
         template <>
-        static uint16_t parse<uint16_t>(const text::datum_type* lexeme, uint32_t length, int base);
+        static uint16_t parse<uint16_t>(const datum_type* lexeme, uint32_t length, int base);
 
         template <>
-        static int32_t parse<int32_t>(const text::datum_type* lexeme, uint32_t length, int base);
+        static int32_t parse<int32_t>(const datum_type* lexeme, uint32_t length, int base);
 
         template <>
-        static uint32_t parse<uint32_t>(const text::datum_type* lexeme, uint32_t length, int base);
+        static uint32_t parse<uint32_t>(const datum_type* lexeme, uint32_t length, int base);
 
         template <>
-        static int64_t parse<int64_t>(const text::datum_type* lexeme, uint32_t length, int base);
+        static int64_t parse<int64_t>(const datum_type* lexeme, uint32_t length, int base);
 
         template <>
-        static uint64_t parse<uint64_t>(const text::datum_type* lexeme, uint32_t length, int base);
+        static uint64_t parse<uint64_t>(const datum_type* lexeme, uint32_t length, int base);
 
         template <>
-        static float parse<float>(const text::datum_type* lexeme, uint32_t length, int);
+        static float parse<float>(const datum_type* lexeme, uint32_t length, int);
 
         template <>
-        static double parse<double>(const text::datum_type* lexeme, uint32_t length, int);
+        static double parse<double>(const datum_type* lexeme, uint32_t length, int);
 };
 
-inline typename text::datum_type text::epsilon_codepoint()
+inline typename datum_type text::epsilon_codepoint()
 {
     static datum_type result(0x000003B5);
     return result;
 }
 
-inline typename text::datum_type text::bad_codepoint()
+inline typename datum_type text::bad_codepoint()
 {
     static datum_type result(0x0F000002);
     return result;
 }
 
-inline typename text::datum_type text::make_codepoint(typename text::datum_type high_surrogate_codeunit, typename text::datum_type low_surrogate_codeunit)
+inline typename datum_type text::make_codepoint(typename datum_type high_surrogate_codeunit, typename datum_type low_surrogate_codeunit)
 {
     return ((high_surrogate_codeunit - kHighSurrogateStart) << 10/* divide by 0x400*/) +
             (low_surrogate_codeunit - kLowSurrogateStart) + kSupplementaryCodePointStart;
 }
 
-inline bool text::is_high_surrogate(typename text::datum_type codeunit)
+inline bool text::is_high_surrogate(typename datum_type codeunit)
 {
     return codeunit >= kHighSurrogateStart && codeunit <= kHighSurrogateEnd;
 }
 
-inline bool text::is_low_surrogate(typename text::datum_type codeunit)
+inline bool text::is_low_surrogate(typename datum_type codeunit)
 {
     return codeunit >= kLowSurrogateStart && codeunit <= kLowSurrogateEnd;
 }
 
-inline bool text::is_surrogate(typename text::datum_type codeunit)
+inline bool text::is_surrogate(typename datum_type codeunit)
 {
     return codeunit >= kSurrogateStart && codeunit <= kSurrogateEnd;
 }
 
-inline bool text::is_surrogate_pair(typename text::datum_type high_surrogate_codeunit, typename text::datum_type low_surrogate_codeunit)
+inline bool text::is_surrogate_pair(typename datum_type high_surrogate_codeunit, typename datum_type low_surrogate_codeunit)
 {
     return is_high_surrogate(high_surrogate_codeunit) && is_low_surrogate(low_surrogate_codeunit);
 }
@@ -176,22 +173,77 @@ inline bool text::in_range(datum_type codepoint, datum_type r0, datum_type r1)
     return codepoint >= r0 && codepoint <= r1;
 }
 
-inline bool text::is_digit(typename text::datum_type codepoint)
+inline bool text::is_digit(typename datum_type codepoint)
 {
-    return u_isdigit(codepoint);
+    bool result = false;
+
+    switch(codepoint)
+    {
+        case '0': case '1': case '2': case '3': case '4': case '5': case '6': case '7': case '8': case '9':
+            result = true;
+        default:
+            result = u_isdigit(codepoint);
+    }
+
+    return result;
 }
 
-inline bool text::is_identifier_start(typename text::datum_type codepoint)
+inline bool text::is_identifier_start(typename datum_type codepoint)
 {
-    return u_isIDStart(codepoint);
+    bool result = false;
+
+    switch(codepoint)
+    {
+        case 'A': case 'B': case 'C': case 'D': case 'E':
+        case 'F': case 'G': case 'H': case 'I': case 'J':
+        case 'K': case 'L': case 'M': case 'N': case 'O':
+        case 'P': case 'Q': case 'R': case 'S': case 'T':
+        case 'U': case 'V': case 'W': case 'X': case 'Y':
+        case 'Z':
+        case 'a': case 'b': case 'c': case 'd': case 'e':
+        case 'f': case 'g': case 'h': case 'i': case 'j':
+        case 'k': case 'l': case 'm': case 'n': case 'o':
+        case 'p': case 'q': case 'r': case 's': case 't':
+        case 'u': case 'v': case 'w': case 'x': case 'y':
+        case 'z':
+        case '$': case '_':
+            result = true;
+        default:
+            result = u_isIDStart(codepoint);
+    }
+
+    return result;
 }
 
-inline bool text::is_identifier_part(typename text::datum_type codepoint)
+inline bool text::is_identifier_part(typename datum_type codepoint)
 {
-    return u_isIDPart(codepoint);
+    bool result = false;
+
+    switch(codepoint)
+    {
+        case 'A': case 'B': case 'C': case 'D': case 'E':
+        case 'F': case 'G': case 'H': case 'I': case 'J':
+        case 'K': case 'L': case 'M': case 'N': case 'O':
+        case 'P': case 'Q': case 'R': case 'S': case 'T':
+        case 'U': case 'V': case 'W': case 'X': case 'Y':
+        case 'Z':
+        case 'a': case 'b': case 'c': case 'd': case 'e':
+        case 'f': case 'g': case 'h': case 'i': case 'j':
+        case 'k': case 'l': case 'm': case 'n': case 'o':
+        case 'p': case 'q': case 'r': case 's': case 't':
+        case 'u': case 'v': case 'w': case 'x': case 'y':
+        case 'z':
+        case '$': case '_':
+        case '0': case '1': case '2': case '3': case '4': case '5': case '6': case '7': case '8': case '9':
+            result = true;
+        default:
+            result = u_isIDPart(codepoint);
+    }
+
+    return result;
 }
 
-inline bool text::is_java_identifier_start(typename text::datum_type codepoint)
+inline bool text::is_java_identifier_start(typename datum_type codepoint)
 {
     bool result = false;
 
@@ -218,7 +270,7 @@ inline bool text::is_java_identifier_start(typename text::datum_type codepoint)
     return result;
 }
 
-inline bool text::is_java_identifier_part(typename text::datum_type codepoint)
+inline bool text::is_java_identifier_part(typename datum_type codepoint)
 {
     bool result = false;
 
@@ -244,7 +296,6 @@ inline bool text::is_java_identifier_part(typename text::datum_type codepoint)
     }
 
     return result;
-    //return u_isJavaIDPart(codepoint);
 }
 
 inline bool text::is_identifier_ignorable(datum_type codepoint)
@@ -2785,13 +2836,13 @@ inline bool text::unicode_category_zs(datum_type codepoint)
 
 
 template <typename T>
-inline T text::parse(const text::datum_type* lexeme, uint32_t length, int base)
+inline T text::parse(const datum_type* lexeme, uint32_t length, int base)
 {
     return T {};
 }
 
 template <>
-inline int8_t text::parse<int8_t>(const text::datum_type* lexeme, uint32_t length, int base)
+inline int8_t text::parse<int8_t>(const datum_type* lexeme, uint32_t length, int base)
 {
     PARSE_PROLOG
 
@@ -2801,7 +2852,7 @@ inline int8_t text::parse<int8_t>(const text::datum_type* lexeme, uint32_t lengt
 }
 
 template <>
-inline uint8_t text::parse<uint8_t>(const text::datum_type* lexeme, uint32_t length, int base)
+inline uint8_t text::parse<uint8_t>(const datum_type* lexeme, uint32_t length, int base)
 {
     PARSE_PROLOG
 
@@ -2811,7 +2862,7 @@ inline uint8_t text::parse<uint8_t>(const text::datum_type* lexeme, uint32_t len
 }
 
 template <>
-inline int16_t text::parse<int16_t>(const text::datum_type* lexeme, uint32_t length, int base)
+inline int16_t text::parse<int16_t>(const datum_type* lexeme, uint32_t length, int base)
 {
     PARSE_PROLOG
 
@@ -2821,7 +2872,7 @@ inline int16_t text::parse<int16_t>(const text::datum_type* lexeme, uint32_t len
 }
 
 template <>
-inline uint16_t text::parse<uint16_t>(const text::datum_type* lexeme, uint32_t length, int base)
+inline uint16_t text::parse<uint16_t>(const datum_type* lexeme, uint32_t length, int base)
 {
     PARSE_PROLOG
 
@@ -2831,7 +2882,7 @@ inline uint16_t text::parse<uint16_t>(const text::datum_type* lexeme, uint32_t l
 }
 
 template <>
-inline int32_t text::parse<int32_t>(const text::datum_type* lexeme, uint32_t length, int base)
+inline int32_t text::parse<int32_t>(const datum_type* lexeme, uint32_t length, int base)
 {
     PARSE_PROLOG
 
@@ -2841,7 +2892,7 @@ inline int32_t text::parse<int32_t>(const text::datum_type* lexeme, uint32_t len
 }
 
 template <>
-inline uint32_t text::parse<uint32_t>(const text::datum_type* lexeme, uint32_t length, int base)
+inline uint32_t text::parse<uint32_t>(const datum_type* lexeme, uint32_t length, int base)
 {
     PARSE_PROLOG
 
@@ -2851,7 +2902,7 @@ inline uint32_t text::parse<uint32_t>(const text::datum_type* lexeme, uint32_t l
 }
 
 template <>
-inline int64_t text::parse<int64_t>(const text::datum_type* lexeme, uint32_t length, int base)
+inline int64_t text::parse<int64_t>(const datum_type* lexeme, uint32_t length, int base)
 {
     PARSE_PROLOG
 
@@ -2861,7 +2912,7 @@ inline int64_t text::parse<int64_t>(const text::datum_type* lexeme, uint32_t len
 }
 
 template <>
-inline uint64_t text::parse<uint64_t>(const text::datum_type* lexeme, uint32_t length, int base)
+inline uint64_t text::parse<uint64_t>(const datum_type* lexeme, uint32_t length, int base)
 {
     PARSE_PROLOG
 
@@ -2871,7 +2922,7 @@ inline uint64_t text::parse<uint64_t>(const text::datum_type* lexeme, uint32_t l
 }
 
 template <>
-inline float text::parse<float>(const text::datum_type* lexeme, uint32_t length, int)
+inline float text::parse<float>(const datum_type* lexeme, uint32_t length, int)
 {
     PARSE_PROLOG
 
@@ -2881,7 +2932,7 @@ inline float text::parse<float>(const text::datum_type* lexeme, uint32_t length,
 }
 
 template <>
-inline double text::parse<double>(const text::datum_type* lexeme, uint32_t length, int)
+inline double text::parse<double>(const datum_type* lexeme, uint32_t length, int)
 {
     PARSE_PROLOG
 

@@ -15,7 +15,6 @@ USINGNAMESPACE(core)
 class fsa_re : private noncopyable
 {
     public:
-        using datum_type = text::datum_type;
         using token_type = fsa::token_type;
 
         using state_type = fsa::state_type;

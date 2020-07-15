@@ -63,7 +63,7 @@ bool text::chars_to_string(const char* text, string_type& result_text)
     return result;
 }
 
-bool text::chars_to_codepoints(const char* text, std::shared_ptr<typename text::datum_type[]>& codepoints, size_type& count)
+bool text::chars_to_codepoints(const char* text, std::shared_ptr<datum_type[]>& codepoints, size_type& count)
 {
     count = 0;
 
@@ -125,7 +125,7 @@ bool text::chars_to_codepoints(const char* text, std::shared_ptr<typename text::
     return result;
 }
 
-bool text::string_to_codepoints0(const string_type& text, std::shared_ptr<typename text::datum_type[]>& codepoints, size_type& count)
+bool text::string_to_codepoints0(const string_type& text, std::shared_ptr<datum_type[]>& codepoints, size_type& count)
 {
     count = 0;
 
@@ -200,7 +200,7 @@ bool text::string_to_codepoints0(const string_type& text, std::shared_ptr<typena
     return result;
 }
 
-bool text::codepoints_to_string0(const typename text::datum_type* codepoints, size_type count, string_type& result_text)
+bool text::codepoints_to_string0(const datum_type* codepoints, size_type count, string_type& result_text)
 {
     bool result = false;
 
@@ -271,7 +271,7 @@ bool text::codepoints_to_string0(const typename text::datum_type* codepoints, si
     return result;
 }
 
-bool text::string_to_codepoints(const string_type& text, std::shared_ptr<typename text::datum_type[]>& codepoints, size_type& count)
+bool text::string_to_codepoints(const string_type& text, std::shared_ptr<datum_type[]>& codepoints, size_type& count)
 {
     count = 0;
 
@@ -331,7 +331,7 @@ bool text::string_to_codepoints(const string_type& text, std::shared_ptr<typenam
     return result;
 }
 
-bool text::codepoints_to_string(const typename text::datum_type* codepoints, size_type count, string_type& result_text)
+bool text::codepoints_to_string(const datum_type* codepoints, size_type count, string_type& result_text)
 {
     bool result = false;
 
@@ -374,7 +374,7 @@ bool text::codepoints_to_string(const typename text::datum_type* codepoints, siz
     return result;
 }
 
-string_type text::codepoint_to_string(typename text::datum_type codepoint)
+string_type text::codepoint_to_string(datum_type codepoint)
 {
     string_type result;
 
@@ -394,7 +394,7 @@ string_type text::codepoint_to_string(typename text::datum_type codepoint)
     return result;
 }
 
-bool text::codepoint_to_string(typename text::datum_type codepoint, string_type& result_text)
+bool text::codepoint_to_string(datum_type codepoint, string_type& result_text)
 {
     bool result = false;
 

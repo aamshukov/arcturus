@@ -12,8 +12,6 @@ USINGNAMESPACE(core)
 class fsa_transition
 {
     public:
-        using datum_type = text::datum_type;
-
         using predicate_type = string_type;
         using predicates_type = std::set<predicate_type>;
 
@@ -108,12 +106,12 @@ inline typename fsa_transition::predicate_type& fsa_transition::predicate()
     return const_cast<typename fsa_transition::predicate_type&>(static_cast<const fsa_transition&>(*this).predicate());
 }
 
-inline typename fsa_transition::datum_type fsa_transition::switch_char() const
+inline datum_type fsa_transition::switch_char() const
 {
     return my_switch_predicate;
 }
 
-inline typename fsa_transition::datum_type& fsa_transition::switch_char()
+inline datum_type& fsa_transition::switch_char()
 {
     return my_switch_predicate;
 }

@@ -423,7 +423,7 @@ bool file_data_provider::read_utf32_data(std::shared_ptr<byte[]> raw_data,
     return result;
 }
 
-bool file_data_provider::load(std::shared_ptr<typename file_data_provider::datum_type[]>& data, size_type& count)
+bool file_data_provider::load(std::shared_ptr<datum_type[]>& data, size_type& count)
 {
     log_info(L"Loading content ...");
 

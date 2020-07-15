@@ -11,7 +11,6 @@ BEGIN_NAMESPACE(core)
 class content : private noncopyable
 {
     public:
-        using datum_type = text::datum_type;
         using data_type = std::shared_ptr<datum_type[]>;
 
         using id_type = std::size_t;
@@ -60,7 +59,7 @@ inline content::source_type& content::source()
     return my_source;
 }
 
-inline const content::datum_type* content::data() const
+inline const datum_type* content::data() const
 {
     const datum_type* result(nullptr);
 

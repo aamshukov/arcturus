@@ -14,8 +14,6 @@ class lexical_analyzer : private noncopyable
 {
     public:
         using content_type = std::shared_ptr<lexical_content>;
-
-        using datum_type = text::datum_type;
         using codepoints_type = std::basic_string<datum_type>;
 
         using token_type = Token;
@@ -108,7 +106,7 @@ inline typename lexical_analyzer<Token>::content_type& lexical_analyzer<Token>::
 }
 
 template <typename Token>
-inline typename lexical_analyzer<Token>::datum_type typename lexical_analyzer<Token>::current() const
+inline datum_type typename lexical_analyzer<Token>::current() const
 {
     return *my_ptr;
 }

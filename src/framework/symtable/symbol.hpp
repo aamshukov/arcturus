@@ -18,7 +18,6 @@ class symbol : private noncopyable
         using token_type = Token;
         using symbol_type = std::shared_ptr<symbol<token_type>>;
 
-        using datum_type = text::datum_type;
         using codepoints_type = std::basic_string<datum_type>;
 
         using index_type = int32_t;

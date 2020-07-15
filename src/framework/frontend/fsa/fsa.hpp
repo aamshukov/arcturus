@@ -14,8 +14,6 @@ class fsa_algorithm;
 class fsa : private noncopyable
 {
     public:
-        using datum_type = text::datum_type;
-
         using token_type = fsa_state::token_type;
 
         using state_type = fsa_state::state_type;

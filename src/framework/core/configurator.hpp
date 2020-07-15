@@ -11,9 +11,7 @@ BEGIN_NAMESPACE(core)
 class configurator : private noncopyable
 {
     public:
-        using datum_type = text::datum_type;
         using data_type = std::shared_ptr<datum_type[]>;
-
         using text_type = std::basic_string<datum_type>;
 
         using master_options_type = std::unordered_multimap<string_type, std::tuple<string_type, bool, bool>>; // bool -> multi-value, validate argument
