@@ -131,6 +131,10 @@ USINGNAMESPACE(arcturus)
 
 int _tmain(int argc, _TCHAR *argv[])
 {
+    auto ss = 0;
+
+    auto dd = + ! + ! 5;
+
     auto st(factory::create<arcturus_scalar_type>(arcturus_type::kind_type::integer_type));
     auto at(factory::create<arcturus_array_type>(st));
 

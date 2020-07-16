@@ -1,42 +1,118 @@
-// lexical
+﻿// lexical
 // -------
 
-comments                            : '#' anything
-                                    | '//' anything
+comments                            : oneline-comment
+                                    | multiline-comment
                                     ;
 
+oneline-comment                     : '#'   unicode characters opt end-of-line                                          --- python comments
+                                    | '//'  unicode characters opt end-of-line                                          --- c, c++, java, etc. comments
+                                    | '---' unicode characters opt end-of-line                                          --- ada comments
+                                    ;
+
+multiline-comment-opt               : multiline-comment
+                                    | e(psilon)
+                                    ;
+
+multiline-comment                   : '/* unicode characters opt(except '*/' combination)  multiline-comment-opt  unicode characters opt(except '*/' combination) '*/'
+                                    ;
+
+whitespace-characters               : whitespace-character
+                                    | whitespace-characters whitespace-character
+                                    ;
+
+whitespace-character                : unicode character of class Zs
+                                    | horizontal tab character (U+0009)
+                                    | vertical tab character (U+000B)
+                                    | form feed character (U+000C)
+                                    ;
+
+end-of-line                         : \u000D                                                                            --- \r
+                                    | \u000A                                                                            --- \n
+                                    | \u000D \u000A                                                                     --- \r\n
+                                    | \u000A \u000D                                                                     --- \n\r
+                                    | \u0085
+                                    | \u2028
+                                    | \u2029
+                                    | end-of-file
+                                    ;
+
+end-of-file                         : \u0000
+                                    | \u001A
+                                    ;
+
+indent                              : '  '                                                                              --- 2 spaces
+                                    | '    '                                                                            --- 4 spaces
+                                    | '        '                                                                        --- 8 spaces
+                                    ;
+
+
+
+// code points
+// \u + 4 hex digits                                                                                                    --- unicode BMP
+// \U + 8 hex digits                                                                                                    --- unicode astral planes (full set)
 universal-character-name            : '\u' hexadecimal-digit hexadecimal-digit hexadecimal-digit hexadecimal-digit
                                     | '\U' hexadecimal-digit hexadecimal-digit hexadecimal-digit hexadecimal-digit hexadecimal-digit hexadecimal-digit hexadecimal-digit hexadecimal-digit
                                     ;
 
-escaped-character-name              : simple-escaped-character-name
-                                    | octal-escaped-character-name
-                                    | hexadecimal-escaped-character-name
+letter-character                    : unicode character of classes Lu, Ll, Lt, Lm, Lo, or Nl
+                                    | universal-character-name representing a character of classes Lu, Ll, Lt, Lm, Lo, or Nl
                                     ;
 
-simple-escaped-character-name       : '\'' '\"' '\\' '\a' '\b' '\f' '\n' '\r' '\t' '\v'
+decimal-digit_character             : unicode character of class Nd
+                                    | universal-character-name representing a character of class Nd
                                     ;
 
-octal-escaped-character-name        : '\' octal-digit
+connecting-character                : unicode character of class Pc
+                                    | universal-character-name representing a character of class Pc
+                                    ;
+
+combining-character                 : unicode character of classes Mn or Mc
+                                    | universal-character-name representing a character of classes Mn or Mc
+                                    ;
+
+formatting_character                : unicode character of class Cf
+                                    | universal-character-name representing a character of class Cf
+                                    ;
+
+binary-digit                        : '0' '1'
+                                    ;
+
+octal-digit                         : '0' '1' '2' '3' '4' '5' '6' '7'
+                                    ;
+
+nonzero-decimal-digit               : '1' '2' '3' '4' '5' '6' '7' '8' '9'
+                                    ;
+
+decimal-digit                       : '0' '1' '2' '3' '4' '5' '6' '7' '8' '9'
+                                    ;
+
+hexa-decimal-digit                  : '0' '1' '2' '3' '4' '5' '6' '7' '8' '9' 'a' 'b' 'c' 'd' 'e' 'f' 'A' 'B' 'C' 'D' 'E' 'F'
+                                    ;
+
+
+
+escape-characters                   : simple-escape-character
+                                    | octal-escape-characters
+                                    | hexadecimal-escape-characters
+                                    ;
+
+simple-escape-character             : '\'' '\"' '\\' '\a' '\b' '\f' '\n' '\r' '\t' '\v'
+                                    ;
+
+octal-escape-characters             : '\' octal-digit
                                     | '\' octal-digit octal-digit
                                     | '\' octal-digit octal-digit octal-digit
                                     ;
 
-hexadecimal-escaped-character-name  : '\x' hexadecimal-digit
+hexadecimal-escape-characters       : '\x' hexadecimal-digit
                                     | '\x' hexadecimal-digit hexadecimal-digit
                                     | '\x' hexadecimal-digit hexadecimal-digit hexadecimal-digit
                                     | '\x' hexadecimal-digit hexadecimal-digit hexadecimal-digit hexadecimal-digit
-                                    ;
-
-identifier                          : identifier-start-character identifier-part-characters-opt
-                                    ;
-
-identifier-start-character          : letter-character
-                                    | underscore-character
-                                    ;
-
-letter-character                    : A Unicode character of classes Lu, Ll, Lt, Lm, Lo, or Nl
-                                    | A universal-character-name representing a character of classes Lu, Ll, Lt, Lm, Lo, or Nl
+                                    | '\x' hexadecimal-digit hexadecimal-digit hexadecimal-digit hexadecimal-digit hexadecimal-digit
+                                    | '\x' hexadecimal-digit hexadecimal-digit hexadecimal-digit hexadecimal-digit hexadecimal-digit hexadecimal-digit
+                                    | '\x' hexadecimal-digit hexadecimal-digit hexadecimal-digit hexadecimal-digit hexadecimal-digit hexadecimal-digit hexadecimal-digit
+                                    | '\x' hexadecimal-digit hexadecimal-digit hexadecimal-digit hexadecimal-digit hexadecimal-digit hexadecimal-digit hexadecimal-digit hexadecimal-digit
                                     ;
 
 underscore-characters-opt           : underscore-characters
@@ -47,44 +123,10 @@ underscore-characters               : underscore-character
                                     | underscore-characters underscore-character
                                     ;
 
-underscore-character                : _ (the underscore character U+005F)
-                                    | A unicode-escape-sequence representing the character U+005F
+underscore-character                : '_' (the underscore character U+005F)
+                                    | universal-character-name representing the character U+005F
                                     ;
 
-identifier-part-characters          : identifier-part-character
-                                    | identifier-part-characters identifier-part-character
-                                    ;
-
-identifier-part-character           : letter-character
-                                    | decimal-digit-character
-                                    | connecting-character
-                                    | combining-character
-                                    | formatting-character
-                                    ;
-
-letter-character                    : A Unicode character of classes Lu, Ll, Lt, Lm, Lo, or Nl
-                                    | A unicode-escape-sequence representing a character of classes Lu, Ll, Lt, Lm, Lo, or Nl
-                                    ;
-
-combining-character                 : A Unicode character of classes Mn or Mc
-                                    | A unicode-escape-sequence representing a character of classes Mn or Mc
-                                    ;
-
-decimal-digit-character             : A Unicode character of the class Nd
-                                    | A unicode-escape-sequence representing a character of the class Nd
-                                    ;
-
-connecting-character                : A Unicode character of the class Pc
-                                    | A unicode-escape-sequence representing a character of the class Pc
-                                    ;
-
-formatting-character                : A Unicode character of the class Cf
-                                    | A unicode-escape-sequence representing a character of the class Cf
-                                    ;
-
-fully-qualified-name                : fully-qualified-name '.' identifier
-                                    | identifier
-                                    ;
 
 literal                             : integer-number-literal
                                     | real-number-literal
@@ -98,26 +140,20 @@ integer-number-literal              : binary-number-literal
                                     | hexadecimal-number-literal
                                     ;
 
-binary-number-literal               : '0b' binary-digit
-                                    | '0B' binary-digit
-                                    | binary-literal underscore-characters-opt binary-digit
+binary-number-literal               : '0b' binary-digits
+                                    | '0B' binary-digits
                                     ;
 
-binary-digit                        : '0' '1'
+binary-digits                       : binary-digit
+                                    | binary-digits underscore-characters-opt binary-digit
                                     ;
 
 octal-number-literal                : '0'
                                     | octal-number-literal underscore-characters-opt octal-digit
                                     ;
 
-octal-digit                         : '0' '1' '2' '3' '4' '5' '6' '7'
-                                    ;
-
 decimal-number-literal              : nonzero-decimal-digit
                                     | decimal-number-literal underscore-characters-opt decimal-digit
-                                    ;
-
-nonzero-decimal-digit               : '1' '2' '3' '4' '5' '6' '7' '8' '9'
                                     ;
 
 decimal-digits-opt                  : decimal-digits
@@ -126,9 +162,6 @@ decimal-digits-opt                  : decimal-digits
 
 decimal-digits                      : decimal-digit
                                     | decimal-digits underscore-characters-opt decimal-digit
-                                    ;
-
-decimal-digit                       : '0' '1' '2' '3' '4' '5' '6' '7' '8' '9'
                                     ;
 
 hexadecimal-number-literal          : '0x' hexadecimal-digits
@@ -141,9 +174,6 @@ hexadecimal-digits-opt              : hexadecimal-digits
 
 hexadecimal-digits                  : hexadecimal-digit
                                     | hexadecimal-digits underscore-characters-opt hexadecimal-digit
-                                    ;
-
-hexa-decimal-digit                  : '0' '1' '2' '3' '4' '5' '6' '7' '8' '9' 'a' 'b' 'c' 'd' 'e' 'f' 'A' 'B' 'C' 'D' 'E' 'F'
                                     ;
 
 real-number-literal                 : decimal-real-number-literal
@@ -163,12 +193,12 @@ exponent-part                       : 'e' sign-opt decimal-digits
                                     | 'E' sign-opt decimal-digits
                                     ;
 
-hexadecimal-real-number-literal     : '0x' hexadecimal-decimal-digits-opt '.' hexadecimal-decimal-digits binary-exponent-part-opt
-                                    | '0X' hexadecimal-decimal-digits-opt '.' hexadecimal-decimal-digits binary-exponent-part-opt
-                                    | '0x' hexadecimal-decimal-digits '.' binary-exponent-part-opt
-                                    | '0X' hexadecimal-decimal-digits '.' binary-exponent-part-opt
-                                    | '0x' hexadecimal-decimal-digits binary-exponent-part
-                                    | '0X' hexadecimal-decimal-digits binary-exponent-part
+hexadecimal-real-number-literal     : '0x' hexadecimal-digits-opt '.' hexadecimal-digits binary-exponent-part-opt
+                                    | '0X' hexadecimal-digits-opt '.' hexadecimal-digits binary-exponent-part-opt
+                                    | '0x' hexadecimal-digits '.' binary-exponent-part-opt
+                                    | '0X' hexadecimal-digits '.' binary-exponent-part-opt
+                                    | '0x' hexadecimal-digits binary-exponent-part
+                                    | '0X' hexadecimal-digits binary-exponent-part
                                     ;
 
 binary-exponent-part-opt            : binary-exponent-part
@@ -184,10 +214,10 @@ sign-opt                            : '+'
                                     | e(psilon)
                                     ;
 
-string-literal                      : ''' string-characters-opt '''
-                                    | '"' string-characters-opt '"'
-                                    | r''' string-characters-opt '''
-                                    | r'"' string-characters-opt '"'
+string-literal                      : ''' string-characters-opt (except \' (U+0027), \\ (U+005C)) '''
+                                    | '"' string-characters-opt (except \" (U+0022), \\ (U+005C)) '"'
+                                    | r''' string-characters-opt (except \' (U+0027)) '''                               --- raw/verbatim string ' text '
+                                    | r'"' string-characters-opt (except \" (U+0022))'"'                                --- raw/verbatim string " text "
                                     ;
 
 string-characters-opt               : string-characters
@@ -198,8 +228,8 @@ string-characters                   : string-character
                                     | string-characters string-character
                                     ;
 
-string-character                    : identifier-part-character
-                                    | escaped-character-name
+string-character                    : unicode character opt
+                                    | escape-characters
                                     | universal-character-name
                                     ;
 
@@ -207,42 +237,509 @@ boolean-literal                     : 'true'
                                     | 'false'
                                     ;
 
-keyword                             : 'let' 'integer' 'real' 'boolean' 'true' 'false' 'type' 'function'
+
+identifiers                         : identifier
+                                    | identifiers ',' identifier
                                     ;
 
-punctuator                          : ':' '..' '...' ',' '{' '}' '[' ']' '(' ')'
+identifier                          : identifier-start-character identifier-part-characters-opt                         --- $ is internal character (tmp), cannot be used in public
                                     ;
 
-operator                            : '+' '-' '*' '/' '>>' '<<' '=' '==' '!=' '<' '<=' '>' '>=' '&' '&&' '|' '||' '^'
-                                    ;
-
-whitespace-characters               : whitespace-character
-                                    | whitespace-characters whitespace-character
-                                    ;
-
-whitespace-character                : any character with unicode class Zs
-                                    | horizontal tab character (U+0009)
-                                    | vertical tab character (U+000B)
-                                    | form feed character (U+000C)
-                                    ;
-
-end-of-line                         : \u000D                \r
-                                    | \u000A                \n
-                                    | \u000D \u000A         \r\n
-                                    | \u000A \u000D         \n\r
-                                    | \u2028
-                                    | \u2029
-                                    | end-of-file
-                                    ;
-
-end-of-file                         : \u0000
-                                    | \u001A
+identifier-start-character          : letter-character
+                                    | underscore-characters
                                     ;
 
 
+identifier-part-characters          : identifier-part-character
+                                    | identifier-part-characters identifier-part-character
+                                    ;
+
+identifier-part-character           : letter-character
+                                    | decimal-digit-character
+                                    | connecting-character
+                                    | combining-character
+                                    | formatting-character
+                                    ;
+
+fully-qualified-identifier          : identifier
+                                    | fully-qualified-identifier '.' identifier
+                                    ;
+
+
+keyword                             : 'byte' 'integer' 'real' 'string' 'boolean'
+                                    | 'c'
+                                    | 'true' 'false'
+                                    | 'enum'
+                                    | 'struct'
+                                    | 'extends'
+                                    | 'const' 'readonly'
+                                    | 'partial'
+                                    | 'if' 'else' 'for' 'while'
+                                    | 'switch' 'case' 'when' ????
+                                    | 'continue' 'break' 'return' 'goto'
+                                    | 'import'
+                                    | 'namespace'
+                                    | 'is'
+                                    | 'and' 'or' 'not'
+                                    | 'lazy'
+                                    | 'pass' 'noop'
+                                    | 'func'
+                                    | 'returns'
+                                    ;
+
+punctuator                          : ':' '..' '...' ',' '[' ']' '(' ')'
+                                    ;
+
+operator                            : '+' '-' '*' '/' '>>' '<<' '=' '==' '!=' '<' '<=' '>' '>=' '&' '&&' '|' '||' '^' '!'
+                                    | 'is' 'and' 'or' 'not'
+                                    ;
+
+assignment-operator                 : '=' '+=' '-=' '*=' '/=' '>>=' '<<=' '&=' '|=' '^='
+                                    ;
 
 
 
 // syntax
 // ------
 
+type-opt                            : type
+                                    | e(psilon)
+                                    ;
+
+type                                : integral-type array-specifier-opt
+                                    | fully-qualified-identifier type-arguments-opt array-specifier-opt
+                                    ;
+
+integral-type-opt                   : integral-type
+                                    | e(psilon)
+                                    ;
+
+integral-type                       : 'byte'
+                                    | 'integer'
+                                    | 'real'
+                                    | 'string'
+                                    | 'boolean'
+                                    ;
+
+type-arguments-opt                  : '<' type-arguments '>'
+                                    | e(psilon)
+                                    ;
+
+type-arguments                      : type-argument
+                                    | type-arguments ',' type-argument
+                                    ;
+
+type-argument                       : type
+                                    ;
+
+type-parameters-opt                 : '<' type-parameters '>'
+                                    | e(psilon)
+                                    ;
+
+type-parameters                     : type-parameter
+                                    | type-parameters ',' type-parameter
+                                    ;
+
+type-parameter                      : fully-qualified-identifier
+                                    ;
+
+array-specifier-opt                 : array-specifier
+                                    | e(psilon)
+                                    ;
+
+array-specifier                     : '[' array-dimensions ']' c-opt                                                    --- checked array, row based, optionally column based
+                                    | '(' array-dimensions ')' c-opt                                                    --- unchecked array, row based, optionally column based
+                                    ;
+
+array-dimensions                    : array-dimension
+                                    | array-dimensions ',' array-dimension                                              --- all ',' as a separator of a dimension
+                                    | array-dimensions ';' array-dimension                                              --- a;; ';' as a separator of a dimension
+                                    ;
+
+array-dimension                     : sign-opt decimal-number-literal
+                                    | sign-opt decimal-number-literal '..' sign-opt decimal-number-literal
+                                    ;
+
+c-opt                               : 'c'                                                                               --- column based array specifier
+                                    | e(psilon)
+                                    ;
+
+type-modifiers-opt                  : type-modifiers
+                                    | e(psilon)
+                                    ;
+
+type-modifiers                      : type-modifier
+                                    | type-modifiers type-modifier
+                                    ;
+
+type-modifier                       : const-type-modifier                                                               --- initialized at the point of declaration, mutual exclusive
+                                    | readonly-type-modifier                                                            --- initialized at any point only once, mutual exclusive
+                                    ;
+
+const-type-modifier                 : 'const'
+                                    ;
+
+readonly-type-modifier              : 'readonly'
+                                    ;
+
+
+initializer                         : expression-initializer
+                                    | array-initializer
+                                    | struct-initializer
+                                    ;
+
+expression-initializer              : expression
+                                    ;
+
+array-initializer                   : array-member-initializations
+                                    ;
+
+array-member-initializations        : array-member-initialization
+                                    | array-member-initializations ',' array-member-initialization
+                                    | array-member-initializations ';' array-member-initialization
+                                    ;
+
+array-member-initialization         : array-dimension-initialization
+                                    | array-member-initialization ' ' array-dimension-initialization                    --- if dimensions are delimited with ',', whitespace(s)
+                                    | array-member-initialization ',' array-dimension-initialization                    --- if dimensions are delimited with ';'
+                                    ;
+
+array-dimension-initialization      : initializer
+                                    ;
+
+struct-initializer                  : struct-member-initializations
+                                    ;
+
+struct-member-initializations       : struct-member-initialization
+                                    | struct-member-initializations ',' struct-member-initialization
+                                    ;
+
+struct-member-initialization        : initializer
+                                    | identifier '=' initializer
+                                    ;
+
+
+compilation-unit                    : compilation-unit-declarations-opt
+                                    ;
+
+compilation-unit-declarations-opt   : compilation-unit-declarations
+                                    | e(psilon)
+                                    ;
+
+compilation-unit-declarations       : compilation-unit-declaration
+                                    | compilation-unit-declarations compilation-unit-declaration
+                                    ;
+
+compilation-unit-declaration        : import-declarations
+                                    | namespace-alias-definitions
+                                    | namespace-definitions
+                                    ;
+
+import-declarations                 : import-declaration
+                                    | import-declarations import-declaration
+                                    ;
+
+import-declaration                  : 'import' fully-qualified-identifier
+                                    ;
+
+namespace-alias-definitions         : namespace-alias-definition
+                                    | namespace-alias-definitions namespace-alias-definition
+                                    ;
+
+namespace-alias-definition          : 'namespace' identifier '=' fully-qualified-identifier
+                                    ;
+
+namespace-definitions               : namespace-definition
+                                    | namespace-definitions namespace-definition
+                                    ;
+
+namespace-definition                : 'namespace' fully-qualified-identifier namespace-body-opt
+                                    ;
+
+namespace-body-opt                  : namespace-body
+                                    | e(psilon)
+                                    ;
+
+namespace-body                      : struct-declarations
+                                    | enum-declarations
+                                    | function-declarations
+                                    ;
+
+struct-declarations                 : struct-declaration
+                                    | struct-declarations struct-declaration
+                                    ;
+
+struct-declaration                  : identifier 'struct' type-parameters-opt partial-opt struct-members-opt
+                                    ;
+
+partial-opt                         : 'partial'
+                                    | e(psilon)
+                                    ;
+
+struct-extension-opt                : struct-extension
+                                    | e(psilon)
+                                    ;
+
+struct-extension                    : 'extends' base-structs
+                                    ;
+
+base-structs                        : base-struct
+                                    | base-structs ',' base-struct
+                                    ;
+
+base-struct                         : fully-qualified-identifier type-parameters-opt
+                                    ;
+
+struct-members-opt                  : struct-members
+                                    | e(psilon)
+                                    ;
+
+struct-members                      : struct-member
+                                    | struct-members ',' struct-member
+                                    ;
+
+struct-member                       : identifiers ':' type type-modifiers-opt
+                                    | identifiers ':' type type-modifiers-opt '=' initializer
+                                    ;
+
+
+enum-declarations                   : enum-declaration
+                                    | enum-declarations enum-declaration
+                                    ;
+
+enum-declaration                    : identifier 'enum' integral-type-opt enum-members-opt                              --- default integer
+                                    ;
+
+enum-members-opt                    : enum-members
+                                    | e(psilon)
+                                    ;
+
+enum-members                        : enum-member
+                                    | enum-members ',' enum-member
+                                    ;
+
+enum-member                         : identifier
+                                    | identifier '=' literal
+                                    | fully-qualified-identifier '..' fully-qualified-identifier                        --- fully-qualified-identifier must be from enum members
+                                    ;
+
+
+function-declarations               : function-declaration
+                                    | function-declarations function-declaration
+                                    ;
+
+function-declaration                : identifier 'func' type-parameters-opt '(' function-parameters-opt ')' lazy-opt function-returns-opt function-body
+                                    ;
+
+function-parameters-opt             : function-parameters
+                                    | e(psilon)
+                                    ;
+
+function-parameters                 : function-parameter
+                                    | function-parameters ',' function-parameter
+                                    ;
+
+function-parameter                  : identifier ':' type type-modifiers-opt
+                                    | identifier ':' type type-modifiers-opt '=' initializer
+                                    | '...'                                                                             --- must be the last
+                                    ;
+
+lazy-opt                            : 'lazy'                                                                            --- lazy parameters evaluation
+                                    | e(psilon)
+                                    ;
+
+function-returns-opt                : function-returns
+                                    | e(psilon)
+                                    ;
+
+function-returns                    : function-return
+                                    | function-returns ',' function-return
+                                    ;
+
+function-return                     : type
+                                    ;
+
+function-body                       : function-declarations                                                             --- nested functions
+                                    | '(' statements-opt ')'                                                            --- multiline definition
+                                    | statements
+                                    ;
+
+lambda-declaration                  : 'lambda' type-parameters-opt '(' function-parameters-opt ')' lazy-opt function-returns-opt function-body
+                                    ;
+
+lambda-body                         : '(' statements-opt ')'                                                            --- always acts as multiline definition ()
+                                    ;
+
+
+statements-opt                      : statements
+                                    | e(psilon)
+                                    ;
+
+statements                          : statement
+                                    | statements statement
+                                    ;
+
+statement                           : declaration-statement
+                                    | with-statement
+                                    | expression-statement
+                                    | if-statement
+                                    | while-statement
+                                    | for-statement
+                                    | break-statement
+                                    | continue-statement
+                                    | return-statement
+                                    | goto-statement
+                                    | label-statement
+                                    | finally-statement
+                                    | namespace-alias-definition
+                                    | 'noop'
+                                    | 'pass'
+                                    ;
+
+declaration-statement               : variable-declaration
+                                    ;
+
+variable-declaration                : identifiers ':' type type-modifiers-opt                                           --- θ, φ, π : real
+                                    | identifiers ':' type-opt type-modifiers-opt '=' initializer                       --- θ, φ, π : real const = 0.1
+                                    | identifiers ':' initializer                                                       --- θ, φ, π : 0.1
+                                    ;
+
+with-statement                      : 'with' expression statements                                                      --- expression evaluates toa struct instance
+                                    ;
+
+expression-statement                : expression
+                                    ;
+
+if-statement                        : 'if' expression statements                                                        --- expression must be boolean
+                                    | 'if' expression statements 'else' statements
+                                    ;
+
+while-statement                     : 'while' expression statements                                                     --- expression must be boolean
+                                    ;
+
+for-statement                       : 'for' variable-declaration 'in' expression statements
+                                    ;
+
+break-statement                     : 'break'                                                                           --- innner most
+                                    ;
+
+continue-statement                  : 'continue'                                                                        --- innner most
+                                    ;
+
+return-statement                    : 'return' expression
+                                    ;
+
+goto-statement                      : 'goto' identifier                                                                 --- inter-procedure only
+                                    ;
+
+label-statement                     : identifier ':'                                                                    --- inter-procedure only
+                                    | identifier ':' statement
+                                    ;
+
+finally-statement                   : 'finally' statements
+                                    ;
+
+
+expressions                         : expression
+                                    | expressions ',' expression
+                                    ;
+
+expression                          : assignment-expression
+                                    ;
+
+assignment-expression               : unary-expression assignment-operator assignment-expression
+                                    ;
+
+primary-expression                  : literal                                                                           --- 5, 'text'
+                                    | fully-qualified-identifier type-arguments-opt                                     --- point<T>, point<int>
+                                    | '(' expression ')'
+                                    ;
+
+unary-expression                    : primary-expression
+                                    | '+' unary-expression
+                                    | '-' unary-expression
+                                    | '!' unary-expression
+                                    | 'not' unary-expression
+                                    | '++' unary-expression
+                                    | '--' unary-expression
+                                    ;
+
+multiplicative-expression           : unary-expression
+                                    | multiplicative-expression '*' unary-expression
+                                    | multiplicative-expression '/' unary-expression
+                                    | multiplicative-expression '%' unary-expression
+                                    ;
+
+additive-expression                 : multiplicative-expression
+                                    | additive-expression '+' multiplicative-expression
+                                    | additive-expression '-' multiplicative-expression
+                                    ;
+
+shift-expression                    : additive-expression
+                                    | shift-expression '<<' additive-expression
+                                    | shift-expression '>>' additive-expression                                         --- right shift operator
+                                    ;
+
+relational-expression               : relational-expression '<' shift-expression
+                                    | relational-expression '>' shift-expression
+                                    | relational-expression '<=' shift-expression
+                                    | relational-expression '>=' shift-expression
+                                    | relational_expression 'is' type
+                                    ;
+
+equality-expression                 : relational-expression
+                                    | equality-expression '==' relational-expression
+                                    | equality-expression '!=' relational-expression
+                                    ;
+
+and-expression                      : equality-expression
+                                    | and-expression '&' equality-expression
+                                    ;
+
+exclusive-or-expression             : and-expression
+                                    | exclusive-or-expression '^' and-expression
+                                    ;
+
+inclusive-or-expression             : exclusive-or-expression
+                                    | inclusive-or-expression '|' exclusive-or-expression
+                                    ;
+
+logical-and-expression              : inclusive-or-expression
+                                    | logical-and-expression '&&' inclusive-or-expression
+                                    | logical-and-expression 'and' inclusive-or-expression
+                                    ;
+
+logical-or-expression               : logical-and-expression
+                                    | logical-or-expression '||' logical-and-expression
+                                    | logical-or-expression 'or' logical-and-expression
+                                    ;
+
+conditional-expression              : logical-or-expression
+                                    | logical-or-expression '?' expression ':' logical-or-expression
+                                    ;
+
+postfix-expression                  : primary-expression
+                                    | postfix-expression '.' identifier                                                 --- member access
+                                    | postfix-expression '[' arguments-opt ']                                           --- array element access
+                                    | postfix-expression '(' arguments-opt ')'                                          --- function invocation
+                                    | postfix-expression '++'
+                                    | postfix-expression '--'
+                                    ;
+
+arguments-opt                       : arguments
+                                    | e(psilon)
+                                    ;
+
+arguments                           : argument
+                                    | arguments ',' argument
+                                    ;
+
+argument                            : argument-name-opt expression
+                                    ;
+
+argument-name-opt                   : argument-name
+                                    | e(psilon)
+                                    ;
+
+argument-name                       : identifier ':'
+                                    ;

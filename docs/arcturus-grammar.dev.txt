@@ -325,7 +325,7 @@ type-arguments-opt                  : '<' type-arguments '>'
                                     | e(psilon)
                                     ;
 
-type-arguments                      : type-argument
+type-arguments                      : type-argument                                                                     --- type-argument (',' type-argument)*
                                     | type-arguments ',' type-argument
                                     ;
 
@@ -336,7 +336,7 @@ type-parameters-opt                 : '<' type-parameters '>'
                                     | e(psilon)
                                     ;
 
-type-parameters                     : type-parameter
+type-parameters                     : type-parameter                                                                    --- type-parameter (',' type-parameter)*
                                     | type-parameters ',' type-parameter
                                     ;
 
@@ -351,13 +351,13 @@ array-specifier                     : '[' array-dimensions ']' c-opt            
                                     | '(' array-dimensions ')' c-opt                                                    --- unchecked array, row based, optionally column based
                                     ;
 
-array-dimensions                    : array-dimension
+array-dimensions                    : array-dimension                                                                   --- array-dimension (',' | ';' array-dimension)*
                                     | array-dimensions ',' array-dimension                                              --- all ',' as a separator of a dimension
                                     | array-dimensions ';' array-dimension                                              --- a;; ';' as a separator of a dimension
                                     ;
 
-array-dimension                     : sign-opt decimal-number-literal
-                                    | sign-opt decimal-number-literal '..' sign-opt decimal-number-literal
+array-dimension                     : expression                                                                        --- expression ('..' expression)?
+                                    | expression '..' expression
                                     ;
 
 c-opt                               : 'c'                                                                               --- column based array specifier
@@ -368,7 +368,7 @@ type-modifiers-opt                  : type-modifiers
                                     | e(psilon)
                                     ;
 
-type-modifiers                      : type-modifier
+type-modifiers                      : type-modifier                                                                     --- type-modifier (type-modifier)*
                                     | type-modifiers type-modifier
                                     ;
 
@@ -394,12 +394,12 @@ expression-initializer              : expression
 array-initializer                   : array-member-initializations
                                     ;
 
-array-member-initializations        : array-member-initialization
+array-member-initializations        : array-member-initialization                                                       --- array-member-initialization (',' | ';' array-member-initialization)*
                                     | array-member-initializations ',' array-member-initialization
                                     | array-member-initializations ';' array-member-initialization
                                     ;
 
-array-member-initialization         : array-dimension-initialization
+array-member-initialization         : array-dimension-initialization                                                    --- array-dimension-initialization (' ' | ',' array-dimension-initialization)*
                                     | array-member-initialization ' ' array-dimension-initialization                    --- if dimensions are delimited with ',', whitespace(s)
                                     | array-member-initialization ',' array-dimension-initialization                    --- if dimensions are delimited with ';'
                                     ;
@@ -410,7 +410,7 @@ array-dimension-initialization      : initializer
 struct-initializer                  : struct-member-initializations
                                     ;
 
-struct-member-initializations       : struct-member-initialization
+struct-member-initializations       : struct-member-initialization                                                      --- struct-member-initialization (',' struct-member-initialization)*
                                     | struct-member-initializations ',' struct-member-initialization
                                     ;
 
@@ -442,7 +442,7 @@ import-declarations                 : import-declaration
 import-declaration                  : 'import' fully-qualified-identifier
                                     ;
 
-namespace-alias-definitions         : namespace-alias-definition
+namespace-alias-definitions         : namespace-alias-definition                                                        --- namespace-alias-definition (namespace-alias-definition)*
                                     | namespace-alias-definitions namespace-alias-definition
                                     ;
 
@@ -560,7 +560,6 @@ function-return                     : type
                                     ;
 
 function-body                       : function-declarations                                                             --- nested functions
-                                    | '(' statements-opt ')'                                                            --- multiline definition
                                     | statements
                                     ;
 
@@ -575,7 +574,7 @@ statements-opt                      : statements
                                     | e(psilon)
                                     ;
 
-statements                          : statement
+statements                          : statement                                                                         --- NEWLINE INDENT (statement)+ DEDENT
                                     | statements statement
                                     ;
 
@@ -597,6 +596,8 @@ statement                           : declaration-statement
                                     ;
 
 declaration-statement               : variable-declaration
+                                    | struct-declaration
+                                    | enum-declaration
                                     ;
 
 variable-declaration                : identifiers ':' type type-modifiers-opt                                           --- θ, φ, π : real
@@ -604,20 +605,20 @@ variable-declaration                : identifiers ':' type type-modifiers-opt   
                                     | identifiers ':' initializer                                                       --- θ, φ, π : 0.1
                                     ;
 
-with-statement                      : 'with' expression statements                                                      --- expression evaluates toa struct instance
+with-statement                      : 'with' expressions statements                                                     --- expression evaluates to struct(s) instance(s)
                                     ;
 
-expression-statement                : expression
+expression-statement                : assignment-expression
                                     ;
 
-if-statement                        : 'if' expression statements                                                        --- expression must be boolean
+if-statement                        : 'if' expression statements                                                  --- expression must be boolean
                                     | 'if' expression statements 'else' statements
                                     ;
 
-while-statement                     : 'while' expression statements                                                     --- expression must be boolean
+while-statement                     : 'while' expression statements                                               --- expression must be boolean
                                     ;
 
-for-statement                       : 'for' variable-declaration 'in' expression statements
+for-statement                       : 'for' variable-declaration ':' expression statements
                                     ;
 
 break-statement                     : 'break'                                                                           --- innner most
@@ -640,34 +641,36 @@ finally-statement                   : 'finally' statements
                                     ;
 
 
+assignment-expression               : expression assignment-operator assignment-expression
+                                    ;
+
 expressions                         : expression
                                     | expressions ',' expression
                                     ;
 
-expression                          : assignment-expression
-                                    ;
-
-assignment-expression               : unary-expression assignment-operator assignment-expression
+expression                          : primary-expression
+                                    | '+' expression
+                                    | '-' expression
+                                    | '!' expression
+                                    | 'not' expression
+                                    | '++' expression
+                                    | '--' expression
+                                    | expression '.' identifier                                                         --- member access
+                                    | expression '[' arguments-opt ']                                                   --- array element access
+                                    | expression '(' arguments-opt ')'                                                  --- function invocation
+                                    | expression '++'
+                                    | expression '--'
                                     ;
 
 primary-expression                  : literal                                                                           --- 5, 'text'
-                                    | fully-qualified-identifier type-arguments-opt                                     --- point<T>, point<int>
+                                    | fully-qualified-identifier type-arguments-opt                                     --- point<T>, point<real>
                                     | '(' expression ')'
                                     ;
 
-unary-expression                    : primary-expression
-                                    | '+' unary-expression
-                                    | '-' unary-expression
-                                    | '!' unary-expression
-                                    | 'not' unary-expression
-                                    | '++' unary-expression
-                                    | '--' unary-expression
-                                    ;
-
-multiplicative-expression           : unary-expression
-                                    | multiplicative-expression '*' unary-expression
-                                    | multiplicative-expression '/' unary-expression
-                                    | multiplicative-expression '%' unary-expression
+multiplicative-expression           : expression
+                                    | multiplicative-expression '*' expression
+                                    | multiplicative-expression '/' expression
+                                    | multiplicative-expression '%' expression
                                     ;
 
 additive-expression                 : multiplicative-expression
@@ -716,14 +719,6 @@ logical-or-expression               : logical-and-expression
 
 conditional-expression              : logical-or-expression
                                     | logical-or-expression '?' expression ':' logical-or-expression
-                                    ;
-
-postfix-expression                  : primary-expression
-                                    | postfix-expression '.' identifier                                                 --- member access
-                                    | postfix-expression '[' arguments-opt ']                                           --- array element access
-                                    | postfix-expression '(' arguments-opt ')'                                          --- function invocation
-                                    | postfix-expression '++'
-                                    | postfix-expression '--'
                                     ;
 
 arguments-opt                       : arguments
@@ -1169,4 +1164,97 @@ pattern matching, case/when, switch C# 8
           p2 : point<real> = ( 1.2, 3.2, 5.0, 3.12 ),
           p3)
         foo() --- has access to p1,p2, p3, no need to pass, name collisions are resolved/reported in usual way
+
+
+
+
+
+
+
+
+
+
+
+
+
+field-initialization-expression             x = 2.3
+array-initialization-expression             [-1..2]
+default-argument-expression                 x : 2.3
+assignment-expression                       x = 2.3
+return-expression
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+expression                          : primary-expression
+                                    | '+' expression
+                                    | '-' expression
+                                    | '!' expression
+                                    | 'not' expression
+                                    | '++' expression
+                                    | '--' expression
+                                    | expression '.' identifier                                                 --- member access
+                                    | expression '[' arguments-opt ']                                           --- array element access
+                                    | expression '(' arguments-opt ')'                                          --- function invocation
+                                    | expression '++'
+                                    | expression '--'
+                                    ;
+
+'+' '!' '++' expression '.' identifier
+
+
+
+
+
+
+
+
+
+
+primary-expression                  : literal                                                                           --- 5, 'text'
+                                    | fully-qualified-identifier type-arguments-opt                                     --- point<T>, point<real>
+                                    | '(' expression ')'
+                                    ;
+
+expression                    : primary-expression
+                                    | '+' expression
+                                    | '-' expression
+                                    | '!' expression
+                                    | 'not' expression
+                                    | '++' expression
+                                    | '--' expression
+                                    | expression '.' identifier                                                 --- member access
+                                    | expression '[' arguments-opt ']                                           --- array element access
+                                    | expression '(' arguments-opt ')'                                          --- function invocation
+                                    | expression '++'
+                                    | expression '--'
+                                    ;
 
