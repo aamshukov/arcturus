@@ -283,7 +283,7 @@ keyword                             : 'byte' 'integer' 'real' 'string' 'boolean'
                                     | 'and' 'or' 'not'
                                     | 'lazy'
                                     | 'pass' 'noop'
-                                    | 'func'
+                                    | 'fn'
                                     | 'returns'
                                     ;
 
@@ -494,7 +494,7 @@ struct-members-opt                  : struct-members
                                     | e(psilon)
                                     ;
 
-struct-members                      : struct-member
+struct-members                      : struct-member                                                                     --- NEWLINE INDENT (struct-member)* DEDENT
                                     | struct-members ',' struct-member
                                     ;
 
@@ -514,7 +514,7 @@ enum-members-opt                    : enum-members
                                     | e(psilon)
                                     ;
 
-enum-members                        : enum-member
+enum-members                        : enum-member                                                                       --- NEWLINE INDENT (enum-member)* DEDENT
                                     | enum-members ',' enum-member
                                     ;
 
@@ -528,8 +528,8 @@ function-declarations               : function-declaration
                                     | function-declarations function-declaration
                                     ;
 
-function-declaration                : identifier 'func' type-parameters-opt '(' function-parameters-opt ')' lazy-opt function-returns-opt function-body
-                                    ;
+function-declaration                : identifier 'fn' type-parameters-opt '(' function-parameters-opt ')' lazy-opt function-returns-opt function-body
+                                    ;                                                                          --- if no function-returns that means return types are inferred
 
 function-parameters-opt             : function-parameters
                                     | e(psilon)
@@ -611,14 +611,14 @@ with-statement                      : 'with' expressions statements             
 expression-statement                : assignment-expression
                                     ;
 
-if-statement                        : 'if' expression statements                                                  --- expression must be boolean
+if-statement                        : 'if' expression statements                                                        --- expression evaluates to boolean
                                     | 'if' expression statements 'else' statements
                                     ;
 
-while-statement                     : 'while' expression statements                                               --- expression must be boolean
+while-statement                     : 'while' expression statements                                                     --- expression evaluates to boolean
                                     ;
 
-for-statement                       : 'for' variable-declaration ':' expression statements
+for-statement                       : 'for' variable-declaration ':' expression statements                              --- expression acts as generator
                                     ;
 
 break-statement                     : 'break'                                                                           --- innner most
@@ -641,11 +641,13 @@ finally-statement                   : 'finally' statements
                                     ;
 
 
-assignment-expression               : expression assignment-operator assignment-expression
-                                    ;
-
 expressions                         : expression
                                     | expressions ',' expression
+                                    ;
+
+primary-expression                  : literal                                                                           --- 5, 'text'
+                                    | fully-qualified-identifier type-arguments-opt                                     --- geo.point<T>, point<real>
+                                    | '(' expression ')'
                                     ;
 
 expression                          : primary-expression
@@ -653,24 +655,19 @@ expression                          : primary-expression
                                     | '-' expression
                                     | '!' expression
                                     | 'not' expression
-                                    | '++' expression
-                                    | '--' expression
+                                    | '++' expression                                                                   --- expression evaluates to integer
+                                    | '--' expression                                                                   --- expression evaluates to integer
                                     | expression '.' identifier                                                         --- member access
                                     | expression '[' arguments-opt ']                                                   --- array element access
                                     | expression '(' arguments-opt ')'                                                  --- function invocation
-                                    | expression '++'
-                                    | expression '--'
-                                    ;
-
-primary-expression                  : literal                                                                           --- 5, 'text'
-                                    | fully-qualified-identifier type-arguments-opt                                     --- point<T>, point<real>
-                                    | '(' expression ')'
+                                    | expression '++'                                                                   --- expression evaluates to integer
+                                    | expression '--'                                                                   --- expression evaluates to integer
                                     ;
 
 multiplicative-expression           : expression
                                     | multiplicative-expression '*' expression
                                     | multiplicative-expression '/' expression
-                                    | multiplicative-expression '%' expression
+                                    | multiplicative-expression '%' expression                                          --- both sides must be integers
                                     ;
 
 additive-expression                 : multiplicative-expression
@@ -679,8 +676,8 @@ additive-expression                 : multiplicative-expression
                                     ;
 
 shift-expression                    : additive-expression
-                                    | shift-expression '<<' additive-expression
-                                    | shift-expression '>>' additive-expression                                         --- right shift operator
+                                    | shift-expression '<<' additive-expression                                         --- both sides must be integers
+                                    | shift-expression '>>' additive-expression                                         --- both sides must be integers
                                     ;
 
 relational-expression               : relational-expression '<' shift-expression
@@ -718,7 +715,10 @@ logical-or-expression               : logical-and-expression
                                     ;
 
 conditional-expression              : logical-or-expression
-                                    | logical-or-expression '?' expression ':' logical-or-expression
+                                    | logical-or-expression '?' expression ':' conditional-expression
+                                    ;
+
+assignment-expression               : expression assignment-operator assignment-expression                              --- assignment occurs only as a separate statement
                                     ;
 
 arguments-opt                       : arguments
@@ -1169,92 +1169,10 @@ pattern matching, case/when, switch C# 8
 
 
 
-
-
-
-
-
-
-
-
 field-initialization-expression             x = 2.3
 array-initialization-expression             [-1..2]
 default-argument-expression                 x : 2.3
 assignment-expression                       x = 2.3
 return-expression
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-expression                          : primary-expression
-                                    | '+' expression
-                                    | '-' expression
-                                    | '!' expression
-                                    | 'not' expression
-                                    | '++' expression
-                                    | '--' expression
-                                    | expression '.' identifier                                                 --- member access
-                                    | expression '[' arguments-opt ']                                           --- array element access
-                                    | expression '(' arguments-opt ')'                                          --- function invocation
-                                    | expression '++'
-                                    | expression '--'
-                                    ;
-
-'+' '!' '++' expression '.' identifier
-
-
-
-
-
-
-
-
-
-
-primary-expression                  : literal                                                                           --- 5, 'text'
-                                    | fully-qualified-identifier type-arguments-opt                                     --- point<T>, point<real>
-                                    | '(' expression ')'
-                                    ;
-
-expression                    : primary-expression
-                                    | '+' expression
-                                    | '-' expression
-                                    | '!' expression
-                                    | 'not' expression
-                                    | '++' expression
-                                    | '--' expression
-                                    | expression '.' identifier                                                 --- member access
-                                    | expression '[' arguments-opt ']                                           --- array element access
-                                    | expression '(' arguments-opt ')'                                          --- function invocation
-                                    | expression '++'
-                                    | expression '--'
-                                    ;
 
