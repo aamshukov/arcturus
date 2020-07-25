@@ -285,6 +285,7 @@ keyword                             : 'byte' 'integer' 'real' 'string' 'boolean'
                                     | 'pass' 'noop'
                                     | 'fn'
                                     | 'returns'
+                                    | 'unchecked' 'checked'
                                     ;
 
 punctuator                          : ':' '..' '...' ',' '[' ']' '(' ')'
@@ -348,7 +349,6 @@ array-specifier-opt                 : array-specifier
                                     ;
 
 array-specifier                     : '[' array-dimensions ']' c-opt                                                    --- checked array, row based, optionally column based
-                                    | '(' array-dimensions ')' c-opt                                                    --- unchecked array, row based, optionally column based
                                     ;
 
 array-dimensions                    : array-dimension                                                                   --- array-dimension (',' | ';' array-dimension)*
@@ -593,6 +593,8 @@ statement                           : declaration-statement
                                     | namespace-alias-definition
                                     | 'noop'
                                     | 'pass'
+                                    | NEWLINE INDENT 'checked' DEDENT                                                   --- turn on cheking semantics
+                                    | NEWLINE INDENT 'uchecked' DEDENT                                                  --- turn off cheking semantics
                                     ;
 
 declaration-statement               : variable-declaration
