@@ -162,6 +162,7 @@ bool fsa_re::re_to_dfa(const string_type& re,
                        const string_type& escape_predicate,
                        typename fsa_re::fsa_type& result_fsa)
 {
+    // Ахо,Лам,Сети,Ульман - Компиляторы. Принципы, технологии, инструменты.2ed.2008, pp.229
     log_info(L"Generating DFA from RE, direct method ...");
 
     std::shared_ptr<datum_type[]> re_data;
@@ -172,7 +173,11 @@ bool fsa_re::re_to_dfa(const string_type& re,
 
     string_type augmented_re_dsp(augmented_re);
 
-    std::replace(augmented_re_dsp.begin(), augmented_re_dsp.end(), (char_type)text::epsilon_codepoint(), L'e');
+    std::replace(augmented_re_dsp.begin(),
+                 augmented_re_dsp.end(),
+                 (char_type)text::epsilon_codepoint(),
+                 L'e');
+
     std::wcout << augmented_re_dsp << std::endl;
 
     bool result = text::string_to_codepoints(augmented_re, re_data, count); // (r)#
@@ -205,7 +210,7 @@ bool fsa_re::re_to_dfa(const string_type& re,
                 // compute firstpos set
                 calculate_first_position(tree);
 
-                //cpompute lastpos set
+                // compute lastpos set
                 calculate_last_position(tree);
 
                 print_fsa_tree(tree, std::wcout);

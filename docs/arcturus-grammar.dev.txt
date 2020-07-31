@@ -315,11 +315,11 @@ integral-type-opt                   : integral-type
                                     | e(psilon)
                                     ;
 
-integral-type                       : 'byte'
-                                    | 'integer'
-                                    | 'real'
-                                    | 'string'
-                                    | 'boolean'
+integral-type                       : 'byte'                                                                            --- 0-255
+                                    | 'integer'                                                                         --- int64
+                                    | 'real'                                                                            --- double
+                                    | 'string'                                                                          --- " 'c' "  ' "c" '
+                                    | 'boolean'                                                                         --- true false
                                     ;
 
 type-arguments-opt                  : '<' type-arguments '>'
@@ -528,8 +528,8 @@ function-declarations               : function-declaration
                                     | function-declarations function-declaration
                                     ;
 
-function-declaration                : identifier 'fn' type-parameters-opt '(' function-parameters-opt ')' lazy-opt function-returns-opt function-body
-                                    ;                                                                          --- if no function-returns that means return types are inferred
+function-declaration                : identifier 'fn' type-parameters-opt '(' function-parameters-opt ')' function-returns-opt function-body
+                                    ;                                                                                   --- if no function-returns that means return types are inferred
 
 function-parameters-opt             : function-parameters
                                     | e(psilon)
@@ -540,7 +540,7 @@ function-parameters                 : function-parameter
                                     ;
 
 function-parameter                  : identifier ':' type type-modifiers-opt
-                                    | identifier ':' type type-modifiers-opt '=' initializer
+                                    | identifier ':' type type-modifiers-opt lazy-opt '=' initializer
                                     | '...'                                                                             --- must be the last
                                     ;
 
@@ -563,7 +563,7 @@ function-body                       : function-declarations                     
                                     | statements
                                     ;
 
-lambda-declaration                  : 'lambda' type-parameters-opt '(' function-parameters-opt ')' lazy-opt function-returns-opt function-body
+lambda-declaration                  : 'lambda' type-parameters-opt '(' function-parameters-opt ')' function-returns-opt function-body
                                     ;
 
 lambda-body                         : '(' statements-opt ')'                                                            --- always acts as multiline definition ()
@@ -591,6 +591,7 @@ statement                           : declaration-statement
                                     | label-statement
                                     | finally-statement
                                     | namespace-alias-definition
+                                    | import-declaration                                                                --- this statement might be available only in JIT mode
                                     | 'noop'
                                     | 'pass'
                                     | NEWLINE INDENT 'checked' DEDENT                                                   --- turn on cheking semantics
@@ -603,7 +604,7 @@ declaration-statement               : variable-declaration
                                     ;
 
 variable-declaration                : identifiers ':' type type-modifiers-opt                                           --- θ, φ, π : real
-                                    | identifiers ':' type-opt type-modifiers-opt '=' initializer                       --- θ, φ, π : real const = 0.1
+                                    | identifiers ':' type-opt type-modifiers-opt lazy-opt '=' initializer              --- θ, φ, π : real const = 0.1
                                     | identifiers ':' initializer                                                       --- θ, φ, π : 0.1
                                     ;
 
