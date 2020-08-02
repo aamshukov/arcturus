@@ -87,11 +87,11 @@
 #include <frontend/semantics/semantics.inl>
 
 #include <ir/quadruple.hpp>
+#include <ir/code.hpp>
+#include <ir/code.inl>
 #include <ir/basic_block.hpp>
 #include <ir/basic_block.inl>
 #include <ir/control_flow_graph.hpp>
-#include <ir/code.hpp>
-#include <ir/code.inl>
 #include <ir/ir_visitor.hpp>
 #include <ir/ir.hpp>
 #include <ir/ir.inl>
@@ -120,6 +120,7 @@
 #include <arcturus_parse_context.hpp>
 #include <arcturus_parser.hpp>
 #include <arcturus_quadruple.hpp>
+#include <arcturus_ir.hpp>
 #include <arcturus_pass.hpp>
 #include <arcturus_controller.hpp>
 
@@ -132,6 +133,14 @@ USINGNAMESPACE(arcturus)
 
 int _tmain(int argc, _TCHAR *argv[])
 {
+    arcturus_ir ir;
+
+    arcturus_ir::code_type code;
+    arcturus_ir::basic_blocks_type basic_blocks;
+
+    ir.build_basic_blocks(code, basic_blocks);
+
+
     auto st(factory::create<arcturus_scalar_type>(arcturus_type::kind_type::integer_type));
     auto at(factory::create<arcturus_array_type>(st));
 

@@ -77,6 +77,7 @@
 #include <frontend/parser/parse_tree_base.hpp>
 #include <frontend/parser/parse_tree.hpp>
 #include <frontend/parser/parse_dag.hpp>
+#include <frontend/parser/parse_context.hpp>
 #include <frontend/parser/parser.hpp>
 #include <frontend/parser/parser.inl>
 #include <frontend/parser/recursive_descent_parser.hpp>
@@ -95,6 +96,8 @@
 #include <ir/ir.hpp>
 #include <ir/ir.inl>
 
+#include <backend/optimization/pass.hpp>
+
 #include <backend/codegen/activation_record.hpp>
 #include <backend/codegen/amd64/activation_record_amd64.hpp>
 #include <backend/codegen/codegen.hpp>
@@ -106,29 +109,43 @@
 #include <arcturus_configurator.hpp>
 #include <arcturus_token.hpp>
 #include <arcturus_type.hpp>
-#include <arcturus_lexical_analyzer.hpp>
-#include <arcturus_parse_tree.hpp>
-#include <arcturus_parser.hpp>
-#include <arcturus_type.hpp>
 #include <arcturus_scalar_type.hpp>
 #include <arcturus_array_type.hpp>
 #include <arcturus_struct_type.hpp>
 #include <arcturus_enum_type.hpp>
 #include <arcturus_func_type.hpp>
 #include <arcturus_symbol.hpp>
+#include <arcturus_lexical_analyzer.hpp>
+#include <arcturus_parse_tree.hpp>
+#include <arcturus_parse_context.hpp>
+#include <arcturus_parser.hpp>
+#include <arcturus_quadruple.hpp>
+#include <arcturus_ir.hpp>
 
 BEGIN_NAMESPACE(arcturus)
 
 USINGNAMESPACE(core)
 USINGNAMESPACE(frontend)
 USINGNAMESPACE(symtable)
+USINGNAMESPACE(backend)
 
-arcturus_symbol::arcturus_symbol()
+arcturus_ir::arcturus_ir()
 {
 }
 
-arcturus_symbol::~arcturus_symbol()
+arcturus_ir::~arcturus_ir()
 {
+}
+
+void arcturus_ir::build_basic_blocks(const typename arcturus_ir::code_type& code,
+                                     typename arcturus_ir::basic_blocks_type& result)
+{
+    basic_blocks_type blocks;
+
+    code;//??
+
+
+    result.swap(blocks);
 }
 
 END_NAMESPACE

@@ -13,15 +13,16 @@ USINGNAMESPACE(symtable)
 USINGNAMESPACE(frontend)
 USINGNAMESPACE(backend)
 
-template <typename Token>
+template <typename Token, typename OpCodeTraits>
 class controller : private noncopyable
 {
     public:
         using token_type = Token;
+        using traits_type = OpCodeTraits;
 
         using parser_type = std::shared_ptr<parser<token_type>>;
 
-        using ir_type = std::shared_ptr<ir<token_type>>;
+        using ir_type = std::shared_ptr<ir<token_type, traits_type>>;
 
         using context_type = std::shared_ptr<context>;
 
@@ -56,12 +57,12 @@ class controller : private noncopyable
         virtual                ~controller();
 };
 
-template <typename Token>
-controller<Token>::controller(const parser_type& parser,
-                              const ir_type& ir,
-                              const passes_type& passes,
-                              const codegen_type& codegen,
-                              const context_type& context)
+template <typename Token, typename OpCodeTraits>
+controller<Token, OpCodeTraits>::controller(const parser_type& parser,
+                                      const ir_type& ir,
+                                      const passes_type& passes,
+                                      const codegen_type& codegen,
+                                      const context_type& context)
                  : my_parser(parser),
                    my_ir(ir),
                    my_passes(passes),
@@ -70,8 +71,8 @@ controller<Token>::controller(const parser_type& parser,
 {
 }                 
 
-template <typename Token>
-controller<Token>::~controller()
+template <typename Token, typename OpCodeTraits>
+controller<Token, OpCodeTraits>::~controller()
 {
 }
 

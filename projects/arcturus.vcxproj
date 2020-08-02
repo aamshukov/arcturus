@@ -24,6 +24,7 @@
     <ClInclude Include="..\src\arcturus\arcturus_controller.hpp" />
     <ClInclude Include="..\src\arcturus\arcturus_enum_type.hpp" />
     <ClInclude Include="..\src\arcturus\arcturus_func_type.hpp" />
+    <ClInclude Include="..\src\arcturus\arcturus_ir.hpp" />
     <ClInclude Include="..\src\arcturus\arcturus_lexical_analyzer.hpp" />
     <ClInclude Include="..\src\arcturus\arcturus_lexical_tools.hpp" />
     <ClInclude Include="..\src\arcturus\arcturus_parser.hpp" />
@@ -115,6 +116,7 @@
     <ClCompile Include="..\src\arcturus\arcturus_controller.cpp" />
     <ClCompile Include="..\src\arcturus\arcturus_enum_type.cpp" />
     <ClCompile Include="..\src\arcturus\arcturus_func_type.cpp" />
+    <ClCompile Include="..\src\arcturus\arcturus_ir.cpp" />
     <ClCompile Include="..\src\arcturus\arcturus_lexical_analyzer.cpp" />
     <ClCompile Include="..\src\arcturus\arcturus_lexical_tools.cpp" />
     <ClCompile Include="..\src\arcturus\arcturus_parser.cpp" />

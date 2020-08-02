@@ -12,9 +12,28 @@ USINGNAMESPACE(core)
 USINGNAMESPACE(frontend)
 USINGNAMESPACE(symtable)
 
-template <typename Token>
+template <typename Token, typename OpCodeTraits>
 class ir : private noncopyable
 {
+    public:
+        using token_type = Token;
+        using traits_type = OpCodeTraits;
+
+        using id_type = std::size_t;
+
+        using quadruple_type = std::shared_ptr<quadruple<token_type, traits_type>>;
+        using quadruples_type = std::list<quadruple_type>;
+
+        using code_type = std::shared_ptr<code<token_type, traits_type>>;
+
+        using basic_block_type = std::shared_ptr<basic_block<token_type, traits_type>>;
+        using basic_blocks_type = std::vector<basic_block_type>;
+
+    public:
+        virtual void build_basic_blocks(const code_type& code, basic_blocks_type& result) = 0;
+
+
+
 //    public:
 //        using token_type = Token;
 //

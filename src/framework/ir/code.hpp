@@ -11,12 +11,12 @@ BEGIN_NAMESPACE(backend)
 USINGNAMESPACE(core)
 USINGNAMESPACE(frontend)
 
-template <typename Token, typename Traits>
+template <typename Token, typename OpCodeTraits>
 class code : private noncopyable
 {
     public:
         using token_type = Token;
-        using traits_type = Traits;
+        using traits_type = OpCodeTraits;
 
     public:
         using id_type = std::size_t;
@@ -35,14 +35,14 @@ class code : private noncopyable
         quadruples_type&        quadruples();
 };
 
-template <typename Token, typename Traits>
-inline const typename code<Token, Traits>::quadruples_type& code<Token, Traits>::quadruples() const
+template <typename Token, typename OpCodeTraits>
+inline const typename code<Token, OpCodeTraits>::quadruples_type& code<Token, OpCodeTraits>::quadruples() const
 {
     return my_code;
 }
 
-template <typename Token, typename Traits>
-inline typename code<Token, Traits>::quadruples_type& code<Token, Traits>::quadruples()
+template <typename Token, typename OpCodeTraits>
+inline typename code<Token, OpCodeTraits>::quadruples_type& code<Token, OpCodeTraits>::quadruples()
 {
     return my_code;
 }

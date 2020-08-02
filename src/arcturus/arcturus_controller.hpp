@@ -14,21 +14,24 @@ USINGNAMESPACE(frontend)
 USINGNAMESPACE(backend)
 USINGNAMESPACE(orchestration)
 
-class arcturus_controller : public controller<arcturus_token>
+class arcturus_controller : public controller<arcturus_token, arcturus_operation_code_traits>
 {
     public:
         using token_type = arcturus_token;
+        using traits_type = arcturus_operation_code_traits;
 
-        using parser_type = controller<arcturus_token>::parser_type;
+        using controller_base = controller<arcturus_token, arcturus_operation_code_traits>;
 
-        using ir_type = controller<arcturus_token>::ir_type;
+        using parser_type = controller_base::parser_type;
 
-        using context_type = controller<arcturus_token>::context_type;
+        using ir_type = controller_base::ir_type;
 
-        using pass_type = controller<arcturus_token>::pass_type;
-        using passes_type = controller<arcturus_token>::passes_type;
+        using context_type = controller_base::context_type;
 
-        using codegen_type = controller<arcturus_token>::codegen_type;
+        using pass_type = controller_base::pass_type;
+        using passes_type = controller_base::passes_type;
+
+        using codegen_type = controller_base::codegen_type;
 
     private:
 

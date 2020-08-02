@@ -12,11 +12,11 @@ USINGNAMESPACE(core)
 USINGNAMESPACE(frontend)
 USINGNAMESPACE(symtable)
 
-template <typename Token, typename Traits>
+template <typename Token, typename OpCodeTraits>
 struct quadruple
 {
     using token_type = Token;
-    using traits_type = Traits;
+    using traits_type = OpCodeTraits;
     using operation_code = typename traits_type::operation_code;
 
     using symbol_type = std::shared_ptr<symtable::symbol<token_type>>;

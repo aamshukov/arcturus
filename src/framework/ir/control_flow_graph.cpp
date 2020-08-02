@@ -75,6 +75,8 @@
 #include <symtable/symbol_table.inl>
 
 #include <ir/quadruple.hpp>
+#include <ir/code.hpp>
+#include <ir/code.inl>
 #include <ir/basic_block.hpp>
 #include <ir/control_flow_graph.hpp>
 
