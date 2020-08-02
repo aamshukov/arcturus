@@ -333,6 +333,9 @@
     <ClInclude Include="..\src\arcturus\arcturus_pass.hpp">
       <Filter>arcturus</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\arcturus\arcturus_quadruple.hpp">
+      <Filter>arcturus</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\framework\core\logger.cpp">

@@ -79,7 +79,7 @@ inline bool is_enum_flag_set(T flag, T flags)
     return ((static_cast<std::underlying_type_t<T>>(flags) & static_cast<std::underlying_type_t<T>>(flag)) == static_cast<std::underlying_type_t<T>>(flag));
 }
 
-inline string_type const& empty_string()
+inline const string_type& empty_string()
 {
     static string_type result;
     return result;

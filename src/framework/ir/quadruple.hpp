@@ -12,99 +12,26 @@ USINGNAMESPACE(core)
 USINGNAMESPACE(frontend)
 USINGNAMESPACE(symtable)
 
-struct operation_code_traits
-{
-    DECLARE_ENUM
-    (
-        operation_code,
-        uint32_t,
-        unknown             = 0,
-
-        address_of          = 1,
-
-        load_integer        = 20,
-        store_integer       = 21, // assignment
-        add_integer         = 22,
-        subtract_integer    = 23,
-        multiply_integer    = 24,
-        divide_integer      = 25,
-        left_shift_integer  = 26,
-        right_shift_integer = 27,
-        bitwise_and_integer = 28,
-        bitwise_or_integer  = 29,
-        bitwise_xor_integer = 30,
-        eq_integer          = 31,
-        ne_integer          = 32,
-        lt_integer          = 33,
-        le_integer          = 34,
-        gt_integer          = 35,
-        ge_integer          = 36,
-        negation_integer    = 37, // -
-
-        load_real           = 50,
-        store_real          = 51, // assignment
-        add_real            = 52,
-        subtract_real       = 53,
-        multiply_real       = 54,
-        divide_real         = 55,
-        eq_real             = 56,
-        ne_real             = 57,
-        lt_real             = 58,
-        le_real             = 59,
-        gt_real             = 60,
-        ge_real             = 61,
-        negation_real       = 62, // - =
-
-        logical_negation    = 80, // !
-        bitwise_negation    = 81, // ~
-
-        array_access        = 100, // []
-
-        // subroutine, procedure, function ... definition
-        procedure_begin     = 200,
-        procedure_end       = 201,
-        parameter           = 202,
-        return_statement    = 203,
-
-        // subroutine, procedure, function ... call (callsite)
-        procedure_call      = 204,
-        argument            = 205,
-
-        label               = 300,
-        goto_statemenet     = 301,
-
-
-
-        phi                 = 500
-    )
-};
-
-template <typename Token, typename Traits = operation_code_traits>
+template <typename Token, typename Traits>
 struct quadruple
 {
     using token_type = Token;
-    using traits = Traits;
-    using operation_code = typename traits::operation_code;
+    using traits_type = Traits;
+    using operation_code = typename traits_type::operation_code;
 
     using symbol_type = std::shared_ptr<symtable::symbol<token_type>>;
     using symbols_type = std::vector<symbol_type>;
 
-    using quadruple_type = std::shared_ptr<quadruple<token_type, traits>>;
+    using quadruple_type = std::shared_ptr<quadruple<token_type, traits_type>>;
 
     using index_type = std::size_t;
     using size_type = std::size_t;
 
     using label_type = size_type;
 
-    union result
-    {
-        symbol_type     symbol;
-        quadruple_type  target; // target label used with 'goto' op code
-        label_type      label;  // label number used with 'label' op code
-    };
-
-    using result_type = quadruple::result;
-
+    using result_type = std::variant<symbol_type,
+                                     quadruple_type, // target label used with 'goto' op code
+                                     label_type>;    // label number used with 'label' op code
     index_type      index;
 
     operation_code  operation;
@@ -116,29 +43,29 @@ struct quadruple
     {
     }
 
+    quadruple(const operation_code& operation)
+        : operation(operation)
+    {
+    }
+
+    quadruple(const operation_code& operation,
+              const result_type& result)
+        : operation(operation), result(result)
+    {
+    }
+
+    quadruple(const operation_code& operation,
+              const symbol_type& argument1,
+              const result_type& result)
+        : operation(operation), argument1(argument1), result(result)
+    {
+    }
+
     quadruple(const operation_code& operation,
               const symbol_type& argument1,
               const symbol_type& argument2,
               const result_type& result)
         : operation(operation), argument1(argument1), argument2(argument2), result(result)
-    {
-    }
-
-    quadruple(const operation_code& operation,
-              const symbol_type& argument1,
-              const result_type& result)
-        : quadruple(operation, argument1, nullptr, result)
-    {
-    }
-
-    quadruple(const operation_code& operation,
-              const result_type& result)
-        : quadruple(operation, nullptr, nullptr, result)
-    {
-    }
-
-    quadruple(const operation_code& operation)
-        : quadruple(operation, nullptr, nullptr, nullptr)
     {
     }
 

@@ -119,6 +119,7 @@
 #include <arcturus_parse_tree.hpp>
 #include <arcturus_parse_context.hpp>
 #include <arcturus_parser.hpp>
+#include <arcturus_quadruple.hpp>
 #include <arcturus_pass.hpp>
 #include <arcturus_controller.hpp>
 

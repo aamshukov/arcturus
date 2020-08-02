@@ -12,13 +12,13 @@ USINGNAMESPACE(core)
 USINGNAMESPACE(frontend)
 USINGNAMESPACE(symtable)
 
-template <typename Token>
-code<Token>::code()
+template <typename Token, typename Traits>
+code<Token, Traits>::code()
 {
 }
 
-template <typename Token>
-code<Token>::~code()
+template <typename Token, typename Traits>
+code<Token, Traits>::~code()
 {
 }
 
