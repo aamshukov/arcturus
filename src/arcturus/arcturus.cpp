@@ -31,6 +31,7 @@
 #include <core/visitable.hpp>
 #include <core/visitor.hpp>
 
+#include <core/list.hpp>
 #include <core/tree.hpp>
 #include <core/dag.hpp>
 
@@ -120,6 +121,7 @@
 #include <arcturus_parse_context.hpp>
 #include <arcturus_parser.hpp>
 #include <arcturus_quadruple.hpp>
+#include <arcturus_control_flow_graph.hpp>
 #include <arcturus_ir.hpp>
 #include <arcturus_pass.hpp>
 #include <arcturus_controller.hpp>
@@ -131,6 +133,18 @@ USINGNAMESPACE(backend)
 USINGNAMESPACE(orchestration)
 USINGNAMESPACE(arcturus)
 
+void build_code(arcturus_ir::code_type& code) //??
+{
+    {
+        std::shared_ptr<arcturus_quadruple> instruction(factory::create<arcturus_quadruple>());
+        (*code).add_instruction(instruction);
+    }
+    {
+        auto instruction(factory::create<arcturus_quadruple>());
+        (*code).add_instruction(instruction);
+    }
+}
+
 int _tmain(int argc, _TCHAR *argv[])
 {
     arcturus_ir ir;
@@ -138,7 +152,11 @@ int _tmain(int argc, _TCHAR *argv[])
     arcturus_ir::code_type code;
     arcturus_ir::basic_blocks_type basic_blocks;
 
-    ir.build_basic_blocks(code, basic_blocks);
+    build_code(code);
+
+    arcturus_control_flow_graph cfg;
+
+    cfg.build(code);
 
 
     auto st(factory::create<arcturus_scalar_type>(arcturus_type::kind_type::integer_type));
@@ -160,8 +178,8 @@ int _tmain(int argc, _TCHAR *argv[])
 
     arcturus_configurator::instance().options().insert(std::pair(L"output-log-file-name", log_path));
 
-    auto& cfg = arcturus_configurator::instance();
-    cfg;
+    auto& config = arcturus_configurator::instance();
+    config;
 
     logger::instance().initialize(log_path);
 

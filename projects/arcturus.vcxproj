@@ -22,6 +22,7 @@
     <ClInclude Include="..\src\arcturus\arcturus_array_type.hpp" />
     <ClInclude Include="..\src\arcturus\arcturus_configurator.hpp" />
     <ClInclude Include="..\src\arcturus\arcturus_controller.hpp" />
+    <ClInclude Include="..\src\arcturus\arcturus_control_flow_graph.hpp" />
     <ClInclude Include="..\src\arcturus\arcturus_enum_type.hpp" />
     <ClInclude Include="..\src\arcturus\arcturus_func_type.hpp" />
     <ClInclude Include="..\src\arcturus\arcturus_ir.hpp" />
@@ -58,6 +59,7 @@
     <ClInclude Include="..\src\framework\core\enumerate.hpp" />
     <ClInclude Include="..\src\framework\core\factory.hpp" />
     <ClInclude Include="..\src\framework\core\graph.hpp" />
+    <ClInclude Include="..\src\framework\core\list.hpp" />
     <ClInclude Include="..\src\framework\core\logger.hpp" />
     <ClInclude Include="..\src\framework\core\noncopyable.hpp" />
     <ClInclude Include="..\src\framework\core\pch.hpp" />
@@ -114,6 +116,7 @@
     <ClCompile Include="..\src\arcturus\arcturus_array_type.cpp" />
     <ClCompile Include="..\src\arcturus\arcturus_configurator.cpp" />
     <ClCompile Include="..\src\arcturus\arcturus_controller.cpp" />
+    <ClCompile Include="..\src\arcturus\arcturus_control_flow_graph.cpp" />
     <ClCompile Include="..\src\arcturus\arcturus_enum_type.cpp" />
     <ClCompile Include="..\src\arcturus\arcturus_func_type.cpp" />
     <ClCompile Include="..\src\arcturus\arcturus_ir.cpp" />
@@ -138,6 +141,7 @@
     <ClCompile Include="..\src\framework\core\configurator.cpp" />
     <ClCompile Include="..\src\framework\core\dag.cpp" />
     <ClCompile Include="..\src\framework\core\domain_helper.cpp" />
+    <ClCompile Include="..\src\framework\core\list.cpp" />
     <ClCompile Include="..\src\framework\core\logger.cpp" />
     <ClCompile Include="..\src\framework\core\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

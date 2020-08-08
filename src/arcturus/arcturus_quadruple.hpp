@@ -72,9 +72,9 @@ struct arcturus_operation_code_traits
         argument            = 205,
 
         label               = 300,
-        goto_statemenet     = 301,
+        goto_statement      = 301,
 
-
+        // SSA
         phi                 = 500
     )
 };

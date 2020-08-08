@@ -31,8 +31,6 @@ class arcturus_ir : public ir<arcturus_token, arcturus_operation_code_traits>
     public:
                 arcturus_ir();
                ~arcturus_ir();
-
-        void    build_basic_blocks(const code_type& code, basic_blocks_type& result) override;
 };
 
 END_NAMESPACE

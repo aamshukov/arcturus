@@ -75,17 +75,64 @@
 #include <symtable/symbol_table.hpp>
 #include <symtable/symbol_table.inl>
 
+#include <frontend/parser/parse_tree_base.hpp>
+#include <frontend/parser/parse_tree.hpp>
+#include <frontend/parser/parse_dag.hpp>
+#include <frontend/parser/parse_context.hpp>
+#include <frontend/parser/parser.hpp>
+#include <frontend/parser/parser.inl>
+#include <frontend/parser/recursive_descent_parser.hpp>
+#include <frontend/parser/recursive_descent_parser.inl>
+
+#include <frontend/semantics/semantics.hpp>
+#include <frontend/semantics/semantics.inl>
+
 #include <ir/quadruple.hpp>
 #include <ir/code.hpp>
 #include <ir/code.inl>
 #include <ir/basic_block.hpp>
+#include <ir/basic_block.inl>
 #include <ir/control_flow_graph.hpp>
+#include <ir/ir_visitor.hpp>
+#include <ir/ir.hpp>
+#include <ir/ir.inl>
 
-BEGIN_NAMESPACE(backend)
+#include <backend/optimization/pass.hpp>
+
+#include <backend/codegen/activation_record.hpp>
+#include <backend/codegen/amd64/activation_record_amd64.hpp>
+#include <backend/codegen/codegen.hpp>
+
+#include <backend/optimization/pass.hpp>
+
+#include <arcturus_configurator.hpp>
+#include <arcturus_token.hpp>
+#include <arcturus_type.hpp>
+#include <arcturus_scalar_type.hpp>
+#include <arcturus_array_type.hpp>
+#include <arcturus_struct_type.hpp>
+#include <arcturus_enum_type.hpp>
+#include <arcturus_func_type.hpp>
+#include <arcturus_symbol.hpp>
+#include <arcturus_lexical_analyzer.hpp>
+#include <arcturus_parse_tree.hpp>
+#include <arcturus_parse_context.hpp>
+#include <arcturus_parser.hpp>
+#include <arcturus_quadruple.hpp>
+#include <arcturus_ir.hpp>
+#include <arcturus_pass.hpp>
+#include <arcturus_control_flow_graph.hpp>
+
+BEGIN_NAMESPACE(arcturus)
 
 USINGNAMESPACE(core)
 USINGNAMESPACE(frontend)
 USINGNAMESPACE(symtable)
+USINGNAMESPACE(backend)
 
+void arcturus_control_flow_graph::build(const typename arcturus_control_flow_graph::code_type& code)
+{
+    code;//??
+}
 
 END_NAMESPACE

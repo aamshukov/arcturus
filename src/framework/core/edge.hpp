@@ -8,11 +8,11 @@
 
 BEGIN_NAMESPACE(core)
 
-template <typename TVertex, typename TValue, std::size_t N = 2>
+template <typename TVertex, typename TValue = double, std::size_t N = 2>
 struct edge : private noncopyable
 {
     using vertex_type = std::shared_ptr<TVertex>;
-    using value_type = TValue; // edge value
+    using value_type = TValue; // edge value, might be weight
 
     using index_type = int64_t;
 

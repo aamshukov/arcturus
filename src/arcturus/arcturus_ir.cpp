@@ -31,6 +31,7 @@
 #include <core/visitable.hpp>
 #include <core/visitor.hpp>
 
+#include <core/list.hpp>
 #include <core/tree.hpp>
 #include <core/dag.hpp>
 
@@ -135,17 +136,6 @@ arcturus_ir::arcturus_ir()
 
 arcturus_ir::~arcturus_ir()
 {
-}
-
-void arcturus_ir::build_basic_blocks(const typename arcturus_ir::code_type& code,
-                                     typename arcturus_ir::basic_blocks_type& result)
-{
-    basic_blocks_type blocks;
-
-    code;//??
-
-
-    result.swap(blocks);
 }
 
 END_NAMESPACE

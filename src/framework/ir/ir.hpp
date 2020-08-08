@@ -29,8 +29,6 @@ class ir : private noncopyable
         using basic_block_type = std::shared_ptr<basic_block<token_type, traits_type>>;
         using basic_blocks_type = std::vector<basic_block_type>;
 
-    public:
-        virtual void build_basic_blocks(const code_type& code, basic_blocks_type& result) = 0;
 
 
 

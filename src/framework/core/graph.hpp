@@ -21,7 +21,6 @@ class graph : private noncopyable
 
     public:
         using vertex_type = std::shared_ptr<TVertex>;
-        using vertex_value_type = typename TVertex::value_type;
 
         struct vertex_key_comparator
         {
@@ -71,7 +70,6 @@ class graph : private noncopyable
         const vertices_type&            vertices() const;
         const edges_type&               edges() const;
 
-        std::pair<vertex_type, bool>    add_vertex(const vertex_value_type& value);
         std::pair<vertex_type, bool>    add_vertex(const vertex_type& vertex);
 
         std::pair<vertex_type, bool>    remove_vertex(const index_type& id);
@@ -114,19 +112,19 @@ inline const typename graph<TVertex, TEdge>::edges_type& graph<TVertex, TEdge>::
     return my_edges;
 }
 
-template <typename TVertex, typename TEdge>
-std::pair<typename graph<TVertex, TEdge>::vertex_type, bool>
-graph<TVertex, TEdge>::add_vertex(const typename graph<TVertex, TEdge>::vertex_value_type& value)
-{
-    auto new_vertex(factory::create<TVertex>());
-
-    (*new_vertex).id = my_vertices_counter.number();
-    (*new_vertex).value = value;
-
-    auto result = add_vertex(new_vertex);
-
-    return result;
-}
+//template <typename TVertex, typename TEdge>
+//std::pair<typename graph<TVertex, TEdge>::vertex_type, bool>
+//graph<TVertex, TEdge>::add_vertex(const typename graph<TVertex, TEdge>::vertex_value_type& value)
+//{
+//    auto new_vertex(factory::create<TVertex>());
+//
+//    (*new_vertex).id = my_vertices_counter.number();
+//    (*new_vertex).value = value;
+//
+//    auto result = add_vertex(new_vertex);
+//
+//    return result;
+//}
 
 template <typename TVertex, typename TEdge>
 std::pair<typename graph<TVertex, TEdge>::vertex_type, bool>

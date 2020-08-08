@@ -339,6 +339,12 @@
     <ClInclude Include="..\src\arcturus\arcturus_ir.hpp">
       <Filter>arcturus</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\arcturus\arcturus_control_flow_graph.hpp">
+      <Filter>arcturus</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\core\list.hpp">
+      <Filter>framework\core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\framework\core\logger.cpp">
@@ -490,6 +496,12 @@
     </ClCompile>
     <ClCompile Include="..\src\arcturus\arcturus_ir.cpp">
       <Filter>arcturus</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\arcturus\arcturus_control_flow_graph.cpp">
+      <Filter>arcturus</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\framework\core\list.cpp">
+      <Filter>framework\core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -12,7 +12,7 @@ USINGNAMESPACE(core)
 USINGNAMESPACE(frontend)
 
 template <typename Token, typename OpCodeTraits>
-class basic_block : private noncopyable
+class basic_block : public vertex
 {
     public:
         using token_type = Token;
@@ -26,7 +26,7 @@ class basic_block : private noncopyable
         using code_type = std::shared_ptr<code<token_type, traits_type>>;
 
         using basic_block_type = std::shared_ptr<basic_block<token_type, traits_type>>;
-        using basic_blocks_type = std::vector<basic_block_type>;
+        using basic_blocks_type = std::list<basic_block_type>;
 
     private:
         id_type                     my_id; // 0 - entry-block, 1 - exit-block
@@ -34,8 +34,8 @@ class basic_block : private noncopyable
 
         code_type                   my_code;
 
-        basic_blocks_type           my_successors;
-        basic_blocks_type           my_predecessors;
+        //basic_blocks_type           my_successors;
+        //basic_blocks_type           my_predecessors;
 
     public:
                                     basic_block(const id_type& id, const string_type& name);
@@ -50,11 +50,11 @@ class basic_block : private noncopyable
         const code_type&            code() const;
         code_type&                  code();
 
-        const basic_blocks_type&    successors() const;
-        basic_blocks_type&          successors();
+        //const basic_blocks_type&    successors() const;
+        //basic_blocks_type&          successors();
 
-        const basic_blocks_type&    predecessors() const;
-        basic_blocks_type&          predecessors();
+        //const basic_blocks_type&    predecessors() const;
+        //basic_blocks_type&          predecessors();
 };
 
 template <typename Token, typename OpCodeTraits>
@@ -93,29 +93,29 @@ inline typename basic_block<Token, OpCodeTraits>::code_type& basic_block<Token, 
     return my_code;
 }
 
-template <typename Token, typename OpCodeTraits>
-inline const typename basic_block<Token, OpCodeTraits>::basic_blocks_type& basic_block<Token, OpCodeTraits>::successors() const
-{
-    return my_successors;
-}
-
-template <typename Token, typename OpCodeTraits>
-inline typename basic_block<Token, OpCodeTraits>::basic_blocks_type& basic_block<Token, OpCodeTraits>::successors()
-{
-    return my_successors;
-}
-
-template <typename Token, typename OpCodeTraits>
-inline const typename basic_block<Token, OpCodeTraits>::basic_blocks_type& basic_block<Token, OpCodeTraits>::predecessors() const
-{
-    return my_predecessors;
-}
-
-template <typename Token, typename OpCodeTraits>
-inline typename basic_block<Token, OpCodeTraits>::basic_blocks_type& basic_block<Token, OpCodeTraits>::predecessors()
-{
-    return my_predecessors;
-}
+//template <typename Token, typename OpCodeTraits>
+//inline const typename basic_block<Token, OpCodeTraits>::basic_blocks_type& basic_block<Token, OpCodeTraits>::successors() const
+//{
+//    return my_successors;
+//}
+//
+//template <typename Token, typename OpCodeTraits>
+//inline typename basic_block<Token, OpCodeTraits>::basic_blocks_type& basic_block<Token, OpCodeTraits>::successors()
+//{
+//    return my_successors;
+//}
+//
+//template <typename Token, typename OpCodeTraits>
+//inline const typename basic_block<Token, OpCodeTraits>::basic_blocks_type& basic_block<Token, OpCodeTraits>::predecessors() const
+//{
+//    return my_predecessors;
+//}
+//
+//template <typename Token, typename OpCodeTraits>
+//inline typename basic_block<Token, OpCodeTraits>::basic_blocks_type& basic_block<Token, OpCodeTraits>::predecessors()
+//{
+//    return my_predecessors;
+//}
 
 END_NAMESPACE
 
