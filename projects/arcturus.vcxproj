@@ -126,6 +126,7 @@
     <ClCompile Include="..\src\arcturus\arcturus_parse_context.cpp" />
     <ClCompile Include="..\src\arcturus\arcturus_parse_tree.cpp" />
     <ClCompile Include="..\src\arcturus\arcturus_pass.cpp" />
+    <ClCompile Include="..\src\arcturus\arcturus_quadruple.cpp" />
     <ClCompile Include="..\src\arcturus\arcturus_scalar_type.cpp" />
     <ClCompile Include="..\src\arcturus\arcturus_struct_type.cpp" />
     <ClCompile Include="..\src\arcturus\arcturus_symbol.cpp" />

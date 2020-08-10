@@ -11,23 +11,13 @@ BEGIN_NAMESPACE(backend)
 USINGNAMESPACE(core)
 USINGNAMESPACE(frontend)
 
-template <typename Token, typename OpCodeTraits>
+template <typename Instruction>
 class code : private noncopyable
 {
     public:
-        using token_type = Token;
-        using traits_type = OpCodeTraits;
+        using instruction_type = std::shared_ptr<Instruction>;
 
-    public:
-        using id_type = std::size_t;
-
-        using quadruple_type = std::shared_ptr<quadruple<token_type, traits_type>>;
-        using quadruples_type = quadruple_type;
-
-        using instruction_type = quadruple_type;
-        using instructions_type = quadruples_type;
-
-    private:
+    private:                                 // head node ... node tail
         instruction_type            my_head; // head
         instruction_type            my_tail; // tail
 
@@ -35,29 +25,21 @@ class code : private noncopyable
                                     code();
                                    ~code();
 
-        const instructions_type&    instructions() const;
-        instructions_type&          instructions();
+        const instruction_type      instructions() const;
+        const instruction_type      end_of_instructions() const;
 
-        bool                        end_of_instructions() const;
-
-        void                        add_instruction(instruction_type instruction);
-        void                        remove_instruction(instruction_type instruction);
+        void                        add_instruction(instruction_type& instruction);
+        void                        remove_instruction(instruction_type& instruction);
 };
 
-template <typename Token, typename OpCodeTraits>
-inline const typename code<Token, OpCodeTraits>::instructions_type& code<Token, OpCodeTraits>::instructions() const
+template <typename Instruction>
+inline const typename code<Instruction>::instruction_type code<Instruction>::instructions() const
 {
-    return my_head;
+    return std::static_pointer_cast<Instruction>((*my_head).next());
 }
 
-template <typename Token, typename OpCodeTraits>
-inline typename code<Token, OpCodeTraits>::instructions_type& code<Token, OpCodeTraits>::instructions()
-{
-    return my_head;
-}
-
-template <typename Token, typename OpCodeTraits>
-inline bool code<Token, OpCodeTraits>::end_of_instructions() const
+template <typename Instruction>
+inline const typename code<Instruction>::instruction_type code<Instruction>::end_of_instructions() const
 {
     return my_tail;
 }

@@ -24,7 +24,7 @@ class ir : private noncopyable
         using quadruple_type = std::shared_ptr<quadruple<token_type, traits_type>>;
         using quadruples_type = std::list<quadruple_type>;
 
-        using code_type = std::shared_ptr<code<token_type, traits_type>>;
+        using code_type = int;//??std::shared_ptr<code<token_type, traits_type>>;
 
         using basic_block_type = std::shared_ptr<basic_block<token_type, traits_type>>;
         using basic_blocks_type = std::vector<basic_block_type>;

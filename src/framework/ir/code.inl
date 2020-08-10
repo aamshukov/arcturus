@@ -12,43 +12,37 @@ USINGNAMESPACE(core)
 USINGNAMESPACE(frontend)
 USINGNAMESPACE(symtable)
 
-template <typename Token, typename Traits>
-code<Token, Traits>::code()
+template <typename Instruction>
+code<Instruction>::code()
+                 : my_head(factory::create<Instruction>(Instruction::operation_code::sentinel)), //??
+                   my_tail(factory::create<Instruction>(Instruction::operation_code::sentinel))
+{
+    (*my_head).next() = my_tail;
+    (*my_tail).prev() = my_head;
+}
+
+template <typename Instruction>
+code<Instruction>::~code()
 {
 }
 
-template <typename Token, typename Traits>
-code<Token, Traits>::~code()
+template <typename Instruction>
+inline void code<Instruction>::add_instruction(typename code<Instruction>::instruction_type& instruction)
 {
+    // append to the end, before tail
+    (*(*my_tail).prev()).next() = instruction;
+
+    (*instruction).next() = my_tail;
+    (*instruction).prev() = (*my_tail).prev();
+
+    (*my_tail).prev() = instruction;
 }
 
-template <typename Token, typename Traits>
-inline void code<Token, Traits>::add_instruction(typename code<Token, Traits>::instruction_type instruction)
+template <typename Instruction>
+inline void code<Instruction>::remove_instruction(typename code<Instruction>::instruction_type& instruction)
 {
-    if(my_tail == nullptr)
-    {
-        list::link(my_tail, instruction);
-    }
-    else
-    {
-        my_head = my_tail = instruction;
-    }
-}
-
-template <typename Token, typename Traits>
-inline void code<Token, Traits>::remove_instruction(typename code<Token, Traits>::instruction_type instruction)
-{
-    list::unlink(instruction); // does not affect instruction
-
-    if(instruction == my_head)
-    {
-        my_head = (*instruction).next();
-    }
-
-    if(instruction == my_tail)
-    {
-        my_tail = (*instruction).prev();
-    }
+    (*(*instruction).prev()).next() = (*instruction).next();
+    (*(*instruction).next()).prev() = (*instruction).prev();
 }
 
 END_NAMESPACE

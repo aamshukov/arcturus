@@ -503,6 +503,9 @@
     <ClCompile Include="..\src\framework\core\list.cpp">
       <Filter>framework\core</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\arcturus\arcturus_quadruple.cpp">
+      <Filter>arcturus</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\src\framework\frontend\lexical_analyzer\lexical_analyzer.inl">

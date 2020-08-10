@@ -12,7 +12,6 @@ class list : private noncopyable
 {
     public:
         using list_type = std::shared_ptr<list>;
-        using lists_type = std::vector<list_type>;
 
         enum class flagss : uint64_t
         {
@@ -31,7 +30,7 @@ class list : private noncopyable
 
     public:
                             list();
-        virtual            ~list() = 0;
+        virtual            ~list();
 
         const list_type&    next() const;
         list_type&          next();
@@ -42,8 +41,8 @@ class list : private noncopyable
         const flags_type&   flags() const;
         flags_type&         flags();
 
-        static void         link(list_type list, list_type new_list);
-        static void         unlink(list_type list);
+        static void         link(list_type& node, list_type& new_node); // append
+        static void         unlink(list_type& node);
 };
 
 inline const typename list::list_type& list::next() const

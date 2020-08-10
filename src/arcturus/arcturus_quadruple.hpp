@@ -75,7 +75,9 @@ struct arcturus_operation_code_traits
         goto_statement      = 301,
 
         // SSA
-        phi                 = 500
+        phi                 = 500,
+
+        sentinel            = 1000
     )
 };
 
@@ -111,6 +113,16 @@ struct arcturus_quadruple : public quadruple<arcturus_token, arcturus_operation_
                        const result_type& result)
         : quadruple_base(operation, argument1, argument2, result)
     {
+    }
+
+    static string_type opcode_name(const typename arcturus_operation_code_traits::operation_code& opcode)
+    {
+        if(arcturus_operation_code_traits::mapping.empty())
+        {
+            arcturus_operation_code_traits::initialize();
+        }
+
+        return arcturus_operation_code_traits::name(opcode);
     }
 };
 

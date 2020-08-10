@@ -133,30 +133,84 @@ USINGNAMESPACE(backend)
 USINGNAMESPACE(orchestration)
 USINGNAMESPACE(arcturus)
 
-void build_code(arcturus_ir::code_type& code) //??
+using arcturus_instruction = arcturus_quadruple;
+using arcturus_code = std::shared_ptr<code<arcturus_instruction>>;
+
+void build_code(arcturus_code& code) //??
 {
+    for(auto it = (*code).instructions(); ;)
     {
-        std::shared_ptr<arcturus_quadruple> instruction(factory::create<arcturus_quadruple>());
-        (*code).add_instruction(instruction);
+        if(it == (*code).end_of_instructions())
+            break;
+        std::wcout << arcturus_quadruple::opcode_name((*it).operation) << std::endl;
+        it = std::static_pointer_cast<arcturus_quadruple>((*it).next());
     }
+    std::cout << std::endl;
+
+    auto instruction1(factory::create<arcturus_instruction>(arcturus_operation_code_traits::operation_code::add_integer));
+    (*code).add_instruction(instruction1);
+
+    auto instruction2(factory::create<arcturus_quadruple>(arcturus_operation_code_traits::operation_code::add_real));
+    (*code).add_instruction(instruction2);
+
+    auto instruction3(factory::create<arcturus_quadruple>(arcturus_operation_code_traits::operation_code::array_access));
+    (*code).add_instruction(instruction3);
+
+    for(auto it = (*code).instructions(); ;)
+    //for(auto it = std::static_pointer_cast<arcturus_quadruple>((*(*code).instructions()).next()); ;)
     {
-        auto instruction(factory::create<arcturus_quadruple>());
-        (*code).add_instruction(instruction);
+        if(it == (*code).end_of_instructions())
+            break;
+        std::wcout << arcturus_quadruple::opcode_name((*it).operation) << std::endl;
+        it = std::static_pointer_cast<arcturus_quadruple>((*it).next());
+    }
+    std::cout << std::endl;
+
+    (*code).remove_instruction(instruction1);
+
+    for(auto it = (*code).instructions(); ;)
+    {
+        if(it == (*code).end_of_instructions())
+            break;
+        std::wcout << arcturus_quadruple::opcode_name((*it).operation) << std::endl;
+        it = std::static_pointer_cast<arcturus_quadruple>((*it).next());
+    }
+    std::cout << std::endl;
+
+    (*code).remove_instruction(instruction2);
+
+    for(auto it = (*code).instructions(); ;)
+    {
+        if(it == (*code).end_of_instructions())
+            break;
+        std::wcout << arcturus_quadruple::opcode_name((*it).operation) << std::endl;
+        it = std::static_pointer_cast<arcturus_quadruple>((*it).next());
+    }
+    std::cout << std::endl;
+
+    (*code).remove_instruction(instruction3);
+
+    for(auto it = (*code).instructions(); ;)
+    {
+        if(it == (*code).end_of_instructions())
+            break;
+        std::wcout << arcturus_quadruple::opcode_name((*it).operation) << std::endl;
+        it = std::static_pointer_cast<arcturus_quadruple>((*it).next());
     }
 }
 
 int _tmain(int argc, _TCHAR *argv[])
 {
     arcturus_ir ir;
-
-    arcturus_ir::code_type code;
     arcturus_ir::basic_blocks_type basic_blocks;
+
+    auto code(factory::create<code<arcturus_instruction>>());
 
     build_code(code);
 
-    arcturus_control_flow_graph cfg;
+    //arcturus_control_flow_graph cfg;
 
-    cfg.build(code);
+    //cfg.build(code);
 
 
     auto st(factory::create<arcturus_scalar_type>(arcturus_type::kind_type::integer_type));
