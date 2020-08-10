@@ -12,14 +12,14 @@ USINGNAMESPACE(core)
 USINGNAMESPACE(frontend)
 USINGNAMESPACE(symtable)
 
-template <typename Token, typename Traits>
-basic_block<Token, Traits>::basic_block(const typename basic_block<Token, Traits>::id_type& id, const string_type& label)
-                          : my_id(id), my_label(label)
+template <typename Instruction>
+basic_block<Instruction>::basic_block(const typename basic_block<Instruction>::id_type& id, const string_type& label)
+                        : my_id(id), my_label(label)
 {
 }
 
-template <typename Token, typename Traits>
-basic_block<Token, Traits>::~basic_block()
+template <typename Instruction>
+basic_block<Instruction>::~basic_block()
 {
 }
 

@@ -201,9 +201,6 @@ void build_code(arcturus_code& code) //??
 
 int _tmain(int argc, _TCHAR *argv[])
 {
-    arcturus_ir ir;
-    arcturus_ir::basic_blocks_type basic_blocks;
-
     auto code(factory::create<code<arcturus_instruction>>());
 
     build_code(code);

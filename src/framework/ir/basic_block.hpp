@@ -11,22 +11,22 @@ BEGIN_NAMESPACE(backend)
 USINGNAMESPACE(core)
 USINGNAMESPACE(frontend)
 
-template <typename Token, typename OpCodeTraits>
+template <typename Instruction>
 class basic_block : public vertex
 {
     public:
-        using token_type = Token;
-        using traits_type = OpCodeTraits;
+        //using token_type = Token;
+        using instruction_type = Instruction;
 
         using id_type = std::size_t;
 
-        using quadruple_type = std::shared_ptr<quadruple<token_type, traits_type>>;
-        using quadruples_type = std::list<quadruple_type>;
+        //using quadruple_type = std::shared_ptr<quadruple<token_type, typename instruction_type::traits_type>>;
+        //using quadruples_type = std::list<quadruple_type>;
 
-        using code_type = int;//??std::shared_ptr<code<token_type, traits_type>>;
+        using code_type = code<instruction_type>;
 
-        using basic_block_type = std::shared_ptr<basic_block<token_type, traits_type>>;
-        using basic_blocks_type = std::list<basic_block_type>;
+        //using basic_block_type = std::shared_ptr<basic_block<token_type, typename instruction_type::traits_type>>;
+        //using basic_blocks_type = std::list<basic_block_type>;
 
     private:
         id_type                     my_id; // 0 - entry-block, 1 - exit-block
@@ -57,62 +57,62 @@ class basic_block : public vertex
         //basic_blocks_type&          predecessors();
 };
 
-template <typename Token, typename OpCodeTraits>
-inline const typename basic_block<Token, OpCodeTraits>::id_type& basic_block<Token, OpCodeTraits>::id() const
+template <typename Instruction>
+inline const typename basic_block<Instruction>::id_type& basic_block<Instruction>::id() const
 {
     return my_id;
 }
 
-template <typename Token, typename OpCodeTraits>
-inline typename basic_block<Token, OpCodeTraits>::id_type& basic_block<Token, OpCodeTraits>::id()
+template <typename Instruction>
+inline typename basic_block<Instruction>::id_type& basic_block<Instruction>::id()
 {
     return my_id;
 }
 
-template <typename Token, typename OpCodeTraits>
-inline const string_type& basic_block<Token, OpCodeTraits>::label() const
+template <typename Instruction>
+inline const string_type& basic_block<Instruction>::label() const
 {
     return my_label;
 }
 
-template <typename Token, typename OpCodeTraits>
-inline string_type& basic_block<Token, OpCodeTraits>::label()
+template <typename Instruction>
+inline string_type& basic_block<Instruction>::label()
 {
     return my_label;
 }
 
-template <typename Token, typename OpCodeTraits>
-inline const typename basic_block<Token, OpCodeTraits>::code_type& basic_block<Token, OpCodeTraits>::code() const
+template <typename Instruction>
+inline const typename basic_block<Instruction>::code_type& basic_block<Instruction>::code() const
 {
     return my_code;
 }
 
-template <typename Token, typename OpCodeTraits>
-inline typename basic_block<Token, OpCodeTraits>::code_type& basic_block<Token, OpCodeTraits>::code()
+template <typename Instruction>
+inline typename basic_block<Instruction>::code_type& basic_block<Instruction>::code()
 {
     return my_code;
 }
 
-//template <typename Token, typename OpCodeTraits>
-//inline const typename basic_block<Token, OpCodeTraits>::basic_blocks_type& basic_block<Token, OpCodeTraits>::successors() const
+//template <typename Instruction>
+//inline const typename basic_block<Instruction>::basic_blocks_type& basic_block<Instruction>::successors() const
 //{
 //    return my_successors;
 //}
 //
-//template <typename Token, typename OpCodeTraits>
-//inline typename basic_block<Token, OpCodeTraits>::basic_blocks_type& basic_block<Token, OpCodeTraits>::successors()
+//template <typename Instruction>
+//inline typename basic_block<Instruction>::basic_blocks_type& basic_block<Instruction>::successors()
 //{
 //    return my_successors;
 //}
 //
-//template <typename Token, typename OpCodeTraits>
-//inline const typename basic_block<Token, OpCodeTraits>::basic_blocks_type& basic_block<Token, OpCodeTraits>::predecessors() const
+//template <typename Instruction>
+//inline const typename basic_block<Instruction>::basic_blocks_type& basic_block<Instruction>::predecessors() const
 //{
 //    return my_predecessors;
 //}
 //
-//template <typename Token, typename OpCodeTraits>
-//inline typename basic_block<Token, OpCodeTraits>::basic_blocks_type& basic_block<Token, OpCodeTraits>::predecessors()
+//template <typename Instruction>
+//inline typename basic_block<Instruction>::basic_blocks_type& basic_block<Instruction>::predecessors()
 //{
 //    return my_predecessors;
 //}
