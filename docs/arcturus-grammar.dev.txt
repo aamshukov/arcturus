@@ -548,7 +548,7 @@ lazy-opt                            : 'lazy'                                    
                                     | e(psilon)
                                     ;
 
-function-returns-opt                : function-returns
+function-returns-opt                : 'returns' function-returns
                                     | e(psilon)
                                     ;
 

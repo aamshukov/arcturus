@@ -39,6 +39,8 @@
 
 #include <string>
 #include <charconv>
+#include <regex>
+
 #include <array>
 #include <valarray>
 #include <bitset>

@@ -209,7 +209,6 @@ int _tmain(int argc, _TCHAR *argv[])
 
     //cfg.build(code);
 
-
     auto st(factory::create<arcturus_scalar_type>(arcturus_type::kind_type::integer_type));
     auto at(factory::create<arcturus_array_type>(st));
 

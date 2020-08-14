@@ -96,6 +96,8 @@ class text : private noncopyable
         static bool         unicode_category_zs(datum_type codepoint);
 
     public:
+        #pragma warning(push) // due to C++20
+        #pragma warning(disable : 4499)
         template <typename T>
         static T parse(const datum_type* lexeme, uint32_t length, int base);
 
@@ -128,6 +130,7 @@ class text : private noncopyable
 
         template <>
         static double parse<double>(const datum_type* lexeme, uint32_t length, int);
+        #pragma warning(pop)
 };
 
 inline typename datum_type text::epsilon_codepoint()
