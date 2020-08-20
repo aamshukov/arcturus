@@ -2,8 +2,6 @@
 // UI Lab Inc. Arthur Amshukov .
 //..............................
 #include <core/pch.hpp>
-#include <core/noncopyable.hpp>
-
 #include <core/timer.hpp>
 
 BEGIN_NAMESPACE(core)

@@ -2,16 +2,10 @@
 // UI Lab Inc. Arthur Amshukov .
 //..............................
 #include <core/pch.hpp>
-#include <core/noncopyable.hpp>
-
-#include <core/domain_helper.hpp>
-
-#include <core/unicode.hpp>
-#include <core/text.hpp>
 
 #include <content/data_provider.hpp>
-
 #include <content/content.hpp>
+
 #include <frontend/lexical_analyzer/lexical_content.hpp>
 
 BEGIN_NAMESPACE(frontend)

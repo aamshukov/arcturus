@@ -2,18 +2,6 @@
 // UI Lab Inc. Arthur Amshukov .
 //..............................
 #include <core/pch.hpp>
-#include <core/noncopyable.hpp>
-
-#include <core/domain_helper.hpp>
-
-#include <core/factory.hpp>
-#include <core/singleton.hpp>
-
-#include <core/status.hpp>
-#include <core/diagnostics.hpp>
-#include <core/statistics.hpp>
-
-#include <core/logger.hpp>
 
 BEGIN_NAMESPACE(core)
 
