@@ -44,14 +44,14 @@ class symbol
             remove
         };
 
-        enum class flagss : uint64_t
+        enum class flag : uint64_t
         {
             clear = 0x0000
         };
 
-        DECLARE_ENUM_OPERATORS(flagss)
+        DECLARE_ENUM_OPERATORS(flag)
 
-        using flags_type = flagss;
+        using flags_type = flag;
 
         static symbol_type              epsilon;
         static symbol_type              eof;

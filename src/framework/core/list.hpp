@@ -13,14 +13,14 @@ class list : private noncopyable
     public:
         using list_type = std::shared_ptr<list>;
 
-        enum class flagss : uint64_t
+        enum class flag : uint64_t
         {
             clear = 0x0000
         };
 
-        DECLARE_ENUM_OPERATORS(flagss)
+        DECLARE_ENUM_OPERATORS(flag)
 
-        using flags_type = flagss;
+        using flags_type = flag;
 
     protected:
         list_type           my_next; // the next node in the double list

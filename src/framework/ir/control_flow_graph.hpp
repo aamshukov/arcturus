@@ -31,7 +31,7 @@ class control_flow_graph : public graph<std::shared_ptr<basic_block<Instruction>
 
     public:
 
-        virtual void build(const code_type& code) = 0;
+        virtual void build(code_type& code) = 0;
 };
 
 END_NAMESPACE

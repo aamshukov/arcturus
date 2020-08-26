@@ -1,4 +1,4 @@
-//..............................
+﻿//..............................
 // UI Lab Inc. Arthur Amshukov .
 //..............................
 #include <core/pch.hpp>
@@ -105,9 +105,43 @@ USINGNAMESPACE(frontend)
 USINGNAMESPACE(symtable)
 USINGNAMESPACE(backend)
 
-void arcturus_control_flow_graph::build(const typename arcturus_control_flow_graph::code_type& code)
+void arcturus_control_flow_graph::build(typename arcturus_control_flow_graph::code_type& code)
 {
-    code;//??
+    // phase I (collect leaders)
+    //  Первая команда (instruction) промежуточного кода является лидером.
+    //  Любая команда (instruction), являющаяся целевой для условного или безусловного перехода, является лидером.
+    //  Любая команда (instruction), следующая непосредственно за условным или безусловным переходом or 'return', является лидером.
+    auto instruction = code.instructions();
+
+    if(instruction != code.end_of_instructions())
+    {
+        // Первая команда (instruction) промежуточного кода является лидером.
+        (*instruction).flags |= arcturus_quadruple::flags_type::leader;
+
+        instruction = std::static_pointer_cast<arcturus_quadruple>((*instruction).next());
+
+        for(; instruction != code.end_of_instructions();)
+        {
+            //std::wcout << arcturus_quadruple::opcode_name((*it).operation) << std::endl;
+
+            //if((*it).operation == )
+            //{
+                // Любая команда, являющаяся целевой для условного или безусловного перехода, является лидером.
+                    //leaders.emplace_back(instruction);
+
+                // Любая команда, следующая непосредственно за условным или безусловным переходом or 'return', является лидером.
+            //}
+
+            instruction = std::static_pointer_cast<arcturus_quadruple>((*instruction).next());
+        }
+    }
+
+    // phase II (build basic blocks)
+    //??code.remove_instruction(instruction);
+        //if(((*code.instructions()).flags & arcturus_quadruple::flags_type::leader) == arcturus_quadruple::flags_type::leader)
+
+
+    // phase III (buld CFG)
 }
 
 END_NAMESPACE

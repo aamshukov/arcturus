@@ -15,14 +15,14 @@ class rule
         using symbol_type = symbol::symbol_type;
         using symbols_type = symbol::symbols_type;
 
-        enum class flagss : uint64_t
+        enum class flag : uint64_t
         {
             clear = 0x00
         };
 
-        DECLARE_ENUM_OPERATORS(flagss)
+        DECLARE_ENUM_OPERATORS(flag)
 
-        using flags_type = flagss;
+        using flags_type = flag;
 
         using ast_operators_type = std::map<std::size_t, tree::flags_type>;
 

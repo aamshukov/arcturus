@@ -27,7 +27,7 @@ class arcturus_control_flow_graph : public control_flow_graph<arcturus_quadruple
         //using basic_blocks_type = typename control_flow_graph<arcturus_quadruple>::basic_blocks_type;
 
     public:
-        void build(const code_type& code) override;
+        void build(code_type& code) override;
 };
 
 END_NAMESPACE

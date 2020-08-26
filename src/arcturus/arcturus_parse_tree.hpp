@@ -22,6 +22,7 @@ struct arcturus_tree_traits
 
         identifier = 100,
 
+        function = 500, //?? might hold CFG with ready to generate code
 
         // the following one (1) entry MUST be the last entry in the enum
         size

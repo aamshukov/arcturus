@@ -481,7 +481,7 @@ struct-extension-opt                : struct-extension
                                     | e(psilon)
                                     ;
 
-struct-extension                    : 'extends' base-structs
+struct-extension                    : 'extends' base-structs                                                            --- only one name can be declared in the structs' hierarchy
                                     ;
 
 base-structs                        : base-struct

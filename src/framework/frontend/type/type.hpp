@@ -15,14 +15,14 @@ class type
         using index_type = int32_t;
         using size_type = std::size_t;
 
-        enum class flagss : uint64_t
+        enum class flag : uint64_t
         {
             clear = 0x00
         };
 
-        DECLARE_ENUM_OPERATORS(flagss)
+        DECLARE_ENUM_OPERATORS(flag)
 
-        using flags_type = flagss;
+        using flags_type = flag;
 
     protected:
         string_type     my_name;

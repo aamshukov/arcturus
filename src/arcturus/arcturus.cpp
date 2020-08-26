@@ -122,13 +122,13 @@ void build_code(arcturus_code& code) //??
     }
     std::cout << std::endl;
 
-    auto instruction1(factory::create<arcturus_instruction>(arcturus_operation_code_traits::operation_code::add_integer));
+    auto instruction1(factory::create<arcturus_instruction>(arcturus_operation_code_traits::operation_code::unary_op_plus_hir));
     (*code).add_instruction(instruction1);
 
-    auto instruction2(factory::create<arcturus_quadruple>(arcturus_operation_code_traits::operation_code::add_real));
+    auto instruction2(factory::create<arcturus_quadruple>(arcturus_operation_code_traits::operation_code::binary_op_add_hir));
     (*code).add_instruction(instruction2);
 
-    auto instruction3(factory::create<arcturus_quadruple>(arcturus_operation_code_traits::operation_code::array_access));
+    auto instruction3(factory::create<arcturus_quadruple>(arcturus_operation_code_traits::operation_code::binary_op_divide_hir));
     (*code).add_instruction(instruction3);
 
     for(auto it = (*code).instructions(); ;)

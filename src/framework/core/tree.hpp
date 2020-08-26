@@ -14,7 +14,7 @@ class tree : private noncopyable
         using tree_type = std::shared_ptr<tree>;
         using trees_type = std::vector<tree_type>;
 
-        enum class flagss : uint64_t
+        enum class flag : uint64_t
         {
             clear       = 0x0000,
             deleted     = 0x0001,
@@ -22,9 +22,9 @@ class tree : private noncopyable
             not_in_ast  = 0x0004  // aka ANTLR, expr : mexpr (’+’^ mexpr)* EOF! ;  /
         };
 
-        DECLARE_ENUM_OPERATORS(flagss)
+        DECLARE_ENUM_OPERATORS(flag)
 
-        using flags_type = flagss;
+        using flags_type = flag;
 
     protected:
         tree_type           my_papa; // parent

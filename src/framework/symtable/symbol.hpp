@@ -39,7 +39,7 @@ class symbol : private noncopyable
 
         using type_type = std::shared_ptr<type>;
 
-        enum class flagss : uint64_t
+        enum class flag : uint64_t
         {
             clear       = 0x0000,
             reg         = 0x0001, // if the symbol's value is in a register
@@ -47,9 +47,9 @@ class symbol : private noncopyable
             reachable   = 0x0004  // mark variable as reachable
         };
 
-        DECLARE_ENUM_OPERATORS(flagss)
+        DECLARE_ENUM_OPERATORS(flag)
 
-        using flags_type = flagss;
+        using flags_type = flag;
 
         using metadata_type = std::unordered_map<string_type, value_type>;
 
