@@ -15,23 +15,19 @@ template <typename Instruction>
 class control_flow_graph : public graph<std::shared_ptr<basic_block<Instruction>>, edge<std::shared_ptr<basic_block<Instruction>>>>
 {
     public:
-        //using token_type = Token;
-        //using traits_type = OpCodeTraits;
-
-        //using id_type = std::size_t;
-
-        //using quadruple_type = std::shared_ptr<quadruple<token_type, traits_type>>;
-        //using quadruples_type = std::list<quadruple_type>;
+        using id_type = std::size_t;
 
         using instruction_type = Instruction;
         using code_type = code<instruction_type>;
 
-        //using basic_block_type = std::shared_ptr<basic_block<token_type, traits_type>>;
+        using basic_block_type = std::shared_ptr<basic_block<instruction_type>>;
         //using basic_blocks_type = std::list<basic_block_type>;
 
     public:
 
-        virtual void build(code_type& code) = 0;
+        virtual void build_hir(code_type& code) = 0;
+        virtual void build_mir(code_type& code) = 0;
+        virtual void build_lir(code_type& code) = 0;
 };
 
 END_NAMESPACE

@@ -105,43 +105,104 @@ USINGNAMESPACE(frontend)
 USINGNAMESPACE(symtable)
 USINGNAMESPACE(backend)
 
-void arcturus_control_flow_graph::build(typename arcturus_control_flow_graph::code_type& code)
+void arcturus_control_flow_graph::build_hir(typename arcturus_control_flow_graph::code_type& code)
 {
-    // phase I (collect leaders)
-    //  Первая команда (instruction) промежуточного кода является лидером.
-    //  Любая команда (instruction), являющаяся целевой для условного или безусловного перехода, является лидером.
-    //  Любая команда (instruction), следующая непосредственно за условным или безусловным переходом or 'return', является лидером.
     auto instruction = code.instructions();
 
     if(instruction != code.end_of_instructions())
     {
-        // Первая команда (instruction) промежуточного кода является лидером.
+        // phase I (collect leaders)
+        //  Первая команда (instruction) промежуточного кода является лидером.
+        //  Любая команда (instruction), являющаяся целевой для условного или безусловного перехода, является лидером.
+        //  Любая команда (instruction), следующая непосредственно за условным или безусловным переходом or 'return', является лидером.
         (*instruction).flags |= arcturus_quadruple::flags_type::leader;
 
         instruction = std::static_pointer_cast<arcturus_quadruple>((*instruction).next());
 
         for(; instruction != code.end_of_instructions();)
         {
-            //std::wcout << arcturus_quadruple::opcode_name((*it).operation) << std::endl;
+            if((*instruction).operation == arcturus_operation_code_traits::operation_code::if_true_hir ||
+                (*instruction).operation == arcturus_operation_code_traits::operation_code::if_false_hir ||
+                (*instruction).operation == arcturus_operation_code_traits::operation_code::goto_hir)
+            {
+                // Любая команда (instruction), являющаяся целевой для условного или безусловного перехода, является лидером.
+                (*std::get<1>((*instruction).result)).flags |= arcturus_quadruple::flags_type::leader;
 
-            //if((*it).operation == )
-            //{
-                // Любая команда, являющаяся целевой для условного или безусловного перехода, является лидером.
-                    //leaders.emplace_back(instruction);
+                // Любая команда (instruction), следующая непосредственно за условным или безусловным переходом ... , является лидером.
+                instruction = std::static_pointer_cast<arcturus_quadruple>((*instruction).next());
 
-                // Любая команда, следующая непосредственно за условным или безусловным переходом or 'return', является лидером.
-            //}
+                if(instruction != code.end_of_instructions())
+                {
+                    (*instruction).flags |= arcturus_quadruple::flags_type::leader;
+                }
+            }
+            else if((*instruction).operation == arcturus_operation_code_traits::operation_code::function_return_hir)
+            {
+                // Любая команда (instruction), следующая непосредственно за ... or 'return', является лидером.
+                instruction = std::static_pointer_cast<arcturus_quadruple>((*instruction).next());
+
+                if(instruction != code.end_of_instructions())
+                {
+                    (*instruction).flags |= arcturus_quadruple::flags_type::leader;
+                }
+            }
+            else
+            {
+                instruction = std::static_pointer_cast<arcturus_quadruple>((*instruction).next());
+            }
+        }
+
+        // phase II (build basic blocks)
+        //  Базовый блок каждого лидера определяется как содержащий самого лидера и все команды до (но не включая) следующего лидера или
+        //  до конца промежуточной программы.
+        id_type id = 0;
+        const char_type* label(L"BB-%ld");
+
+        instruction = code.instructions(); // restart
+
+        auto block(factory::create<basic_block<instruction_type>>(id, format(label, id))); // the first block because of Первая команда (instruction) ...
+
+        auto current_block(block);
+
+        do
+        {
+            (*current_block).code().add_instruction(instruction);
 
             instruction = std::static_pointer_cast<arcturus_quadruple>((*instruction).next());
+
+            if(((*instruction).flags & arcturus_quadruple::flags_type::leader) == arcturus_quadruple::flags_type::leader)
+            {
+                // link the current block
+
+                // create a new block
+                id++;
+                current_block = factory::create<basic_block<instruction_type>>(id, format(label, id));
+            }
         }
+        while(instruction != code.end_of_instructions());
+
+
+
+
+                //std::wcout << arcturus_quadruple::opcode_name((*it).operation) << std::endl;
+        //??code.remove_instruction(instruction);
+            //if(((*code.instructions()).flags & arcturus_quadruple::flags_type::leader) == arcturus_quadruple::flags_type::leader)
+
+
+        // phase III (build CFG)
     }
+}
 
-    // phase II (build basic blocks)
-    //??code.remove_instruction(instruction);
-        //if(((*code.instructions()).flags & arcturus_quadruple::flags_type::leader) == arcturus_quadruple::flags_type::leader)
+void arcturus_control_flow_graph::build_mir(typename arcturus_control_flow_graph::code_type& code)
+{
+    //??
+    code;
+}
 
-
-    // phase III (buld CFG)
+void arcturus_control_flow_graph::build_lir(typename arcturus_control_flow_graph::code_type& code)
+{
+    //??
+    code;
 }
 
 END_NAMESPACE
