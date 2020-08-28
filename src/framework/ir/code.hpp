@@ -26,7 +26,9 @@ class code : private noncopyable
                                    ~code();
 
         const instruction_type      instructions() const;
-        const instruction_type      end_of_instructions() const;
+
+        const instruction_type      start_instruction() const;
+        const instruction_type      end_instruction() const;
 
         void                        add_instruction(instruction_type& instruction);
         void                        remove_instruction(instruction_type& instruction);
@@ -39,7 +41,13 @@ inline const typename code<Instruction>::instruction_type code<Instruction>::ins
 }
 
 template <typename Instruction>
-inline const typename code<Instruction>::instruction_type code<Instruction>::end_of_instructions() const
+inline const typename code<Instruction>::instruction_type code<Instruction>::start_instruction() const
+{
+    return my_head;
+}
+
+template <typename Instruction>
+inline const typename code<Instruction>::instruction_type code<Instruction>::end_instruction() const
 {
     return my_tail;
 }

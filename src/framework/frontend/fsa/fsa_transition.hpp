@@ -24,13 +24,12 @@ class fsa_transition
         predicate_type                  my_predicate;
         datum_type                      my_switch_predicate; // short text predicate, indicates if predicate has simple form, and can be used in switched code generation
 
-        int16_t                         my_rank;            // rank is a special attribute of a transition and it is used only during generation
-                                                            // of code when "goto"-driven lexical analyzer is produced, allowing to shift
-                                                            // more common predicates down in "goto" statements, default value is 0 and
-                                                            // a rank with bigger value is more advanced in a "goto" statement,
-                                                            // for example recognition of identifiers uses more general predicate
-                                                            // is_identifier_part() than recognition of a keyword "while"
-
+        int16_t                         my_rank; // rank is a special attribute of a transition and it is used only during generation
+                                                 // of code when "goto"-driven lexical analyzer is produced, allowing to shift
+                                                 // more common predicates down in "goto" statements, default value is 0 and
+                                                 // a rank with bigger value is more advanced in a "goto" statement,
+                                                 // for example recognition of identifiers uses more general predicate
+                                                 // is_identifier_part() than recognition of a keyword "while"
     public:
                                         fsa_transition();
                                         fsa_transition(uint32_t start_state, uint32_t end_state, const predicate_type& predicate);

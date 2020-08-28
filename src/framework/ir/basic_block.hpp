@@ -18,7 +18,7 @@ class basic_block : public vertex
         //using token_type = Token;
         using instruction_type = Instruction;
 
-        using id_type = std::size_t;
+        using id_type = typename vertex::id_type;
 
         //using quadruple_type = std::shared_ptr<quadruple<token_type, typename instruction_type::traits_type>>;
         //using quadruples_type = std::list<quadruple_type>;
@@ -29,9 +29,7 @@ class basic_block : public vertex
         //using basic_blocks_type = std::list<basic_block_type>;
 
     private:
-        id_type                     my_id; // 0 - entry-block, 1 - exit-block
         string_type                 my_label;
-
         code_type                   my_code;
 
         //basic_blocks_type           my_successors;
@@ -40,9 +38,6 @@ class basic_block : public vertex
     public:
                                     basic_block(const id_type& id, const string_type& name);
                                    ~basic_block();
-
-        const id_type&              id() const;
-        id_type&                    id();
 
         const string_type&          label() const;
         string_type&                label();
@@ -56,18 +51,6 @@ class basic_block : public vertex
         //const basic_blocks_type&    predecessors() const;
         //basic_blocks_type&          predecessors();
 };
-
-template <typename Instruction>
-inline const typename basic_block<Instruction>::id_type& basic_block<Instruction>::id() const
-{
-    return my_id;
-}
-
-template <typename Instruction>
-inline typename basic_block<Instruction>::id_type& basic_block<Instruction>::id()
-{
-    return my_id;
-}
 
 template <typename Instruction>
 inline const string_type& basic_block<Instruction>::label() const

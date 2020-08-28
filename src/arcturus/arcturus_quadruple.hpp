@@ -128,35 +128,41 @@ struct arcturus_operation_code_traits
 struct arcturus_quadruple : public quadruple<arcturus_token, arcturus_operation_code_traits>
 {
     using quadruple_base = quadruple<arcturus_token, arcturus_operation_code_traits>;
+    using id_type = typename quadruple_base::id_type;
     using flags_type = typename quadruple_base::flags_type;
 
-    arcturus_quadruple()
+    arcturus_quadruple(const id_type& id)
+        : quadruple_base(id)
     {
     }
 
-    arcturus_quadruple(const operation_code& operation)
-        : quadruple_base(operation)
+    arcturus_quadruple(const id_type& id,
+                       const operation_code& operation)
+        : quadruple_base(id, operation)
     {
     }
 
-    arcturus_quadruple(const operation_code& operation,
+    arcturus_quadruple(const id_type& id,
+                       const operation_code& operation,
                        const result_type& result)
-        : quadruple_base(operation, result)
+        : quadruple_base(id, operation, result)
     {
     }
 
-    arcturus_quadruple(const operation_code& operation,
+    arcturus_quadruple(const id_type& id,
+                       const operation_code& operation,
                        const symbol_type& argument1,
                        const result_type& result)
-        : quadruple_base(operation, argument1, result)
+        : quadruple_base(id, operation, argument1, result)
     {
     }
 
-    arcturus_quadruple(const operation_code& operation,
+    arcturus_quadruple(const id_type& id,
+                       const operation_code& operation,
                        const symbol_type& argument1,
                        const symbol_type& argument2,
                        const result_type& result)
-        : quadruple_base(operation, argument1, argument2, result)
+        : quadruple_base(id, operation, argument1, argument2, result)
     {
     }
 

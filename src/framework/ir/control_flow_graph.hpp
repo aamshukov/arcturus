@@ -12,7 +12,7 @@ USINGNAMESPACE(core)
 USINGNAMESPACE(frontend)
 
 template <typename Instruction>
-class control_flow_graph : public graph<std::shared_ptr<basic_block<Instruction>>, edge<std::shared_ptr<basic_block<Instruction>>>>
+class control_flow_graph : public graph<basic_block<Instruction>, edge<basic_block<Instruction>>>
 {
     public:
         using id_type = std::size_t;

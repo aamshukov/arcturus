@@ -8,16 +8,44 @@
 
 BEGIN_NAMESPACE(core)
 
-struct vertex : public visitable
+class vertex : public visitable
 {
-    using vertices_type = std::list<std::weak_ptr<vertex>>;
-    using index_type = int64_t;
+    public:
+        using vertices_type = std::list<std::weak_ptr<vertex>>;
+        using id_type = std::size_t;
 
-    index_type id = 0;
-    vertices_type adjacencies;
+    private:
+        id_type         my_id = 0;
+        vertices_type   my_adjacencies;
 
-    ACCEPT_METHOD;
+    public:
+                        vertex(const id_type& id);
+        virtual        ~vertex();
+
+        const id_type&  id() const;
+        id_type&        id();
+
+        ACCEPT_METHOD;
 };
+
+inline vertex::vertex(const typename vertex::id_type& id)
+             : my_id(id)
+{
+}
+
+inline vertex::~vertex()
+{
+}
+
+inline const typename vertex::id_type& vertex::id() const
+{
+    return my_id;
+}
+
+inline typename vertex::id_type& vertex::id()
+{
+    return my_id;
+}
 
 END_NAMESPACE
 

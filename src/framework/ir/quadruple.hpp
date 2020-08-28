@@ -77,7 +77,7 @@ struct quadruple : public list
 
     using quadruple_type = std::shared_ptr<quadruple<token_type, traits_type>>;
 
-    using index_type = std::size_t;
+    using id_type = std::size_t;
 
     using result_type = std::variant<symbol_type,       // temporary variable introduced during evaluation
                                      quadruple_type>;   // target label used with 'goto' or branch/jump op code
@@ -91,8 +91,8 @@ struct quadruple : public list
 
     using flags_type = flag;
 
-    index_type      index;
-    flags_type      flags;
+    id_type         id;
+    flags_type      flags = flags_type::clear;
 
     operation_code  operation;
 
@@ -101,33 +101,37 @@ struct quadruple : public list
 
     result_type     result;
 
-    quadruple()
+    quadruple(const id_type& i)
+        : id(i)
     {
     }
 
-    quadruple(const operation_code& operation)
-        : operation(operation)
+    quadruple(const id_type& i, const operation_code& operation)
+        : id(i), operation(operation)
     {
     }
 
-    quadruple(const operation_code& operation,
+    quadruple(const id_type& i,
+              const operation_code& operation,
               const result_type& result)
-        : operation(operation), result(result)
+        : id(i), operation(operation), result(result)
     {
     }
 
-    quadruple(const operation_code& operation,
+    quadruple(const id_type& i,
+              const operation_code& operation,
               const symbol_type& argument1,
               const result_type& result)
-        : operation(operation), argument1(argument1), result(result)
+        : id(i), operation(operation), argument1(argument1), result(result)
     {
     }
 
-    quadruple(const operation_code& operation,
+    quadruple(const id_type& i,
+              const operation_code& operation,
               const symbol_type& argument1,
               const symbol_type& argument2,
               const result_type& result)
-        : operation(operation), argument1(argument1), argument2(argument2), result(result)
+        : id(i), operation(operation), argument1(argument1), argument2(argument2), result(result)
     {
     }
 
@@ -135,7 +139,7 @@ struct quadruple : public list
     {
         if(this != &other)
         {
-            index     = other.index;
+            id        = other.id;
             flags     = other.flags;
             operation = other.operation;
             argument1 = other.argument1;
@@ -148,7 +152,7 @@ struct quadruple : public list
     {
         if(this != &other)
         {
-            index     = other.index;
+            id        = other.id;
             flags     = other.flags;
             operation = other.operation;
             argument1 = other.argument1;
@@ -161,7 +165,7 @@ struct quadruple : public list
     {
         if(this != &other)
         {
-            index     = other.index;
+            id        = other.id;
             flags     = other.flags;
             operation = other.operation;
             argument1 = other.argument1;
@@ -176,7 +180,7 @@ struct quadruple : public list
     {
         if(this != &other)
         {
-            index     = other.index;
+            id        = other.id;
             flags     = other.flags;
             operation = other.operation;
             argument1 = other.argument1;

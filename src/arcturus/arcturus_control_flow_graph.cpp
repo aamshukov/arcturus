@@ -109,7 +109,7 @@ void arcturus_control_flow_graph::build_hir(typename arcturus_control_flow_graph
 {
     auto instruction = code.instructions();
 
-    if(instruction != code.end_of_instructions())
+    if(instruction != code.end_instruction())
     {
         // phase I (collect leaders)
         //  Первая команда (instruction) промежуточного кода является лидером.
@@ -119,7 +119,7 @@ void arcturus_control_flow_graph::build_hir(typename arcturus_control_flow_graph
 
         instruction = std::static_pointer_cast<arcturus_quadruple>((*instruction).next());
 
-        for(; instruction != code.end_of_instructions();)
+        for(; instruction != code.end_instruction();)
         {
             if((*instruction).operation == arcturus_operation_code_traits::operation_code::if_true_hir ||
                 (*instruction).operation == arcturus_operation_code_traits::operation_code::if_false_hir ||
@@ -131,7 +131,7 @@ void arcturus_control_flow_graph::build_hir(typename arcturus_control_flow_graph
                 // Любая команда (instruction), следующая непосредственно за условным или безусловным переходом ... , является лидером.
                 instruction = std::static_pointer_cast<arcturus_quadruple>((*instruction).next());
 
-                if(instruction != code.end_of_instructions())
+                if(instruction != code.end_instruction())
                 {
                     (*instruction).flags |= arcturus_quadruple::flags_type::leader;
                 }
@@ -141,7 +141,7 @@ void arcturus_control_flow_graph::build_hir(typename arcturus_control_flow_graph
                 // Любая команда (instruction), следующая непосредственно за ... or 'return', является лидером.
                 instruction = std::static_pointer_cast<arcturus_quadruple>((*instruction).next());
 
-                if(instruction != code.end_of_instructions())
+                if(instruction != code.end_instruction())
                 {
                     (*instruction).flags |= arcturus_quadruple::flags_type::leader;
                 }
@@ -156,40 +156,85 @@ void arcturus_control_flow_graph::build_hir(typename arcturus_control_flow_graph
         //  Базовый блок каждого лидера определяется как содержащий самого лидера и все команды до (но не включая) следующего лидера или
         //  до конца промежуточной программы.
         id_type id = 0;
+
         const char_type* label(L"BB-%ld");
 
         instruction = code.instructions(); // restart
 
-        auto block(factory::create<basic_block<instruction_type>>(id, format(label, id))); // the first block because of Первая команда (instruction) ...
+        using block_type = std::shared_ptr<basic_block<instruction_type>>;
+        using blocks_type = std::vector<block_type>;
 
-        auto current_block(block);
+        blocks_type blocks;
+
+        // entry point
+        auto entry_block(factory::create<basic_block<instruction_type>>(id, format(label, id))); // id = 0
+
+        blocks.emplace_back(entry_block);
+
+        id++;
+
+        auto current_block(factory::create<basic_block<instruction_type>>(id, format(label, id))); // the first block because of Первая команда (instruction) ...
+
+        blocks.emplace_back(current_block);
+
+        std::unordered_map<id_type, block_type> inst_block_map; // maps instruction to block
 
         do
         {
             (*current_block).code().add_instruction(instruction);
 
+            inst_block_map.insert({ (*instruction).id, current_block });
+
             instruction = std::static_pointer_cast<arcturus_quadruple>((*instruction).next());
 
             if(((*instruction).flags & arcturus_quadruple::flags_type::leader) == arcturus_quadruple::flags_type::leader)
             {
-                // link the current block
-
-                // create a new block
                 id++;
+
                 current_block = factory::create<basic_block<instruction_type>>(id, format(label, id));
+
+                blocks.emplace_back(current_block);
             }
         }
-        while(instruction != code.end_of_instructions());
+        while(instruction != code.end_instruction());
 
+        // exit point
+        id++;
 
+        auto exit_block(factory::create<basic_block<instruction_type>>(id, format(label, id)));
 
-
-                //std::wcout << arcturus_quadruple::opcode_name((*it).operation) << std::endl;
-        //??code.remove_instruction(instruction);
-            //if(((*code.instructions()).flags & arcturus_quadruple::flags_type::leader) == arcturus_quadruple::flags_type::leader)
-
+        blocks.emplace_back(exit_block);
 
         // phase III (build CFG)
+        for(std::size_t i = 1; i < blocks.size() - 1; i++) // 1 and -1 because the first and the last blocks are virtual entry/exit points
+        {
+            auto block(blocks[i]);
+
+            instruction = std::static_pointer_cast<arcturus_quadruple>((*(*block).code().instructions()).prev()); // get the last instruction in a block
+
+            if(instruction != block->code().start_instruction())
+            {
+                block_type target_block;
+
+                if((*instruction).operation == arcturus_operation_code_traits::operation_code::if_true_hir ||
+                    (*instruction).operation == arcturus_operation_code_traits::operation_code::if_false_hir ||
+                    (*instruction).operation == arcturus_operation_code_traits::operation_code::goto_hir)
+                {
+                    auto target_instruction(std::get<1>((*instruction).result));
+                    target_block = inst_block_map[(*target_instruction).id];
+                }
+                else
+                {
+                    target_block = blocks[i + 1];
+                }
+
+                // link block -> target_block
+                add_vertex(block);
+                add_vertex(target_block);
+
+                add_edge(block, target_block, 0.0);
+            }
+        }
     }
 }
 

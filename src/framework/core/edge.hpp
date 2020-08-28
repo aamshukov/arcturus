@@ -9,18 +9,82 @@
 BEGIN_NAMESPACE(core)
 
 template <typename TVertex, typename TValue = double, std::size_t N = 2>
-struct edge : private noncopyable
+class edge : private noncopyable
 {
-    using vertex_type = std::shared_ptr<TVertex>;
-    using value_type = TValue; // edge value, might be weight
+    public:
+        using vertex_type = std::shared_ptr<TVertex>;
+        using vertices_type = vertex_type[N]; // usually has two vertices and more vertices in hyper-graphs
 
-    using index_type = int64_t;
+        using value_type = TValue; // edge value, might be weight
 
-    index_type id = 0;
-    value_type value = value_type();
+        using id_type = std::size_t;
 
-    vertex_type endpoints[N]; // usually has two vertices and more vertices in hyper-graphs
+    private:
+        id_type                 my_id = 0;
+        value_type              my_value = value_type();
+
+        vertices_type           my_endpoints;
+
+    public:
+                                edge(const id_type& id);
+        virtual                ~edge();
+
+        const id_type&          id() const;
+        id_type&                id();
+
+        const value_type&       value() const;
+        value_type&             value();
+
+        const vertices_type&    endpoints() const;
+        vertices_type&          endpoints();
 };
+
+template <typename TVertex, typename TValue, std::size_t N>
+inline edge<TVertex, TValue, N>::edge(const typename edge::id_type& id)
+                               : my_id(id)
+{
+}
+
+template <typename TVertex, typename TValue, std::size_t N>
+inline edge<TVertex, TValue, N>::~edge()
+{
+}
+
+template <typename TVertex, typename TValue, std::size_t N>
+inline const typename edge<TVertex, TValue, N>::id_type& edge<TVertex, TValue, N>::id() const
+{
+    return my_id;
+}
+
+template <typename TVertex, typename TValue, std::size_t N>
+inline typename edge<TVertex, TValue, N>::id_type& edge<TVertex, TValue, N>::id()
+{
+    return my_id;
+}
+
+template <typename TVertex, typename TValue, std::size_t N>
+const typename edge<TVertex, TValue, N>::value_type& edge<TVertex, TValue, N>::value() const
+{
+    return my_value;
+}
+
+template <typename TVertex, typename TValue, std::size_t N>
+typename edge<TVertex, TValue, N>::value_type& edge<TVertex, TValue, N>::value()
+{
+    return my_value;
+}
+
+template <typename TVertex, typename TValue, std::size_t N>
+const typename edge<TVertex, TValue, N>::vertices_type& edge<TVertex, TValue, N>::endpoints() const
+{
+    return my_endpoints;
+}
+
+template <typename TVertex, typename TValue, std::size_t N>
+typename edge<TVertex, TValue, N>::vertices_type& edge<TVertex, TValue, N>::endpoints()
+{
+    return my_endpoints;
+}
 
 END_NAMESPACE
 

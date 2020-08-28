@@ -115,26 +115,26 @@ void build_code(arcturus_code& code) //??
 {
     for(auto it = code.instructions(); ;)
     {
-        if(it == code.end_of_instructions())
+        if(it == code.end_instruction())
             break;
         std::wcout << arcturus_quadruple::opcode_name((*it).operation) << std::endl;
         it = std::static_pointer_cast<arcturus_quadruple>((*it).next());
     }
     std::cout << std::endl;
 
-    auto instruction1(factory::create<arcturus_instruction>(arcturus_operation_code_traits::operation_code::unary_op_plus_hir));
+    auto instruction1(factory::create<arcturus_instruction>(0, arcturus_operation_code_traits::operation_code::unary_op_plus_hir));
     code.add_instruction(instruction1);
 
-    auto instruction2(factory::create<arcturus_quadruple>(arcturus_operation_code_traits::operation_code::binary_op_add_hir));
+    auto instruction2(factory::create<arcturus_quadruple>(1, arcturus_operation_code_traits::operation_code::binary_op_add_hir));
     code.add_instruction(instruction2);
 
-    auto instruction3(factory::create<arcturus_quadruple>(arcturus_operation_code_traits::operation_code::binary_op_divide_hir));
+    auto instruction3(factory::create<arcturus_quadruple>(2, arcturus_operation_code_traits::operation_code::binary_op_divide_hir));
     code.add_instruction(instruction3);
 
     for(auto it = code.instructions(); ;)
     //for(auto it = std::static_pointer_cast<arcturus_quadruple>((*code.instructions()).next()); ;)
     {
-        if(it == code.end_of_instructions())
+        if(it == code.end_instruction())
             break;
         std::wcout << arcturus_quadruple::opcode_name((*it).operation) << std::endl;
         it = std::static_pointer_cast<arcturus_quadruple>((*it).next());
@@ -145,7 +145,7 @@ void build_code(arcturus_code& code) //??
 
     for(auto it = code.instructions(); ;)
     {
-        if(it == code.end_of_instructions())
+        if(it == code.end_instruction())
             break;
         std::wcout << arcturus_quadruple::opcode_name((*it).operation) << std::endl;
         it = std::static_pointer_cast<arcturus_quadruple>((*it).next());
@@ -156,7 +156,7 @@ void build_code(arcturus_code& code) //??
 
     for(auto it = code.instructions(); ;)
     {
-        if(it == code.end_of_instructions())
+        if(it == code.end_instruction())
             break;
         std::wcout << arcturus_quadruple::opcode_name((*it).operation) << std::endl;
         it = std::static_pointer_cast<arcturus_quadruple>((*it).next());
@@ -167,7 +167,7 @@ void build_code(arcturus_code& code) //??
 
     for(auto it = code.instructions(); ;)
     {
-        if(it == code.end_of_instructions())
+        if(it == code.end_instruction())
             break;
         std::wcout << arcturus_quadruple::opcode_name((*it).operation) << std::endl;
         it = std::static_pointer_cast<arcturus_quadruple>((*it).next());

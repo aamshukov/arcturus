@@ -26,7 +26,7 @@ class graph : private noncopyable
         {
             bool operator() (const vertex_type& lhs, const vertex_type& rhs) const
             {
-                return (*lhs).id < (*rhs).id;
+                return (*lhs).id() < (*rhs).id();
             }
         };
 
@@ -39,7 +39,7 @@ class graph : private noncopyable
         {
             bool operator() (const edge_type& lhs, const edge_type& rhs) const
             {
-                return (*lhs).id < (*rhs).id;
+                return (*lhs).id() < (*rhs).id();
             }
         };
 
@@ -49,7 +49,7 @@ class graph : private noncopyable
 
         using adjacency_list_type = std::map<vertex_type, vertices_type, vertex_key_comparator>;
 
-        using index_type = int;
+        using id_type = int;
         using size_type = int;
 
         using counter_type = counter;
@@ -72,14 +72,14 @@ class graph : private noncopyable
 
         std::pair<vertex_type, bool>    add_vertex(const vertex_type& vertex);
 
-        std::pair<vertex_type, bool>    remove_vertex(const index_type& id);
+        std::pair<vertex_type, bool>    remove_vertex(const id_type& id);
 
         std::pair<edge_type, bool>      add_edge(const vertex_type& vertex_u,
                                                  const vertex_type& vertex_v,
                                                  const edge_value_type& value);
         std::pair<edge_type, bool>      add_edge(const edge_type& edge);
 
-        std::pair<edge_type, bool>      remove_edge(const index_type& id);
+        std::pair<edge_type, bool>      remove_edge(const id_type& id);
 
         void                            build_adjacency_list(adjacency_list_type& adjacency_list);
 
@@ -130,9 +130,9 @@ template <typename TVertex, typename TEdge>
 std::pair<typename graph<TVertex, TEdge>::vertex_type, bool>
 graph<TVertex, TEdge>::add_vertex(const typename graph<TVertex, TEdge>::vertex_type& vertex)
 {
-    if((*vertex).id == 0)
+    if((*vertex).id() == 0)
     {
-        (*vertex).id = my_vertices_counter.number();
+        (*vertex).id() = my_vertices_counter.number();
     }
 
     my_vertices.emplace(vertex);
@@ -149,7 +149,7 @@ graph<TVertex, TEdge>::add_vertex(const typename graph<TVertex, TEdge>::vertex_t
 
 template <typename TVertex, typename TEdge>
 std::pair<typename graph<TVertex, TEdge>::vertex_type, bool>
-graph<TVertex, TEdge>::remove_vertex(const typename graph<TVertex, TEdge>::index_type& id)
+graph<TVertex, TEdge>::remove_vertex(const typename graph<TVertex, TEdge>::id_type& id)
 {
     auto result(std::make_pair(nullptr, false));
 
@@ -159,16 +159,15 @@ graph<TVertex, TEdge>::remove_vertex(const typename graph<TVertex, TEdge>::index
 template <typename TVertex, typename TEdge>
 std::pair<typename graph<TVertex, TEdge>::edge_type, bool>
 graph<TVertex, TEdge>::add_edge(const typename graph<TVertex, TEdge>::vertex_type& vertex_u,
-                                                   const typename graph<TVertex, TEdge>::vertex_type& vertex_v,
-                                                   const typename graph<TVertex, TEdge>::edge_value_type& value)
+                                const typename graph<TVertex, TEdge>::vertex_type& vertex_v,
+                                const typename graph<TVertex, TEdge>::edge_value_type& value)
 {
-    auto new_edge(factory::create<TEdge>());
+    auto new_edge(factory::create<TEdge>(my_edges_counter.number()));
 
-    (*new_edge).id = my_edges_counter.number();
-    (*new_edge).value = value;
+    (*new_edge).value() = value;
 
-    (*new_edge).endpoints[0] = vertex_u;
-    (*new_edge).endpoints[0] = vertex_v;
+    (*new_edge).endpoints()[0] = vertex_u;
+    (*new_edge).endpoints()[0] = vertex_v;
 
     auto result = add_edge(new_edge);
 
@@ -179,11 +178,10 @@ template <typename TVertex, typename TEdge>
 std::pair<typename graph<TVertex, TEdge>::edge_type, bool>
 graph<TVertex, TEdge>::add_edge(const typename graph<TVertex, TEdge>::edge_type& edge)
 {
-    if((*edge).id == 0)
+    if((*edge).id() == 0)
     {
-        (*edge).id = my_edges_counter.number();
+        (*edge).id() = my_edges_counter.number();
     }
-
 
     auto result(std::make_pair(nullptr, false));
 
@@ -195,7 +193,7 @@ graph<TVertex, TEdge>::add_edge(const typename graph<TVertex, TEdge>::edge_type&
 
 template <typename TVertex, typename TEdge>
 std::pair<typename graph<TVertex, TEdge>::edge_type, bool>
-graph<TVertex, TEdge>::remove_edge(const typename graph<TVertex, TEdge>::index_type& id)
+graph<TVertex, TEdge>::remove_edge(const typename graph<TVertex, TEdge>::id_type& id)
 {
     auto result(std::make_pair(nullptr, false));
 

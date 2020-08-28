@@ -14,8 +14,8 @@ USINGNAMESPACE(symtable)
 
 template <typename Instruction>
 code<Instruction>::code()
-                 : my_head(factory::create<Instruction>(Instruction::operation_code::sentinel)), //??
-                   my_tail(factory::create<Instruction>(Instruction::operation_code::sentinel))
+                 : my_head(factory::create<Instruction>(-1, Instruction::operation_code::sentinel)), //??
+                   my_tail(factory::create<Instruction>(-1, Instruction::operation_code::sentinel))
 {
     (*my_head).next() = my_tail;
     (*my_tail).prev() = my_head;
