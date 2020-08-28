@@ -18,8 +18,6 @@ class symbol : private noncopyable
         using token_type = Token;
         using symbol_type = std::shared_ptr<symbol<token_type>>;
 
-        using codepoints_type = std::basic_string<datum_type>;
-
         using index_type = int32_t;
         using size_type = std::size_t;
 
@@ -136,13 +134,13 @@ symbol<Token>::~symbol()
 }
 
 template <typename Token>
-inline const typename symbol<Token>::codepoints_type& symbol<Token>::name() const
+inline const typename codepoints_type& symbol<Token>::name() const
 {
     return my_name;
 }
 
 template <typename Token>
-inline typename symbol<Token>::codepoints_type& symbol<Token>::name()
+inline typename codepoints_type& symbol<Token>::name()
 {
     return my_name;
 }

@@ -490,9 +490,9 @@ ConversionResult ConvertUTF32toUTF8 (
 
 /* --------------------------------------------------------------------- */
 
-ConversionResult ConvertUTF8toUTF32(const UTF8** sourceStart, const UTF8* sourceEnd, UTF32** targetStart, UTF32* targetEnd, ConversionFlags flags, std::size_t& count)
+ConversionResult ConvertUTF8toUTF32(const UTF8** sourceStart, const UTF8* sourceEnd, UTF32** targetStart, UTF32* targetEnd, ConversionFlags flags)//, std::size_t& count)
 {
-    count = 0;
+    //count = 0;
 
     ConversionResult result = conversionOK;
 
@@ -572,7 +572,7 @@ ConversionResult ConvertUTF8toUTF32(const UTF8** sourceStart, const UTF8* source
         }
     }
 
-    count = target - *targetStart;
+    //count = target - *targetStart;
 
     *sourceStart = source;
     *targetStart = target;

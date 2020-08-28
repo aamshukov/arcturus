@@ -191,6 +191,7 @@ bool file_data_provider::read_utf8_data(std::shared_ptr<byte[]> raw_data,
 
         std::shared_ptr<datum_type[]> buffer(new datum_type[raw_count + 1]);
 
+        const datum_type*  target_start_org(buffer.get());
         const datum_type*  target_start_aux(buffer.get());
         const datum_type** target_start(&target_start_aux);
         const datum_type*  target_end(target_start_aux + raw_count);
@@ -199,9 +200,11 @@ bool file_data_provider::read_utf8_data(std::shared_ptr<byte[]> raw_data,
                                                   source_end,
                                                   (UTF32**)target_start,
                                                   (UTF32*)target_end,
-                                                  conversion_flags::strict_conversion, count);
+                                                  conversion_flags::strict_conversion);
         if(cr == conversion_ok)
         {
+            count = std::ptrdiff_t(*target_start - target_start_org);
+
             buffer[count] = 0;
 
             data.swap(buffer);

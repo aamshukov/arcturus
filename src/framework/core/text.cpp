@@ -5,35 +5,66 @@
 
 BEGIN_NAMESPACE(core)
 
-bool text::chars_to_string(const char* text, string_type& result_text)
+bool text::chars_to_codepoints(const char* chars, const size_type& chars_count, std::shared_ptr<datum_type[]>& codepoints, size_type& codepoints_count)
 {
+    codepoints_count = 0;
+
     bool result = false;
 
     try
     {
-        UnicodeString ustr(text, static_cast<int32_t>(std::strlen(text)));
+        const UTF8*  source_start_aux(reinterpret_cast<const UTF8*>(chars));
+        const UTF8** source_start(&source_start_aux);
+        const UTF8*  source_end(source_start_aux + chars_count);
 
-        if(!ustr.isBogus())
+        std::shared_ptr<datum_type[]> buffer(new datum_type[chars_count + 1]);
+
+        const datum_type*  target_start_org(buffer.get());
+        const datum_type*  target_start_aux(buffer.get());
+        const datum_type** target_start(&target_start_aux);
+        const datum_type*  target_end(target_start_aux + chars_count);
+
+        convert_result cr = convert_utf8_to_utf32(source_start,
+                                                  source_end,
+                                                  (UTF32**)target_start,
+                                                  (UTF32*)target_end,
+                                                  conversion_flags::strict_conversion);
+        if(cr == conversion_ok)
         {
-            int32_t size = ustr.length();
+            codepoints_count = std::ptrdiff_t(*target_start - target_start_org);
 
-            std::unique_ptr<char16_t[]> buffer(new char16_t[size + 1]);
+            buffer[codepoints_count] = 0;
 
-            ustr.extractBetween(0, static_cast<int32_t>(size), buffer.get(), 0);
-
-            buffer.get()[size] = 0;
-
-            result_text.assign(reinterpret_cast<const char_type*>(buffer.get()));
+            codepoints.swap(buffer);
 
             result = true;
         }
         else
         {
-            OPERATION_FAILED(status::custom_code::error,
-                             0,
-                             status::contributor::core,
-                             L"Converting codepoints to string: invalid input.")
-            log_error(diagnostics::instance().last_status().text().c_str());
+            if(cr == source_exhausted)
+            {
+                OPERATION_FAILED(status::custom_code::error,
+                                 source_exhausted,
+                                 status::contributor::core,
+                                 L"Converting chars (utf8) to codepoints: partial character in source, but hit end.")
+                log_error(diagnostics::instance().last_status().text().c_str());
+            }
+            else if(cr == target_exhausted)
+            {
+                OPERATION_FAILED(status::custom_code::error,
+                                 target_exhausted,
+                                 status::contributor::core,
+                                 L"Converting chars (utf8) to codepoints: insufficient room in target for conversion.")
+                log_error(diagnostics::instance().last_status().text().c_str());
+            }
+            else if(cr == source_illegal)
+            {
+                OPERATION_FAILED(status::custom_code::error,
+                                 source_illegal,
+                                 status::contributor::core,
+                                 L"Converting chars (utf8) to codepoints: source sequence is illegal/malformed.")
+                log_error(diagnostics::instance().last_status().text().c_str());
+            }
         }
     }
     catch(const std::exception& ex)
@@ -41,61 +72,78 @@ bool text::chars_to_string(const char* text, string_type& result_text)
         OPERATION_FAILED_EX(ex,
                             status::custom_code::error,
                             status::contributor::core,
-                            L"Converting codepoints to string: error occurred.")
+                            L"Converting chars (utf8) to codepoints: error occurred.")
         log_exception(ex, diagnostics::instance().last_status().text().c_str());
     }
 
     return result;
 }
 
-bool text::chars_to_codepoints(const char* text, std::shared_ptr<datum_type[]>& codepoints, size_type& count)
+bool text::codepoints_to_chars(const datum_type* codepoints, const size_type& codepoints_count, std::shared_ptr<char[]>& chars, size_type& chars_count)
 {
-    count = 0;
+    chars_count = 0;
 
     bool result = false;
 
     try
     {
-        auto len = static_cast<int32_t>(std::strlen(text));
+        const uint32_t*  source_start_aux(codepoints);
+        const uint32_t** source_start(&source_start_aux);
+        const uint32_t*  source_end(source_start_aux + codepoints_count);
 
-        UnicodeString ustr(text, len);
+        size_type count = (codepoints_count + 1) * 6; // UTF-8 is a multibyte encoding able to encode the whole Unicode charset.
+                                                      // An encoded character takes between 1 and 4 bytes.
+                                                      // UTF-8 encoding supports longer byte sequences, up to 6 bytes,
+                                                      // but the biggest code point of Unicode 6.0 (U+10FFFF) only takes 4 bytes.
 
-        if(!ustr.isBogus())
+        std::shared_ptr<char[]> buffer(new char[count]);
+
+        const char*  target_start_org(buffer.get());
+        const char*  target_start_aux(buffer.get());
+        const char** target_start(&target_start_aux);
+        const char*  target_end(target_start_aux + count);
+
+        convert_result cr = convert_utf32_to_utf8(source_start,
+                                                  source_end,
+                                                  (UTF8**)target_start,
+                                                  (UTF8*)target_end,
+                                                  conversion_flags::strict_conversion);
+        if(cr == conversion_ok)
         {
-            int32_t size = ustr.length() + 1;
+            chars_count = std::ptrdiff_t(*target_start - target_start_org);
 
-            std::shared_ptr<datum_type[]> buffer(new datum_type[size]);
+            buffer[chars_count] = 0;
 
-            UErrorCode error = U_ZERO_ERROR;
+            chars.swap(buffer);
 
-            int32_t length = ustr.toUTF32(reinterpret_cast<UChar32*>(buffer.get()), static_cast<int32_t>(size), error);
-
-            if(error == U_ZERO_ERROR)
-            {
-                buffer[length] = 0;
-
-                count = length;
-
-                codepoints.swap(buffer);
-
-                result = true;
-            }
-            else
-            {
-                OPERATION_FAILED(status::custom_code::error,
-                                 0,
-                                 status::contributor::core,
-                                 format(L"Converting string (text) to codepoints: ICU error code is '%d'.", error).c_str())
-                log_error(diagnostics::instance().last_status().text().c_str());
-            }
+            result = true;
         }
         else
         {
-            OPERATION_FAILED(status::custom_code::error,
-                             0,
-                             status::contributor::core,
-                             L"Converting string (text) to codepoints: invalid input.")
-            log_error(diagnostics::instance().last_status().text().c_str());
+            if(cr == source_exhausted)
+            {
+                OPERATION_FAILED(status::custom_code::error,
+                                 source_exhausted,
+                                 status::contributor::core,
+                                 L"Converting codepoints to chars (utf8): partial character in source, but hit end.")
+                log_error(diagnostics::instance().last_status().text().c_str());
+            }
+            else if(cr == target_exhausted)
+            {
+                OPERATION_FAILED(status::custom_code::error,
+                                 target_exhausted,
+                                 status::contributor::core,
+                                 L"Converting codepoints to chars (utf8): insufficient room in target for conversion.")
+                log_error(diagnostics::instance().last_status().text().c_str());
+            }
+            else if(cr == source_illegal)
+            {
+                OPERATION_FAILED(status::custom_code::error,
+                                 source_illegal,
+                                 status::contributor::core,
+                                 L"Converting codepoints to chars (utf8): source sequence is illegal/malformed.")
+                log_error(diagnostics::instance().last_status().text().c_str());
+            }
         }
     }
     catch(const std::exception& ex)
@@ -103,7 +151,7 @@ bool text::chars_to_codepoints(const char* text, std::shared_ptr<datum_type[]>& 
         OPERATION_FAILED_EX(ex,
                             status::custom_code::error,
                             status::contributor::core,
-                            L"Converting string (text) to codepoints: error occurred.")
+                            L"Converting codepoints to chars (utf8): error occurred.")
         log_exception(ex, diagnostics::instance().last_status().text().c_str());
     }
 
@@ -126,6 +174,7 @@ bool text::string_to_codepoints0(const string_type& text, std::shared_ptr<datum_
 
         std::shared_ptr<datum_type[]> buffer(new datum_type[text_count + 1]);
 
+        const datum_type*  target_start_org(buffer.get());
         const datum_type*  target_start_aux(buffer.get());
         const datum_type** target_start(&target_start_aux);
         const datum_type*  target_end(target_start_aux + text_count);
@@ -139,6 +188,8 @@ bool text::string_to_codepoints0(const string_type& text, std::shared_ptr<datum_
                                                    false);
         if(cr == conversion_ok)
         {
+            count = std::ptrdiff_t(*target_start - target_start_org);
+
             buffer[count] = 0;
 
             codepoints.swap(buffer);
@@ -199,6 +250,7 @@ bool text::codepoints_to_string0(const datum_type* codepoints, size_type count, 
 
         std::shared_ptr<uint16_t[]> buffer(new uint16_t[string_count]);
 
+        const uint16_t*  target_start_org(buffer.get());
         const uint16_t*  target_start_aux(buffer.get());
         const uint16_t** target_start(&target_start_aux);
         const uint16_t*  target_end(target_start_aux + string_count);
@@ -210,6 +262,8 @@ bool text::codepoints_to_string0(const datum_type* codepoints, size_type count, 
                                                    conversion_flags::strict_conversion);
         if(cr == conversion_ok)
         {
+            count = std::ptrdiff_t(*target_start - target_start_org);
+
             buffer[count] = 0;
 
             result_text.assign(reinterpret_cast<char_type*>(buffer.get()));

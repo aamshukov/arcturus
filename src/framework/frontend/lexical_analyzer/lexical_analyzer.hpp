@@ -14,7 +14,6 @@ class lexical_analyzer : private noncopyable
 {
     public:
         using content_type = std::shared_ptr<lexical_content>;
-        using codepoints_type = std::basic_string<datum_type>;
 
         using token_type = Token;
         using tokens_type = std::queue<token_type>;
@@ -130,13 +129,13 @@ inline bool lexical_analyzer<Token>::is_eos() const
 }
 
 template <typename Token>
-inline typename lexical_analyzer<Token>::codepoints_type lexical_analyzer<Token>::lexeme_to_codepoints() const
+inline typename codepoints_type lexical_analyzer<Token>::lexeme_to_codepoints() const
 {
     return my_token.codepoints(my_start_content);
 }
 
 template <typename Token>
-inline typename lexical_analyzer<Token>::codepoints_type lexical_analyzer<Token>::lexeme_to_codepoints(const typename lexical_analyzer<Token>::token_type& token) const
+inline typename codepoints_type lexical_analyzer<Token>::lexeme_to_codepoints(const typename lexical_analyzer<Token>::token_type& token) const
 {
     return token.codepoints(my_start_content);
 }

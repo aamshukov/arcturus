@@ -28,6 +28,8 @@ class control_flow_graph : public graph<basic_block<Instruction>, edge<basic_blo
         virtual void build_hir(code_type& code) = 0;
         virtual void build_mir(code_type& code) = 0;
         virtual void build_lir(code_type& code) = 0;
+
+        virtual void generate_graphviz_file(const string_type& file_name) = 0;
 };
 
 END_NAMESPACE

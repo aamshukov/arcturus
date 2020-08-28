@@ -29,6 +29,8 @@ class arcturus_control_flow_graph : public control_flow_graph<arcturus_quadruple
         virtual void build_hir(code_type& code) override;
         virtual void build_mir(code_type& code) override;
         virtual void build_lir(code_type& code) override;
+
+        virtual void generate_graphviz_file(const string_type& file_name) override;
 };
 
 END_NAMESPACE

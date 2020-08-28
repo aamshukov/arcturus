@@ -175,6 +175,15 @@ struct arcturus_quadruple : public quadruple<arcturus_token, arcturus_operation_
 
         return arcturus_operation_code_traits::name(opcode);
     }
+
+    codepoints_type to_codepoints() override
+    {
+        codepoints_type text;
+
+        //string_type format("%-25s%-20s%-10s%-10s%-10s\n", "Name", "Title", "Gross", "Tax", "Net");
+
+        return text;
+    }
 };
 
 END_NAMESPACE

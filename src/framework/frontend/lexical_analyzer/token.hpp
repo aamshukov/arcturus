@@ -31,8 +31,6 @@ struct token_traits
 template <typename Traits = token_traits>
 struct token
 {
-    using codepoints_type = std::basic_string<datum_type>;
-
     using id_type = std::size_t; // should be in sync with lexical_analyzer's
 
     enum class flag : uint64_t
@@ -186,3 +184,5 @@ struct token
 END_NAMESPACE
 
 #endif // __TOKEN_H__
+
+

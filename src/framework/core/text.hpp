@@ -40,8 +40,14 @@ class text : private noncopyable
         static const datum_type kSurrogateEnd = kLowSurrogateEnd;
 
     public:
-        static bool         chars_to_string(const char* text, string_type& result_text);
-        static bool         chars_to_codepoints(const char* text, std::shared_ptr<datum_type[]>& codepoints, size_type& count);
+        static bool         chars_to_codepoints(const char* chars,
+                                                const size_type& chars_count,
+                                                std::shared_ptr<datum_type[]>& codepoints,
+                                                size_type& codepoints_count);
+        static bool         codepoints_to_chars(const datum_type* codepoints,
+                                                const size_type& codepoints_count,
+                                                std::shared_ptr<char[]>& chars,
+                                                size_type& chars_count);
 
         static bool         string_to_codepoints0(const string_type& text, std::shared_ptr<datum_type[]>& codepoints, size_type& count);
         static bool         codepoints_to_string0(const datum_type* codepoints, size_type count, string_type& result_text);

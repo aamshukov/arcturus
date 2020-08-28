@@ -206,6 +206,19 @@ void arcturus_control_flow_graph::build_hir(typename arcturus_control_flow_graph
         blocks.emplace_back(exit_block);
 
         // phase III (build CFG)
+        //  link entry point with the first block
+        add_vertex(entry_block);
+        add_vertex(exit_block);
+
+        if(blocks.size() > 2) // > 2 entry/exit points
+        {
+            add_edge(entry_block, blocks[1], 0.0);
+        }
+        else
+        {
+            add_edge(entry_block, exit_block, 0.0);
+        }
+
         for(std::size_t i = 1; i < blocks.size() - 1; i++) // 1 and -1 because the first and the last blocks are virtual entry/exit points
         {
             auto block(blocks[i]);
@@ -235,19 +248,59 @@ void arcturus_control_flow_graph::build_hir(typename arcturus_control_flow_graph
                 add_edge(block, target_block, 0.0);
             }
         }
+
+        // link exit point with the last block(s)
+        if(blocks.size() > 2) // > 2 entry/exit points
+        {
+            add_edge(exit_block, blocks[blocks.size() - 1], 0.0);
+        }
     }
 }
 
-void arcturus_control_flow_graph::build_mir(typename arcturus_control_flow_graph::code_type& code)
+void arcturus_control_flow_graph::build_mir(typename arcturus_control_flow_graph::code_type& /*code*/)
 {
-    //??
-    code;
 }
 
-void arcturus_control_flow_graph::build_lir(typename arcturus_control_flow_graph::code_type& code)
+void arcturus_control_flow_graph::build_lir(typename arcturus_control_flow_graph::code_type& /*code*/)
 {
-    //??
-    code;
+}
+
+void arcturus_control_flow_graph::generate_graphviz_file(const string_type& file_name)
+{
+    log_info(L"Generating graphviz file ...");
+
+    std::wofstream stream;
+
+    try
+    {
+        stream.open(file_name.c_str(), std::ios::out | std::ios::binary);
+
+        if(!stream.is_open() || stream.bad() || stream.fail())
+        {
+            log_error(L"Failed to generate graphviz file: stream is either open or in a bad condition.");
+        }
+
+        //const char_type* indent(get_indent(4));
+
+        stream << L"digraph CFG" << std::endl;
+        stream << L"{" << std::endl;
+
+
+
+        stream << L"}" << std::endl;
+
+        stream.flush();
+        stream.clear();
+        stream.close();
+    }
+    catch(const std::exception& ex)
+    {
+        log_exception(ex, L"Failed to generate graphviz file: error occurred.");
+    }
+
+    log_info(L"Generated graphviz file.");
+
+    // D:\Soft\graphviz\2.38\release\bin\dot -Tpng d:\tmp\cfg.dot -o d:\tmp\cfg.png
 }
 
 END_NAMESPACE

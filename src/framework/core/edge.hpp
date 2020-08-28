@@ -20,8 +20,8 @@ class edge : private noncopyable
         using id_type = std::size_t;
 
     private:
-        id_type                 my_id = 0;
-        value_type              my_value = value_type();
+        id_type                 my_id;
+        value_type              my_value;
 
         vertices_type           my_endpoints;
 

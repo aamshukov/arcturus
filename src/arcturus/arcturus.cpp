@@ -180,9 +180,9 @@ int _tmain(int argc, _TCHAR *argv[])
 
     build_code(code);
 
-    //arcturus_control_flow_graph cfg;
+    arcturus_control_flow_graph cfg;
 
-    //cfg.build(code);
+    cfg.build_hir(code);
 
     auto st(factory::create<arcturus_scalar_type>(arcturus_type::kind_type::integer_type));
     auto at(factory::create<arcturus_array_type>(st));

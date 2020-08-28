@@ -103,6 +103,7 @@ using string_type = std::basic_string<char_type>;
 
 using cp_type = uint32_t;   // code point
 using datum_type = cp_type; 
+using codepoints_type = std::basic_string<datum_type>;
 
 const int bits_in_byte = 8;
 
