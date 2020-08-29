@@ -191,7 +191,7 @@ struct quadruple : public list
         return *this;
     }
 
-    virtual codepoints_type to_codepoints() = 0;
+    virtual string_type to_string() = 0;
 };
 
 END_NAMESPACE

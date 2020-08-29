@@ -206,22 +206,18 @@ void arcturus_control_flow_graph::build_hir(typename arcturus_control_flow_graph
         blocks.emplace_back(exit_block);
 
         // phase III (build CFG)
-        //  link entry point with the first block
         add_vertex(entry_block);
         add_vertex(exit_block);
 
-        if(blocks.size() > 2) // > 2 entry/exit points
-        {
-            add_edge(entry_block, blocks[1], 0.0);
-        }
-        else
-        {
-            add_edge(entry_block, exit_block, 0.0);
-        }
+        // link entry point with the first block - there is an edge from Entry to each initial BB
+        // arcturus/art has only one entry point (as an alternative to Fortran 77's multiple entry points)
+        add_edge(entry_block, blocks[1], 0.0); // [1] - either a block or the virtual exit_block
 
         for(std::size_t i = 1; i < blocks.size() - 1; i++) // 1 and -1 because the first and the last blocks are virtual entry/exit points
         {
             auto block(blocks[i]);
+
+            add_vertex(block);
 
             instruction = std::static_pointer_cast<arcturus_quadruple>((*(*block).code().instructions()).prev()); // get the last instruction in a block
 
@@ -229,30 +225,40 @@ void arcturus_control_flow_graph::build_hir(typename arcturus_control_flow_graph
             {
                 block_type target_block;
 
+                // there is a branch from last instruction in B1 to the leader of B2 ...
                 if((*instruction).operation == arcturus_operation_code_traits::operation_code::if_true_hir ||
                     (*instruction).operation == arcturus_operation_code_traits::operation_code::if_false_hir ||
                     (*instruction).operation == arcturus_operation_code_traits::operation_code::goto_hir)
                 {
                     auto target_instruction(std::get<1>((*instruction).result));
                     target_block = inst_block_map[(*target_instruction).id];
+
+                    // link block -> target_block
+                    add_vertex(target_block);
+                    add_edge(block, target_block, 0.0);
                 }
-                else
+
+                // B2 immediately follows B1, and B1 DOES NOT end in an unconditional branch ...
+                if((*instruction).operation != arcturus_operation_code_traits::operation_code::goto_hir)
                 {
                     target_block = blocks[i + 1];
+
+                    // link block -> target_block
+                    add_vertex(target_block);
+                    add_edge(block, target_block, 0.0);
                 }
-
-                // link block -> target_block
-                add_vertex(block);
-                add_vertex(target_block);
-
-                add_edge(block, target_block, 0.0);
             }
         }
 
-        // link exit point with the last block(s)
-        if(blocks.size() > 2) // > 2 entry/exit points
+        // link exit point with the final block(s) - there is an edge from each final BB to Exit
+        //  ... final basic blocks are basic blocks either with no successors or with a 'return' statement
+        for(auto& block : blocks)
         {
-            add_edge(exit_block, blocks[blocks.size() - 1], 0.0);
+            if((*block).adjacencies().empty() || 
+               (*instruction).operation != arcturus_operation_code_traits::operation_code::function_return_hir)
+            {
+                add_edge(block, exit_block, 0.0);
+            }
         }
     }
 }

@@ -11,7 +11,18 @@ BEGIN_NAMESPACE(core)
 class vertex : public visitable
 {
     public:
-        using vertices_type = std::list<std::weak_ptr<vertex>>;
+        using vertex_type = std::shared_ptr<vertex>;
+
+        struct vertex_key_comparator
+        {
+            bool operator() (const vertex_type& lhs, const vertex_type& rhs) const
+            {
+                return (*lhs).id() < (*rhs).id();
+            }
+        };
+
+        using vertices_type = std::set<vertex_type, vertex_key_comparator>;
+        using vertices_iterator_type = typename vertices_type::iterator;
 
         using id_type = std::size_t;
 
@@ -32,7 +43,7 @@ class vertex : public visitable
         ACCEPT_METHOD;
 };
 
-inline vertex::vertex(const typename vertex::id_type& id)
+inline vertex::vertex(const typename vertex::id_type& id = 0)
              : my_id(id)
 {
 }

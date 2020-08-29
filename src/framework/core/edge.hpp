@@ -26,7 +26,7 @@ class edge : private noncopyable
         vertices_type           my_endpoints;
 
     public:
-                                edge(const id_type& id);
+                                edge(const id_type& id = 0);
         virtual                ~edge();
 
         const id_type&          id() const;

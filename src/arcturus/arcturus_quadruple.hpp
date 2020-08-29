@@ -176,11 +176,23 @@ struct arcturus_quadruple : public quadruple<arcturus_token, arcturus_operation_
         return arcturus_operation_code_traits::name(opcode);
     }
 
-    codepoints_type to_codepoints() override
+    string_type to_string() override
     {
-        codepoints_type text;
+        string_type text;
 
-        //string_type format("%-25s%-20s%-10s%-10s%-10s\n", "Name", "Title", "Gross", "Tax", "Net");
+        // operator
+        string_type op;
+
+        // argument1
+        string_type arg1;
+
+        // argument2
+        string_type arg2;
+
+        // result
+        string_type res;
+
+        text = format(L"%-16s%-7s%-16s%-16s%\n", res.c_str(), arg1.c_str(), op.c_str(), arg2.c_str());
 
         return text;
     }
