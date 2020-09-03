@@ -23,7 +23,8 @@ struct arcturus_operation_code_traits
 
         // HIR - high-level intermediate representation (IR)
         declaration_hir = 100,
-        assignement_hir,
+
+        assignment_hir,
 
         unary_op_plus_hir,
         unary_op_negation_hir,
@@ -182,6 +183,94 @@ struct arcturus_quadruple : public quadruple<arcturus_token, arcturus_operation_
 
         // operator
         string_type op;
+
+        switch(operation)
+        {
+            case arcturus_operation_code_traits::operation_code::assignment_hir:
+                op = L"=";
+                break;
+            case arcturus_operation_code_traits::operation_code::unary_op_plus_hir:
+                op = L"+";
+                break;
+            case arcturus_operation_code_traits::operation_code::unary_op_negation_hir:
+                op = L"-";
+                break;
+            case arcturus_operation_code_traits::operation_code::unary_op_multiply_hir:
+                op = L"*";
+                break;
+            case arcturus_operation_code_traits::operation_code::unary_op_divide_hir:
+                op = L"/";
+                break;
+            case arcturus_operation_code_traits::operation_code::unary_op_negate_hir:
+                op = L"!";
+                break;
+            case arcturus_operation_code_traits::operation_code::unary_op_complement_hir:
+                op = L"~";
+                break;
+            case arcturus_operation_code_traits::operation_code::binary_op_add_hir:
+                op = L"+";
+                break;
+            case arcturus_operation_code_traits::operation_code::binary_op_subtract_hir:
+                op = L"-";
+                break;
+            case arcturus_operation_code_traits::operation_code::binary_op_multiply_hir:
+                op = L"*";
+                break;
+            case arcturus_operation_code_traits::operation_code::binary_op_divide_hir:
+                op = L"/";
+                break;
+            case arcturus_operation_code_traits::operation_code::binary_op_equal_hir:
+                op = L"==";
+                break;
+            case arcturus_operation_code_traits::operation_code::binary_op_notequal_hir:
+                op = L"!=";
+                break;
+            case arcturus_operation_code_traits::operation_code::binary_op_lessthan_hir:
+                op = L"<";
+                break;
+            case arcturus_operation_code_traits::operation_code::binary_op_biggerthan_hir:
+                op = L">";
+                break;
+            case arcturus_operation_code_traits::operation_code::binary_op_logical_and_hir:
+                op = L"&&";
+                break;
+            case arcturus_operation_code_traits::operation_code::binary_op_logical_or_hir:
+                op = L"||";
+                break;
+            case arcturus_operation_code_traits::operation_code::binary_op_and_hir:
+                op = L"&";
+                break;
+            case arcturus_operation_code_traits::operation_code::binary_op_inclusive_or_hir:
+                op = L"|";
+                break;
+            case arcturus_operation_code_traits::operation_code::binary_op_exclusive_or_hir:
+                op = L"^";
+                break;
+            case arcturus_operation_code_traits::operation_code::if_true_hir:
+                op = L"if-true";
+                break;
+            case arcturus_operation_code_traits::operation_code::if_false_hir:
+                op = L"if-false";
+                break;
+            case arcturus_operation_code_traits::operation_code::goto_hir:
+                op = L"goto";
+                break;
+            case arcturus_operation_code_traits::operation_code::label_hir:
+                op = L"label";
+                break;
+            case arcturus_operation_code_traits::operation_code::declaration_hir:
+                op = L"decl";
+                break;
+            case arcturus_operation_code_traits::operation_code::function_return_hir:
+                op = L"return";
+                break;
+            case arcturus_operation_code_traits::operation_code::function_argument_hir:
+                op = L"arg";
+                break;
+            case arcturus_operation_code_traits::operation_code::function_call_hir:
+                op = L"call";
+                break;
+        }
 
         // argument1
         string_type arg1;

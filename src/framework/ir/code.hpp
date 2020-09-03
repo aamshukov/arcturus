@@ -32,6 +32,8 @@ class code : private noncopyable
 
         void                        add_instruction(instruction_type& instruction);
         void                        remove_instruction(instruction_type& instruction);
+
+        string_type                 to_string();
 };
 
 template <typename Instruction>
@@ -50,6 +52,19 @@ template <typename Instruction>
 inline const typename code<Instruction>::instruction_type code<Instruction>::end_instruction() const
 {
     return my_tail;
+}
+
+template <typename Instruction>
+inline string_type code<Instruction>::to_string()
+{
+    string_type result;
+
+    for(auto it = instructions(); it != end_instruction(); it = std::static_pointer_cast<Instruction>((*my_head).next()))
+    {
+        result += (*it).to_string();
+    }
+
+    return result;
 }
 
 END_NAMESPACE

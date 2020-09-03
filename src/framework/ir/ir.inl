@@ -292,7 +292,7 @@ USINGNAMESPACE(frontend)
 //
 //        dag = find_dag(key, cache);
 //
-//        //if(dag need to be invalidated, assignement = ...)
+//        //if(dag need to be invalidated, assignment = ...)
 //        //{
 //        //    dag = nullptr;
 //        //}

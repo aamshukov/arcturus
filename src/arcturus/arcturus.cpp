@@ -111,6 +111,33 @@ USINGNAMESPACE(arcturus)
 using arcturus_instruction = arcturus_quadruple;
 using arcturus_code = code<arcturus_instruction>;
 
+void build_code_aho_ullman(arcturus_code& code)
+{
+    //  1) i = 1 
+    //  2) j = 1 
+    //  3) tl = 10 * i 
+    //  4) t2 = tl + j 
+    //  5) t3 = 8 * t2 
+    //  6) t4 = t3 - 88 
+    //  7) a[t4] = 0.0 
+    //  8) j = j + 1 
+    //  9) if j <= 10 goto (3) 
+    // 10) i = i + 1 
+    // 11) if i <= 10 goto (2) 
+    // 12) i = 1 
+    // 13) t5 = i - 1 
+    // 14) t6 = 88 * t5 
+    // 15) a[t6] = 1.0 
+    // 16) i = i + 1 
+    // 17) if i <= 10 goto (13) 
+    auto instr1(factory::create<arcturus_instruction>(0, arcturus_operation_code_traits::operation_code::assignment_hir));
+    code.add_instruction(instr1);
+
+
+    string_type code_str(code.to_string());
+    std::wcout << code_str << std::endl;
+}
+
 void build_code(arcturus_code& code) //??
 {
     for(auto it = code.instructions(); ;)
@@ -178,7 +205,8 @@ int _tmain(int argc, _TCHAR *argv[])
 {
     code<arcturus_instruction> code;
 
-    build_code(code);
+    //build_code(code);
+    build_code_aho_ullman(code);
 
     arcturus_control_flow_graph cfg;
 
