@@ -273,13 +273,23 @@ struct arcturus_quadruple : public quadruple<arcturus_token, arcturus_operation_
         }
 
         // argument1
-        string_type arg1;
+        string_type arg1((*argument1).to_string());
 
         // argument2
-        string_type arg2;
+        string_type arg2((*argument2).to_string());
 
         // result
         string_type res;
+
+        if(std::holds_alternative<symbol_type>(result))
+        {
+            res = (*std::get<0>(result)).to_string();
+        }
+        else if(std::holds_alternative<quadruple_type>(result))
+        {
+            const auto& result_quadruple(std::get<1>(result));
+            res = (*result_quadruple).to_string();
+        }
 
         text = format(L"%-16s%-7s%-16s%-16s%\n", res.c_str(), arg1.c_str(), op.c_str(), arg2.c_str());
 

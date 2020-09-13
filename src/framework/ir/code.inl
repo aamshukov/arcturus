@@ -45,6 +45,20 @@ inline void code<Instruction>::remove_instruction(typename code<Instruction>::in
     (*(*instruction).next()).prev() = (*instruction).prev();
 }
 
+template <typename Instruction>
+inline string_type code<Instruction>::to_string()
+{
+    string_type result;
+
+    for(auto it = instructions(); it != end_instruction(); it = std::static_pointer_cast<Instruction>((*my_head).next()))
+    {
+        result += (*it).to_string();
+        result += L"\n";
+    }
+
+    return result;
+}
+
 END_NAMESPACE
 
 #endif // __CODE_INL__

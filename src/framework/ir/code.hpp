@@ -54,19 +54,6 @@ inline const typename code<Instruction>::instruction_type code<Instruction>::end
     return my_tail;
 }
 
-template <typename Instruction>
-inline string_type code<Instruction>::to_string()
-{
-    string_type result;
-
-    for(auto it = instructions(); it != end_instruction(); it = std::static_pointer_cast<Instruction>((*my_head).next()))
-    {
-        result += (*it).to_string();
-    }
-
-    return result;
-}
-
 END_NAMESPACE
 
 #endif // __CODE_H__

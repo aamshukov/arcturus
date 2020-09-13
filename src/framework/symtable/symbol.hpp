@@ -112,6 +112,8 @@ class symbol : private noncopyable
         metadata_type&          metadata();
 
         static symbol_type      get_new_temporary();
+
+        string_type             to_string() const;
 };
 
 template <typename Token>
@@ -268,6 +270,13 @@ typename symbol<Token>::symbol_type symbol<Token>::get_new_temporary()
         (*result).name() = t;
     }
 
+    return result;
+}
+
+template <typename Token>
+inline string_type symbol<Token>::to_string() const
+{
+    string_type result;
     return result;
 }
 
