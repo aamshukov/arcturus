@@ -25,40 +25,45 @@ class type
         using flags_type = flag;
 
     protected:
-        string_type     my_name;
+        string_type         my_name;
 
-        size_type       my_size;            // size in bits, abstract width, like C type hierarchy
-        size_type       my_platform_size;   // size in bits, platform specific width
+        size_type           my_size;            // size in bits, abstract width, like C type hierarchy
+        size_type           my_platform_size;   // size in bits, platform specific width
 
-        flags_type      my_flags;
+        size_type           my_alignment;       // alignment in memory
 
-        size_type       my_cardinality;     // scalar (0), vector/1D-array(1), matrix/2D-array(2), etc.
+        flags_type          my_flags;
+
+        size_type           my_cardinality;     // scalar (0), vector/1D-array(1), matrix/2D-array(2), etc.
 
     public:
-                        type();
+                            type();
 
-                        type(const type& other) = default;
-                        type(type&& other) = default;
+                            type(const type& other) = default;
+                            type(type&& other) = default;
 
-        virtual        ~type() = 0;
+        virtual            ~type() = 0;
 
-        type&           operator = (const type& other) = default;
-        type&           operator = (type&& other) = default;
+        type&               operator = (const type& other) = default;
+        type&               operator = (type&& other) = default;
 
         const string_type&  name() const;
         string_type&        name();
 
-        size_type       size() const;
-        size_type&      size();
+        size_type           size() const;
+        size_type&          size();
 
-        size_type       platform_size() const;
-        size_type&      platform_size();
+        size_type           platform_size() const;
+        size_type&          platform_size();
 
-        flags_type      flags() const;
-        flags_type&     flags();
+        size_type           alignment() const;
+        size_type&          alignment();
 
-        size_type       cardinality() const;
-        size_type&      cardinality();
+        flags_type          flags() const;
+        flags_type&         flags();
+
+        size_type           cardinality() const;
+        size_type&          cardinality();
 };
 
 template <typename Traits>

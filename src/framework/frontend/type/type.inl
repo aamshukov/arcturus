@@ -47,6 +47,16 @@ inline typename type::size_type& type::platform_size()
     return my_platform_size;
 }
 
+inline size_type type::alignment() const
+{
+    return my_alignment;
+}
+
+inline size_type& type::alignment()
+{
+    return my_alignment;
+}
+
 inline typename type::flags_type type::flags() const
 {
     return my_flags;
