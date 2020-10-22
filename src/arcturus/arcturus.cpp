@@ -243,5 +243,4 @@ int _tmain(int argc, _TCHAR *argv[])
     arcturus_parse_tree f(arcturus_tree_traits::kind::identifier);
 
     f.kind() = arcturus_tree_traits::kind::identifier;
-
 }

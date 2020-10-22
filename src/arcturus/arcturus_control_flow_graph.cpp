@@ -122,8 +122,8 @@ void arcturus_control_flow_graph::build_hir(typename arcturus_control_flow_graph
         for(; instruction != code.end_instruction();)
         {
             if((*instruction).operation == arcturus_operation_code_traits::operation_code::if_true_hir ||
-                (*instruction).operation == arcturus_operation_code_traits::operation_code::if_false_hir ||
-                (*instruction).operation == arcturus_operation_code_traits::operation_code::goto_hir)
+               (*instruction).operation == arcturus_operation_code_traits::operation_code::if_false_hir ||
+               (*instruction).operation == arcturus_operation_code_traits::operation_code::goto_hir)
             {
                 // Любая команда (instruction), являющаяся целевой для условного или безусловного перехода, является лидером.
                 (*std::get<1>((*instruction).result)).flags |= arcturus_quadruple::flags_type::leader;
