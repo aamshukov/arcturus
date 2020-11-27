@@ -538,6 +538,9 @@
     <None Include="..\src\framework\ir\code.inl">
       <Filter>framework\ir</Filter>
     </None>
+    <None Include="..\src\framework\frontend\parser\packrat.py">
+      <Filter>framework\frontend\parser</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\docs\arcturus-grammar.dev.txt">

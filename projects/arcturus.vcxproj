@@ -179,6 +179,7 @@
       <MakeAllSymbolsPublic Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</MakeAllSymbolsPublic>
     </MASM>
     <None Include="..\src\framework\frontend\lexical_analyzer\lexical_analyzer.inl" />
+    <None Include="..\src\framework\frontend\parser\packrat.py" />
     <None Include="..\src\framework\frontend\parser\parser.inl" />
     <None Include="..\src\framework\frontend\parser\recursive_descent_parser.inl" />
     <None Include="..\src\framework\frontend\semantics\semantics.inl" />
