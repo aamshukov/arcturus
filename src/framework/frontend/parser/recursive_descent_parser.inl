@@ -13,7 +13,7 @@ USINGNAMESPACE(core)
 
 template <typename Token>
 recursive_descent_parser<Token>::recursive_descent_parser(const typename recursive_descent_parser<Token>::lexical_analyzer_type& lexical_analyzer)
-                               : parser<Token>(lexical_analyzer)
+                               : parser<Token>(lexical_analyzer), my_ptr(nullptr)
 {
 }
 

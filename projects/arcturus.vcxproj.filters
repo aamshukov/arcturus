@@ -70,6 +70,9 @@
     <Filter Include="arcturus\type">
       <UniqueIdentifier>{d4861b9b-eea3-4939-a6db-b858dcfd0387}</UniqueIdentifier>
     </Filter>
+    <Filter Include="tools\dsl">
+      <UniqueIdentifier>{94aea5ae-292c-4c8f-b1b9-71cbb0615e55}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\framework\core\edge.hpp">
@@ -345,6 +348,9 @@
     <ClInclude Include="..\src\framework\core\list.hpp">
       <Filter>framework\core</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\framework\frontend\parser\packrat_parser.hpp">
+      <Filter>framework\frontend\parser</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\framework\core\logger.cpp">
@@ -538,7 +544,10 @@
     <None Include="..\src\framework\ir\code.inl">
       <Filter>framework\ir</Filter>
     </None>
-    <None Include="..\src\framework\frontend\parser\packrat.py">
+    <None Include="..\src\tools\dsl\packrat.py">
+      <Filter>tools\dsl</Filter>
+    </None>
+    <None Include="..\src\framework\frontend\parser\packrat_parser.inl">
       <Filter>framework\frontend\parser</Filter>
     </None>
   </ItemGroup>

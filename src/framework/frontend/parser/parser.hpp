@@ -27,7 +27,7 @@ class parser : private noncopyable
 
     protected:
         lexical_analyzer_type   my_lexical_analyzer;    // master lexer, id = 0
-        lexical_analyzers_type  my_lexical_analyzers;   // slave lexers, for example migh be introduced by #include(C/C++) or by import(arktur)
+        lexical_analyzers_type  my_lexical_analyzers;   // slave lexers, for example might be introduced by #include(C/C++) or by import(arktur)
 
         parse_trees_type        my_trees;
 

@@ -19,9 +19,12 @@ class recursive_descent_parser : public parser<Token>
 
         using lexical_analyzer_type = typename parser<token_type>::lexical_analyzer_type;
 
+    protected:
+        const datum_type*   my_ptr; // master/slave lexer(s) backtrack position(s)
+
     public:
-                recursive_descent_parser(const lexical_analyzer_type& lexical_analyzer);
-               ~recursive_descent_parser();
+                            recursive_descent_parser(const lexical_analyzer_type& lexical_analyzer);
+                           ~recursive_descent_parser();
 };
 
 END_NAMESPACE
