@@ -57,8 +57,6 @@
 #include <frontend/parser/parser.inl>
 #include <frontend/parser/recursive_descent_parser.hpp>
 #include <frontend/parser/recursive_descent_parser.inl>
-#include <frontend/parser/packrat_parser.hpp>
-#include <frontend/parser/packrat_parser.inl>
 
 #include <frontend/semantics/semantics.hpp>
 #include <frontend/semantics/semantics.inl>
