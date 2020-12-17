@@ -167,6 +167,7 @@ inline void lexical_analyzer<Token>::rewind_to_snapshot()
 
         my_snapshots.pop();
 
+        my_token.reset();
         my_tokens.clear();
     }
 }

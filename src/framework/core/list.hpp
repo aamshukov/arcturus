@@ -41,8 +41,8 @@ class list : private noncopyable
         const flags_type&   flags() const;
         flags_type&         flags();
 
-        static void         link(list_type& node, list_type& new_node); // append
-        static void         unlink(list_type& node);
+        //?? static void         link(list_type& node, list_type& new_node); // append
+        //?? static void         unlink(list_type& node);
 };
 
 inline const typename list::list_type& list::next() const

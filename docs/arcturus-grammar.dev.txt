@@ -831,7 +831,7 @@ declarations:
             i, j, k : integer -10 .. 100             uninitialized, all have the same range [-10:100], range's bounddary must be const expression
             i, j, k : integer -10 .. 100 = 5         initialized range, initialized with 5, all have the same vaue in the range
 
-            i, j, k = foo()                         deconstruction, types are inferred from foo() return values
+            i, j, k = foo()                          deconstruction, types are inferred from foo() return values
             i, j, k = 10
 
             row/column access (default)
@@ -857,6 +857,8 @@ declarations:
 
             slices, APL?? and python
             slice = a[-1:1; -5:45;]
+            slice = a[-1:1, -5:45]
+            slice = a[-1..1, -5..45]
 
         real
             θ, φ, π : real

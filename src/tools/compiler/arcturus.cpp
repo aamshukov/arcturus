@@ -206,11 +206,11 @@ int _tmain(int argc, _TCHAR *argv[])
     code<arcturus_instruction> code;
 
     //build_code(code);
-    build_code_aho_ullman(code);
+    //build_code_aho_ullman(code);
 
     arcturus_control_flow_graph cfg;
 
-    cfg.build_hir(code);
+    //cfg.build_hir(code);
 
     auto st(factory::create<arcturus_scalar_type>(arcturus_type::kind_type::integer_type));
     auto at(factory::create<arcturus_array_type>(st));
@@ -222,7 +222,7 @@ int _tmain(int argc, _TCHAR *argv[])
     arcturus_configurator::instance().configure(argc, argv);
 
     auto it_file = arcturus_configurator::instance().options().find(L"output-file-name");
-    auto path = (*it_file).second;
+    auto& path = (*it_file).second;
     auto file = std::filesystem::path(path).filename();
     auto log_path = std::filesystem::path(path).parent_path();
     auto log_file = uniqueue_file_name(file, L".log");

@@ -425,9 +425,6 @@
     <ClCompile Include="..\src\framework\frontend\fsa\fsa_codegen.cpp">
       <Filter>framework\frontend\fsa</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\arcturus\arcturus.cpp">
-      <Filter>arcturus</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\arcturus\arcturus_token.cpp">
       <Filter>arcturus</Filter>
     </ClCompile>
