@@ -47,6 +47,7 @@ USINGNAMESPACE(symtable)
 //
 //  if-true             x                               label                   goto label, label is quadruple_type
 //  if-false            x                               label                   goto label, label is quadruple_type
+//  else
 //  goto                                                label                   goto label, label is quadruple_type
 //  label                                               name
 //
