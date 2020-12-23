@@ -42,7 +42,9 @@ class symbol : private noncopyable
             clear       = 0x0000,
             reg         = 0x0001, // if the symbol's value is in a register
             referenced  = 0x0002, // mark variable as referenced
-            reachable   = 0x0004  // mark variable as reachable
+            reachable   = 0x0004, // mark variable as reachable
+            constant    = 0x0008, // symbol represents 'const' value
+            readonly    = 0x0010  // symbol represents 'readonly' value
         };
 
         DECLARE_ENUM_OPERATORS(flag)

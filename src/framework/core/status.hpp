@@ -14,21 +14,21 @@ BEGIN_NAMESPACE(core)
 class status
 {
     public:
-        static const uint64_t info_mask = 0x0001'0000'0000'0000;
-        static const uint64_t warning_mask = 0x0010'0000'0000'0000;
-        static const uint64_t error_mask = 0x0100'0000'0000'0000;
+        static const uint64_t info_mask        = 0x0001'0000'0000'0000;
+        static const uint64_t warning_mask     = 0x0010'0000'0000'0000;
+        static const uint64_t error_mask       = 0x0100'0000'0000'0000;
         static const uint64_t fatal_error_mask = 0x1000'0000'0000'0000;
 
         enum class custom_code : uint64_t
         {
-            success             = 1,
-            info                = (2 | info_mask),
-            warning             = (3 | warning_mask),
-            error               = (0 | error_mask),
-            fatal_error         = (0 | fatal_error_mask),
+            success           = 1,
+            info              = 2 | info_mask,
+            warning           = 3 | warning_mask,
+            error             = 0 | error_mask,
+            fatal_error       = 0 | fatal_error_mask,
 
-            invalid_literal     = (1024 | error_mask),
-            status_deprecated   = (1025 | warning_mask),
+            invalid_literal   = 128 | error_mask,
+            status_deprecated = 129 | warning_mask
         };
 
         enum class contributor

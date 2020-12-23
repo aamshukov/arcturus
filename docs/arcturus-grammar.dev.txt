@@ -905,9 +905,9 @@ declarations:
                        forty = 40, fortyone )
 
         numbers enum string
-            ( odin = "1", dva = "2" )  ------------ when non-integer - all must be initialized
+            ( odin = "1", dva = "2" )           ------------ when non-integer - all must be initialized
         numbers enum real
-            ( r1 = 0.23, r2 = 3.45 )   ------------ when non-integer - all must be initialized
+            ( r1 = 0.23, r2 = 3.45 )            ------------ when non-integer - all must be initialized
         days enum integer ( monday, tuesday, wednesday,
                             thursday, friday, saturday, sunday )
         workdays enum days

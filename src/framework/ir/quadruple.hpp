@@ -45,24 +45,25 @@ USINGNAMESPACE(symtable)
 //  |                   y               z               x                       x = y | z
 //  ^                   y               z               x                       x = y ^ z
 //
-//  if true             x                               label                   goto label, label is quadruple_type
-//  if false            x                               label                   goto label, label is quadruple_type
+//  if-true             x                               label                   goto label, label is quadruple_type
+//  if-false            x                               label                   goto label, label is quadruple_type
 //  goto                                                label                   goto label, label is quadruple_type
 //  label                                               name
 //
 //  function            name                                                    procedure/function definition
-//  param               p1
-//  param               p2
+//  getparam            p1                                                      get param
+//  getparam            p2                                                      get param
 //  ...                 ...
-//  param               pN
+//  getparam            pN                                                      get param
 //  begin                                                                       procedure/function begin
 //  return              y                                                       function
 //  end                                                                         procedure/function end
 //
-//  param               p1                                                      procedure/function call foo(p1, p2, ... pN)
-//  param               p2                                   
-//  ...                 ...
-//  param               pN
+//                                                                              procedure/function call foo(p1, p2, ... pN)
+//  putparam            p1                                                      put param
+//  putparam            p2                                                      put param
+//  ...                 ...                                                     
+//  putparam            pN                                                      put param
 //  call                foo             N
 //
 template <typename Token, typename OpCodeTraits>
