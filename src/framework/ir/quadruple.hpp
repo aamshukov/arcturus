@@ -1,4 +1,4 @@
-//........................................................
+﻿//........................................................
 // Underground Intelligence (UI) Lab Inc. Arthur Amshukov.
 //........................................................
 #ifndef __QUADRUPLE_H__
@@ -11,6 +11,8 @@ BEGIN_NAMESPACE(backend)
 USINGNAMESPACE(core)
 USINGNAMESPACE(frontend)
 USINGNAMESPACE(symtable)
+
+// 𝛗
 
 //  operation           argument1       argument2       result
 //  ..........................................................
@@ -47,7 +49,7 @@ USINGNAMESPACE(symtable)
 //
 //  if-true             x                               label                   goto label, label is quadruple_type
 //  if-false            x                               label                   goto label, label is quadruple_type
-//  else 
+//  else
 //  goto                                                label                   goto label, label is quadruple_type
 //  label                                               name
 //
@@ -66,6 +68,12 @@ USINGNAMESPACE(symtable)
 //  ...                 ...                                                     
 //  putparam            pN                                                      put param
 //  call                foo             N
+//
+//  𝛗-param             p1
+//  𝛗-param             p2
+//  ...                 ...
+//  𝛗-param             pN
+//  𝛗                   N
 //
 template <typename Token, typename OpCodeTraits>
 struct quadruple : public list

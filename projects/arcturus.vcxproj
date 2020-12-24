@@ -188,6 +188,7 @@
     <None Include="..\src\framework\ir\code.inl" />
     <None Include="..\src\framework\ir\ir.inl" />
     <None Include="..\src\framework\ir\ir_visualization.inl" />
+    <None Include="..\src\framework\ir\ssa.inl" />
     <None Include="..\src\framework\symtable\symbol_table.inl" />
     <None Include="..\src\tools\dsl\packrat.py" />
   </ItemGroup>

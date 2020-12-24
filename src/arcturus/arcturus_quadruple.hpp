@@ -1,4 +1,4 @@
-//........................................................
+﻿//........................................................
 // Underground Intelligence (UI) Lab Inc. Arthur Amshukov.
 //........................................................
 #ifndef __ARCTURUS_QUADRUPLE_H__
@@ -120,7 +120,8 @@ struct arcturus_operation_code_traits
         //goto_statement      = 301,
 
         // SSA
-        phi                 = 5000,
+        phi                 = 5000, // 𝛗
+        phi_param,                  // 𝛗-param
 
         sentinel            = 10000
     )

@@ -547,6 +547,9 @@
     <None Include="..\src\framework\frontend\parser\packrat_parser.inl">
       <Filter>framework\frontend\parser</Filter>
     </None>
+    <None Include="..\src\framework\ir\ssa.inl">
+      <Filter>framework\ir</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\docs\arcturus-grammar.dev.txt">
