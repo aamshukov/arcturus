@@ -27,6 +27,21 @@ class ssa : private noncopyable
 
         struct dominator_tree : public tree, public visitable
         {
+            using vertex_type = basic_block_type;
+
+            vertex_type my_vertex;
+
+            const vertex_type& vertex() const
+            {
+                return my_vertex;
+            }
+
+            vertex_type& vertex()
+            {
+                return my_vertex;
+            }
+
+            ACCEPT_METHOD;
         };
 
         using dominator_tree_type =  dominator_tree;

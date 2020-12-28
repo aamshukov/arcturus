@@ -144,5 +144,72 @@ namespace tests
             TEST_METHOD(BuildCode)
             {
             }
+
+            TEST_METHOD(CreateGraph)
+            {
+                graph<vertex> gr;
+
+                auto v1 = *gr.add_vertex(factory::create<vertex>(1)).first;
+                auto v2 = *gr.add_vertex(factory::create<vertex>(2)).first;
+                auto v3 = *gr.add_vertex(factory::create<vertex>(3)).first;
+                auto v4 = *gr.add_vertex(factory::create<vertex>(4)).first;
+                auto v5 = *gr.add_vertex(factory::create<vertex>(5)).first;
+                auto v6 = *gr.add_vertex(factory::create<vertex>(6)).first;
+                auto v7 = *gr.add_vertex(factory::create<vertex>(7)).first;
+                auto v8 = *gr.add_vertex(factory::create<vertex>(8)).first;
+                auto v9 = *gr.add_vertex(factory::create<vertex>(9)).first;
+
+                gr.remove_vertex(v9);
+
+                auto e1 = *gr.add_edge(v1, v2, 0.5).first;
+                gr.remove_edge(e1);
+
+                gr.add_edge(v1, v2, 0.1);
+                gr.add_edge(v1, v5, 0.2);
+                gr.add_edge(v1, v3, 0.3);
+                gr.add_edge(v1, v7, 0.3);
+                gr.add_edge(v2, v1, 0.4);
+                gr.add_edge(v3, v2, 0.5);
+                gr.add_edge(v7, v8, 0.3);
+                gr.add_edge(v8, v1, 0.3);
+                gr.add_edge(v8, v2, 0.3);
+
+                gr.generate_graphviz_file(LR"(d:\tmp\CreateGraph0.dot)", false);
+
+                gr.remove_vertex(v1);
+
+                gr.generate_graphviz_file(LR"(d:\tmp\CreateGraph1.dot)", false);
+            }
+
+            TEST_METHOD(VisualizeGraphGraphviz)
+            {
+                graph<vertex> gr;
+
+                const auto& v1 = *gr.add_vertex(factory::create<vertex>(1)).first;
+                const auto& v2 = *gr.add_vertex(factory::create<vertex>(2)).first;
+                const auto& v3 = *gr.add_vertex(factory::create<vertex>(3)).first;
+                const auto& v4 = *gr.add_vertex(factory::create<vertex>(4)).first;
+                const auto& v5 = *gr.add_vertex(factory::create<vertex>(5)).first;
+                const auto& v6 = *gr.add_vertex(factory::create<vertex>(6)).first;
+
+                gr.add_edge(v1, v2, 0.5);
+                gr.add_edge(v2, v3, 0.5);
+                gr.add_edge(v2, v4, 0.5);
+                gr.add_edge(v2, v6, 0.5);
+                gr.add_edge(v3, v5, 0.5);
+                gr.add_edge(v4, v5, 0.5);
+                gr.add_edge(v5, v2, 0.5);
+
+                graph<vertex>::vertices_type predecessors;
+                gr.collect_predecessors(v2, predecessors);
+
+                graph<vertex>::vertices_type successors;
+                gr.collect_successors(v2, successors);
+
+                gr.generate_graphviz_file(LR"(d:\tmp\GraphGraphviz.dot)", false);
+
+                // D:\Soft\graphviz\2.38\release\bin\dot -Tpng d:\tmp\GraphGraphviz.dot -o d:\tmp\GraphGraphviz.png
+                // for %i in (d:\tmp\*.dot) do D:\Soft\graphviz\2.38\release\bin\dot -Tpng %i -o %i.png
+            }
     };
 }
