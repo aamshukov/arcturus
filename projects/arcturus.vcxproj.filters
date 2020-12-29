@@ -351,6 +351,12 @@
     <ClInclude Include="..\src\framework\frontend\parser\packrat_parser.hpp">
       <Filter>framework\frontend\parser</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\framework\core\dominator_vertex.hpp">
+      <Filter>framework\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\core\graph_algorithms.hpp">
+      <Filter>framework\core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\framework\core\logger.cpp">

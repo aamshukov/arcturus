@@ -9,8 +9,10 @@
 #include <core/dag.hpp>
 
 #include <core/vertex.hpp>
+#include <core/dominator_vertex.hpp>
 #include <core/edge.hpp>
 #include <core/graph.hpp>
+#include <core/graph_algorithms.hpp>
 
 #include <core/timer.hpp>
 
@@ -149,19 +151,19 @@ namespace tests
             {
                 graph<vertex> gr;
 
-                auto v1 = *gr.add_vertex(factory::create<vertex>(1)).first;
-                auto v2 = *gr.add_vertex(factory::create<vertex>(2)).first;
-                auto v3 = *gr.add_vertex(factory::create<vertex>(3)).first;
-                auto v4 = *gr.add_vertex(factory::create<vertex>(4)).first;
-                auto v5 = *gr.add_vertex(factory::create<vertex>(5)).first;
-                auto v6 = *gr.add_vertex(factory::create<vertex>(6)).first;
-                auto v7 = *gr.add_vertex(factory::create<vertex>(7)).first;
-                auto v8 = *gr.add_vertex(factory::create<vertex>(8)).first;
-                auto v9 = *gr.add_vertex(factory::create<vertex>(9)).first;
+                const auto& v1 = *gr.add_vertex(factory::create<vertex>(1)).first;
+                const auto& v2 = *gr.add_vertex(factory::create<vertex>(2)).first;
+                const auto& v3 = *gr.add_vertex(factory::create<vertex>(3)).first;
+                const auto& v4 = *gr.add_vertex(factory::create<vertex>(4)).first;
+                const auto& v5 = *gr.add_vertex(factory::create<vertex>(5)).first;
+                const auto& v6 = *gr.add_vertex(factory::create<vertex>(6)).first;
+                const auto& v7 = *gr.add_vertex(factory::create<vertex>(7)).first;
+                const auto& v8 = *gr.add_vertex(factory::create<vertex>(8)).first;
+                const auto& v9 = *gr.add_vertex(factory::create<vertex>(9)).first;
 
                 gr.remove_vertex(v9);
 
-                auto e1 = *gr.add_edge(v1, v2, 0.5).first;
+                auto& e1 = *gr.add_edge(v1, v2, 0.5).first;
                 gr.remove_edge(e1);
 
                 gr.add_edge(v1, v2, 0.1);
@@ -210,6 +212,40 @@ namespace tests
 
                 // D:\Soft\graphviz\2.38\release\bin\dot -Tpng d:\tmp\GraphGraphviz.dot -o d:\tmp\GraphGraphviz.png
                 // for %i in (d:\tmp\*.dot) do D:\Soft\graphviz\2.38\release\bin\dot -Tpng %i -o %i.png
+            }
+
+            TEST_METHOD(ComputeDominatorsGraph)
+            {
+                std::shared_ptr<graph<dominator_vertex>> gr(factory::create<graph<dominator_vertex>>());
+
+                const auto& v1 = *(*gr).add_vertex(factory::create<dominator_vertex>(1)).first;
+                const auto& v2 = *(*gr).add_vertex(factory::create<dominator_vertex>(2)).first;
+                const auto& v3 = *(*gr).add_vertex(factory::create<dominator_vertex>(3)).first;
+                const auto& v4 = *(*gr).add_vertex(factory::create<dominator_vertex>(4)).first;
+                const auto& v5 = *(*gr).add_vertex(factory::create<dominator_vertex>(5)).first;
+                const auto& v6 = *(*gr).add_vertex(factory::create<dominator_vertex>(6)).first;
+                const auto& v7 = *(*gr).add_vertex(factory::create<dominator_vertex>(7)).first;
+                const auto& v8 = *(*gr).add_vertex(factory::create<dominator_vertex>(8)).first;
+                const auto& v9 = *(*gr).add_vertex(factory::create<dominator_vertex>(9)).first;
+
+                (*gr).remove_vertex(v9);
+
+                auto& e1 = *(*gr).add_edge(v1, v2, 0.5).first;
+                (*gr).remove_edge(e1);
+
+                (*gr).add_edge(v1, v2, 0.1);
+                (*gr).add_edge(v1, v5, 0.2);
+                (*gr).add_edge(v1, v3, 0.3);
+                (*gr).add_edge(v1, v7, 0.3);
+                (*gr).add_edge(v2, v1, 0.4);
+                (*gr).add_edge(v3, v2, 0.5);
+                (*gr).add_edge(v7, v8, 0.3);
+                (*gr).add_edge(v8, v1, 0.3);
+                (*gr).add_edge(v8, v2, 0.3);
+
+                graph_algorithms::compute_dominators(gr);
+
+                (*gr).generate_graphviz_file(LR"(d:\tmp\ComputeDominatorsGraph.dot)", false);
             }
     };
 }

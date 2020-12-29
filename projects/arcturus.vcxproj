@@ -54,11 +54,13 @@
     <ClInclude Include="..\src\framework\core\dag.hpp" />
     <ClInclude Include="..\src\framework\core\diagnostics.hpp" />
     <ClInclude Include="..\src\framework\core\domain_helper.hpp" />
+    <ClInclude Include="..\src\framework\core\dominator_vertex.hpp" />
     <ClInclude Include="..\src\framework\core\edge.hpp" />
     <ClInclude Include="..\src\framework\core\enum.hpp" />
     <ClInclude Include="..\src\framework\core\enumerate.hpp" />
     <ClInclude Include="..\src\framework\core\factory.hpp" />
     <ClInclude Include="..\src\framework\core\graph.hpp" />
+    <ClInclude Include="..\src\framework\core\graph_algorithms.hpp" />
     <ClInclude Include="..\src\framework\core\list.hpp" />
     <ClInclude Include="..\src\framework\core\logger.hpp" />
     <ClInclude Include="..\src\framework\core\noncopyable.hpp" />

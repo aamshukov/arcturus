@@ -13,7 +13,7 @@ class vertex : public visitable
     public:
         using vertex_type = std::shared_ptr<vertex>;
 
-        struct vertex_key_comparator
+        struct vertex_lt_key_comparator
         {
             bool operator() (const vertex_type& lhs, const vertex_type& rhs) const
             {
@@ -21,12 +21,30 @@ class vertex : public visitable
             }
         };
 
-        using vertices_type = std::set<vertex_type, vertex_key_comparator>;
+        struct vertex_eq_key_comparator
+        {
+            bool operator() (const vertex_type& lhs, const vertex_type& rhs) const
+            {
+                return (*lhs).id() == (*rhs).id();
+            }
+        };
+
+        struct vertex_hash
+        {
+            std::size_t operator () (const vertex_type& vertex) const
+            {
+                std::size_t result = (*vertex).id();
+                result ^= std::hash<std::size_t>{}(result + 0x9E3779B9 + (result << 6) + (result >> 2)); // aka boost hash_combine
+                return result;
+            }
+        };
+
+        using vertices_type = std::set<vertex_type, vertex_lt_key_comparator>;
         using vertices_iterator_type = typename vertices_type::iterator;
 
         using id_type = std::size_t;
 
-    private:
+    protected:
         id_type                 my_id;
         vertices_type           my_adjacencies;
 

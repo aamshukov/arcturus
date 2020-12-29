@@ -21,42 +21,15 @@ class graph : private noncopyable
 
     public:
         using vertex_type = std::shared_ptr<TVertex>;
-        using vertices_type = typename vertex::vertices_type;
+        using vertices_type = std::set<vertex_type, typename vertex::vertex_lt_key_comparator>;
         using vertices_iterator_type = typename vertices_type::iterator;
-
-        struct vertex_key_comparator
-        {
-            bool operator() (const vertex_type& lhs, const vertex_type& rhs) const
-            {
-                return (*lhs).id() == (*rhs).id();
-            }
-        };
 
         using edge_value_type = TEdgeValue;
         using edge_type = std::shared_ptr<edge<TVertex, TEdgeValue, N>>;
-
-        struct edge_key_comparator
-        {
-            bool operator() (const edge_type& lhs, const edge_type& rhs) const
-            {
-                return (*lhs).id() < (*rhs).id();
-            }
-        };
-
-        using edges_type = std::set<edge_type, edge_key_comparator>;
+        using edges_type = std::set<edge_type, typename edge<TVertex, TEdgeValue, N>::edge_lt_key_comparator>;
         using edges_iterator_type = typename edges_type::iterator;
 
-        struct vertex_hash
-        {
-            std::size_t operator () (const vertex_type& vertex) const
-            {
-                std::size_t result = (*vertex).id();
-                result ^= std::hash<std::size_t>{}(result + 0x9E3779B9 + (result << 6) + (result >> 2)); // aka boost hash_combine
-                return result;
-            }
-        };
-
-        using vertex_edge_map_type = std::unordered_map<vertex_type, edges_type, vertex_hash, vertex_key_comparator>;
+        using vertex_edge_map_type = std::unordered_map<vertex_type, edges_type, typename vertex::vertex_hash, typename vertex::vertex_eq_key_comparator>;
 
         using id_type = int;
         using size_type = int;

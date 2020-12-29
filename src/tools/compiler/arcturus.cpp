@@ -11,6 +11,7 @@
 #include <core/dag.hpp>
 
 #include <core/vertex.hpp>
+#include <core/dominator_vertex.hpp>
 #include <core/edge.hpp>
 #include <core/graph.hpp>
 
