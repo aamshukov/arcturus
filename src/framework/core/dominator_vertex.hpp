@@ -11,14 +11,18 @@ BEGIN_NAMESPACE(core)
 class dominator_vertex : public vertex
 {
     public:
-        using vertex_type = typename vertex::vertex_type;
-        using vertices_type = typename vertex::vertices_type;
+        using vertex_type = std::shared_ptr<dominator_vertex>;
+        using vertices_type = std::set<vertex_type, vertex_lt_key_comparator<dominator_vertex>>;
+
+        using bitset_type = std::shared_ptr<bitset<>>;
 
         using id_type = typename vertex::id_type;
 
     protected:
         vertices_type           my_dominators;
         vertex_type             my_idominator;
+
+        bitset_type             my_bitset;
 
     public:
                                 dominator_vertex(const id_type& id);
@@ -29,6 +33,9 @@ class dominator_vertex : public vertex
 
         const vertex_type&      idominator() const;
         vertex_type&            idominator();
+
+        const bitset_type&      bitset() const;
+        bitset_type&            bitset();
 
         ACCEPT_METHOD;
 };
@@ -60,6 +67,16 @@ inline const typename dominator_vertex::vertex_type& dominator_vertex::idominato
 inline typename dominator_vertex::vertex_type& dominator_vertex::idominator()
 {
     return my_idominator;
+}
+
+inline const typename dominator_vertex::bitset_type& dominator_vertex::bitset() const
+{
+    return my_bitset;
+}
+
+inline typename dominator_vertex::bitset_type& dominator_vertex::bitset()
+{
+    return my_bitset;
 }
 
 END_NAMESPACE

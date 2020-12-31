@@ -8,7 +8,7 @@
 
 BEGIN_NAMESPACE(core)
 
-template <typename TVertex, typename TEdgeValue = double, std::size_t N = 2>
+template <typename TVertex, typename TEdgeValue = double, std::size_t N = GraphConnectivityRank>
 class graph : private noncopyable
 {
     protected:
@@ -21,15 +21,15 @@ class graph : private noncopyable
 
     public:
         using vertex_type = std::shared_ptr<TVertex>;
-        using vertices_type = std::set<vertex_type, typename vertex::vertex_lt_key_comparator>;
+        using vertices_type = std::set<vertex_type, vertex_lt_key_comparator<vertex>>;
         using vertices_iterator_type = typename vertices_type::iterator;
 
         using edge_value_type = TEdgeValue;
         using edge_type = std::shared_ptr<edge<TVertex, TEdgeValue, N>>;
-        using edges_type = std::set<edge_type, typename edge<TVertex, TEdgeValue, N>::edge_lt_key_comparator>;
+        using edges_type = std::set<edge_type, edge_lt_key_comparator<TVertex, TEdgeValue, N>>;
         using edges_iterator_type = typename edges_type::iterator;
 
-        using vertex_edge_map_type = std::unordered_map<vertex_type, edges_type, typename vertex::vertex_hash, typename vertex::vertex_eq_key_comparator>;
+        using vertex_edge_map_type = std::unordered_map<vertex_type, edges_type, vertex_hash<vertex>, vertex_eq_key_comparator<vertex>>;
 
         using id_type = int;
         using size_type = int;

@@ -48,6 +48,7 @@
     <ClInclude Include="..\src\framework\content\file_data_provider.hpp" />
     <ClInclude Include="..\src\framework\content\string_data_provider.hpp" />
     <ClInclude Include="..\src\framework\controller\controller.hpp" />
+    <ClInclude Include="..\src\framework\core\bitset.hpp" />
     <ClInclude Include="..\src\framework\core\configurator.hpp" />
     <ClInclude Include="..\src\framework\core\context.hpp" />
     <ClInclude Include="..\src\framework\core\counter.hpp" />

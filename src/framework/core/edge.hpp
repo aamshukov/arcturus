@@ -8,30 +8,37 @@
 
 BEGIN_NAMESPACE(core)
 
-template <typename TVertex, typename TValue = double, std::size_t N = 2>
+const std::size_t GraphConnectivityRank = 2;
+
+template <typename TVertex, typename TValue = double, std::size_t N = GraphConnectivityRank>
+class edge;
+
+template <typename TVertex, typename TValue = double, std::size_t N = GraphConnectivityRank>
+struct edge_lt_key_comparator
+{
+    using edge_type = std::shared_ptr<edge<TVertex, TValue, N>>;
+    bool operator() (const edge_type& lhs, const edge_type& rhs) const
+    {
+        return (*lhs).id() < (*rhs).id();
+    }
+};
+
+template <typename TVertex, typename TValue = double, std::size_t N = GraphConnectivityRank>
+struct edge_eq_key_comparator
+{
+    using edge_type = std::shared_ptr<edge<TVertex, TValue, N>>;
+    bool operator() (const edge_type& lhs, const edge_type& rhs) const
+    {
+        return (*lhs).id() == (*rhs).id();
+    }
+};
+
+template <typename TVertex, typename TValue, std::size_t N>
 class edge : private noncopyable
 {
     public:
         using vertex_type = std::shared_ptr<TVertex>;
         using vertices_type = vertex_type[N]; // usually has two vertices and more vertices in hyper-graphs
-
-        using edge_type = std::shared_ptr<edge<TVertex, TValue, N>>;
-
-        struct edge_lt_key_comparator
-        {
-            bool operator() (const edge_type& lhs, const edge_type& rhs) const
-            {
-                return (*lhs).id() < (*rhs).id();
-            }
-        };
-
-        struct edge_eq_key_comparator
-        {
-            bool operator() (const edge_type& lhs, const edge_type& rhs) const
-            {
-                return (*lhs).id() == (*rhs).id();
-            }
-        };
 
         using value_type = TValue; // edge value, might be weight
 

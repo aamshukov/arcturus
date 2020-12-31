@@ -177,6 +177,14 @@ void multiply(bool a[N][N], bool b[N][N], bool c[N][N])
     }
 }
 
+template <typename T = size_type>
+constexpr auto calculate_alignment(T value, size_type alignment) noexcept
+{
+    // align value 'value' to boundary 'alignment' which should be power of 2
+    return ((value + (alignment - 1)) & ~(alignment - 1));
+}
+
+
 bool is_little_endian();
 bool is_big_endian();
 

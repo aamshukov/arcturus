@@ -4,6 +4,8 @@
 #include <core/visitable.hpp>
 #include <core/visitor.hpp>
 
+#include <core/bitset.hpp>
+
 #include <core/list.hpp>
 #include <core/tree.hpp>
 #include <core/dag.hpp>
@@ -243,9 +245,250 @@ namespace tests
                 (*gr).add_edge(v8, v1, 0.3);
                 (*gr).add_edge(v8, v2, 0.3);
 
-                graph_algorithms::compute_dominators(gr);
+                graph_algorithms<dominator_vertex>::compute_dominators(gr);
 
                 (*gr).generate_graphviz_file(LR"(d:\tmp\ComputeDominatorsGraph.dot)", false);
+            }
+
+            TEST_METHOD(CreateBitset)
+            {
+                std::bitset<5> bs0;
+                auto s0 = bs0.to_string();
+
+                bs0.set(0);
+                s0 = bs0.to_string();
+
+                bs0.set(2);
+                s0 = bs0.to_string();
+
+                auto bt = bs0[3];
+                bt = 1;
+                s0 = bs0.to_string();
+                bt.flip();
+                s0 = bs0.to_string();
+
+                bs0[4] = 1;
+                s0 = bs0.to_string();
+
+                bs0.set();
+                s0 = bs0.to_string();
+
+
+                bitset bbs(5);
+                auto s = bbs.to_string();
+
+                bbs.set(0);
+                s = bbs.to_string();
+                bbs.set(2);
+                s = bbs.to_string();
+
+                auto b = bbs[3];
+                b = 1;
+                s = bbs.to_string();
+                b.flip();
+                s = bbs.to_string();
+
+                bbs[4] = 1;
+                s = bbs.to_string();
+
+                bbs.set();
+                s = bbs.to_string();
+            }
+
+            TEST_METHOD(CreateBitsetLong)
+            {
+                const int n = 500;
+
+                std::vector<int> rands;
+
+                std::srand((unsigned int)std::time(nullptr));
+
+                for(auto k = 0; k < n; k++)
+                {
+                    rands.emplace_back(std::rand() % n);
+                    bitset bbs(n);
+                }
+
+                std::bitset<n> bs0;
+                bitset bbs(n);
+
+                for(auto e : rands)
+                {
+                    bs0.set(e);
+                    bbs.set(e);
+                }
+
+                for(auto e : rands)
+                {
+                    {
+                        auto bt = bs0[e];
+                        bt = 1;
+                        bt.flip();
+                    }
+                    {
+                        auto bt = bbs[e];
+                        bt = 1;
+                        bt.flip();
+                    }
+                }
+
+                for(auto e : rands)
+                {
+                    bs0[e] = 1;
+                    bbs[e] = 1;
+                }
+
+                for(auto e : rands)
+                {
+                    bs0.reset(e);
+                    bbs.reset(e);
+                }
+
+                for(auto e : rands)
+                {
+                    bs0.set(e);
+                    bbs.set(e);
+                }
+
+                bs0.flip();
+                bbs.flip();
+
+                auto s0 = bs0.to_string<wchar_t>();
+                auto s = bbs.to_string();
+
+                bool rc = s0 == s;
+
+                Assert::IsTrue(rc);
+            }
+
+            TEST_METHOD(CreateBitsetLong32)
+            {
+                const int n = 5000;
+
+                std::vector<int> rands;
+
+                std::srand((unsigned int)std::time(nullptr));
+
+                for(auto k = 0; k < n; k++)
+                {
+                    rands.emplace_back(std::rand() % n);
+                }
+
+                std::bitset<n> bs0;
+                bitset<uint32_t> bbs(n);
+
+                for(auto e : rands)
+                {
+                    bs0.set(e);
+                    bbs.set(e);
+                }
+
+                for(auto e : rands)
+                {
+                    {
+                        auto bt = bs0[e];
+                        bt = 1;
+                        bt.flip();
+                    }
+                    {
+                        auto bt = bbs[e];
+                        bt = 1;
+                        bt.flip();
+                    }
+                }
+
+                for(auto e : rands)
+                {
+                    bs0[e] = 1;
+                    bbs[e] = 1;
+                }
+
+                for(auto e : rands)
+                {
+                    bs0.reset(e);
+                    bbs.reset(e);
+                }
+
+                for(auto e : rands)
+                {
+                    bs0.set(e);
+                    bbs.set(e);
+                }
+
+                bs0.flip();
+                bbs.flip();
+
+                auto s0 = bs0.to_string<wchar_t>();
+                auto s = bbs.to_string();
+
+                bool rc = s0 == s;
+                
+                Assert::IsTrue(rc);
+            }
+
+            TEST_METHOD(CreateBitsetLong16)
+            {
+                const int n = 5001;
+
+                std::vector<int> rands;
+
+                std::srand((unsigned int)std::time(nullptr));
+
+                for(auto k = 0; k < n; k++)
+                {
+                    rands.emplace_back(std::rand() % n);
+                }
+
+                std::bitset<n> bs0;
+                bitset<uint16_t> bbs(n);
+
+                for(auto e : rands)
+                {
+                    bs0.set(e);
+                    bbs.set(e);
+                }
+
+                for(auto e : rands)
+                {
+                    {
+                        auto bt = bs0[e];
+                        bt = 1;
+                        bt.flip();
+                    }
+                    {
+                        auto bt = bbs[e];
+                        bt = 1;
+                        bt.flip();
+                    }
+                }
+
+                for(auto e : rands)
+                {
+                    bs0[e] = 1;
+                    bbs[e] = 1;
+                }
+
+                for(auto e : rands)
+                {
+                    bs0.reset(e);
+                    bbs.reset(e);
+                }
+
+                for(auto e : rands)
+                {
+                    bs0.set(e);
+                    bbs.set(e);
+                }
+
+                bs0.flip();
+                bbs.flip();
+
+                auto s0 = bs0.to_string<wchar_t>();
+                auto s = bbs.to_string();
+
+                bool rc = s0 == s;
+                
+                Assert::IsTrue(rc);
             }
     };
 }

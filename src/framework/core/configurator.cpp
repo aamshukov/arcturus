@@ -2,6 +2,7 @@
 // Underground Intelligence (UI) Lab Inc. Arthur Amshukov.
 //........................................................
 #include <core/pch.hpp>
+#include <core/configurator.hpp>
 
 BEGIN_NAMESPACE(core)
 

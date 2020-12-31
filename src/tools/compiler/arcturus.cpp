@@ -6,6 +6,8 @@
 #include <core/visitable.hpp>
 #include <core/visitor.hpp>
 
+#include <core/bitset.hpp>
+
 #include <core/list.hpp>
 #include <core/tree.hpp>
 #include <core/dag.hpp>
