@@ -262,6 +262,7 @@ namespace tests
                 s0 = bs0.to_string();
 
                 auto bt = bs0[3];
+                auto rc = bt == 1;
                 bt = 1;
                 s0 = bs0.to_string();
                 bt.flip();
@@ -283,8 +284,11 @@ namespace tests
                 s = bbs.to_string();
 
                 auto b = bbs[3];
+                s = bbs.to_string();
+                rc = b == 1;
                 b = 1;
                 s = bbs.to_string();
+                rc = b == 1;
                 b.flip();
                 s = bbs.to_string();
 
@@ -293,6 +297,8 @@ namespace tests
 
                 bbs.set();
                 s = bbs.to_string();
+
+                bbs[1] = bbs[5];
             }
 
             TEST_METHOD(CreateBitsetLong)
@@ -489,6 +495,39 @@ namespace tests
                 bool rc = s0 == s;
                 
                 Assert::IsTrue(rc);
+            }
+
+            TEST_METHOD(GraphAlgorithmsSetToVector)
+            {
+                const int n = 50001;
+
+                graph<vertex> gr;
+
+                std::srand((unsigned int)std::time(nullptr));
+
+                for(auto k = 0; k < n; k++)
+                {
+                    gr.add_vertex(factory::create<vertex>(std::rand() % n));
+                }
+
+                std::vector<std::shared_ptr<vertex>> result;
+
+                qpf_timer timer;
+
+                timer.start();
+
+                graph_algorithms<vertex>::set_to_vector(gr.vertices(), result);
+
+                timer.stop();
+
+                string_type elapsed_time = timer.elapsed_time_as_string();
+                string_type total_elapsed_time = timer.total_elapsed_time_as_string();
+
+                Logger::WriteMessage(elapsed_time.c_str());
+                Logger::WriteMessage("\n");
+                Logger::WriteMessage(total_elapsed_time.c_str());
+
+                Assert::AreEqual(gr.vertices().size(), result.size());
             }
     };
 }

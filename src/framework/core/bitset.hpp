@@ -259,12 +259,13 @@ template <typename T>
 inline typename bitset<T>::bit& bitset<T>::bit::operator = (const bitset<T>::bit& other)
 {
     (*my_bitset).set(my_position, static_cast<bool>(other));
+    return *this;
 }
 
 template <typename T>
 inline bitset<T>::bit::operator bool () const
 {
-    return (*my_bitset)[my_position];
+    return ((*my_bitset).my_bits[my_position / chunk_size] & (data_type(1) << my_position % chunk_size)) != 0;
 }
 
 template <typename T>
