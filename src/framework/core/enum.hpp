@@ -89,34 +89,34 @@ static std::map<T, string_type> parse_enum(const string_type& values)
 }
 
 #define DECLARE_ENUM_OPERATORS(E)                                       \
-friend constexpr auto operator | (E lhs, E rhs) noexcept                \
+inline friend constexpr auto operator | (E lhs, E rhs) noexcept         \
 {                                                                       \
     using T = std::underlying_type_t<E>;                                \
     return static_cast<E>(static_cast<T>(lhs) | static_cast<T>(rhs));   \
 }                                                                       \
-friend constexpr auto operator |= (E lhs, E rhs) noexcept               \
+inline friend constexpr auto operator |= (E& lhs, E rhs) noexcept       \
 {                                                                       \
     return lhs = lhs | rhs;                                             \
 }                                                                       \
-friend constexpr auto operator & (E lhs, E rhs) noexcept                \
+inline friend constexpr auto operator & (E lhs, E rhs) noexcept         \
 {                                                                       \
     using T = std::underlying_type_t<E>;                                \
     return static_cast<E>(static_cast<T>(lhs) & static_cast<T>(rhs));   \
 }                                                                       \
-friend constexpr auto operator &= (E lhs, E rhs) noexcept               \
+inline friend constexpr auto operator &= (E& lhs, E rhs) noexcept       \
 {                                                                       \
     return lhs = lhs & rhs;                                             \
 }                                                                       \
-friend constexpr auto operator ^ (E lhs, E rhs) noexcept                \
+inline friend constexpr auto operator ^ (E lhs, E rhs) noexcept         \
 {                                                                       \
     using T = std::underlying_type_t<E>;                                \
     return static_cast<E>(static_cast<T>(lhs) ^ static_cast<T>(rhs));   \
 }                                                                       \
-friend constexpr auto operator ^= (E lhs, E rhs) noexcept               \
+inline friend constexpr auto operator ^= (E& lhs, E rhs) noexcept       \
 {                                                                       \
     return lhs = lhs ^ rhs;                                             \
 }                                                                       \
-friend constexpr auto operator ~ (const E& other)                       \
+inline friend constexpr auto operator ~ (const E& other)                \
 {                                                                       \
     using T = std::underlying_type_t<E>;                                \
     return static_cast<E>(~static_cast<T>(other));                      \

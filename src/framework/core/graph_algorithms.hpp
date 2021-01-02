@@ -21,6 +21,8 @@ class graph_algorithms : private noncopyable
 
     public:
         static void set_to_vector(const vertices_type& vertices_set, std::vector<vertex_type>& vertices_vector);
+        static void dfs_to_vector(const vertex_type& root, const vertices_type& vertices_set, std::vector<vertex_type>& vertices_vector);
+
         static void compute_dominators(graph_type& graph);
 };
 
@@ -28,16 +30,49 @@ template <typename TVertex, typename TEdgeValue, std::size_t N>
 void graph_algorithms<TVertex, TEdgeValue, N>::set_to_vector(const typename graph_algorithms<TVertex, TEdgeValue, N>::vertices_type& vertices_set,
                                                              std::vector<typename graph_algorithms<TVertex, TEdgeValue, N>::vertex_type>& vertices_vector)
 {
-    std::vector<vertex_type> vertices;
+    std::vector<vertex_type> result;
 
-    vertices.reserve(vertices_set.size());
+    result.reserve(vertices_set.size());
 
     for(const auto& vertex : vertices_set)
     {
-        vertices.emplace_back(vertex);
+        result.emplace_back(vertex);
     }
 
-    vertices_vector.swap(vertices);
+    vertices_vector.swap(result);
+}
+
+template <typename TVertex, typename TEdgeValue, std::size_t N>
+void graph_algorithms<TVertex, TEdgeValue, N>::dfs_to_vector(const vertex_type& root,
+                                                             const typename graph_algorithms<TVertex, TEdgeValue, N>::vertices_type& vertices_set,
+                                                             std::vector<typename graph_algorithms<TVertex, TEdgeValue, N>::vertex_type>& vertices_vector)
+{
+    std::vector<vertex_type> result;
+    result.reserve(vertices_set.size());
+
+    std::stack<vertex_type> stack;
+
+    result.emplace_back(root);
+    stack.push(root);
+    (*root).flags() |= vertex::flag::visited;
+
+    while(!stack.empty())
+    {
+        auto vertex(stack.top());
+        stack.pop();
+
+        for(auto& adjacent : (*vertex).adjacencies())
+        {
+            if(((*adjacent).flags() & vertex::flag::visited) != vertex::flag::visited)
+            {
+                result.emplace_back(std::dynamic_pointer_cast<vertex_type::element_type>(adjacent));
+                stack.push(std::dynamic_pointer_cast<vertex_type::element_type>(adjacent));
+                (*adjacent).flags() |= vertex::flag::visited;
+            }
+        }
+    }
+
+    vertices_vector.swap(result);
 }
 
 template <typename TVertex, typename TEdgeValue, std::size_t N>

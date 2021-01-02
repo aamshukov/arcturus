@@ -66,10 +66,10 @@ inline T modify_flags(T flags, T add, T remove)
 }
 
 template <typename T = std::size_t>
-inline T modify_enum_flags(T flags, T add, T remove)
+inline T modify_enum_flags(T& flags, T add, T remove)
 {
     static_assert(std::is_enum<T>::value, "Non enum has been provided.");
-    return (T)((static_cast<std::underlying_type_t<T>>(flags) & ~static_cast<std::underlying_type_t<T>>(remove)) | static_cast<std::underlying_type_t<T>>(add));
+    return flags = (T)((static_cast<std::underlying_type_t<T>>(flags) & ~static_cast<std::underlying_type_t<T>>(remove)) | static_cast<std::underlying_type_t<T>>(add));
 }
 
 template <typename T = std::size_t>
