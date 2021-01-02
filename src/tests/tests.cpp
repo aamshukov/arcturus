@@ -245,6 +245,8 @@ namespace tests
                 (*gr).add_edge(v8, v1, 0.3);
                 (*gr).add_edge(v8, v2, 0.3);
 
+                (*gr).root() = v1;
+
                 graph_algorithms<dominator_vertex>::compute_dominators(gr);
 
                 (*gr).generate_graphviz_file(LR"(d:\tmp\ComputeDominatorsGraph.dot)", false);
@@ -501,13 +503,13 @@ namespace tests
             {
                 const int n = 5001;
 
-                graph<vertex> gr;
+                std::shared_ptr<graph<vertex>> gr(factory::create<graph<vertex>>());
 
                 std::srand((unsigned int)std::time(nullptr));
 
                 for(auto k = 0; k < n; k++)
                 {
-                    gr.add_vertex(factory::create<vertex>(std::rand() % n));
+                    (*gr).add_vertex(factory::create<vertex>(std::rand() % n));
                 }
 
                 std::vector<std::shared_ptr<vertex>> result;
@@ -516,7 +518,7 @@ namespace tests
 
                 timer.start();
 
-                graph_algorithms<vertex>::set_to_vector(gr.vertices(), result);
+                graph_algorithms<vertex>::set_to_vector(gr, result);
 
                 timer.stop();
 
@@ -527,7 +529,7 @@ namespace tests
                 Logger::WriteMessage("\n");
                 Logger::WriteMessage(total_elapsed_time.c_str());
 
-                Assert::AreEqual(gr.vertices().size(), result.size());
+                Assert::AreEqual((*gr).vertices().size(), result.size());
             }
 
             TEST_METHOD(Yield0)
@@ -553,28 +555,25 @@ namespace tests
                 }
             }
 
-            TEST_METHOD(GraphAlgorithmsDfsToVector)
+            TEST_METHOD(GraphAlgorithmsDfsToVectorTiming)
             {
                 const int n = 5001;
 
-                graph<dominator_vertex> gr;
+                std::shared_ptr<graph<dominator_vertex>> gr(factory::create<graph<dominator_vertex>>());
 
-                const auto& root = *gr.add_vertex(factory::create<dominator_vertex>(0)).first;
+                (*gr).root() = *(*gr).add_vertex(factory::create<dominator_vertex>(0)).first;
 
                 std::srand((unsigned int)std::time(nullptr));
 
                 for(auto k = 0; k < n; k += 2)
                 {
-                    const auto& v1 = *gr.add_vertex(factory::create<dominator_vertex>(std::rand() % n)).first;
-                    const auto& v2 = *gr.add_vertex(factory::create<dominator_vertex>(std::rand() % n)).first;
+                    const auto& v1 = *(*gr).add_vertex(factory::create<dominator_vertex>(std::rand() % n)).first;
+                    const auto& v2 = *(*gr).add_vertex(factory::create<dominator_vertex>(std::rand() % n)).first;
 
-                    gr.add_edge(v1, v2, 0.1);
+                    (*gr).add_edge(v1, v2, 0.1);
 
-                    //if((*root).adjacencies().empty())
-                    {
-                        gr.add_edge(root, v1, 0.1);
-                        gr.add_edge(root, v2, 0.1);
-                    }
+                    (*gr).add_edge((*gr).root(), v1, 0.1);
+                    (*gr).add_edge((*gr).root(), v2, 0.1);
                 }
 
                 std::vector<std::shared_ptr<dominator_vertex>> result;
@@ -585,7 +584,7 @@ namespace tests
 
                 timer.start();
 
-                graph_algorithms<dominator_vertex>::dfs_to_vector(root, gr.vertices(), result);
+                graph_algorithms<dominator_vertex>::dfs_to_vector(gr, result);
 
                 timer.stop();
 
@@ -601,7 +600,41 @@ namespace tests
                 Logger::WriteMessage("\n");
                 Logger::WriteMessage(total_elapsed_time.c_str());
 
-                Assert::AreEqual(gr.vertices().size(), result.size());
+                Assert::AreEqual((*gr).vertices().size(), result.size());
+            }
+
+            TEST_METHOD(GraphAlgorithmsDfsToVector)
+            {
+                std::shared_ptr<graph<dominator_vertex>> gr(factory::create<graph<dominator_vertex>>());
+
+                const auto& v1 = *(*gr).add_vertex(factory::create<dominator_vertex>(1)).first;
+                const auto& v2 = *(*gr).add_vertex(factory::create<dominator_vertex>(2)).first;
+                const auto& v3 = *(*gr).add_vertex(factory::create<dominator_vertex>(3)).first;
+                const auto& v4 = *(*gr).add_vertex(factory::create<dominator_vertex>(4)).first;
+                const auto& v5 = *(*gr).add_vertex(factory::create<dominator_vertex>(5)).first;
+
+                (*gr).add_edge(v1, v2, 0.1);
+                (*gr).add_edge(v1, v3, 0.2);
+                (*gr).add_edge(v2, v4, 0.3);
+                (*gr).add_edge(v2, v5, 0.3);
+
+                (*gr).root() = v1;
+
+                std::vector<std::shared_ptr<dominator_vertex>> result;
+
+                auto start = std::chrono::high_resolution_clock::now();
+
+                graph_algorithms<dominator_vertex>::dfs_to_vector(gr, result);
+
+                auto finish = std::chrono::high_resolution_clock::now();
+                auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(finish-start).count();
+
+                (*gr).generate_graphviz_file(LR"(d:\tmp\GraphAlgorithmsDfsToVector.dot)", false);
+
+                Logger::WriteMessage(std::to_string(elapsed / 1000000.0).c_str());
+                Logger::WriteMessage("\n");
+
+                Assert::AreEqual((*gr).vertices().size(), result.size());
             }
     };
 }

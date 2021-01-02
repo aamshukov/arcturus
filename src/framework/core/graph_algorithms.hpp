@@ -20,59 +20,65 @@ class graph_algorithms : private noncopyable
         //using dominator_tree_type = std::shared_ptr<tree>;
 
     public:
-        static void set_to_vector(const vertices_type& vertices_set, std::vector<vertex_type>& vertices_vector);
-        static void dfs_to_vector(const vertex_type& root, const vertices_type& vertices_set, std::vector<vertex_type>& vertices_vector);
+        static void set_to_vector(const graph_type& graph, std::vector<vertex_type>& result);
+        static void dfs_to_vector(const graph_type& graph, std::vector<vertex_type>& result);
 
         static void compute_dominators(graph_type& graph);
 };
 
 template <typename TVertex, typename TEdgeValue, std::size_t N>
-void graph_algorithms<TVertex, TEdgeValue, N>::set_to_vector(const typename graph_algorithms<TVertex, TEdgeValue, N>::vertices_type& vertices_set,
-                                                             std::vector<typename graph_algorithms<TVertex, TEdgeValue, N>::vertex_type>& vertices_vector)
+void graph_algorithms<TVertex, TEdgeValue, N>::set_to_vector(const typename graph_algorithms<TVertex, TEdgeValue, N>::graph_type& graph,
+                                                             std::vector<typename graph_algorithms<TVertex, TEdgeValue, N>::vertex_type>& result)
 {
-    std::vector<vertex_type> result;
+    std::vector<vertex_type> vertices;
 
-    result.reserve(vertices_set.size());
+    vertices.reserve((*graph).vertices().size());
 
-    for(const auto& vertex : vertices_set)
+    for(const auto& vertex : (*graph).vertices())
     {
-        result.emplace_back(vertex);
+        vertices.emplace_back(vertex);
     }
 
-    vertices_vector.swap(result);
+    result.swap(vertices);
 }
 
 template <typename TVertex, typename TEdgeValue, std::size_t N>
-void graph_algorithms<TVertex, TEdgeValue, N>::dfs_to_vector(const vertex_type& root,
-                                                             const typename graph_algorithms<TVertex, TEdgeValue, N>::vertices_type& vertices_set,
-                                                             std::vector<typename graph_algorithms<TVertex, TEdgeValue, N>::vertex_type>& vertices_vector)
+void graph_algorithms<TVertex, TEdgeValue, N>::dfs_to_vector(const typename graph_algorithms<TVertex, TEdgeValue, N>::graph_type& graph,
+                                                             std::vector<typename graph_algorithms<TVertex, TEdgeValue, N>::vertex_type>& result)
 {
-    std::vector<vertex_type> result;
-    result.reserve(vertices_set.size());
+    std::vector<vertex_type> vertices;
+
+    vertices.reserve((*graph).vertices().size());
 
     std::stack<vertex_type> stack;
 
-    result.emplace_back(root);
-    stack.push(root);
-    (*root).flags() |= vertex::flag::visited;
+    stack.push((*graph).root());
+
+    (*(*graph).root()).flags() |= vertex::flag::visited;
 
     while(!stack.empty())
     {
         auto vertex(stack.top());
         stack.pop();
 
+        if(((*vertex).flags() & vertex::flag::visited) != vertex::flag::visited)
+        {
+            continue;
+        }
+
+        vertices.emplace_back(std::dynamic_pointer_cast<vertex_type::element_type>(vertex));
+
         for(auto& adjacent : (*vertex).adjacencies())
         {
             if(((*adjacent).flags() & vertex::flag::visited) != vertex::flag::visited)
             {
-                result.emplace_back(std::dynamic_pointer_cast<vertex_type::element_type>(adjacent));
                 stack.push(std::dynamic_pointer_cast<vertex_type::element_type>(adjacent));
                 (*adjacent).flags() |= vertex::flag::visited;
             }
         }
     }
 
-    vertices_vector.swap(result);
+    result.swap(vertices);
 }
 
 template <typename TVertex, typename TEdgeValue, std::size_t N>
@@ -80,6 +86,12 @@ void graph_algorithms<TVertex, TEdgeValue, N>::compute_dominators(typename graph
 {
     if((*graph).digraph())
     {
+        std::vector<std::shared_ptr<dominator_vertex>> vertices;
+
+        graph_algorithms<dominator_vertex>::dfs_to_vector(graph, vertices);
+
+
+
                 constexpr auto s0 = calculate_alignment<uint32_t>(30, 16);
                 constexpr auto s1 = calculate_alignment(30, 16);
                 constexpr auto s2 = calculate_alignment(3, 16);

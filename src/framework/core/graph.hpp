@@ -37,6 +37,7 @@ class graph : private noncopyable
         using counter_type = counter;
 
     protected:
+        vertex_type                         my_root; // optional, usefule for some digraph algorithms
         vertices_type                       my_vertices;
         counter_type                        my_vertices_counter;
 
@@ -50,6 +51,9 @@ class graph : private noncopyable
     public:
                                             graph(bool digraph = true);
                                            ~graph();
+
+        const vertex_type&                  root() const;
+        vertex_type&                        root();
 
         const vertices_type&                vertices() const;
         const edges_type&                   edges() const;
@@ -84,6 +88,18 @@ graph<TVertex, TEdgeValue, N>::~graph()
     my_vertices.clear();
     my_edges.clear();
     my_vertex_edge_map.clear();
+}
+
+template <typename TVertex, typename TEdgeValue, std::size_t N>
+inline const typename graph<TVertex, TEdgeValue, N>::vertex_type& graph<TVertex, TEdgeValue, N>::root() const
+{
+    return my_root;
+}
+
+template <typename TVertex, typename TEdgeValue, std::size_t N>
+inline typename graph<TVertex, TEdgeValue, N>::vertex_type& graph<TVertex, TEdgeValue, N>::root()
+{
+    return my_root;
 }
 
 template <typename TVertex, typename TEdgeValue, std::size_t N>
@@ -322,26 +338,19 @@ void graph<TVertex, TEdgeValue, N>::generate_graphviz_file(const string_type& fi
 
         for(const auto& vertex : my_vertices)
         {
-            if((*vertex).adjacencies().empty())
-            {
-                stream << indent << "node [shape = circle];" << std::endl;
-                stream << indent << (*vertex).id();
-            }
+            stream << indent << (*vertex).id() << " node [shape = circle];" << std::endl;
         }
 
         for(const auto& edge : my_edges)
         {
-            stream << indent << "node [shape = circle];" << std::endl;
-            stream << indent;
-
             const auto& vertex_u((*edge).endpoints()[0]);
             const auto& vertex_v((*edge).endpoints()[1]);
 
-            stream << indent << (*vertex_u).id() << " -> " << (*vertex_v).id();
+            stream << indent << (*vertex_u).id() << " -> " << (*vertex_v).id() << ";" << std::endl;
 
             if(show_values)
             {
-                stream << " [ " << "label = \"" << (*edge).value() << "\" ];" << std::endl;
+                stream << indent << " [ " << "label = \"" << (*edge).value() << "\" ];" << std::endl;
             }
         }
 
