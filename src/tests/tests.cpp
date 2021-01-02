@@ -580,6 +580,8 @@ namespace tests
                 std::vector<std::shared_ptr<dominator_vertex>> result;
 
                 qpf_timer timer;
+                
+                auto start = std::chrono::high_resolution_clock::now();
 
                 timer.start();
 
@@ -587,9 +589,14 @@ namespace tests
 
                 timer.stop();
 
+                auto finish = std::chrono::high_resolution_clock::now();
+                auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(finish-start).count();
+
                 string_type elapsed_time = timer.elapsed_time_as_string();
                 string_type total_elapsed_time = timer.total_elapsed_time_as_string();
 
+                Logger::WriteMessage(std::to_string(elapsed / 1000000.0).c_str());
+                Logger::WriteMessage("\n");
                 Logger::WriteMessage(elapsed_time.c_str());
                 Logger::WriteMessage("\n");
                 Logger::WriteMessage(total_elapsed_time.c_str());
