@@ -305,7 +305,7 @@ namespace tests
 
             TEST_METHOD(CreateBitsetLong)
             {
-                const int n = 500;
+                const int n = 5073;
 
                 std::vector<int> rands;
 
@@ -380,11 +380,18 @@ namespace tests
                 rc = s0 == s;
 
                 Assert::IsTrue(rc);
+
+                bs0.set();
+                bbs.set();
+                s0 = bs0.to_string<wchar_t>();
+                s = bbs.to_string();
+                rc = s0 == s;
+                Assert::IsTrue(rc);
             }
 
             TEST_METHOD(CreateBitsetLong32)
             {
-                const int n = 5000;
+                const int n = 5007;
 
                 std::vector<int> rands;
 
@@ -457,6 +464,13 @@ namespace tests
                 s = bbs.to_string();
                 rc = s0 == s;
 
+                Assert::IsTrue(rc);
+
+                bs0.set();
+                bbs.set();
+                s0 = bs0.to_string<wchar_t>();
+                s = bbs.to_string();
+                rc = s0 == s;
                 Assert::IsTrue(rc);
             }
 
@@ -535,6 +549,13 @@ namespace tests
                 s = bbs.to_string();
                 rc = s0 == s;
 
+                Assert::IsTrue(rc);
+
+                bs0.set();
+                bbs.set();
+                s0 = bs0.to_string<wchar_t>();
+                s = bbs.to_string();
+                rc = s0 == s;
                 Assert::IsTrue(rc);
             }
 

@@ -89,6 +89,7 @@ inline bitset<T>::bitset(size_type size)
 {
     my_size = size;
     my_capacity = (size == 0 ? 0 : size / chunk_size) + 1;
+    my_capacity = calculate_alignment(my_capacity, sizeof(data_type));
     my_bits = std::make_unique<data_type[]>(my_capacity);
 
     reset();
@@ -255,7 +256,18 @@ inline void bitset<T>::adjust()
 {
     if(my_size == 0 || (my_size % chunk_size) != 0)
     {
-        my_bits[my_capacity - 1] &= (data_type(1) << (my_size % chunk_size)) - 1;
+        // with aligned memory my_capacity might be large than capacity ...
+        auto capacity = (my_size == 0 ? 0 : my_size / chunk_size) + 1;
+        auto delta = my_capacity - capacity;
+
+        // ... zero out trailing chunks
+        for(auto k = 0; k < delta; k++)
+        {
+            my_bits[my_capacity - 1 - k] = data_type(0);
+        }
+
+        // ... zero out real capacity's chunk
+        my_bits[capacity - 1] &= (data_type(1) << (my_size % chunk_size)) - 1;
     }
 }
 

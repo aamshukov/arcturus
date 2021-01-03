@@ -49,6 +49,14 @@ template <typename TVertex, typename TEdgeValue, std::size_t N>
 void graph_algorithms<TVertex, TEdgeValue, N>::dfs_to_vector(const typename graph_algorithms<TVertex, TEdgeValue, N>::graph_type& graph,
                                                              std::vector<typename graph_algorithms<TVertex, TEdgeValue, N>::vertex_type>& result)
 {
+    // https://stackoverflow.com/questions/9201166/iterative-dfs-vs-recursive-dfs-and-different-elements-order
+    //  1. In the iterative approach: You first insert all the elements into the stack - and then handle the head of the stack
+    //     [which is the last node inserted] - thus the first node you handle is the last child.
+    //
+    //  2. In the recursive approach: You handle each node when you see it. Thus the first node you handle is the first child.
+    //
+    //  3. To make the iterative DFS yield the same result as the recursive one - you need to add elements to the stack in reverse order
+    //     [for each node, insert its last child first and its first child last]
     std::vector<vertex_type> vertices;
 
     vertices.reserve((*graph).vertices().size());
@@ -69,7 +77,8 @@ void graph_algorithms<TVertex, TEdgeValue, N>::dfs_to_vector(const typename grap
             continue;
         }
 
-        vertices.emplace_back(std::dynamic_pointer_cast<vertex_type::element_type>(vertex));
+        vertices.emplace_back(std::dynamic_pointer_cast<vertex_type::element_type>(vertex)); // 1 ... faster
+        //vertices.emplace(vertices.begin(), std::dynamic_pointer_cast<vertex_type::element_type>(vertex)); // 3 ...
 
         for(auto& adjacent : (*vertex).adjacencies())
         {
