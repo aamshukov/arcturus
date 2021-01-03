@@ -72,8 +72,6 @@ class graph : private noncopyable
 
         void                                collect_predecessors(const vertex_type& vertex, vertices_type& predecessors) const;
         void                                collect_successors(const vertex_type& vertex, vertices_type& successors) const;
-
-        void                                generate_graphviz_file(const string_type& file_name, bool show_values = true) const;
 };
 
 template <typename TVertex, typename TEdgeValue, std::size_t N>
@@ -245,6 +243,9 @@ graph<TVertex, TEdgeValue, N>::add_edge(const typename graph<TVertex, TEdgeValue
         }
     }
 
+    // mark V as referenced
+    (*vertex_v).add_ref();
+
     return result;
 }
 
@@ -273,6 +274,9 @@ inline void graph<TVertex, TEdgeValue, N>::remove_edge(const typename graph<TVer
             edges.erase(edge);
         }
     }
+
+    // reduce ref counter
+    (*vertex_v).release();
 
     // remove edge
     my_edges.erase(edge);
@@ -313,61 +317,6 @@ void graph<TVertex, TEdgeValue, N>::collect_successors(const typename graph<TVer
     {
         successors.emplace(successor);
     }
-}
-
-template <typename TVertex, typename TEdgeValue, std::size_t N>
-void graph<TVertex, TEdgeValue, N>::generate_graphviz_file(const string_type& file_name, bool show_values) const
-{
-    log_info(L"Generating graphviz file of a graph ...");
-
-    std::wofstream stream;
-
-    try
-    {
-        stream.open(file_name.c_str(), std::ios::out | std::ios::binary);
-
-        if(!stream.is_open() || stream.bad() || stream.fail())
-        {
-            log_error(L"Failed to generate graphviz file of a graph: stream is either open or in a bad condition.");
-        }
-
-        const char_type* indent(get_indent(4));
-
-        stream << (digraph() ? L"digraph" : L"graph") << std::endl;
-        stream << L"{" << std::endl;
-
-        for(const auto& vertex : my_vertices)
-        {
-            stream << indent << (*vertex).id() << " node [shape = circle];" << std::endl;
-        }
-
-        for(const auto& edge : my_edges)
-        {
-            const auto& vertex_u((*edge).endpoints()[0]);
-            const auto& vertex_v((*edge).endpoints()[1]);
-
-            stream << indent << (*vertex_u).id() << " -> " << (*vertex_v).id() << ";" << std::endl;
-
-            if(show_values)
-            {
-                stream << indent << " [ " << "label = \"" << (*edge).value() << "\" ];" << std::endl;
-            }
-        }
-
-        stream << L"}" << std::endl;
-
-        stream.flush();
-        stream.clear();
-        stream.close();
-    }
-    catch(const std::exception& ex)
-    {
-        log_exception(ex, L"Failed to generate graphviz file of a graph: error occurred.");
-    }
-
-    log_info(L"Generated graphviz file of a graph.");
-
-    // D:\Soft\graphviz\2.38\release\bin\dot -Tpng d:\tmp\cfg.dot -o d:\tmp\cfg.png
 }
 
 END_NAMESPACE

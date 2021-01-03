@@ -51,8 +51,8 @@ class vertex : public visitable
 
         enum class flag : uint64_t
         {
-            clear   = 0x0000,
-            visited = 0x0001
+            clear      = 0x0000,
+            visited    = 0x0001
         };
 
         DECLARE_ENUM_OPERATORS(flag)
@@ -64,6 +64,8 @@ class vertex : public visitable
         vertices_type           my_adjacencies;
 
         flags_type              my_flags;
+
+        size_type               my_ref_count; // if the vertex is referenced by another vertices
 
     public:
                                 vertex(const id_type& id);
@@ -78,11 +80,15 @@ class vertex : public visitable
         const flags_type&       flags() const;
         flags_type&             flags();
 
+        size_type               ref_count() const;
+        size_type               add_ref();
+        size_type               release();
+
         ACCEPT_METHOD;
 };
 
 inline vertex::vertex(const typename vertex::id_type& id = 0)
-             : my_id(id), my_flags(vertex::flags_type::clear)
+             : my_id(id), my_flags(vertex::flags_type::clear), my_ref_count(0)
 {
 }
 
@@ -119,6 +125,30 @@ inline typename vertex::flags_type& vertex::flags()
 
 {
     return my_flags;
+}
+
+inline size_type vertex::ref_count() const
+{
+    return my_ref_count;
+}
+
+inline size_type vertex::add_ref()
+{
+    return ++my_ref_count;
+}
+
+inline size_type vertex::release()
+{
+    if(my_ref_count > 0)
+    {
+        my_ref_count--;
+    }
+    else
+    {
+        // ... something wrong
+    }
+
+    return my_ref_count;
 }
 
 END_NAMESPACE

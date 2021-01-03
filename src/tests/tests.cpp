@@ -151,66 +151,66 @@ namespace tests
 
             TEST_METHOD(CreateGraph)
             {
-                graph<vertex> gr;
+                std::shared_ptr<graph<vertex>> gr(factory::create<graph<vertex>>());
 
-                const auto& v1 = *gr.add_vertex(factory::create<vertex>(1)).first;
-                const auto& v2 = *gr.add_vertex(factory::create<vertex>(2)).first;
-                const auto& v3 = *gr.add_vertex(factory::create<vertex>(3)).first;
-                const auto& v4 = *gr.add_vertex(factory::create<vertex>(4)).first;
-                const auto& v5 = *gr.add_vertex(factory::create<vertex>(5)).first;
-                const auto& v6 = *gr.add_vertex(factory::create<vertex>(6)).first;
-                const auto& v7 = *gr.add_vertex(factory::create<vertex>(7)).first;
-                const auto& v8 = *gr.add_vertex(factory::create<vertex>(8)).first;
-                const auto& v9 = *gr.add_vertex(factory::create<vertex>(9)).first;
+                const auto& v1 = *(*gr).add_vertex(factory::create<vertex>(1)).first;
+                const auto& v2 = *(*gr).add_vertex(factory::create<vertex>(2)).first;
+                const auto& v3 = *(*gr).add_vertex(factory::create<vertex>(3)).first;
+                const auto& v4 = *(*gr).add_vertex(factory::create<vertex>(4)).first;
+                const auto& v5 = *(*gr).add_vertex(factory::create<vertex>(5)).first;
+                const auto& v6 = *(*gr).add_vertex(factory::create<vertex>(6)).first;
+                const auto& v7 = *(*gr).add_vertex(factory::create<vertex>(7)).first;
+                const auto& v8 = *(*gr).add_vertex(factory::create<vertex>(8)).first;
+                const auto& v9 = *(*gr).add_vertex(factory::create<vertex>(9)).first;
 
-                gr.remove_vertex(v9);
+                (*gr).remove_vertex(v9);
 
-                auto& e1 = *gr.add_edge(v1, v2, 0.5).first;
-                gr.remove_edge(e1);
+                auto& e1 = *(*gr).add_edge(v1, v2, 0.5).first;
+                (*gr).remove_edge(e1);
 
-                gr.add_edge(v1, v2, 0.1);
-                gr.add_edge(v1, v5, 0.2);
-                gr.add_edge(v1, v3, 0.3);
-                gr.add_edge(v1, v7, 0.3);
-                gr.add_edge(v2, v1, 0.4);
-                gr.add_edge(v3, v2, 0.5);
-                gr.add_edge(v7, v8, 0.3);
-                gr.add_edge(v8, v1, 0.3);
-                gr.add_edge(v8, v2, 0.3);
+                (*gr).add_edge(v1, v2, 0.1);
+                (*gr).add_edge(v1, v5, 0.2);
+                (*gr).add_edge(v1, v3, 0.3);
+                (*gr).add_edge(v1, v7, 0.3);
+                (*gr).add_edge(v2, v1, 0.4);
+                (*gr).add_edge(v3, v2, 0.5);
+                (*gr).add_edge(v7, v8, 0.3);
+                (*gr).add_edge(v8, v1, 0.3);
+                (*gr).add_edge(v8, v2, 0.3);
 
-                gr.generate_graphviz_file(LR"(d:\tmp\CreateGraph0.dot)", false);
+                graph_algorithms<vertex>::generate_graphviz_file(gr, LR"(d:\tmp\CreateGraph0.dot)", false);
 
-                gr.remove_vertex(v1);
+                (*gr).remove_vertex(v1);
 
-                gr.generate_graphviz_file(LR"(d:\tmp\CreateGraph1.dot)", false);
+                graph_algorithms<vertex>::generate_graphviz_file(gr, LR"(d:\tmp\CreateGraph1.dot)", false);
             }
 
             TEST_METHOD(VisualizeGraphGraphviz)
             {
-                graph<vertex> gr;
+                std::shared_ptr<graph<vertex>> gr(factory::create<graph<vertex>>());
 
-                const auto& v1 = *gr.add_vertex(factory::create<vertex>(1)).first;
-                const auto& v2 = *gr.add_vertex(factory::create<vertex>(2)).first;
-                const auto& v3 = *gr.add_vertex(factory::create<vertex>(3)).first;
-                const auto& v4 = *gr.add_vertex(factory::create<vertex>(4)).first;
-                const auto& v5 = *gr.add_vertex(factory::create<vertex>(5)).first;
-                const auto& v6 = *gr.add_vertex(factory::create<vertex>(6)).first;
+                const auto& v1 = *(*gr).add_vertex(factory::create<vertex>(1)).first;
+                const auto& v2 = *(*gr).add_vertex(factory::create<vertex>(2)).first;
+                const auto& v3 = *(*gr).add_vertex(factory::create<vertex>(3)).first;
+                const auto& v4 = *(*gr).add_vertex(factory::create<vertex>(4)).first;
+                const auto& v5 = *(*gr).add_vertex(factory::create<vertex>(5)).first;
+                const auto& v6 = *(*gr).add_vertex(factory::create<vertex>(6)).first;
 
-                gr.add_edge(v1, v2, 0.5);
-                gr.add_edge(v2, v3, 0.5);
-                gr.add_edge(v2, v4, 0.5);
-                gr.add_edge(v2, v6, 0.5);
-                gr.add_edge(v3, v5, 0.5);
-                gr.add_edge(v4, v5, 0.5);
-                gr.add_edge(v5, v2, 0.5);
+                (*gr).add_edge(v1, v2, 0.5);
+                (*gr).add_edge(v2, v3, 0.5);
+                (*gr).add_edge(v2, v4, 0.5);
+                (*gr).add_edge(v2, v6, 0.5);
+                (*gr).add_edge(v3, v5, 0.5);
+                (*gr).add_edge(v4, v5, 0.5);
+                (*gr).add_edge(v5, v2, 0.5);
 
                 graph<vertex>::vertices_type predecessors;
-                gr.collect_predecessors(v2, predecessors);
+                (*gr).collect_predecessors(v2, predecessors);
 
                 graph<vertex>::vertices_type successors;
-                gr.collect_successors(v2, successors);
+                (*gr).collect_successors(v2, successors);
 
-                gr.generate_graphviz_file(LR"(d:\tmp\GraphGraphviz.dot)", false);
+                graph_algorithms<vertex>::generate_graphviz_file(gr, LR"(d:\tmp\GraphGraphviz.dot)", false);
 
                 // D:\Soft\graphviz\2.38\release\bin\dot -Tpng d:\tmp\GraphGraphviz.dot -o d:\tmp\GraphGraphviz.png
                 // for %i in (d:\tmp\*.dot) do D:\Soft\graphviz\2.38\release\bin\dot -Tpng %i -o %i.png
@@ -249,7 +249,7 @@ namespace tests
 
                 graph_algorithms<dominator_vertex>::compute_dominators(gr);
 
-                (*gr).generate_graphviz_file(LR"(d:\tmp\ComputeDominatorsGraph.dot)", false);
+                graph_algorithms<dominator_vertex>::generate_graphviz_file(gr, LR"(d:\tmp\ComputeDominatorsGraph.dot)", false);
             }
 
             TEST_METHOD(CreateBitset)
@@ -367,6 +367,19 @@ namespace tests
                 bool rc = s0 == s;
 
                 Assert::IsTrue(rc);
+
+                bitset bbscp(bbs);
+                s = bbs.to_string();
+                rc = s0 == s;
+
+                Assert::IsTrue(rc);
+
+                bitset bbsopcp;
+                bbsopcp = bbs;
+                s = bbs.to_string();
+                rc = s0 == s;
+
+                Assert::IsTrue(rc);
             }
 
             TEST_METHOD(CreateBitsetLong32)
@@ -432,6 +445,19 @@ namespace tests
                 bool rc = s0 == s;
                 
                 Assert::IsTrue(rc);
+
+                bitset bbscp(bbs);
+                s = bbs.to_string();
+                rc = s0 == s;
+
+                Assert::IsTrue(rc);
+
+                bitset<uint32_t> bbsopcp;
+                bbsopcp = bbs;
+                s = bbs.to_string();
+                rc = s0 == s;
+
+                Assert::IsTrue(rc);
             }
 
             TEST_METHOD(CreateBitsetLong16)
@@ -496,6 +522,19 @@ namespace tests
 
                 bool rc = s0 == s;
                 
+                Assert::IsTrue(rc);
+
+                bitset bbscp(bbs);
+                s = bbs.to_string();
+                rc = s0 == s;
+
+                Assert::IsTrue(rc);
+
+                bitset<uint16_t> bbsopcp;
+                bbsopcp = bbs;
+                s = bbs.to_string();
+                rc = s0 == s;
+
                 Assert::IsTrue(rc);
             }
 
@@ -629,7 +668,7 @@ namespace tests
                 auto finish = std::chrono::high_resolution_clock::now();
                 auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(finish-start).count();
 
-                (*gr).generate_graphviz_file(LR"(d:\tmp\GraphAlgorithmsDfsToVector.dot)", false);
+                graph_algorithms<dominator_vertex>::generate_graphviz_file(gr, LR"(d:\tmp\GraphAlgorithmsDfsToVector.dot)", false);
 
                 Logger::WriteMessage(std::to_string(elapsed / 1000000.0).c_str());
                 Logger::WriteMessage("\n");

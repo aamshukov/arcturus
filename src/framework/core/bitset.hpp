@@ -50,10 +50,14 @@ class bitset : private noncopyable
         void            adjust();
 
     public:
+                        bitset();
         explicit        bitset(size_type size);
+                        bitset(const bitset& other);
                        ~bitset();
 
         size_type       size() const;
+
+        const bitset&   operator = (const bitset& other);
 
         bool            operator [] (size_type position) const;
         bit             operator [] (size_type position);
@@ -75,6 +79,12 @@ class bitset : private noncopyable
 };
 
 template <typename T>
+inline bitset<T>::bitset()
+                : my_size(0), my_capacity(0)
+{
+}
+
+template <typename T>
 inline bitset<T>::bitset(size_type size)
 {
     my_size = size;
@@ -82,6 +92,22 @@ inline bitset<T>::bitset(size_type size)
     my_bits = std::make_unique<data_type[]>(my_capacity);
 
     reset();
+}
+
+template <typename T>
+inline bitset<T>::bitset(const bitset<T>& other)
+                : my_size(0), my_capacity(0)
+{
+    if(this != &other)
+    {
+        my_size = other.my_size;
+        my_capacity = other.my_capacity;
+        my_bits = std::make_unique<data_type[]>(my_capacity);
+
+        std::memcpy(my_bits.get(), other.my_bits.get(), my_capacity * sizeof(data_type));
+
+        reset();
+    }
 }
 
 template <typename T>
@@ -93,6 +119,23 @@ template <typename T>
 inline size_type bitset<T>::size() const
 {
     return my_size;
+}
+
+template <typename T>
+inline const bitset<T>& bitset<T>::operator = (const bitset<T>& other)
+{
+    if(this != &other)
+    {
+        my_size = other.my_size;
+        my_capacity = other.my_capacity;
+        my_bits = std::make_unique<data_type[]>(my_capacity);
+
+        std::memcpy(my_bits.get(), other.my_bits.get(), my_capacity * sizeof(data_type));
+
+        reset();
+    }
+
+    return *this;
 }
 
 template <typename T>
@@ -273,6 +316,27 @@ inline typename bitset<T>::bit& bitset<T>::bit::flip()
 {
     (*my_bitset).flip(my_position);
     return *this;
+}
+
+template <typename T>
+bitset<T> operator & (const bitset<T>& lhs, const bitset<T>& rhs)
+{
+    bitset<T> result(lhs);
+    return result &= rhs;
+}
+
+template <typename T>
+bitset<T> operator | (const bitset<T>& lhs, const bitset<T>& rhs)
+{
+    bitset<T> result(lhs);
+    return result |= rhs;
+}
+
+template <typename T>
+bitset<T> operator ^ (const bitset<T>& lhs, const bitset<T>& rhs)
+{
+    bitset<T> result(lhs);
+    return result ^= rhs;
 }
 
 END_NAMESPACE
