@@ -65,17 +65,17 @@ void graph_algorithms<TVertex, TEdgeValue, N>::dfs_to_vector(const typename grap
 
     stack.push((*graph).root());
 
-    (*(*graph).root()).flags() |= vertex::flag::visited;
-
     while(!stack.empty())
     {
         auto vertex(stack.top());
         stack.pop();
 
-        if(((*vertex).flags() & vertex::flag::visited) != vertex::flag::visited)
+        if(((*vertex).flags() & vertex::flag::visited) == vertex::flag::visited)
         {
             continue;
         }
+
+        (*vertex).flags() |= vertex::flag::visited;
 
         vertices.emplace_back(std::dynamic_pointer_cast<vertex_type::element_type>(vertex)); // 1 ... faster
         //vertices.emplace(vertices.begin(), std::dynamic_pointer_cast<vertex_type::element_type>(vertex)); // 3 ...
@@ -85,7 +85,6 @@ void graph_algorithms<TVertex, TEdgeValue, N>::dfs_to_vector(const typename grap
             if(((*adjacent).flags() & vertex::flag::visited) != vertex::flag::visited)
             {
                 stack.push(std::dynamic_pointer_cast<vertex_type::element_type>(adjacent));
-                (*adjacent).flags() |= vertex::flag::visited;
             }
         }
     }
@@ -104,12 +103,25 @@ void graph_algorithms<TVertex, TEdgeValue, N>::compute_dominators(typename graph
 
         bitset temp(vertices.size());
 
+        // init
+
+
+        // iterate
         volatile bool changed = false;
+
+        do
+        {
+        }
+        while(changed);
+
+        // collect results
+
 
         vertices_type predecessors;
 
         //(*graph).collect_predecessors(vertex, predecessors);
 
+        //(*graph).root()
 
 
 

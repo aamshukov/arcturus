@@ -363,22 +363,19 @@ namespace tests
 
                 auto s0 = bs0.to_string<wchar_t>();
                 auto s = bbs.to_string();
-
                 bool rc = s0 == s;
-
                 Assert::IsTrue(rc);
 
                 bitset bbscp(bbs);
                 s = bbs.to_string();
                 rc = s0 == s;
-
                 Assert::IsTrue(rc);
+                Assert::IsTrue(bbs == bbscp);
 
                 bitset bbsopcp;
                 bbsopcp = bbs;
                 s = bbs.to_string();
                 rc = s0 == s;
-
                 Assert::IsTrue(rc);
 
                 bs0.set();
@@ -695,6 +692,16 @@ namespace tests
                 Logger::WriteMessage("\n");
 
                 Assert::AreEqual((*gr).vertices().size(), result.size());
+            }
+
+            TEST_METHOD(GraphAlgorithmsComputeDominatorsMuchnik)
+            {
+                auto start = std::chrono::high_resolution_clock::now();
+
+                auto finish = std::chrono::high_resolution_clock::now();
+                auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(finish-start).count();
+
+                Logger::WriteMessage(std::to_string(elapsed / 1000000.0).c_str());
             }
     };
 }

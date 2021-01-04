@@ -66,6 +66,9 @@ class bitset : private noncopyable
         bitset&         operator |= (const bitset& other);
         bitset&         operator ^= (const bitset& other);
 
+        bool            operator == (const bitset& other) const;
+        bool            operator != (const bitset& other) const;
+
         bitset&         set();
         bitset&         set(size_type position, bool value = true);
 
@@ -106,8 +109,6 @@ inline bitset<T>::bitset(const bitset<T>& other)
         my_bits = std::make_unique<data_type[]>(my_capacity);
 
         std::memcpy(my_bits.get(), other.my_bits.get(), my_capacity * sizeof(data_type));
-
-        reset();
     }
 }
 
@@ -191,6 +192,18 @@ bitset<T>& bitset<T>::operator ^= (const bitset<T>& other)
     }
 
     return *this;
+}
+
+template <typename T>
+inline bool bitset<T>::operator == (const bitset<T>& other) const
+{
+    return std::memcmp(my_bits.get(), other.my_bits.get(), my_capacity * sizeof(data_type)) == 0;
+}
+
+template <typename T>
+inline bool bitset<T>::operator != (const bitset<T>& other) const
+{
+    return !(*this == other);
 }
 
 template <typename T>

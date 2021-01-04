@@ -37,7 +37,7 @@ class graph : private noncopyable
         using counter_type = counter;
 
     protected:
-        vertex_type                         my_root; // optional, usefule for some digraph algorithms
+        vertex_type                         my_root; // optional, used in some digraph algorithms
         vertices_type                       my_vertices;
         counter_type                        my_vertices_counter;
 
