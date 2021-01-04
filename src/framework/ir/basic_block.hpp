@@ -12,7 +12,7 @@ USINGNAMESPACE(core)
 USINGNAMESPACE(frontend)
 
 template <typename Instruction>
-class basic_block : public vertex
+class basic_block : public dominator_vertex
 {
     public:
         //using token_type = Token;

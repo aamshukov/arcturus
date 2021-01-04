@@ -6,11 +6,14 @@
 #include <core/visitable.hpp>
 #include <core/visitor.hpp>
 
+#include <core/bitset.hpp>
+
 #include <core/list.hpp>
 #include <core/tree.hpp>
 #include <core/dag.hpp>
 
 #include <core/vertex.hpp>
+#include <core/dominator_vertex.hpp>
 #include <core/edge.hpp>
 #include <core/graph.hpp>
 
@@ -207,6 +210,7 @@ void arcturus_control_flow_graph::build_hir(typename arcturus_control_flow_graph
 
         // phase III (build CFG)
         add_vertex(entry_block);
+        root() = entry_block;
         add_vertex(exit_block);
 
         // link entry point with the first block - there is an edge from Entry to each initial BB

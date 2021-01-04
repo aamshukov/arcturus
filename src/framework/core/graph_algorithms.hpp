@@ -20,30 +20,12 @@ class graph_algorithms : private noncopyable
         //using dominator_tree_type = std::shared_ptr<tree>;
 
     public:
-        static void set_to_vector(const graph_type& graph, std::vector<vertex_type>& result);
         static void dfs_to_vector(const graph_type& graph, std::vector<vertex_type>& result);
 
         static void compute_dominators(graph_type& graph);
-        static void compute_idominators(graph_type& graph);
 
         static void generate_graphviz_file(const graph_type& graph, const string_type& file_name, bool show_values = true);
 };
-
-template <typename TVertex, typename TEdgeValue, std::size_t N>
-void graph_algorithms<TVertex, TEdgeValue, N>::set_to_vector(const typename graph_algorithms<TVertex, TEdgeValue, N>::graph_type& graph,
-                                                             std::vector<typename graph_algorithms<TVertex, TEdgeValue, N>::vertex_type>& result)
-{
-    std::vector<vertex_type> vertices;
-
-    vertices.reserve((*graph).vertices().size());
-
-    for(const auto& vertex : (*graph).vertices())
-    {
-        vertices.emplace_back(vertex);
-    }
-
-    result.swap(vertices);
-}
 
 template <typename TVertex, typename TEdgeValue, std::size_t N>
 void graph_algorithms<TVertex, TEdgeValue, N>::dfs_to_vector(const typename graph_algorithms<TVertex, TEdgeValue, N>::graph_type& graph,
@@ -97,14 +79,23 @@ void graph_algorithms<TVertex, TEdgeValue, N>::compute_dominators(typename graph
 {
     if((*graph).digraph())
     {
+        // compute dominators
         std::vector<std::shared_ptr<dominator_vertex>> vertices;
 
         graph_algorithms<dominator_vertex>::dfs_to_vector(graph, vertices);
 
         bitset temp(vertices.size());
 
-        // init
+        // initialize each vertex with all vertices as dominators, including root which is reset later ...
+        for(auto& vertex : vertices)
+        {
+            (*vertex).bitset() = std::make_unique<bitset<>>(vertices.size());
+            (*(*vertex).bitset()).set();
+        }
 
+        // ... initialize root vertex only with its own
+        (*(*(*graph).root()).bitset()).reset();
+        (*(*(*graph).root()).bitset())[0] = 1;
 
         // iterate
         volatile bool changed = false;
@@ -114,7 +105,14 @@ void graph_algorithms<TVertex, TEdgeValue, N>::compute_dominators(typename graph
         }
         while(changed);
 
+        // compute immediate dominators
+
+
+
         // collect results
+        for(auto& vertex : vertices)
+        {
+        }
 
 
         vertices_type predecessors;
@@ -129,14 +127,6 @@ void graph_algorithms<TVertex, TEdgeValue, N>::compute_dominators(typename graph
                 constexpr auto s1 = calculate_alignment(30, 16);
                 constexpr auto s2 = calculate_alignment(3, 16);
                 constexpr auto s3 = calculate_alignment(24, 8);
-    }
-}
-
-template <typename TVertex, typename TEdgeValue, std::size_t N>
-void graph_algorithms<TVertex, TEdgeValue, N>::compute_idominators(typename graph_algorithms<TVertex, TEdgeValue, N>::graph_type& graph)
-{
-    if((*graph).digraph())
-    {
     }
 }
 

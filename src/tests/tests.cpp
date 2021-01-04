@@ -556,62 +556,6 @@ namespace tests
                 Assert::IsTrue(rc);
             }
 
-            TEST_METHOD(GraphAlgorithmsSetToVector)
-            {
-                const int n = 5001;
-
-                std::shared_ptr<graph<vertex>> gr(factory::create<graph<vertex>>());
-
-                std::srand((unsigned int)std::time(nullptr));
-
-                for(auto k = 0; k < n; k++)
-                {
-                    (*gr).add_vertex(factory::create<vertex>(std::rand() % n));
-                }
-
-                std::vector<std::shared_ptr<vertex>> result;
-
-                qpf_timer timer;
-
-                timer.start();
-
-                graph_algorithms<vertex>::set_to_vector(gr, result);
-
-                timer.stop();
-
-                string_type elapsed_time = timer.elapsed_time_as_string();
-                string_type total_elapsed_time = timer.total_elapsed_time_as_string();
-
-                Logger::WriteMessage(elapsed_time.c_str());
-                Logger::WriteMessage("\n");
-                Logger::WriteMessage(total_elapsed_time.c_str());
-
-                Assert::AreEqual((*gr).vertices().size(), result.size());
-            }
-
-            TEST_METHOD(Yield0)
-            {
-                auto&& yield = []()
-                { 
-                    int i = 0;
-
-                    return [=]() mutable
-                    {
-                        int arr[] = { 1, 2, 4, 8, 16, 32 };
-
-                        if(i < 6)
-                            return arr[i++];
-                        return 0;
-                    };
-                }();
-
-                for(auto k = 0; k < 6; k++)
-                {
-                    Logger::WriteMessage(std::to_string(yield()).c_str());
-                    Logger::WriteMessage("\n");
-                }
-            }
-
             TEST_METHOD(GraphAlgorithmsDfsToVectorTiming)
             {
                 const int n = 5001;

@@ -55,6 +55,8 @@ class bitset : private noncopyable
                         bitset(const bitset& other);
                        ~bitset();
 
+        void            create(size_type size);
+
         size_type       size() const;
 
         const bitset&   operator = (const bitset& other);
@@ -90,11 +92,7 @@ inline bitset<T>::bitset()
 template <typename T>
 inline bitset<T>::bitset(size_type size)
 {
-    my_size = size;
-    my_capacity = (size == 0 ? 0 : size / chunk_size) + 1;
-    my_capacity = calculate_alignment(my_capacity, sizeof(data_type));
-    my_bits = std::make_unique<data_type[]>(my_capacity);
-
+    create(size);
     reset();
 }
 
@@ -115,6 +113,15 @@ inline bitset<T>::bitset(const bitset<T>& other)
 template <typename T>
 inline bitset<T>::~bitset()
 {
+}
+
+template <typename T>
+inline void bitset<T>::create(size_type size)
+{
+    my_size = size;
+    my_capacity = (size == 0 ? 0 : size / chunk_size) + 1;
+    my_capacity = calculate_alignment(my_capacity, sizeof(data_type));
+    my_bits = std::make_unique<data_type[]>(my_capacity);
 }
 
 template <typename T>
