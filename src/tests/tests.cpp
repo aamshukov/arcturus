@@ -301,6 +301,12 @@ namespace tests
                 s = bbs.to_string();
 
                 bbs[1] = bbs[5];
+
+                bitset bsmv = bbs;
+                Assert::IsTrue(bsmv == bbs);
+                bitset bsmvn(std::move(bsmv));
+                Assert::IsTrue(bsmvn == bbs);
+                bbs = std::move(bsmvn);
             }
 
             TEST_METHOD(CreateBitsetLong)
@@ -384,6 +390,12 @@ namespace tests
                 s = bbs.to_string();
                 rc = s0 == s;
                 Assert::IsTrue(rc);
+
+                bitset bsmv = bbs;
+                Assert::IsTrue(bsmv == bbs);
+                bitset bsmvn(std::move(bsmv));
+                Assert::IsTrue(bsmvn == bbs);
+                bbs = std::move(bsmvn);
             }
 
             TEST_METHOD(CreateBitsetLong32)
@@ -469,6 +481,12 @@ namespace tests
                 s = bbs.to_string();
                 rc = s0 == s;
                 Assert::IsTrue(rc);
+
+                bitset bsmv = bbs;
+                Assert::IsTrue(bsmv == bbs);
+                bitset bsmvn(std::move(bsmv));
+                Assert::IsTrue(bsmvn == bbs);
+                bbs = std::move(bsmvn);
             }
 
             TEST_METHOD(CreateBitsetLong16)
@@ -554,6 +572,12 @@ namespace tests
                 s = bbs.to_string();
                 rc = s0 == s;
                 Assert::IsTrue(rc);
+
+                bitset bsmv = bbs;
+                Assert::IsTrue(bsmv == bbs);
+                bitset bsmvn(std::move(bsmv));
+                Assert::IsTrue(bsmvn == bbs);
+                bbs = std::move(bsmvn);
             }
 
             TEST_METHOD(GraphAlgorithmsDfsToVectorTiming)

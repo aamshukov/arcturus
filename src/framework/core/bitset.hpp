@@ -53,6 +53,7 @@ class bitset : private noncopyable
                         bitset();
         explicit        bitset(size_type size);
                         bitset(const bitset& other);
+                        bitset(bitset&& other);
                        ~bitset();
 
         void            create(size_type size);
@@ -60,6 +61,7 @@ class bitset : private noncopyable
         size_type       size() const;
 
         const bitset&   operator = (const bitset& other);
+        bitset&         operator = (bitset&& other);
 
         bool            operator [] (size_type position) const;
         bit             operator [] (size_type position);
@@ -98,7 +100,6 @@ inline bitset<T>::bitset(size_type size)
 
 template <typename T>
 inline bitset<T>::bitset(const bitset<T>& other)
-                : my_size(0), my_capacity(0)
 {
     if(this != &other)
     {
@@ -107,6 +108,19 @@ inline bitset<T>::bitset(const bitset<T>& other)
         my_bits = std::make_unique<data_type[]>(my_capacity);
 
         std::memcpy(my_bits.get(), other.my_bits.get(), my_capacity * sizeof(data_type));
+    }
+}
+
+template <typename T>
+inline bitset<T>::bitset(bitset<T>&& other)
+{
+    if(this != &other)
+    {
+        my_size = other.my_size;
+        my_capacity = other.my_capacity;
+        my_bits = std::move(other.my_bits);
+        other.my_size = 0;
+        other.my_capacity = 0;
     }
 }
 
@@ -140,8 +154,21 @@ inline const bitset<T>& bitset<T>::operator = (const bitset<T>& other)
         my_bits = std::make_unique<data_type[]>(my_capacity);
 
         std::memcpy(my_bits.get(), other.my_bits.get(), my_capacity * sizeof(data_type));
+    }
 
-        reset();
+    return *this;
+}
+
+template <typename T>
+inline bitset<T>& bitset<T>::operator = (bitset<T>&& other)
+{
+    if(this != &other)
+    {
+        my_size = other.my_size;
+        my_capacity = other.my_capacity;
+        my_bits = std::move(other.my_bits);
+        other.my_size = 0;
+        other.my_capacity = 0;
     }
 
     return *this;
