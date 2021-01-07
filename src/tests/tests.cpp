@@ -216,42 +216,6 @@ namespace tests
                 // for %i in (d:\tmp\*.dot) do D:\Soft\graphviz\2.38\release\bin\dot -Tpng %i -o %i.png
             }
 
-            TEST_METHOD(ComputeDominatorsGraph)
-            {
-                std::shared_ptr<graph<dominator_vertex>> gr(factory::create<graph<dominator_vertex>>());
-
-                const auto& v1 = *(*gr).add_vertex(factory::create<dominator_vertex>(1)).first;
-                const auto& v2 = *(*gr).add_vertex(factory::create<dominator_vertex>(2)).first;
-                const auto& v3 = *(*gr).add_vertex(factory::create<dominator_vertex>(3)).first;
-                const auto& v4 = *(*gr).add_vertex(factory::create<dominator_vertex>(4)).first;
-                const auto& v5 = *(*gr).add_vertex(factory::create<dominator_vertex>(5)).first;
-                const auto& v6 = *(*gr).add_vertex(factory::create<dominator_vertex>(6)).first;
-                const auto& v7 = *(*gr).add_vertex(factory::create<dominator_vertex>(7)).first;
-                const auto& v8 = *(*gr).add_vertex(factory::create<dominator_vertex>(8)).first;
-                const auto& v9 = *(*gr).add_vertex(factory::create<dominator_vertex>(9)).first;
-
-                (*gr).remove_vertex(v9);
-
-                auto& e1 = *(*gr).add_edge(v1, v2, 0.5).first;
-                (*gr).remove_edge(e1);
-
-                (*gr).add_edge(v1, v2, 0.1);
-                (*gr).add_edge(v1, v5, 0.2);
-                (*gr).add_edge(v1, v3, 0.3);
-                (*gr).add_edge(v1, v7, 0.3);
-                (*gr).add_edge(v2, v1, 0.4);
-                (*gr).add_edge(v3, v2, 0.5);
-                (*gr).add_edge(v7, v8, 0.3);
-                (*gr).add_edge(v8, v1, 0.3);
-                (*gr).add_edge(v8, v2, 0.3);
-
-                (*gr).root() = v1;
-
-                graph_algorithms<dominator_vertex>::compute_dominators(gr);
-
-                graph_algorithms<dominator_vertex>::generate_graphviz_file(gr, LR"(d:\tmp\ComputeDominatorsGraph.dot)", false);
-            }
-
             TEST_METHOD(CreateBitset)
             {
                 std::bitset<5> bs0;
@@ -664,12 +628,45 @@ namespace tests
 
             TEST_METHOD(GraphAlgorithmsComputeDominatorsMuchnik)
             {
+                std::shared_ptr<graph<dominator_vertex>> gr(factory::create<graph<dominator_vertex>>());
+
+                const auto& entry = *(*gr).add_vertex(factory::create<dominator_vertex>(10)).first;
+                const auto& b1 = *(*gr).add_vertex(factory::create<dominator_vertex>(11)).first;
+                const auto& b2 = *(*gr).add_vertex(factory::create<dominator_vertex>(12)).first;
+                const auto& b3 = *(*gr).add_vertex(factory::create<dominator_vertex>(13)).first;
+                const auto& b4 = *(*gr).add_vertex(factory::create<dominator_vertex>(14)).first;
+                const auto& b5 = *(*gr).add_vertex(factory::create<dominator_vertex>(15)).first;
+                const auto& b6 = *(*gr).add_vertex(factory::create<dominator_vertex>(16)).first;
+                const auto& exit = *(*gr).add_vertex(factory::create<dominator_vertex>(100)).first;
+
+                (*gr).add_edge(entry, b1, 0.1);
+
+                (*gr).add_edge(b1, b2, 0.2);
+                (*gr).add_edge(b1, b3, 0.2);
+
+                (*gr).add_edge(b2, exit, 0.3);
+
+                (*gr).add_edge(b3, b4, 0.4);
+
+                (*gr).add_edge(b4, b5, 0.5);
+                (*gr).add_edge(b4, b6, 0.5);
+
+                (*gr).add_edge(b5, exit, 0.6);
+
+                (*gr).add_edge(b6, b4, 0.7);
+
+                (*gr).root() = entry;
+
                 auto start = std::chrono::high_resolution_clock::now();
+
+                graph_algorithms<dominator_vertex>::compute_dominators(gr);
 
                 auto finish = std::chrono::high_resolution_clock::now();
                 auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(finish-start).count();
 
                 Logger::WriteMessage(std::to_string(elapsed / 1000000.0).c_str());
+
+                graph_algorithms<dominator_vertex>::generate_graphviz_file(gr, LR"(d:\tmp\GraphAlgorithmsComputeDominatorsMuchnik.dot)", false);
             }
     };
 }

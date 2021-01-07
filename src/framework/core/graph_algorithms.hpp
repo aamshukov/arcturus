@@ -8,6 +8,7 @@
 
 BEGIN_NAMESPACE(core)
 
+// α β ε λ ∅ ∈ Σ ∪ ⋂ δ γ
 template <typename TVertex, typename TEdgeValue = double, std::size_t N = GraphConnectivityRank>
 class graph_algorithms : private noncopyable
 {
@@ -77,35 +78,102 @@ void graph_algorithms<TVertex, TEdgeValue, N>::dfs_to_vector(const typename grap
 template <typename TVertex, typename TEdgeValue, std::size_t N>
 void graph_algorithms<TVertex, TEdgeValue, N>::compute_dominators(typename graph_algorithms<TVertex, TEdgeValue, N>::graph_type& graph)
 {
+    // Advanced Compiler Design and Implementation by Steven S.Muchnick
     if((*graph).digraph())
     {
         // compute dominators
+        // flat graph as DFS vector to use bitsets, root is the first element
         std::vector<std::shared_ptr<dominator_vertex>> vertices;
 
         graph_algorithms<dominator_vertex>::dfs_to_vector(graph, vertices);
 
-        bitset temp(vertices.size());
-
-        // initialize each vertex with all vertices as dominators, including root which is reset later ...
-        for(auto& vertex : vertices)
-        {
-            (*vertex).bitset() = std::make_unique<bitset<>>(vertices.size());
-            (*(*vertex).bitset()).set();
-        }
-
-        // ... initialize root vertex only with its own
-        (*(*(*graph).root()).bitset()).reset();
+        // initialize root vertex with itself
+        // Domin(r) := {r} 
+        (*(*graph).root()).bitset() = std::make_shared<bitset<>>(vertices.size());
         (*(*(*graph).root()).bitset())[0] = 1;
 
+        // initialize each vertex with all vertices as dominators excluding root
+        // for each n ∈ N - {r} do
+        for(size_type k = 1, n = vertices.size(); k < n; k++) // k = 1 - except root
+        {
+            auto& vertex(vertices[k]);
+
+            (*vertex).bitset() = std::make_shared<bitset<>>(vertices.size());
+
+            // Domin(n) := N
+            (*(*vertex).bitset()).set(); // all bits - all vertices
+        }
+
         // iterate
-        volatile bool changed = false;
+        bitset aux_bitset(vertices.size()); // T
+
+        volatile bool changed;
 
         do
         {
+            changed = false;
+
+            // for each n ∈ N - {r} do
+            for(size_type k = 1, n = vertices.size(); k < n; k++) // k = 1 - except root
+            {
+                auto& vertex(vertices[k]);
+
+                // T := N
+                aux_bitset.set();
+
+                vertices_type predecessors;
+
+                (*graph).collect_predecessors(vertex, predecessors);
+
+                // for each p ∈ Pred(n) do
+                for(auto& predecessor : predecessors)
+                {
+                    // T ⋂= Domin(p)
+                    aux_bitset |= *(*predecessor).bitset();
+                }
+
+                // D := {n} ∪ T
+                aux_bitset[k] = 1;
+
+                // if D != Domin(n) then
+                if(aux_bitset != *(*vertex).bitset())
+                {
+                    // Domin(n) := D
+                    *(*vertex).bitset() = aux_bitset;
+                    changed = true;
+                }
+            }
+
         }
         while(changed);
 
         // compute immediate dominators
+        std::vector<bitset<>> aux_bitsets; // Tmp
+
+        aux_bitsets.reserve(vertices.size());
+
+        // for each n ∈ N do
+        for(size_type k = 0, n = vertices.size(); k < n; k++)
+        {
+            auto& vertex(vertices[k]);
+
+            // Tmp(n) := Domin(n) - {n}
+            aux_bitsets[k] = *(*vertex).bitset();
+            aux_bitsets[k][0] = 0; // ... - {n}
+        }
+
+        // for each n ∈ N - {r} do
+        for(size_type k = 1, n = vertices.size(); k < n; k++) // k = 1 - except root
+        {
+            auto& vertex(vertices[k]);
+        }
+
+
+
+
+        //std::shared_ptr<dominator_vertex> idominator;
+
+
 
 
 
@@ -115,11 +183,7 @@ void graph_algorithms<TVertex, TEdgeValue, N>::compute_dominators(typename graph
         }
 
 
-        vertices_type predecessors;
 
-        //(*graph).collect_predecessors(vertex, predecessors);
-
-        //(*graph).root()
 
 
 
