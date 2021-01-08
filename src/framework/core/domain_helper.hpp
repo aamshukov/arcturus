@@ -184,6 +184,12 @@ constexpr auto calculate_alignment(T value, size_type alignment) noexcept
     return ((value + (alignment - 1)) & ~(alignment - 1));
 }
 
+template <typename T>
+constexpr T integer_log2(T n)
+{
+    return ((n < 2) ? 1 : 1 + integer_log2<T>(n / 2));
+}
+
 
 bool is_little_endian();
 bool is_big_endian();

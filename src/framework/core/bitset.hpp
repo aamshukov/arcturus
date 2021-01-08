@@ -35,10 +35,13 @@ class bitset : private noncopyable
                 bit&        flip();
         };
 
-    private:
+    public:
         using data_type = T;
         using bits_type = std::unique_ptr<data_type[]>;
 
+        static constexpr size_type npos = { std::numeric_limits<data_type>::max() };
+
+    private:
         static constexpr size_type chunk_size = bits_in_byte * sizeof(data_type); // in bits
 
         bits_type       my_bits;        // bit array - sequence of chunks of T
@@ -59,6 +62,7 @@ class bitset : private noncopyable
         void            create(size_type size);
 
         size_type       size() const;
+        size_type       capacity() const;
 
         const bitset&   operator = (const bitset& other);
         bitset&         operator = (bitset&& other);
@@ -81,6 +85,9 @@ class bitset : private noncopyable
 
         bitset&         flip();
         bitset&         flip(size_type position);
+
+        size_type       find_first(size_type position = 0) const;
+        size_type       find_next(size_type position) const;
 
         string_type     to_string() const;
 };
@@ -142,6 +149,12 @@ template <typename T>
 inline size_type bitset<T>::size() const
 {
     return my_size;
+}
+
+template <typename T>
+inline size_type bitset<T>::capacity() const
+{
+    return my_capacity;
 }
 
 template <typename T>
@@ -316,6 +329,55 @@ inline void bitset<T>::adjust()
         // ... zero out real capacity's chunk
         my_bits[capacity - 1] &= (data_type(1) << (my_size % chunk_size)) - 1;
     }
+}
+
+template <typename T>
+size_type bitset<T>::find_first(size_type position) const
+{
+    auto result = bitset<data_type>::npos;
+
+    auto chunk_index = position / chunk_size;
+
+    for(size_type k = chunk_index; k < my_capacity; k++)
+    {
+        if(my_bits[k] != data_type(0))
+        {
+            data_type n = my_bits[k];
+            result = k * chunk_size + integer_log2<data_type>(n - ( n & (n - 1))) - 1; // -1 -> zero based
+            break;
+        }
+    }
+
+    return result;
+}
+
+template <typename T>
+size_type bitset<T>::find_next(size_type position) const
+{
+    auto result = bitset<data_type>::npos;
+
+    if(my_size > 0 && position < (my_size - 1))
+    {
+        position++;
+
+        auto chunk_index = position / chunk_size;
+        auto bit_index = position % chunk_size;
+
+        auto chunk = my_bits[chunk_index];
+
+        auto n = chunk >> bit_index;
+
+        if(n != 0)
+        {
+            result = position + (integer_log2<data_type>(n - (n & (n - 1))) - 1); // -1 -> zero based
+        }
+        else
+        {
+            result = find_first(position + chunk_size); // mimic position + 1
+        }
+    }
+
+    return result;
 }
 
 template <typename T>

@@ -544,6 +544,102 @@ namespace tests
                 bbs = std::move(bsmvn);
             }
 
+            TEST_METHOD(FindFirstBitset)
+            {
+                const int n = 50001;
+
+                std::vector<int> rands;
+
+                std::srand((unsigned int)std::time(nullptr));
+
+                for(auto k = 0; k < n; k++)
+                {
+                    rands.emplace_back(std::rand() % n);
+                }
+
+                bitset<> bbs(n);
+
+                for(auto e : rands)
+                {
+                    bbs.reset();
+                    bbs[e] = 1;
+                    auto pos = bbs.find_first();
+                    Assert::IsTrue(pos == e, (std::to_wstring(pos) + L":" + std::to_wstring(e)).c_str());
+                }
+
+                bbs.reset();
+                auto pos = bbs.find_first();
+                Assert::IsTrue(pos == bitset<>::npos);
+
+                bbs[0] = 1;
+                auto s = bbs.to_string();
+                pos = bbs.find_first();
+                Assert::IsTrue(pos == 0);
+
+                bbs.reset();
+                bbs[bbs.size() - 1] = 1;
+                s = bbs.to_string();
+                pos = bbs.find_first();
+                Assert::IsTrue(pos == bbs.size() - 1);
+            }
+            
+            TEST_METHOD(FindNextBitset)
+            {
+                using data_type = uint64_t;
+
+                const int n = 50701;
+
+                bitset<data_type> bbs(n);
+
+                std::vector<int> rands;
+
+                std::srand((unsigned int)std::time(nullptr));
+
+                for(auto k = 0; k < n; k++)
+                {
+                    auto e = std::rand() % n;
+                    rands.emplace_back(e);
+                    bbs[e] = 1;
+                }
+
+                std::sort(rands.begin(), rands.end());
+                rands.erase(std::unique(rands.begin(), rands.end() ), rands.end());
+
+                auto pos = bbs.find_first();
+                auto s = bbs.to_string();
+
+                for(auto k = 1; k < rands.size(); k++)
+                {
+                    auto e = rands[k];
+                    pos = bbs.find_next(pos);
+                    if(k < n - 1)
+                        Assert::IsTrue(pos == e, (std::to_wstring(pos) + L":" + std::to_wstring(e)).c_str());
+                    else
+                        Assert::IsTrue(pos == bitset<data_type>::npos, (std::to_wstring(pos) + L"*" + std::to_wstring(e)).c_str());
+                }
+
+                bbs.reset();
+                pos = bbs.find_first();
+                Assert::IsTrue(pos == bitset<data_type>::npos);
+                pos = bbs.find_next(pos);
+                Assert::IsTrue(pos == bitset<data_type>::npos);
+
+                bbs[0] = 1;
+                s = bbs.to_string();
+                pos = bbs.find_first();
+                Assert::IsTrue(pos == 0);
+                pos = bbs.find_next(pos);
+                Assert::IsTrue(pos == bitset<data_type>::npos);
+
+                bbs.reset();
+                bbs[bbs.size() - 1] = 1;
+                s = bbs.to_string();
+                pos = bbs.find_first();
+                Assert::IsTrue(pos == bbs.size() - 1);
+                pos = bbs.find_next(pos);
+                Assert::IsTrue(pos == bitset<data_type>::npos);
+            }
+
             TEST_METHOD(GraphAlgorithmsDfsToVectorTiming)
             {
                 const int n = 5001;

@@ -94,18 +94,18 @@ void graph_algorithms<TVertex, TEdgeValue, N>::compute_dominators(typename graph
 
         // initialize each vertex with all vertices as dominators excluding root
         // for each n ∈ N - {r} do
-        for(size_type k = 1, n = vertices.size(); k < n; k++) // k = 1 - except root
+        for(size_type k = 1; k < vertices.size(); k++) // k = 1 - except root
         {
-            auto& vertex(vertices[k]);
+            auto& n(vertices[k]);
 
-            (*vertex).bitset() = std::make_shared<bitset<>>(vertices.size());
+            (*n).bitset() = std::make_shared<bitset<>>(vertices.size());
 
             // Domin(n) := N
-            (*(*vertex).bitset()).set(); // all bits - all vertices
+            (*(*n).bitset()).set(); // all bits - all vertices
         }
 
         // iterate
-        bitset aux_bitset(vertices.size()); // T
+        bitset t(vertices.size()); // T
 
         volatile bool changed;
 
@@ -114,32 +114,32 @@ void graph_algorithms<TVertex, TEdgeValue, N>::compute_dominators(typename graph
             changed = false;
 
             // for each n ∈ N - {r} do
-            for(size_type k = 1, n = vertices.size(); k < n; k++) // k = 1 - except root
+            for(size_type k = 1; k < vertices.size(); k++) // k = 1 - except root
             {
-                auto& vertex(vertices[k]);
+                auto& n(vertices[k]);
 
                 // T := N
-                aux_bitset.set();
+                t.set();
 
                 vertices_type predecessors;
 
-                (*graph).collect_predecessors(vertex, predecessors);
+                (*graph).collect_predecessors(n, predecessors);
 
                 // for each p ∈ Pred(n) do
-                for(auto& predecessor : predecessors)
+                for(auto& p : predecessors)
                 {
                     // T ⋂= Domin(p)
-                    aux_bitset |= *(*predecessor).bitset();
+                    t |= *(*p).bitset();
                 }
 
                 // D := {n} ∪ T
-                aux_bitset[k] = 1;
+                t[k] = 1;
 
                 // if D != Domin(n) then
-                if(aux_bitset != *(*vertex).bitset())
+                if(t != *(*n).bitset())
                 {
                     // Domin(n) := D
-                    *(*vertex).bitset() = aux_bitset;
+                    *(*n).bitset() = t;
                     changed = true;
                 }
             }
@@ -148,49 +148,67 @@ void graph_algorithms<TVertex, TEdgeValue, N>::compute_dominators(typename graph
         while(changed);
 
         // compute immediate dominators
-        std::vector<bitset<>> aux_bitsets; // Tmp
+        std::vector<bitset<>> tmp; // Tmp
 
-        aux_bitsets.reserve(vertices.size());
+        tmp.reserve(vertices.size());
 
         // for each n ∈ N do
-        for(size_type k = 0, n = vertices.size(); k < n; k++)
+        for(size_type k = 0; k < vertices.size(); k++)
         {
-            auto& vertex(vertices[k]);
+            auto& n(vertices[k]);
 
             // Tmp(n) := Domin(n) - {n}
-            aux_bitsets[k] = *(*vertex).bitset();
-            aux_bitsets[k][0] = 0; // ... - {n}
+            tmp[k] = *(*n).bitset();
+            tmp[k][0] = 0; // ... - {n}
         }
 
         // for each n ∈ N - {r} do
-        for(size_type k = 1, n = vertices.size(); k < n; k++) // k = 1 - except root
+        for(size_type n = 1; n < vertices.size(); n++) // k = 1 - except root
         {
-            auto& vertex(vertices[k]);
+            // for each s ∈ Tmp(n) do
+            for(size_type s = 0; s < tmp.size(); s++)
+            {
+                // for each t ∈ Tmp(n) - {s} do
+                for(size_type t = 0; t < tmp.size(); t++)
+                {
+                    if(t == s) // ... - {s}
+                        continue;
+
+                    auto& tmp_s(tmp[s]);
+
+                    // if t ∈ Tmp(s) then
+                    if(tmp_s[t])
+                    {
+                        // Tmp(n) -= {t}
+                        auto& tmp_n(tmp[n]);
+                        tmp_n[t] = 0;
+                    }
+                }
+            }
+
+            // for each n ∈ N - {r} do
+            for(size_type n = 1; n < vertices.size(); n++) // k = 1 - except root
+            {
+                auto& idom(vertices[n]);
+                auto& tmp_n(tmp[n]);
+
+                // Idom(n) := Tmp(n)
+                (*idom).idominator() = vertices[tmp_n.find_first()];
+            }
         }
 
-
-
-
-        //std::shared_ptr<dominator_vertex> idominator;
-
-
-
-
-
-        // collect results
+        // collect dominators, results
         for(auto& vertex : vertices)
         {
+            const auto& dominators((*vertex).bitset());
+
+            for(size_type k = 0; k < (*dominators).capacity(); k++)
+            {
+                //if(dominators[k] != bitset<>::data_type(0))
+                //{
+                //}
+            }
         }
-
-
-
-
-
-
-                constexpr auto s0 = calculate_alignment<uint32_t>(30, 16);
-                constexpr auto s1 = calculate_alignment(30, 16);
-                constexpr auto s2 = calculate_alignment(3, 16);
-                constexpr auto s3 = calculate_alignment(24, 8);
     }
 }
 
