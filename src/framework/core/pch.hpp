@@ -105,7 +105,7 @@ using cp_type = uint32_t;   // code point
 using datum_type = cp_type; 
 using codepoints_type = std::basic_string<datum_type>;
 
-const int bits_in_byte = 8;
+const int bits_in_byte = CHAR_BIT;
 
 END_NAMESPACE
 

@@ -125,7 +125,7 @@ namespace tests
             {
                 int argc = 10;
 
-                char_type* argv[] = { L"dummy", L"--output-file-name", LR"(d:\tmp\log.art)", L"--input-file-name", LR"(d:\tmp\pf.dat)", L"--debug", L"-d", L"--debug", L"-d", L"--output-path", L"OO",  L"--output-path", L"O2", L"--library-path", L"1", L"--library-path", L"2", L"--build-type=release", L"--build-type=release", L"--color=red", L"--color", L"red" };
+                char_type* argv[] = { L"dummy", L"--output-file-name", LR"(d:\tmp\logs\log.art)", L"--input-file-name", LR"(d:\tmp\pf.dat)", L"--debug", L"-d", L"--debug", L"-d", L"--output-path", L"OO",  L"--output-path", L"O2", L"--library-path", L"1", L"--library-path", L"2", L"--build-type=release", L"--build-type=release", L"--color=red", L"--color", L"red" };
 
                 arcturus_configurator::instance().configure(argc, argv);
 
@@ -524,6 +524,97 @@ namespace tests
                 Assert::IsTrue(rc);
 
                 bitset<uint16_t> bbsopcp;
+                bbsopcp = bbs;
+                s = bbs.to_string();
+                rc = s0 == s;
+
+                Assert::IsTrue(rc);
+
+                bs0.set();
+                bbs.set();
+                s0 = bs0.to_string<wchar_t>();
+                s = bbs.to_string();
+                rc = s0 == s;
+                Assert::IsTrue(rc);
+
+                bitset bsmv = bbs;
+                Assert::IsTrue(bsmv == bbs);
+                bitset bsmvn(std::move(bsmv));
+                Assert::IsTrue(bsmvn == bbs);
+                bbs = std::move(bsmvn);
+            }
+
+            TEST_METHOD(CreateBitsetLong8)
+            {
+                const int n = 50001;
+
+                std::vector<int> rands;
+
+                std::srand((unsigned int)std::time(nullptr));
+
+                for(auto k = 0; k < n; k++)
+                {
+                    rands.emplace_back(std::rand() % n);
+                }
+
+                std::bitset<n> bs0;
+                bitset<uint8_t> bbs(n);
+
+                for(auto e : rands)
+                {
+                    bs0.set(e);
+                    bbs.set(e);
+                }
+
+                for(auto e : rands)
+                {
+                    {
+                        auto bt = bs0[e];
+                        bt = 1;
+                        bt.flip();
+                    }
+                    {
+                        auto bt = bbs[e];
+                        bt = 1;
+                        bt.flip();
+                    }
+                }
+
+                for(auto e : rands)
+                {
+                    bs0[e] = 1;
+                    bbs[e] = 1;
+                }
+
+                for(auto e : rands)
+                {
+                    bs0.reset(e);
+                    bbs.reset(e);
+                }
+
+                for(auto e : rands)
+                {
+                    bs0.set(e);
+                    bbs.set(e);
+                }
+
+                bs0.flip();
+                bbs.flip();
+
+                auto s0 = bs0.to_string<wchar_t>();
+                auto s = bbs.to_string();
+
+                bool rc = s0 == s;
+                
+                Assert::IsTrue(rc);
+
+                bitset bbscp(bbs);
+                s = bbs.to_string();
+                rc = s0 == s;
+
+                Assert::IsTrue(rc);
+
+                bitset<uint8_t> bbsopcp;
                 bbsopcp = bbs;
                 s = bbs.to_string();
                 rc = s0 == s;

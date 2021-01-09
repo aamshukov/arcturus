@@ -39,7 +39,7 @@ class bitset : private noncopyable
         using data_type = T;
         using bits_type = std::unique_ptr<data_type[]>;
 
-        static constexpr size_type npos = { std::numeric_limits<data_type>::max() };
+        static constexpr size_type npos = std::numeric_limits<data_type>::max();
 
     private:
         static constexpr size_type chunk_size = bits_in_byte * sizeof(data_type); // in bits
@@ -141,8 +141,8 @@ inline void bitset<T>::create(size_type size)
 {
     my_size = size;
     my_capacity = (size == 0 ? 0 : size / chunk_size) + 1;
-    my_capacity = calculate_alignment(my_capacity, sizeof(data_type));
-    my_bits = std::make_unique<data_type[]>(my_capacity);
+    my_capacity = calculate_alignment(my_capacity * sizeof(data_type), 8) / sizeof(data_type);
+    my_bits = std::make_unique<data_type[]>(my_capacity);           // bytes
 }
 
 template <typename T>

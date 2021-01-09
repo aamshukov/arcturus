@@ -17,7 +17,7 @@ class graph_algorithms : private noncopyable
         using vertices_type = std::set<vertex_type, vertex_lt_key_comparator<vertex>>;
 
         using graph_type = std::shared_ptr<graph<TVertex, TEdgeValue, N>>;
-        using bitset_type = bitset<>;
+        using bitset_type = bitset<uint64_t>;
 
     public:
         static void dfs_to_vector(const graph_type& graph, std::vector<vertex_type>& result);
@@ -147,9 +147,7 @@ void graph_algorithms<TVertex, TEdgeValue, N>::compute_dominators(typename graph
         while(changed);
 
         // phase II (compute immediate dominators)
-        std::vector<bitset_type> tmp; // Tmp
-
-        tmp.reserve(vertices.size());
+        std::vector<bitset_type> tmp(vertices.size(), bitset_type()); // Tmp
 
         // for each n ∈ N do
         for(size_type k = 0; k < vertices.size(); k++)
@@ -192,7 +190,12 @@ void graph_algorithms<TVertex, TEdgeValue, N>::compute_dominators(typename graph
                 auto& tmp_n(tmp[n]);
 
                 // Idom(n) := Tmp(n)
-                (*idom).idominator() = vertices[tmp_n.find_first()];
+                auto position = tmp_n.find_first();
+
+                if(position != bitset_type::npos) // either one idominator or nothing
+                {
+                    (*idom).idominator() = vertices[position];
+                }
             }
         }
 

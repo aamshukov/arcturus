@@ -14,7 +14,7 @@ class dominator_vertex : public vertex
         using vertex_type = std::shared_ptr<dominator_vertex>;
         using vertices_type = std::set<vertex_type, vertex_lt_key_comparator<dominator_vertex>>;
 
-        using bitset_type = std::shared_ptr<bitset<>>;
+        using bitset_type = std::shared_ptr<bitset<uint64_t>>;
 
         using id_type = typename vertex::id_type;
 
