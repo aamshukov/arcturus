@@ -88,8 +88,8 @@ void graph_algorithms<TVertex, TEdgeValue, N>::compute_dominators(typename graph
 
         // initialize root vertex with itself
         // Domin(r) := {r} 
-        (*(*graph).root()).bitset() = std::make_shared<bitset_type>(vertices.size());
-        (*(*(*graph).root()).bitset())[0] = 1;
+        (*(*graph).root()).bitset().create(vertices.size());
+        (*(*graph).root()).bitset()[0] = 1;
 
         // initialize each vertex with all vertices as dominators excluding root
         // for each n ∈ N - {r} do
@@ -97,10 +97,10 @@ void graph_algorithms<TVertex, TEdgeValue, N>::compute_dominators(typename graph
         {
             auto& n(vertices[k]);
 
-            (*n).bitset() = std::make_shared<bitset_type>(vertices.size());
+            (*n).bitset().create(vertices.size());
 
             // Domin(n) := N
-            (*(*n).bitset()).set(); // all bits - all vertices
+            (*n).bitset().set(); // all bits - all vertices
         }
 
         // iterate
@@ -128,17 +128,17 @@ void graph_algorithms<TVertex, TEdgeValue, N>::compute_dominators(typename graph
                 for(auto& p : predecessors)
                 {
                     // T ⋂= Domin(p)
-                    t |= *(*p).bitset();
+                    t |= (*p).bitset();
                 }
 
                 // D := {n} ∪ T
                 t[k] = 1;
 
                 // if D != Domin(n) then
-                if(t != *(*n).bitset())
+                if(t != (*n).bitset())
                 {
                     // Domin(n) := D
-                    *(*n).bitset() = t;
+                    (*n).bitset() = t;
                     changed = true;
                 }
             }
@@ -155,7 +155,7 @@ void graph_algorithms<TVertex, TEdgeValue, N>::compute_dominators(typename graph
             auto& n(vertices[k]);
 
             // Tmp(n) := Domin(n) - {n}
-            tmp[k] = *(*n).bitset();
+            tmp[k] = (*n).bitset();
             tmp[k][0] = 0; // ... - {n}
         }
 
@@ -202,7 +202,7 @@ void graph_algorithms<TVertex, TEdgeValue, N>::compute_dominators(typename graph
         // collect dominators, results
         for(auto& vertex : vertices)
         {
-            const auto& dominators(*(*vertex).bitset());
+            const auto& dominators((*vertex).bitset());
 
             auto position = dominators.find_first();
 
