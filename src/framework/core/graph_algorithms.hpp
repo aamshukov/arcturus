@@ -17,8 +17,7 @@ class graph_algorithms : private noncopyable
         using vertices_type = std::set<vertex_type, vertex_lt_key_comparator<vertex>>;
 
         using graph_type = std::shared_ptr<graph<TVertex, TEdgeValue, N>>;
-
-        //using dominator_tree_type = std::shared_ptr<tree>;
+        using bitset_type = bitset<>;
 
     public:
         static void dfs_to_vector(const graph_type& graph, std::vector<vertex_type>& result);
@@ -78,10 +77,10 @@ void graph_algorithms<TVertex, TEdgeValue, N>::dfs_to_vector(const typename grap
 template <typename TVertex, typename TEdgeValue, std::size_t N>
 void graph_algorithms<TVertex, TEdgeValue, N>::compute_dominators(typename graph_algorithms<TVertex, TEdgeValue, N>::graph_type& graph)
 {
-    // Advanced Compiler Design and Implementation by Steven S.Muchnick
+    // 'Advanced Compiler Design and Implementation' by Steven S.Muchnick
     if((*graph).digraph())
     {
-        // compute dominators
+        // phase I (compute dominators)
         // flat graph as DFS vector to use bitsets, root is the first element
         std::vector<std::shared_ptr<dominator_vertex>> vertices;
 
@@ -89,7 +88,7 @@ void graph_algorithms<TVertex, TEdgeValue, N>::compute_dominators(typename graph
 
         // initialize root vertex with itself
         // Domin(r) := {r} 
-        (*(*graph).root()).bitset() = std::make_shared<bitset<>>(vertices.size());
+        (*(*graph).root()).bitset() = std::make_shared<bitset_type>(vertices.size());
         (*(*(*graph).root()).bitset())[0] = 1;
 
         // initialize each vertex with all vertices as dominators excluding root
@@ -98,7 +97,7 @@ void graph_algorithms<TVertex, TEdgeValue, N>::compute_dominators(typename graph
         {
             auto& n(vertices[k]);
 
-            (*n).bitset() = std::make_shared<bitset<>>(vertices.size());
+            (*n).bitset() = std::make_shared<bitset_type>(vertices.size());
 
             // Domin(n) := N
             (*(*n).bitset()).set(); // all bits - all vertices
@@ -147,8 +146,8 @@ void graph_algorithms<TVertex, TEdgeValue, N>::compute_dominators(typename graph
         }
         while(changed);
 
-        // compute immediate dominators
-        std::vector<bitset<>> tmp; // Tmp
+        // phase II (compute immediate dominators)
+        std::vector<bitset_type> tmp; // Tmp
 
         tmp.reserve(vertices.size());
 
@@ -200,13 +199,15 @@ void graph_algorithms<TVertex, TEdgeValue, N>::compute_dominators(typename graph
         // collect dominators, results
         for(auto& vertex : vertices)
         {
-            const auto& dominators((*vertex).bitset());
+            const auto& dominators(*(*vertex).bitset());
 
-            for(size_type k = 0; k < (*dominators).capacity(); k++)
+            auto position = dominators.find_first();
+
+            while(position != bitset_type::npos)
             {
-                //if(dominators[k] != bitset<>::data_type(0))
-                //{
-                //}
+                (*vertex).dominators().emplace(vertices[position]);
+
+                position = dominators.find_next(position);
             }
         }
     }
