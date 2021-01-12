@@ -55,6 +55,7 @@
     <ClInclude Include="..\src\framework\core\dag.hpp" />
     <ClInclude Include="..\src\framework\core\diagnostics.hpp" />
     <ClInclude Include="..\src\framework\core\domain_helper.hpp" />
+    <ClInclude Include="..\src\framework\core\dominance_tree.hpp" />
     <ClInclude Include="..\src\framework\core\dominator_vertex.hpp" />
     <ClInclude Include="..\src\framework\core\edge.hpp" />
     <ClInclude Include="..\src\framework\core\enum.hpp" />

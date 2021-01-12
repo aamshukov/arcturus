@@ -14,6 +14,7 @@
 
 #include <core/vertex.hpp>
 #include <core/dominator_vertex.hpp>
+#include <core/dominance_tree.hpp>
 #include <core/edge.hpp>
 #include <core/graph.hpp>
 

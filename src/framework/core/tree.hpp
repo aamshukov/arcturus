@@ -19,7 +19,8 @@ class tree : private noncopyable
             clear       = 0x0000,
             deleted     = 0x0001,
             root_in_ast = 0x0002, // aka ANTLR, expr : mexpr (’+’^ mexpr)* EOF! ;  \  mutually exclusive
-            not_in_ast  = 0x0004  // aka ANTLR, expr : mexpr (’+’^ mexpr)* EOF! ;  /
+            not_in_ast  = 0x0004,  // aka ANTLR, expr : mexpr (’+’^ mexpr)* EOF! ;  /
+            visited     = 0x0008
         };
 
         DECLARE_ENUM_OPERATORS(flag)

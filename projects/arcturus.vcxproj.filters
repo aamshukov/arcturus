@@ -360,6 +360,9 @@
     <ClInclude Include="..\src\framework\core\bitset.hpp">
       <Filter>framework\core</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\framework\core\dominance_tree.hpp">
+      <Filter>framework\core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\framework\core\logger.cpp">

@@ -19,12 +19,17 @@ class graph_algorithms : private noncopyable
         using graph_type = std::shared_ptr<graph<TVertex, TEdgeValue, N>>;
         using bitset_type = bitset<uint64_t>;
 
+        using dominance_tree_type = std::shared_ptr<dominance_tree>;
+
     public:
         static void dfs_to_vector(const graph_type& graph, std::vector<vertex_type>& result);
+        static void postorder_to_vector(const dominance_tree_type& tree, std::vector<dominance_tree_type>& result);
 
         static void compute_dominators(graph_type& graph);
+        static void build_dominance_tree(const graph_type& graph, dominance_tree_type& result_dominance_tree);
 
         static void generate_graphviz_file(const graph_type& graph, const string_type& file_name, bool show_values = true);
+        static void generate_graphviz_file(const dominance_tree_type& tree, const string_type& file_name);
 };
 
 template <typename TVertex, typename TEdgeValue, std::size_t N>
@@ -72,6 +77,41 @@ void graph_algorithms<TVertex, TEdgeValue, N>::dfs_to_vector(const typename grap
     }
 
     result.swap(vertices);
+}
+
+template <typename TVertex, typename TEdgeValue, std::size_t N>
+void graph_algorithms<TVertex, TEdgeValue, N>::postorder_to_vector(const typename graph_algorithms<TVertex, TEdgeValue, N>::dominance_tree_type& tree,
+                                                                   std::vector<typename graph_algorithms<TVertex, TEdgeValue, N>::dominance_tree_type>& result)
+{
+    std::vector<dominance_tree_type> nodes;
+
+    std::stack<dominance_tree_type> stack1; // holds collected nodes
+    std::stack<dominance_tree_type> stack2; // working stack
+
+    stack2.push(tree);
+
+    while(!stack2.empty())
+    {
+        auto node(stack2.top());
+        stack2.pop();
+
+        stack1.push(node);
+
+        for(auto& kid : (*node).kids())
+        {
+            stack2.push(std::dynamic_pointer_cast<dominance_tree_type::element_type>(kid));
+        }
+    }
+
+    while(!stack1.empty())
+    {
+        auto node(stack1.top());
+        stack1.pop();
+
+        nodes.emplace_back(node);
+    }
+
+    result.swap(nodes);
 }
 
 template <typename TVertex, typename TEdgeValue, std::size_t N>
@@ -223,22 +263,45 @@ void graph_algorithms<TVertex, TEdgeValue, N>::compute_dominators(typename graph
                 position = dominators.find_next(position);
             }
         }
-
-        //??
-        std::map<string_type, std::vector<string_type>> doms;
-        std::map<string_type, string_type> idoms;
-        for(auto& vertex : vertices)
-        {
-            std::vector<string_type> dom;
-            for(auto& d : (*vertex).dominators())
-                dom.push_back((*d).label());
-            doms[(*vertex).label()] = dom;
-            if((*vertex).idominator() != nullptr)
-                idoms[(*vertex).label()] = (*(*vertex).idominator()).label();
-        }
-        doms.clear();
-
     }
+}
+
+template <typename TVertex, typename TEdgeValue, std::size_t N>
+void graph_algorithms<TVertex, TEdgeValue, N>::build_dominance_tree(const typename graph_algorithms<TVertex, TEdgeValue, N>::graph_type& graph,
+                                                                    typename graph_algorithms<TVertex, TEdgeValue, N>::dominance_tree_type& result_dominance_tree)
+{
+    using vertex_type = std::shared_ptr<dominator_vertex>;
+    using vertex_tree_map_type = std::unordered_map<vertex_type, dominance_tree_type, vertex_hash<dominator_vertex>, vertex_eq_key_comparator<dominator_vertex>>;
+
+    vertex_tree_map_type vertex_tree_map;
+
+    vertex_tree_map.reserve((*graph).vertices().size());
+
+    dominance_tree_type tree(factory::create<dominance_tree>((*graph).root()));
+
+    vertex_tree_map[(*graph).root()] = tree;
+
+    for(const auto& vertex : (*graph).vertices())
+    {
+        if((*vertex).idominator() != nullptr)
+        {
+            vertex_tree_map[vertex] = factory::create<dominance_tree>(vertex);
+        }
+    }
+
+    for(const auto& vertex : (*graph).vertices())
+    {
+        if((*vertex).idominator() != nullptr)
+        {
+            auto& papa(vertex_tree_map.find((*vertex).idominator()));
+            auto& kid(vertex_tree_map.find(vertex));
+
+            (*(*papa).second).kids().emplace_back((*kid).second);
+            (*(*kid).second).papa() = (*papa).second;;
+        }
+    }
+
+    result_dominance_tree.swap(tree);
 }
 
 template <typename TVertex, typename TEdgeValue, std::size_t N>
@@ -297,6 +360,92 @@ void graph_algorithms<TVertex, TEdgeValue, N>::generate_graphviz_file(const type
     log_info(L"Generated graphviz file of a graph.");
 
     // D:\Soft\graphviz\2.38\release\bin\dot -Tpng d:\tmp\cfg.dot -o d:\tmp\cfg.png
+}
+
+template <typename TVertex, typename TEdgeValue, std::size_t N>
+void graph_algorithms<TVertex, TEdgeValue, N>::generate_graphviz_file(const typename graph_algorithms<TVertex, TEdgeValue, N>::dominance_tree_type& tree,
+                                                                      const string_type& file_name)
+{
+    log_info(L"Generating graphviz file of a dominance tree ...");
+
+    std::vector<dominance_tree_type> nodes;
+
+    std::stack<dominance_tree_type> stack;
+
+    stack.push(tree);
+
+    while(!stack.empty())
+    {
+        auto node(stack.top());
+        stack.pop();
+
+        if(((*node).flags() & tree::flag::visited) == tree::flag::visited)
+        {
+            continue;
+        }
+
+        (*node).flags() |= tree::flag::visited;
+
+        nodes.emplace(nodes.begin(), node);
+
+        for(auto& kid : (*node).kids())
+        {
+            if(((*kid).flags() & tree::flag::visited) != tree::flag::visited)
+            {
+                stack.push(std::dynamic_pointer_cast<dominance_tree_type::element_type>(kid));
+            }
+        }
+    }
+
+    std::wofstream stream;
+
+    try
+    {
+        stream.open(file_name.c_str(), std::ios::out | std::ios::binary);
+
+        if(!stream.is_open() || stream.bad() || stream.fail())
+        {
+            log_error(L"Failed to generate graphviz file of a dominance tree: stream is either open or in a bad condition.");
+        }
+
+        const char_type* indent(get_indent(4));
+
+        stream << L"digraph" << std::endl;
+        stream << L"{" << std::endl;
+
+        for(const auto& node : nodes)
+        {
+            stream << indent << ((*(*node).vertex()).label().empty() ? std::to_wstring((*(*node).vertex()).id()) : (*(*node).vertex()).label())
+                             << L" node [shape = circle];" << std::endl;
+        }
+
+        for(const auto& node : nodes)
+        {
+            for(auto& kid0 : (*node).kids())
+            {
+                auto kid(std::dynamic_pointer_cast<dominance_tree_type::element_type>(kid0));
+
+                stream << indent
+                       << ((*(*node).vertex()).label().empty() ? std::to_wstring((*(*node).vertex()).id()) : (*(*node).vertex()).label())
+                       << L" -> "
+                       << ((*(*kid).vertex()).label().empty() ? std::to_wstring((*(*kid).vertex()).id()) : (*(*kid).vertex()).label())
+                       << L";"
+                       << std::endl;
+            }
+        }
+
+        stream << L"}" << std::endl;
+
+        stream.flush();
+        stream.clear();
+        stream.close();
+    }
+    catch(const std::exception& ex)
+    {
+        log_exception(ex, L"Failed to generate graphviz file of a dominance tree: error occurred.");
+    }
+
+    log_info(L"Generated graphviz file of a dominance tree.");
 }
 
 END_NAMESPACE
