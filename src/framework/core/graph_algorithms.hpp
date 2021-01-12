@@ -86,25 +86,27 @@ void graph_algorithms<TVertex, TEdgeValue, N>::compute_dominators(typename graph
 
         graph_algorithms<dominator_vertex>::dfs_to_vector(graph, vertices);
 
+        auto vertices_size = vertices.size();
+
         // initialize root vertex with itself
         // Domin(r) := {r} 
-        (*(*graph).root()).bitset().create(vertices.size());
+        (*(*graph).root()).bitset().create(vertices_size);
         (*(*graph).root()).bitset()[0] = 1;
 
         // initialize each vertex with all vertices as dominators excluding root
         // for each n ∈ N - {r} do
-        for(size_type k = 1; k < vertices.size(); k++) // k = 1 - except root
+        for(size_type k = 1; k < vertices_size; k++) // k = 1 - except root
         {
             auto& n(vertices[k]);
 
-            (*n).bitset().create(vertices.size());
+            (*n).bitset().create(vertices_size);
 
             // Domin(n) := N
             (*n).bitset().set(); // all bits - all vertices
         }
 
         // iterate
-        bitset t(vertices.size()); // T
+        bitset t(vertices_size); // T
 
         volatile bool changed;
 
@@ -113,12 +115,12 @@ void graph_algorithms<TVertex, TEdgeValue, N>::compute_dominators(typename graph
             changed = false;
 
             // for each n ∈ N - {r} do
-            for(size_type k = 1; k < vertices.size(); k++) // k = 1 - except root
+            for(size_type k = 1; k < vertices_size; k++) // k = 1 - except root
             {
-                auto& n(vertices[k]);
-
                 // T := N
                 t.set();
+
+                auto& n(vertices[k]);
 
                 vertices_type predecessors;
 
@@ -128,7 +130,7 @@ void graph_algorithms<TVertex, TEdgeValue, N>::compute_dominators(typename graph
                 for(auto& p : predecessors)
                 {
                     // T ⋂= Domin(p)
-                    t |= (*p).bitset();
+                    t &= (*p).bitset();
                 }
 
                 // D := {n} ∪ T
@@ -142,64 +144,72 @@ void graph_algorithms<TVertex, TEdgeValue, N>::compute_dominators(typename graph
                     changed = true;
                 }
             }
-
         }
         while(changed);
 
         // phase II (compute immediate dominators)
-        std::vector<bitset_type> tmp(vertices.size(), bitset_type()); // Tmp
+        std::vector<bitset_type> tmp(vertices_size, bitset_type()); // Tmp
 
         // for each n ∈ N do
-        for(size_type k = 0; k < vertices.size(); k++)
+        for(size_type k = 0; k < vertices_size; k++)
         {
             auto& n(vertices[k]);
 
             // Tmp(n) := Domin(n) - {n}
             tmp[k] = (*n).bitset();
-            tmp[k][0] = 0; // ... - {n}
+            tmp[k][k] = 0; // ... - {n}
         }
 
         // for each n ∈ N - {r} do
-        for(size_type n = 1; n < vertices.size(); n++) // k = 1 - except root
+        for(size_type n = 1; n < vertices_size; n++) // k = 1 - except root
         {
+            auto& tmp_n(tmp[n]);
+
             // for each s ∈ Tmp(n) do
-            for(size_type s = 0; s < tmp.size(); s++)
+            auto s = tmp_n.find_first();
+
+            while(s != bitset_type::npos)
             {
                 // for each t ∈ Tmp(n) - {s} do
-                for(size_type t = 0; t < tmp.size(); t++)
+                auto t = tmp_n.find_first();
+
+                while(t != bitset_type::npos)
                 {
-                    if(t == s) // ... - {s}
-                        continue;
-
-                    auto& tmp_s(tmp[s]);
-
-                    // if t ∈ Tmp(s) then
-                    if(tmp_s[t])
+                    if(t != s) // ... - {s}
                     {
-                        // Tmp(n) -= {t}
-                        auto& tmp_n(tmp[n]);
-                        tmp_n[t] = 0;
+                        auto& tmp_s(tmp[s]);
+
+                        // if t ∈ Tmp(s) then
+                        if(tmp_s[t])
+                        {
+                            // Tmp(n) -= {t}
+                            tmp_n[t] = 0;
+                        }
                     }
+
+                    t = tmp_n.find_next(t);
                 }
-            }
 
-            // for each n ∈ N - {r} do
-            for(size_type n = 1; n < vertices.size(); n++) // k = 1 - except root
-            {
-                auto& idom(vertices[n]);
-                auto& tmp_n(tmp[n]);
-
-                // Idom(n) := Tmp(n)
-                auto position = tmp_n.find_first();
-
-                if(position != bitset_type::npos) // either one idominator or nothing
-                {
-                    (*idom).idominator() = vertices[position];
-                }
+                s = tmp_n.find_next(s);
             }
         }
 
-        // collect dominators, results
+        // for each n ∈ N - {r} do
+        for(size_type n = 1; n < vertices_size; n++) // k = 1 - except root
+        {
+            auto& idom(vertices[n]);
+            auto& tmp_n(tmp[n]);
+
+            // Idom(n) := Tmp(n)
+            auto position = tmp_n.find_first();
+
+            if(position != bitset_type::npos) // either one idominator or nothing
+            {
+                (*idom).idominator() = vertices[position];
+            }
+        }
+
+        // pahase III (collect dominators, results)
         for(auto& vertex : vertices)
         {
             const auto& dominators((*vertex).bitset());
@@ -213,6 +223,21 @@ void graph_algorithms<TVertex, TEdgeValue, N>::compute_dominators(typename graph
                 position = dominators.find_next(position);
             }
         }
+
+        //??
+        std::map<string_type, std::vector<string_type>> doms;
+        std::map<string_type, string_type> idoms;
+        for(auto& vertex : vertices)
+        {
+            std::vector<string_type> dom;
+            for(auto& d : (*vertex).dominators())
+                dom.push_back((*d).label());
+            doms[(*vertex).label()] = dom;
+            if((*vertex).idominator() != nullptr)
+                idoms[(*vertex).label()] = (*(*vertex).idominator()).label();
+        }
+        doms.clear();
+
     }
 }
 
@@ -241,7 +266,7 @@ void graph_algorithms<TVertex, TEdgeValue, N>::generate_graphviz_file(const type
 
         for(const auto& vertex : (*graph).vertices())
         {
-            stream << indent << (*vertex).id() << " node [shape = circle];" << std::endl;
+            stream << indent << ((*vertex).label().empty() ? std::to_wstring((*vertex).id()) : (*vertex).label()) << L" node [shape = circle];" << std::endl;
         }
 
         for(const auto& edge : (*graph).edges())
@@ -249,11 +274,12 @@ void graph_algorithms<TVertex, TEdgeValue, N>::generate_graphviz_file(const type
             const auto& vertex_u((*edge).endpoints()[0]);
             const auto& vertex_v((*edge).endpoints()[1]);
 
-            stream << indent << (*vertex_u).id() << " -> " << (*vertex_v).id() << ";" << std::endl;
+            stream << indent << ((*vertex_u).label().empty() ? std::to_wstring((*vertex_u).id()) : (*vertex_u).label()) << L" -> "
+                             << ((*vertex_v).label().empty() ? std::to_wstring((*vertex_v).id()) : (*vertex_v).label()) << L";" << std::endl;
 
             if(show_values)
             {
-                stream << indent << " [ " << "label = \"" << (*edge).value() << "\" ];" << std::endl;
+                stream << indent << L" [ " << L"label = \"" << (*edge).value() << L"\" ];" << std::endl;
             }
         }
 

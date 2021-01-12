@@ -25,7 +25,7 @@ class dominator_vertex : public vertex
         bitset_type             my_bitset;
 
     public:
-                                dominator_vertex(const id_type& id);
+                                dominator_vertex(const id_type& id, const string_type& label = empty_string());
         virtual                ~dominator_vertex();
 
         const vertices_type&    dominators() const;
@@ -40,8 +40,8 @@ class dominator_vertex : public vertex
         ACCEPT_METHOD;
 };
 
-inline dominator_vertex::dominator_vertex(const typename dominator_vertex::id_type& id = 0)
-                       : vertex(id)
+inline dominator_vertex::dominator_vertex(const typename dominator_vertex::id_type& id = 0, const string_type& label)
+                       : vertex(id, label)
 {
 }
 

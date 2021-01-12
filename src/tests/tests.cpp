@@ -813,18 +813,18 @@ namespace tests
                 Assert::AreEqual((*gr).vertices().size(), result.size());
             }
 
-            TEST_METHOD(GraphAlgorithmsComputeDominatorsMuchnik)
+            TEST_METHOD(GraphAlgorithmsComputeDominatorsNaiveMuchnik)
             {
                 std::shared_ptr<graph<dominator_vertex>> gr(factory::create<graph<dominator_vertex>>());
 
-                const auto& entry = *(*gr).add_vertex(factory::create<dominator_vertex>(10)).first;
-                const auto& b1 = *(*gr).add_vertex(factory::create<dominator_vertex>(11)).first;
-                const auto& b2 = *(*gr).add_vertex(factory::create<dominator_vertex>(12)).first;
-                const auto& b3 = *(*gr).add_vertex(factory::create<dominator_vertex>(13)).first;
-                const auto& b4 = *(*gr).add_vertex(factory::create<dominator_vertex>(14)).first;
-                const auto& b5 = *(*gr).add_vertex(factory::create<dominator_vertex>(15)).first;
-                const auto& b6 = *(*gr).add_vertex(factory::create<dominator_vertex>(16)).first;
-                const auto& exit = *(*gr).add_vertex(factory::create<dominator_vertex>(100)).first;
+                const auto& entry = *(*gr).add_vertex(factory::create<dominator_vertex>(10, L"entry")).first;
+                const auto& b1 = *(*gr).add_vertex(factory::create<dominator_vertex>(11, L"B1")).first;
+                const auto& b2 = *(*gr).add_vertex(factory::create<dominator_vertex>(12, L"B2")).first;
+                const auto& b3 = *(*gr).add_vertex(factory::create<dominator_vertex>(13, L"B3")).first;
+                const auto& b4 = *(*gr).add_vertex(factory::create<dominator_vertex>(14, L"B4")).first;
+                const auto& b5 = *(*gr).add_vertex(factory::create<dominator_vertex>(15, L"B5")).first;
+                const auto& b6 = *(*gr).add_vertex(factory::create<dominator_vertex>(16, L"B6")).first;
+                const auto& exit = *(*gr).add_vertex(factory::create<dominator_vertex>(100, L"exit")).first;
 
                 (*gr).add_edge(entry, b1, 0.1);
 
@@ -844,6 +844,8 @@ namespace tests
 
                 (*gr).root() = entry;
 
+                graph_algorithms<dominator_vertex>::generate_graphviz_file(gr, LR"(d:\tmp\GraphAlgorithmsComputeDominatorsMuchnik.dot)", false);
+
                 auto start = std::chrono::high_resolution_clock::now();
 
                 graph_algorithms<dominator_vertex>::compute_dominators(gr);
@@ -852,8 +854,262 @@ namespace tests
                 auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(finish-start).count();
 
                 Logger::WriteMessage(std::to_string(elapsed / 1000000.0).c_str());
+            }
 
-                graph_algorithms<dominator_vertex>::generate_graphviz_file(gr, LR"(d:\tmp\GraphAlgorithmsComputeDominatorsMuchnik.dot)", false);
+            TEST_METHOD(GraphAlgorithmsComputeDominatorsNaiveLengauerTarjan)
+            {
+                std::shared_ptr<graph<dominator_vertex>> gr(factory::create<graph<dominator_vertex>>());
+
+                const auto& r = *(*gr).add_vertex(factory::create<dominator_vertex>(1,  L"R")).first;
+                const auto& a = *(*gr).add_vertex(factory::create<dominator_vertex>(2,  L"A")).first;
+                const auto& b = *(*gr).add_vertex(factory::create<dominator_vertex>(3,  L"B")).first;
+                const auto& c = *(*gr).add_vertex(factory::create<dominator_vertex>(4,  L"C")).first;
+                const auto& d = *(*gr).add_vertex(factory::create<dominator_vertex>(5,  L"D")).first;
+                const auto& e = *(*gr).add_vertex(factory::create<dominator_vertex>(6,  L"E")).first;
+                const auto& f = *(*gr).add_vertex(factory::create<dominator_vertex>(7,  L"F")).first;
+                const auto& g = *(*gr).add_vertex(factory::create<dominator_vertex>(8,  L"G")).first;
+                const auto& h = *(*gr).add_vertex(factory::create<dominator_vertex>(9,  L"H")).first;
+                const auto& i = *(*gr).add_vertex(factory::create<dominator_vertex>(10, L"I")).first;
+                const auto& j = *(*gr).add_vertex(factory::create<dominator_vertex>(11, L"J")).first;
+                const auto& k = *(*gr).add_vertex(factory::create<dominator_vertex>(12, L"K")).first;
+                const auto& l = *(*gr).add_vertex(factory::create<dominator_vertex>(13, L"L")).first;
+
+                (*gr).add_edge(r, a, 0.1);
+                (*gr).add_edge(r, b, 0.1);
+                (*gr).add_edge(r, c, 0.1);
+
+                (*gr).add_edge(a, d, 0.1);
+
+                (*gr).add_edge(b, a, 0.1);
+                (*gr).add_edge(b, d, 0.1);
+                (*gr).add_edge(b, e, 0.1);
+
+                (*gr).add_edge(c, f, 0.1);
+                (*gr).add_edge(c, g, 0.1);
+
+                (*gr).add_edge(d, l, 0.1);
+
+                (*gr).add_edge(e, h, 0.1);
+
+                (*gr).add_edge(f, i, 0.1);
+
+                (*gr).add_edge(g, i, 0.1);
+                (*gr).add_edge(g, j, 0.1);
+
+                (*gr).add_edge(h, e, 0.1);
+                (*gr).add_edge(h, k, 0.1);
+
+                (*gr).add_edge(i, k, 0.1);
+
+                (*gr).add_edge(j, i, 0.1);
+
+                (*gr).add_edge(k, r, 0.1);
+                (*gr).add_edge(k, i, 0.1);
+
+                (*gr).add_edge(l, h, 0.1);
+
+                (*gr).root() = r;
+
+                graph_algorithms<dominator_vertex>::generate_graphviz_file(gr, LR"(d:\tmp\GraphAlgorithmsComputeDominatorsLengauerTarjan.dot)", false);
+
+                auto start = std::chrono::high_resolution_clock::now();
+
+                graph_algorithms<dominator_vertex>::compute_dominators(gr);
+
+                auto finish = std::chrono::high_resolution_clock::now();
+                auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(finish-start).count();
+
+                Logger::WriteMessage(std::to_string(elapsed / 1000000.0).c_str());
+            }
+
+            TEST_METHOD(GraphAlgorithmsComputeDominatorsNaiveAppel)
+            {
+                std::shared_ptr<graph<dominator_vertex>> gr(factory::create<graph<dominator_vertex>>());
+
+                const auto& n1  = *(*gr).add_vertex(factory::create<dominator_vertex>(1,  L"1")).first;
+                const auto& n2  = *(*gr).add_vertex(factory::create<dominator_vertex>(2,  L"2")).first;
+                const auto& n3  = *(*gr).add_vertex(factory::create<dominator_vertex>(3,  L"3")).first;
+                const auto& n4  = *(*gr).add_vertex(factory::create<dominator_vertex>(4,  L"4")).first;
+                const auto& n5  = *(*gr).add_vertex(factory::create<dominator_vertex>(5,  L"5")).first;
+                const auto& n6  = *(*gr).add_vertex(factory::create<dominator_vertex>(6,  L"6")).first;
+                const auto& n7  = *(*gr).add_vertex(factory::create<dominator_vertex>(7,  L"7")).first;
+                const auto& n8  = *(*gr).add_vertex(factory::create<dominator_vertex>(8,  L"8")).first;
+                const auto& n9  = *(*gr).add_vertex(factory::create<dominator_vertex>(9,  L"9")).first;
+                const auto& n10 = *(*gr).add_vertex(factory::create<dominator_vertex>(10, L"10")).first;
+                const auto& n11 = *(*gr).add_vertex(factory::create<dominator_vertex>(11, L"11")).first;
+                const auto& n12 = *(*gr).add_vertex(factory::create<dominator_vertex>(12, L"12")).first;
+
+                (*gr).add_edge(n1, n2, 0.1);
+
+                (*gr).add_edge(n2, n3, 0.1);
+                (*gr).add_edge(n2, n4, 0.1);
+
+                (*gr).add_edge(n3, n2, 0.1);
+
+                (*gr).add_edge(n4, n2, 0.1);
+                (*gr).add_edge(n4, n5, 0.1);
+                (*gr).add_edge(n4, n6, 0.1);
+
+                (*gr).add_edge(n5, n7, 0.1);
+                (*gr).add_edge(n5, n8, 0.1);
+
+                (*gr).add_edge(n6, n7, 0.1);
+
+                (*gr).add_edge(n7, n11, 0.1);
+
+                (*gr).add_edge(n8, n9, 0.1);
+
+                (*gr).add_edge(n9, n8, 0.1);
+                (*gr).add_edge(n9, n10, 0.1);
+
+                (*gr).add_edge(n10, n5, 0.1);
+                (*gr).add_edge(n10, n12, 0.1);
+
+                (*gr).add_edge(n11, n12, 0.1);
+
+                (*gr).root() = n1;
+
+                graph_algorithms<dominator_vertex>::generate_graphviz_file(gr, LR"(d:\tmp\GraphAlgorithmsComputeDominatorsAppel.dot)", false);
+
+                auto start = std::chrono::high_resolution_clock::now();
+
+                graph_algorithms<dominator_vertex>::compute_dominators(gr);
+
+                auto finish = std::chrono::high_resolution_clock::now();
+                auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(finish-start).count();
+
+                Logger::WriteMessage(std::to_string(elapsed / 1000000.0).c_str());
+            }
+
+            TEST_METHOD(GraphAlgorithmsComputeDominatorsNaiveCharlesFischer)
+            {
+                std::shared_ptr<graph<dominator_vertex>> gr(factory::create<graph<dominator_vertex>>());
+
+                const auto& n1  = *(*gr).add_vertex(factory::create<dominator_vertex>(1,  L"1")).first;
+                const auto& n2  = *(*gr).add_vertex(factory::create<dominator_vertex>(2,  L"2")).first;
+                const auto& n3  = *(*gr).add_vertex(factory::create<dominator_vertex>(3,  L"3")).first;
+                const auto& n4  = *(*gr).add_vertex(factory::create<dominator_vertex>(4,  L"4")).first;
+                const auto& n5  = *(*gr).add_vertex(factory::create<dominator_vertex>(5,  L"5")).first;
+                const auto& n6  = *(*gr).add_vertex(factory::create<dominator_vertex>(6,  L"6")).first;
+                const auto& n7  = *(*gr).add_vertex(factory::create<dominator_vertex>(7,  L"7")).first;
+                const auto& n8  = *(*gr).add_vertex(factory::create<dominator_vertex>(8,  L"8")).first;
+                const auto& n9  = *(*gr).add_vertex(factory::create<dominator_vertex>(9,  L"9")).first;
+                const auto& n10 = *(*gr).add_vertex(factory::create<dominator_vertex>(10, L"10")).first;
+                const auto& n11 = *(*gr).add_vertex(factory::create<dominator_vertex>(11, L"11")).first;
+                const auto& n12 = *(*gr).add_vertex(factory::create<dominator_vertex>(12, L"12")).first;
+                const auto& n13 = *(*gr).add_vertex(factory::create<dominator_vertex>(13, L"13")).first;
+
+                (*gr).add_edge(n1, n2, 0.1);
+                (*gr).add_edge(n1, n3, 0.1);
+
+                (*gr).add_edge(n2, n3, 0.1);
+                (*gr).add_edge(n2, n4, 0.1);
+                (*gr).add_edge(n2, n11, 0.1);
+
+                (*gr).add_edge(n3, n4, 0.1);
+                (*gr).add_edge(n3, n9, 0.1);
+
+                (*gr).add_edge(n4, n5, 0.1);
+                (*gr).add_edge(n4, n8, 0.1);
+
+                (*gr).add_edge(n5, n3, 0.1);
+                (*gr).add_edge(n5, n6, 0.1);
+
+                (*gr).add_edge(n6, n5, 0.1);
+                (*gr).add_edge(n6, n7, 0.1);
+
+                (*gr).add_edge(n8, n6, 0.1);
+
+                (*gr).add_edge(n9, n8, 0.1);
+                (*gr).add_edge(n9, n10, 0.1);
+
+                (*gr).add_edge(n10, n6, 0.1);
+
+                (*gr).add_edge(n11, n12, 0.1);
+                (*gr).add_edge(n11, n13, 0.1);
+
+                (*gr).add_edge(n12, n7, 0.1);
+                (*gr).add_edge(n12, n11, 0.1);
+
+                (*gr).add_edge(n13, n12, 0.1);
+
+                (*gr).root() = n1;
+
+                graph_algorithms<dominator_vertex>::generate_graphviz_file(gr, LR"(d:\tmp\GraphAlgorithmsComputeDominatorsCharlesFischer.dot)", false);
+
+                auto start = std::chrono::high_resolution_clock::now();
+
+                graph_algorithms<dominator_vertex>::compute_dominators(gr);
+
+                auto finish = std::chrono::high_resolution_clock::now();
+                auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(finish-start).count();
+
+                Logger::WriteMessage(std::to_string(elapsed / 1000000.0).c_str());
+            }
+
+            TEST_METHOD(GraphAlgorithmsComputeDominatorsNaiveCytron)
+            {
+                std::shared_ptr<graph<dominator_vertex>> gr(factory::create<graph<dominator_vertex>>());
+
+                const auto& en  = *(*gr).add_vertex(factory::create<dominator_vertex>(10,  L"Entry")).first;
+                const auto& n1  = *(*gr).add_vertex(factory::create<dominator_vertex>(11,  L"1")).first;
+                const auto& n2  = *(*gr).add_vertex(factory::create<dominator_vertex>(12,  L"2")).first;
+                const auto& n3  = *(*gr).add_vertex(factory::create<dominator_vertex>(13,  L"3")).first;
+                const auto& n4  = *(*gr).add_vertex(factory::create<dominator_vertex>(14,  L"4")).first;
+                const auto& n5  = *(*gr).add_vertex(factory::create<dominator_vertex>(15,  L"5")).first;
+                const auto& n6  = *(*gr).add_vertex(factory::create<dominator_vertex>(16,  L"6")).first;
+                const auto& n7  = *(*gr).add_vertex(factory::create<dominator_vertex>(17,  L"7")).first;
+                const auto& n8  = *(*gr).add_vertex(factory::create<dominator_vertex>(18,  L"8")).first;
+                const auto& n9  = *(*gr).add_vertex(factory::create<dominator_vertex>(19,  L"9")).first;
+                const auto& n10 = *(*gr).add_vertex(factory::create<dominator_vertex>(20,  L"10")).first;
+                const auto& n11 = *(*gr).add_vertex(factory::create<dominator_vertex>(21,  L"11")).first;
+                const auto& n12 = *(*gr).add_vertex(factory::create<dominator_vertex>(22,  L"12")).first;
+                const auto& ex  = *(*gr).add_vertex(factory::create<dominator_vertex>(110, L"Exit")).first;
+
+                (*gr).add_edge(en, n1, 0.1);
+                (*gr).add_edge(en, ex, 0.1);
+
+                (*gr).add_edge(n1, n2, 0.1);
+
+                (*gr).add_edge(n2, n3, 0.1);
+                (*gr).add_edge(n2, n7, 0.1);
+
+                (*gr).add_edge(n3, n4, 0.1);
+                (*gr).add_edge(n3, n5, 0.1);
+
+                (*gr).add_edge(n4, n6, 0.1);
+
+                (*gr).add_edge(n5, n6, 0.1);
+
+                (*gr).add_edge(n6, n8, 0.1);
+
+                (*gr).add_edge(n7, n8, 0.1);
+
+                (*gr).add_edge(n8, n9, 0.1);
+
+                (*gr).add_edge(n9, n10, 0.1);
+                (*gr).add_edge(n9, n11, 0.1);
+
+                (*gr).add_edge(n10, n11, 0.1);
+
+                (*gr).add_edge(n11, n9, 0.1);
+                (*gr).add_edge(n11, n12, 0.1);
+
+                (*gr).add_edge(n12, n2, 0.1);
+                (*gr).add_edge(n12, ex, 0.1);
+
+                (*gr).root() = en;
+
+                graph_algorithms<dominator_vertex>::generate_graphviz_file(gr, LR"(d:\tmp\GraphAlgorithmsComputeDominatorsCytron.dot)", false);
+
+                auto start = std::chrono::high_resolution_clock::now();
+
+                graph_algorithms<dominator_vertex>::compute_dominators(gr);
+
+                auto finish = std::chrono::high_resolution_clock::now();
+                auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(finish-start).count();
+
+                Logger::WriteMessage(std::to_string(elapsed / 1000000.0).c_str());
             }
     };
 }

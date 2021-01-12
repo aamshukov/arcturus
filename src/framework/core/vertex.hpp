@@ -61,6 +61,8 @@ class vertex : public visitable
 
     protected:
         id_type                 my_id;
+        string_type             my_label;
+
         vertices_type           my_adjacencies;
 
         flags_type              my_flags;
@@ -68,11 +70,14 @@ class vertex : public visitable
         size_type               my_ref_count; // if the vertex is referenced by another vertices
 
     public:
-                                vertex(const id_type& id);
+                                vertex(const id_type& id, const string_type& label = empty_string());
         virtual                ~vertex();
 
         const id_type&          id() const;
         id_type&                id();
+
+        const string_type&      label() const;
+        string_type&            label();
 
         const vertices_type&    adjacencies() const;
         vertices_type&          adjacencies();
@@ -87,8 +92,8 @@ class vertex : public visitable
         ACCEPT_METHOD;
 };
 
-inline vertex::vertex(const typename vertex::id_type& id = 0)
-             : my_id(id), my_flags(vertex::flags_type::clear), my_ref_count(0)
+inline vertex::vertex(const typename vertex::id_type& id = 0, const string_type& label)
+             : my_id(id), my_label(label), my_flags(vertex::flags_type::clear), my_ref_count(0)
 {
 }
 
@@ -104,6 +109,16 @@ inline const typename vertex::id_type& vertex::id() const
 inline typename vertex::id_type& vertex::id()
 {
     return my_id;
+}
+
+inline const string_type& vertex::label() const
+{
+    return my_label;
+}
+
+inline string_type& vertex::label()
+{
+    return my_label;
 }
 
 inline const typename vertex::vertices_type& vertex::adjacencies() const
