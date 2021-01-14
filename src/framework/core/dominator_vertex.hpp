@@ -21,6 +21,7 @@ class dominator_vertex : public vertex
     protected:
         vertices_type           my_dominators;
         vertex_type             my_idominator;
+        vertices_type           my_frontiers;
 
         bitset_type             my_bitset;
 
@@ -33,6 +34,9 @@ class dominator_vertex : public vertex
 
         const vertex_type&      idominator() const;
         vertex_type&            idominator();
+
+        const vertices_type&    frontiers() const;
+        vertices_type&          frontiers();
 
         const bitset_type&      bitset() const;
         bitset_type&            bitset();
@@ -67,6 +71,16 @@ inline const typename dominator_vertex::vertex_type& dominator_vertex::idominato
 inline typename dominator_vertex::vertex_type& dominator_vertex::idominator()
 {
     return my_idominator;
+}
+
+inline const typename dominator_vertex::vertices_type& dominator_vertex::frontiers() const
+{
+    return my_frontiers;
+}
+
+inline typename dominator_vertex::vertices_type& dominator_vertex::frontiers()
+{
+    return my_frontiers;
 }
 
 inline const typename dominator_vertex::bitset_type& dominator_vertex::bitset() const

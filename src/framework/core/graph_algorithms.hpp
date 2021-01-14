@@ -22,11 +22,14 @@ class graph_algorithms : private noncopyable
         using dominance_tree_type = std::shared_ptr<dominance_tree>;
 
     public:
-        static void dfs_to_vector(const graph_type& graph, std::vector<vertex_type>& result);
-        static void postorder_to_vector(const dominance_tree_type& tree, std::vector<dominance_tree_type>& result);
+        static void dfs_to_vector(const graph_type& graph, std::vector<vertex_type>& result_vector);
+        static void postorder_to_vector(const dominance_tree_type& tree, std::vector<dominance_tree_type>& result_vector);
 
         static void compute_dominators(graph_type& graph);
-        static void build_dominance_tree(const graph_type& graph, dominance_tree_type& result_dominance_tree);
+        static void compute_dominators_lengauer_tarjan(graph_type& graph);
+
+        static void build_dominance_tree(const graph_type& graph, dominance_tree_type& result_tree);
+        static void compute_dominance_frontiers(graph_type& graph, const dominance_tree_type& tree);
 
         static void generate_graphviz_file(const graph_type& graph, const string_type& file_name, bool show_values = true);
         static void generate_graphviz_file(const dominance_tree_type& tree, const string_type& file_name);
@@ -34,7 +37,7 @@ class graph_algorithms : private noncopyable
 
 template <typename TVertex, typename TEdgeValue, std::size_t N>
 void graph_algorithms<TVertex, TEdgeValue, N>::dfs_to_vector(const typename graph_algorithms<TVertex, TEdgeValue, N>::graph_type& graph,
-                                                             std::vector<typename graph_algorithms<TVertex, TEdgeValue, N>::vertex_type>& result)
+                                                             std::vector<typename graph_algorithms<TVertex, TEdgeValue, N>::vertex_type>& result_vector)
 {
     // https://stackoverflow.com/questions/9201166/iterative-dfs-vs-recursive-dfs-and-different-elements-order
     //  1. In the iterative approach: You first insert all the elements into the stack - and then handle the head of the stack
@@ -67,7 +70,7 @@ void graph_algorithms<TVertex, TEdgeValue, N>::dfs_to_vector(const typename grap
         vertices.emplace_back(std::dynamic_pointer_cast<vertex_type::element_type>(vertex)); // 1 ... faster
         //vertices.emplace(vertices.begin(), std::dynamic_pointer_cast<vertex_type::element_type>(vertex)); // 3 ...
 
-        for(auto& adjacent : (*vertex).adjacencies())
+        for(const auto& adjacent : (*vertex).adjacencies())
         {
             if(((*adjacent).flags() & vertex::flag::visited) != vertex::flag::visited)
             {
@@ -76,12 +79,12 @@ void graph_algorithms<TVertex, TEdgeValue, N>::dfs_to_vector(const typename grap
         }
     }
 
-    result.swap(vertices);
+    result_vector.swap(vertices);
 }
 
 template <typename TVertex, typename TEdgeValue, std::size_t N>
 void graph_algorithms<TVertex, TEdgeValue, N>::postorder_to_vector(const typename graph_algorithms<TVertex, TEdgeValue, N>::dominance_tree_type& tree,
-                                                                   std::vector<typename graph_algorithms<TVertex, TEdgeValue, N>::dominance_tree_type>& result)
+                                                                   std::vector<typename graph_algorithms<TVertex, TEdgeValue, N>::dominance_tree_type>& result_vector)
 {
     std::vector<dominance_tree_type> nodes;
 
@@ -97,7 +100,7 @@ void graph_algorithms<TVertex, TEdgeValue, N>::postorder_to_vector(const typenam
 
         stack1.push(node);
 
-        for(auto& kid : (*node).kids())
+        for(const auto& kid : (*node).kids())
         {
             stack2.push(std::dynamic_pointer_cast<dominance_tree_type::element_type>(kid));
         }
@@ -111,7 +114,7 @@ void graph_algorithms<TVertex, TEdgeValue, N>::postorder_to_vector(const typenam
         nodes.emplace_back(node);
     }
 
-    result.swap(nodes);
+    result_vector.swap(nodes);
 }
 
 template <typename TVertex, typename TEdgeValue, std::size_t N>
@@ -267,8 +270,13 @@ void graph_algorithms<TVertex, TEdgeValue, N>::compute_dominators(typename graph
 }
 
 template <typename TVertex, typename TEdgeValue, std::size_t N>
+void graph_algorithms<TVertex, TEdgeValue, N>::compute_dominators_lengauer_tarjan(typename graph_algorithms<TVertex, TEdgeValue, N>::graph_type& graph)
+{
+}
+
+template <typename TVertex, typename TEdgeValue, std::size_t N>
 void graph_algorithms<TVertex, TEdgeValue, N>::build_dominance_tree(const typename graph_algorithms<TVertex, TEdgeValue, N>::graph_type& graph,
-                                                                    typename graph_algorithms<TVertex, TEdgeValue, N>::dominance_tree_type& result_dominance_tree)
+                                                                    typename graph_algorithms<TVertex, TEdgeValue, N>::dominance_tree_type& result_tree)
 {
     using vertex_type = std::shared_ptr<dominator_vertex>;
     using vertex_tree_map_type = std::unordered_map<vertex_type, dominance_tree_type, vertex_hash<dominator_vertex>, vertex_eq_key_comparator<dominator_vertex>>;
@@ -301,7 +309,56 @@ void graph_algorithms<TVertex, TEdgeValue, N>::build_dominance_tree(const typena
         }
     }
 
-    result_dominance_tree.swap(tree);
+    result_tree.swap(tree);
+}
+
+template <typename TVertex, typename TEdgeValue, std::size_t N>
+void graph_algorithms<TVertex, TEdgeValue, N>::compute_dominance_frontiers(typename graph_algorithms<TVertex, TEdgeValue, N>::graph_type& graph,
+                                                                           const typename graph_algorithms<TVertex, TEdgeValue, N>::dominance_tree_type& tree)
+{
+    // 'An Efficient Method of Computing SSA' by Ron Cytron, etc.
+    std::vector<dominance_tree_type> nodes;
+
+    postorder_to_vector(tree, nodes);
+
+    // for each X in a bottom-up traversal of the dominator tree do
+    for(auto& node : nodes)
+    {
+        // DF(X) <-- 0
+        (*(*node).vertex()).frontiers().clear();
+    
+        vertices_type successors;
+
+        (*graph).collect_successors((*node).vertex(), successors);
+
+        // for each Y ∈ Succ(X) do
+        for(const auto& successor : successors)
+        {
+            // if idom(Y) != X
+            if((*successor).idominator() != (*node).vertex())
+            {
+                // then DF(X) <-- DF(X) ∪ {Y}
+                (*(*node).vertex()).frontiers().emplace(successor); // local
+            }
+        }
+
+        // for each Z ∈ Children(X)
+        for(const auto& kid : (*node).kids())
+        {
+            auto& frontiers((*(*std::dynamic_pointer_cast<dominance_tree>(kid)).vertex()).frontiers());
+
+            // for each Y ∈ DF(Z) do
+            for(const auto& frontier : frontiers)
+            {
+                // if idom(Y) != X
+                if((*frontier).idominator() != (*node).vertex())
+                {
+                    // then DF(X) <-- DF(X) ∪ {Y}
+                    (*(*node).vertex()).frontiers().emplace(frontier); // up
+                }
+            }
+        }
+    }
 }
 
 template <typename TVertex, typename TEdgeValue, std::size_t N>
@@ -388,7 +445,7 @@ void graph_algorithms<TVertex, TEdgeValue, N>::generate_graphviz_file(const type
 
         nodes.emplace(nodes.begin(), node);
 
-        for(auto& kid : (*node).kids())
+        for(const auto& kid : (*node).kids())
         {
             if(((*kid).flags() & tree::flag::visited) != tree::flag::visited)
             {
@@ -421,7 +478,7 @@ void graph_algorithms<TVertex, TEdgeValue, N>::generate_graphviz_file(const type
 
         for(const auto& node : nodes)
         {
-            for(auto& kid0 : (*node).kids())
+            for(const auto& kid0 : (*node).kids())
             {
                 auto kid(std::dynamic_pointer_cast<dominance_tree_type::element_type>(kid0));
 

@@ -1480,5 +1480,253 @@ namespace tests
 
                 Logger::WriteMessage(std::to_string(elapsed / 1000000.0).c_str());
             }
+
+            TEST_METHOD(GraphAlgorithmsComputeDominanceFrontierNaiveCytron)
+            {
+                std::shared_ptr<graph<dominator_vertex>> graph(factory::create<graph<dominator_vertex>>());
+
+                const auto& en  = *(*graph).add_vertex(factory::create<dominator_vertex>(10,  L"Entry")).first;
+                const auto& n1  = *(*graph).add_vertex(factory::create<dominator_vertex>(11,  L"1")).first;
+                const auto& n2  = *(*graph).add_vertex(factory::create<dominator_vertex>(12,  L"2")).first;
+                const auto& n3  = *(*graph).add_vertex(factory::create<dominator_vertex>(13,  L"3")).first;
+                const auto& n4  = *(*graph).add_vertex(factory::create<dominator_vertex>(14,  L"4")).first;
+                const auto& n5  = *(*graph).add_vertex(factory::create<dominator_vertex>(15,  L"5")).first;
+                const auto& n6  = *(*graph).add_vertex(factory::create<dominator_vertex>(16,  L"6")).first;
+                const auto& n7  = *(*graph).add_vertex(factory::create<dominator_vertex>(17,  L"7")).first;
+                const auto& n8  = *(*graph).add_vertex(factory::create<dominator_vertex>(18,  L"8")).first;
+                const auto& n9  = *(*graph).add_vertex(factory::create<dominator_vertex>(19,  L"9")).first;
+                const auto& n10 = *(*graph).add_vertex(factory::create<dominator_vertex>(20,  L"10")).first;
+                const auto& n11 = *(*graph).add_vertex(factory::create<dominator_vertex>(21,  L"11")).first;
+                const auto& n12 = *(*graph).add_vertex(factory::create<dominator_vertex>(22,  L"12")).first;
+                const auto& ex  = *(*graph).add_vertex(factory::create<dominator_vertex>(110, L"Exit")).first;
+
+                (*graph).add_edge(en, n1, 0.1);
+                (*graph).add_edge(en, ex, 0.1);
+
+                (*graph).add_edge(n1, n2, 0.1);
+
+                (*graph).add_edge(n2, n3, 0.1);
+                (*graph).add_edge(n2, n7, 0.1);
+
+                (*graph).add_edge(n3, n4, 0.1);
+                (*graph).add_edge(n3, n5, 0.1);
+
+                (*graph).add_edge(n4, n6, 0.1);
+
+                (*graph).add_edge(n5, n6, 0.1);
+
+                (*graph).add_edge(n6, n8, 0.1);
+
+                (*graph).add_edge(n7, n8, 0.1);
+
+                (*graph).add_edge(n8, n9, 0.1);
+
+                (*graph).add_edge(n9, n10, 0.1);
+                (*graph).add_edge(n9, n11, 0.1);
+
+                (*graph).add_edge(n10, n11, 0.1);
+
+                (*graph).add_edge(n11, n9, 0.1);
+                (*graph).add_edge(n11, n12, 0.1);
+
+                (*graph).add_edge(n12, n2, 0.1);
+                (*graph).add_edge(n12, ex, 0.1);
+
+                (*graph).root() = en;
+
+                graph_algorithms<dominator_vertex>::compute_dominators(graph);
+
+                std::shared_ptr<dominance_tree> dominance_tree;
+
+                graph_algorithms<dominator_vertex>::build_dominance_tree(graph, dominance_tree);
+
+                auto start = std::chrono::high_resolution_clock::now();
+
+                graph_algorithms<dominator_vertex>::compute_dominance_frontiers(graph, dominance_tree);
+
+                auto finish = std::chrono::high_resolution_clock::now();
+                auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(finish-start).count();
+
+                graph_algorithms<dominator_vertex>::generate_graphviz_file(graph, LR"(d:\tmp\GraphAlgorithmsComputeDominanceFrontierNaiveCytron.Graph.dot)", false);
+                graph_algorithms<dominator_vertex>::generate_graphviz_file(dominance_tree, LR"(d:\tmp\GraphAlgorithmsComputeDominanceFrontierNaiveCytron.Tree.dot)");
+
+                std::map<string_type, std::vector<string_type>> frontiers;
+                for(auto& vertex : (*graph).vertices())
+                {
+                    std::vector<string_type> frontier;
+                    for(auto& f : (*vertex).frontiers())
+                        frontier.push_back((*f).label());
+                    frontiers[(*vertex).label()] = frontier;
+                }
+
+                Logger::WriteMessage(std::to_string(elapsed / 1000000.0).c_str());
+            }
+
+            TEST_METHOD(GraphAlgorithmsComputeDominanceFrontierNaiveMuchnik)
+            {
+                // Fig. 8.21
+                std::shared_ptr<graph<dominator_vertex>> graph(factory::create<graph<dominator_vertex>>());
+
+                const auto& entry = *(*graph).add_vertex(factory::create<dominator_vertex>(10, L"entry")).first;
+                const auto& b1 = *(*graph).add_vertex(factory::create<dominator_vertex>(11, L"B1")).first;
+                const auto& b2 = *(*graph).add_vertex(factory::create<dominator_vertex>(12, L"B2")).first;
+                const auto& b3 = *(*graph).add_vertex(factory::create<dominator_vertex>(13, L"B3")).first;
+                const auto& b4 = *(*graph).add_vertex(factory::create<dominator_vertex>(14, L"B4")).first;
+                const auto& b5 = *(*graph).add_vertex(factory::create<dominator_vertex>(15, L"B5")).first;
+                const auto& b6 = *(*graph).add_vertex(factory::create<dominator_vertex>(16, L"B6")).first;
+                const auto& exit = *(*graph).add_vertex(factory::create<dominator_vertex>(100, L"exit")).first;
+
+                (*graph).add_edge(entry, b1, 0.1);
+
+                (*graph).add_edge(b1, b2, 0.2);
+
+                (*graph).add_edge(b2, b3, 0.3);
+                (*graph).add_edge(b2, b4, 0.3);
+
+                (*graph).add_edge(b3, b2, 0.4);
+
+                (*graph).add_edge(b4, b5, 0.5);
+                (*graph).add_edge(b4, b6, 0.5);
+
+                (*graph).add_edge(b5, exit, 0.6);
+
+                (*graph).add_edge(b6, exit, 0.7);
+
+                (*graph).root() = entry;
+
+                graph_algorithms<dominator_vertex>::compute_dominators(graph);
+
+                std::shared_ptr<dominance_tree> dominance_tree;
+
+                graph_algorithms<dominator_vertex>::build_dominance_tree(graph, dominance_tree);
+
+                auto start = std::chrono::high_resolution_clock::now();
+
+                graph_algorithms<dominator_vertex>::compute_dominance_frontiers(graph, dominance_tree);
+
+                auto finish = std::chrono::high_resolution_clock::now();
+                auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(finish-start).count();
+
+                graph_algorithms<dominator_vertex>::generate_graphviz_file(graph, LR"(d:\tmp\GraphAlgorithmsComputeDominanceFrontierNaiveMuchnik.Graph.dot)", false);
+                graph_algorithms<dominator_vertex>::generate_graphviz_file(dominance_tree, LR"(d:\tmp\GraphAlgorithmsComputeDominanceFrontierNaiveMuchnik.Tree.dot)");
+
+                std::map<string_type, std::vector<string_type>> frontiers;
+                for(auto& vertex : (*graph).vertices())
+                {
+                    std::vector<string_type> frontier;
+                    for(auto& f : (*vertex).frontiers())
+                        frontier.push_back((*f).label());
+                    frontiers[(*vertex).label()] = frontier;
+                }
+
+                Logger::WriteMessage(std::to_string(elapsed / 1000000.0).c_str());
+            }
+
+            TEST_METHOD(GraphAlgorithmsComputeDominanceFrontierNaiveAppel)
+            {
+                // FIGURE 19.4
+                std::shared_ptr<graph<dominator_vertex>> graph(factory::create<graph<dominator_vertex>>());
+
+                const auto& n1 = *(*graph).add_vertex(factory::create<dominator_vertex>(1, L"1")).first;
+                const auto& n2 = *(*graph).add_vertex(factory::create<dominator_vertex>(2, L"2")).first;
+                const auto& n3 = *(*graph).add_vertex(factory::create<dominator_vertex>(3, L"3")).first;
+                const auto& n4 = *(*graph).add_vertex(factory::create<dominator_vertex>(4, L"4")).first;
+                const auto& n5 = *(*graph).add_vertex(factory::create<dominator_vertex>(5, L"5")).first;
+                const auto& n6 = *(*graph).add_vertex(factory::create<dominator_vertex>(6, L"6")).first;
+                const auto& n7 = *(*graph).add_vertex(factory::create<dominator_vertex>(7, L"7")).first;
+
+                (*graph).add_edge(n1, n2, 0.1);
+
+                (*graph).add_edge(n2, n3, 0.1);
+                (*graph).add_edge(n2, n4, 0.1);
+
+                (*graph).add_edge(n3, n5, 0.1);
+                (*graph).add_edge(n3, n6, 0.1);
+
+                (*graph).add_edge(n5, n7, 0.1);
+
+                (*graph).add_edge(n6, n7, 0.1);
+
+                (*graph).add_edge(n7, n2, 0.1);
+
+                (*graph).root() = n1;
+
+                graph_algorithms<dominator_vertex>::compute_dominators(graph);
+
+                std::shared_ptr<dominance_tree> dominance_tree;
+
+                graph_algorithms<dominator_vertex>::build_dominance_tree(graph, dominance_tree);
+
+                auto start = std::chrono::high_resolution_clock::now();
+
+                graph_algorithms<dominator_vertex>::compute_dominance_frontiers(graph, dominance_tree);
+
+                auto finish = std::chrono::high_resolution_clock::now();
+                auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(finish-start).count();
+
+                graph_algorithms<dominator_vertex>::generate_graphviz_file(graph, LR"(d:\tmp\GraphAlgorithmsComputeDominanceFrontierNaiveAppel.Graph.dot)", false);
+                graph_algorithms<dominator_vertex>::generate_graphviz_file(dominance_tree, LR"(d:\tmp\GraphAlgorithmsComputeDominanceFrontierNaiveAppel.Tree.dot)");
+
+                std::map<string_type, std::vector<string_type>> frontiers;
+                for(auto& vertex : (*graph).vertices())
+                {
+                    std::vector<string_type> frontier;
+                    for(auto& f : (*vertex).frontiers())
+                        frontier.push_back((*f).label());
+                    frontiers[(*vertex).label()] = frontier;
+                }
+
+                Logger::WriteMessage(std::to_string(elapsed / 1000000.0).c_str());
+            }
+
+            TEST_METHOD(GraphAlgorithmsComputeDominanceFrontierNaiveSlides_hw1)
+            {
+                std::shared_ptr<graph<dominator_vertex>> graph(factory::create<graph<dominator_vertex>>());
+
+                const auto& a = *(*graph).add_vertex(factory::create<dominator_vertex>(11, L"A")).first;
+                const auto& b = *(*graph).add_vertex(factory::create<dominator_vertex>(12, L"B")).first;
+                const auto& c = *(*graph).add_vertex(factory::create<dominator_vertex>(13, L"C")).first;
+                const auto& d = *(*graph).add_vertex(factory::create<dominator_vertex>(14, L"D")).first;
+                const auto& e = *(*graph).add_vertex(factory::create<dominator_vertex>(15, L"E")).first;
+
+                (*graph).add_edge(a, b, 0.2);
+                (*graph).add_edge(a, c, 0.2);
+
+                (*graph).add_edge(b, d, 0.3);
+
+                (*graph).add_edge(c, e, 0.4);
+                (*graph).add_edge(c, d, 0.4);
+
+                (*graph).add_edge(e, c, 0.7);
+
+                (*graph).root() = a;
+
+                graph_algorithms<dominator_vertex>::compute_dominators(graph);
+
+                std::shared_ptr<dominance_tree> dominance_tree;
+
+                graph_algorithms<dominator_vertex>::build_dominance_tree(graph, dominance_tree);
+
+                auto start = std::chrono::high_resolution_clock::now();
+
+                graph_algorithms<dominator_vertex>::compute_dominance_frontiers(graph, dominance_tree);
+
+                auto finish = std::chrono::high_resolution_clock::now();
+                auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(finish-start).count();
+
+                graph_algorithms<dominator_vertex>::generate_graphviz_file(graph, LR"(d:\tmp\GraphAlgorithmsComputeDominanceFrontierNaiveSlides_hw1.Graph.dot)", false);
+                graph_algorithms<dominator_vertex>::generate_graphviz_file(dominance_tree, LR"(d:\tmp\GraphAlgorithmsComputeDominanceFrontierNaiveSlides_hw1.Tree.dot)");
+
+                std::map<string_type, std::vector<string_type>> frontiers;
+                for(auto& vertex : (*graph).vertices())
+                {
+                    std::vector<string_type> frontier;
+                    for(auto& f : (*vertex).frontiers())
+                        frontier.push_back((*f).label());
+                    frontiers[(*vertex).label()] = frontier;
+                }
+
+                Logger::WriteMessage(std::to_string(elapsed / 1000000.0).c_str());
+            }
     };
 }

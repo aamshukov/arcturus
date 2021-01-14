@@ -315,7 +315,7 @@ void graph<TVertex, TEdgeValue, N>::collect_successors(const typename graph<TVer
 
     for(const auto& successor : (*vertex).adjacencies())
     {
-        successors.emplace(successor);
+        successors.emplace(std::dynamic_pointer_cast<TVertex>(successor));
     }
 }
 
