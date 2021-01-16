@@ -21,23 +21,79 @@ class graph_algorithms : private noncopyable
 
         using dominance_tree_type = std::shared_ptr<dominance_tree>;
 
+        using number_vertex_type = std::unordered_map<size_type, vertex_type>;
+        using vertex_number_type = std::unordered_map<vertex_type, size_type, vertex_hash<dominator_vertex>, vertex_eq_key_comparator<dominator_vertex>>;
+        using vertex_vertex_type = std::unordered_map<vertex_type, vertex_type, vertex_hash<dominator_vertex>, vertex_eq_key_comparator<dominator_vertex>>;
+        using vertex_vertices_type = std::unordered_map<vertex_type, vertices_type, vertex_hash<dominator_vertex>, vertex_eq_key_comparator<dominator_vertex>>;
+
+    private:
+        struct lengauer_tarjan_context
+        {
+            vertex_number_type semidominators;  // holds semidominator numbers of vertices after computation
+
+            number_vertex_type vertices;
+            vertex_vertex_type parents;         // parent vertices
+
+            vertex_vertices_type predecessors;  // predecessors of a vertex
+
+            vertex_vertex_type ancestors;       // required to represent forest
+            vertex_vertex_type labels;          // required to represent forest
+
+            vertex_vertices_type buckets;
+
+            size_type n;
+        };
+
+        using lengauer_tarjan_context_type = lengauer_tarjan_context;
+
+    private:
+        static void         dfs_lengauer_tarjan(const vertex_type& v, lengauer_tarjan_context_type& context);
+        static void         compress_lengauer_tarjan(const vertex_type& v, lengauer_tarjan_context_type& context);
+        static vertex_type  eval_lengauer_tarjan(const vertex_type& v, lengauer_tarjan_context_type& context);
+        static void         link_lengauer_tarjan(const vertex_type& v, const vertex_type& w, lengauer_tarjan_context_type& context);
+
     public:
-        static void dfs_to_vector(const graph_type& graph, std::vector<vertex_type>& result_vector);
-        static void postorder_to_vector(const dominance_tree_type& tree, std::vector<dominance_tree_type>& result_vector);
+        static void         flat_to_vector(const graph_type& graph, std::vector<vertex_type>& result_vector);
 
-        static void compute_dominators(graph_type& graph);
-        static void compute_dominators_lengauer_tarjan(graph_type& graph);
+        static void         dfs_preorder_to_vector(const graph_type& graph, std::vector<vertex_type>& result_vector);
+        static void         dfs_postorder_to_vector(const dominance_tree_type& tree, std::vector<dominance_tree_type>& result_vector);
 
-        static void build_dominance_tree(const graph_type& graph, dominance_tree_type& result_tree);
-        static void compute_dominance_frontiers(graph_type& graph, const dominance_tree_type& tree);
+        static void         compute_dominators(graph_type& graph);
+        static void         compute_dominators_lengauer_tarjan(graph_type& graph);
 
-        static void generate_graphviz_file(const graph_type& graph, const string_type& file_name, bool show_values = true);
-        static void generate_graphviz_file(const dominance_tree_type& tree, const string_type& file_name);
+        static void         build_dominance_tree(const graph_type& graph, dominance_tree_type& result_tree);
+        static void         compute_dominance_frontiers(graph_type& graph, const dominance_tree_type& tree);
+
+        static void         generate_graphviz_file(const graph_type& graph, const string_type& file_name, bool show_values = true);
+        static void         generate_graphviz_file(const dominance_tree_type& tree, const string_type& file_name);
 };
 
 template <typename TVertex, typename TEdgeValue, std::size_t N>
-void graph_algorithms<TVertex, TEdgeValue, N>::dfs_to_vector(const typename graph_algorithms<TVertex, TEdgeValue, N>::graph_type& graph,
-                                                             std::vector<typename graph_algorithms<TVertex, TEdgeValue, N>::vertex_type>& result_vector)
+void graph_algorithms<TVertex, TEdgeValue, N>::flat_to_vector(const graph_type& graph, std::vector<vertex_type>& result_vector)
+{
+    std::vector<vertex_type> vertices;
+
+    vertices.reserve(*(*graph).vertices().size());
+
+    if((*graph).root() != nullptr)
+    {
+        vertices[0] = (*graph).root();
+    }
+
+    for(const auto& vertex : (*graph).vertices())
+    {
+        if(vertex == (*graph).root())
+            continue;
+
+        vertices.emplace_back(vertex);
+    }
+
+    result_vector.swap(vertices);
+}
+
+template <typename TVertex, typename TEdgeValue, std::size_t N>
+void graph_algorithms<TVertex, TEdgeValue, N>::dfs_preorder_to_vector(const typename graph_algorithms<TVertex, TEdgeValue, N>::graph_type& graph,
+                                                                      std::vector<typename graph_algorithms<TVertex, TEdgeValue, N>::vertex_type>& result_vector)
 {
     // https://stackoverflow.com/questions/9201166/iterative-dfs-vs-recursive-dfs-and-different-elements-order
     //  1. In the iterative approach: You first insert all the elements into the stack - and then handle the head of the stack
@@ -83,8 +139,8 @@ void graph_algorithms<TVertex, TEdgeValue, N>::dfs_to_vector(const typename grap
 }
 
 template <typename TVertex, typename TEdgeValue, std::size_t N>
-void graph_algorithms<TVertex, TEdgeValue, N>::postorder_to_vector(const typename graph_algorithms<TVertex, TEdgeValue, N>::dominance_tree_type& tree,
-                                                                   std::vector<typename graph_algorithms<TVertex, TEdgeValue, N>::dominance_tree_type>& result_vector)
+void graph_algorithms<TVertex, TEdgeValue, N>::dfs_postorder_to_vector(const typename graph_algorithms<TVertex, TEdgeValue, N>::dominance_tree_type& tree,
+                                                                       std::vector<typename graph_algorithms<TVertex, TEdgeValue, N>::dominance_tree_type>& result_vector)
 {
     std::vector<dominance_tree_type> nodes;
 
@@ -121,13 +177,13 @@ template <typename TVertex, typename TEdgeValue, std::size_t N>
 void graph_algorithms<TVertex, TEdgeValue, N>::compute_dominators(typename graph_algorithms<TVertex, TEdgeValue, N>::graph_type& graph)
 {
     // 'Advanced Compiler Design and Implementation' by Steven S.Muchnick
-    if((*graph).digraph())
+    if(!(*graph).vertices().empty() && (*graph).digraph())
     {
         // phase I (compute dominators)
         // flat graph as DFS vector to use bitsets, root is the first element
         std::vector<std::shared_ptr<dominator_vertex>> vertices;
 
-        graph_algorithms<dominator_vertex>::dfs_to_vector(graph, vertices);
+        dfs_preorder_to_vector(graph, vertices);
 
         auto vertices_size = vertices.size();
 
@@ -252,7 +308,7 @@ void graph_algorithms<TVertex, TEdgeValue, N>::compute_dominators(typename graph
             }
         }
 
-        // pahase III (collect dominators, results)
+        // phase III (collect dominators, results)
         for(auto& vertex : vertices)
         {
             const auto& dominators((*vertex).bitset());
@@ -270,17 +326,172 @@ void graph_algorithms<TVertex, TEdgeValue, N>::compute_dominators(typename graph
 }
 
 template <typename TVertex, typename TEdgeValue, std::size_t N>
+void graph_algorithms<TVertex, TEdgeValue, N>::dfs_lengauer_tarjan(const typename graph_algorithms<TVertex, TEdgeValue, N>::vertex_type& v,
+                                                                   typename graph_algorithms<TVertex, TEdgeValue, N>::lengauer_tarjan_context_type& context)
+{
+    context.semidominators[v] = context.n;
+
+    context.vertices[context.n] = v;
+    context.labels[v] = v;
+
+    context.ancestors[v] = 0;
+
+    context.n++;
+
+    for(const auto& adjacence : (*v).adjacencies())
+    {
+        auto w = std::dynamic_pointer_cast<dominator_vertex>(adjacence);
+
+        if(context.semidominators[w] == size_type(-1))
+        {
+            context.parents[w] = v;
+            
+            dfs_lengauer_tarjan(w, context);
+        }
+
+        context.predecessors[w].emplace(v);
+    }
+}
+
+template <typename TVertex, typename TEdgeValue, std::size_t N>
+inline void graph_algorithms<TVertex, TEdgeValue, N>::compress_lengauer_tarjan(const typename graph_algorithms<TVertex, TEdgeValue, N>::vertex_type& v,
+                                                                               typename graph_algorithms<TVertex, TEdgeValue, N>::lengauer_tarjan_context_type& context)
+{
+    if(context.ancestors[context.ancestors[v]] != nullptr)
+    {
+        compress_lengauer_tarjan(context.ancestors[v], context);
+
+        if(context.semidominators[context.labels[context.ancestors[v]]] < context.semidominators[context.labels[v]])
+        {
+            context.labels[v] = context.labels[context.ancestors[v]];
+        }
+
+        context.ancestors[v] = context.ancestors[context.ancestors[v]];
+    }
+}
+
+template <typename TVertex, typename TEdgeValue, std::size_t N>
+inline typename graph_algorithms<TVertex, TEdgeValue, N>::vertex_type graph_algorithms<TVertex, TEdgeValue, N>::eval_lengauer_tarjan(const typename graph_algorithms<TVertex, TEdgeValue, N>::vertex_type& v,
+                                                                                                                                     typename graph_algorithms<TVertex, TEdgeValue, N>::lengauer_tarjan_context_type& context)
+{
+    vertex_type result;
+
+    if(context.ancestors[v] == nullptr)
+    {
+        result = v;
+    }
+    else
+    {
+        compress_lengauer_tarjan(v, context);
+
+        result = context.labels[v];
+    }
+
+    return result;
+}
+
+template <typename TVertex, typename TEdgeValue, std::size_t N>
+inline void graph_algorithms<TVertex, TEdgeValue, N>::link_lengauer_tarjan(const typename graph_algorithms<TVertex, TEdgeValue, N>::vertex_type& v,
+                                                                           const typename graph_algorithms<TVertex, TEdgeValue, N>::vertex_type& w,
+                                                                           typename graph_algorithms<TVertex, TEdgeValue, N>::lengauer_tarjan_context_type& context)
+{
+    context.ancestors[w] = v;
+}
+
+template <typename TVertex, typename TEdgeValue, std::size_t N>
 void graph_algorithms<TVertex, TEdgeValue, N>::compute_dominators_lengauer_tarjan(typename graph_algorithms<TVertex, TEdgeValue, N>::graph_type& graph)
 {
+    // 'A fast algorithm for finding dominators in a flowgraph' by Lengauer and Tarjan (July 1979)
+    if(!(*graph).vertices().empty() && (*graph).digraph())
+    {
+        auto vertices_size = ((*graph).vertices()).size();
+
+        lengauer_tarjan_context context;
+
+        context.semidominators.reserve(vertices_size);
+
+        context.vertices.reserve(vertices_size);
+        context.parents.reserve(vertices_size);
+
+        context.predecessors.reserve(vertices_size);
+
+        context.ancestors.reserve(vertices_size);
+        context.labels.reserve(vertices_size);
+
+        // phase I (step 1 - initialize, DFS numbering)
+        for(const auto& v : (*graph).vertices())
+        {
+            context.semidominators[v] = size_type(-1);
+        }
+
+        context.n = 0;
+
+        dfs_lengauer_tarjan((*graph).root(), context);
+
+        // phase II (step 2 and 3 - build forest)
+        for(auto k = context.n - 1; k > 0; k--)
+        {
+            auto w = context.vertices[k];
+
+            for(const auto& v : context.predecessors[w])
+            {
+                auto u = eval_lengauer_tarjan(v, context);
+
+                if(context.semidominators[u] < context.semidominators[w])
+                {
+                    context.semidominators[w] = context.semidominators[u];
+                }
+            }
+
+            context.buckets[context.vertices[context.semidominators[w]]].emplace(w);
+
+            link_lengauer_tarjan(context.parents[w], w, context);
+
+            const auto& parent_w(context.parents[w]);
+            const auto& bucket(context.buckets[parent_w]);
+
+            for(auto it = bucket.begin(); it != bucket.end();)
+            {
+                auto v = *it;
+
+                context.buckets[parent_w].erase(it++);
+
+                auto u = eval_lengauer_tarjan(v, context);
+
+                if(context.semidominators[u] < context.semidominators[v])
+                {
+                    (*v).idominator() = u;
+                }
+                else
+                {
+                    (*v).idominator() = context.parents[w];
+                }
+            }
+        }
+
+        // phase III (step 4 - collect dominators, results)
+        for(auto k = 1; k < context.n; k++)
+        {
+            auto w = context.vertices[k];
+
+            if((*w).idominator() != context.vertices[context.semidominators[w]])
+            {
+                auto w_dominator = (*w).idominator();
+                (*w).idominator() = (*w_dominator).idominator();
+            }
+        }
+
+        (*(*graph).root()).idominator().reset();
+    }
 }
 
 template <typename TVertex, typename TEdgeValue, std::size_t N>
 void graph_algorithms<TVertex, TEdgeValue, N>::build_dominance_tree(const typename graph_algorithms<TVertex, TEdgeValue, N>::graph_type& graph,
                                                                     typename graph_algorithms<TVertex, TEdgeValue, N>::dominance_tree_type& result_tree)
 {
-    using vertex_type = std::shared_ptr<dominator_vertex>;
-    using vertex_tree_map_type = std::unordered_map<vertex_type, dominance_tree_type, vertex_hash<dominator_vertex>, vertex_eq_key_comparator<dominator_vertex>>;
-
+    using vertex_tree_map_type = std::unordered_map<vertex_type,
+                                                    dominance_tree_type,
+                                                    vertex_hash<dominator_vertex>, vertex_eq_key_comparator<dominator_vertex>>;
     vertex_tree_map_type vertex_tree_map;
 
     vertex_tree_map.reserve((*graph).vertices().size());
@@ -305,7 +516,7 @@ void graph_algorithms<TVertex, TEdgeValue, N>::build_dominance_tree(const typena
             auto& kid(vertex_tree_map.find(vertex));
 
             (*(*papa).second).kids().emplace_back((*kid).second);
-            (*(*kid).second).papa() = (*papa).second;;
+            (*(*kid).second).papa() = (*papa).second;
         }
     }
 
@@ -319,7 +530,7 @@ void graph_algorithms<TVertex, TEdgeValue, N>::compute_dominance_frontiers(typen
     // 'An Efficient Method of Computing SSA' by Ron Cytron, etc.
     std::vector<dominance_tree_type> nodes;
 
-    postorder_to_vector(tree, nodes);
+    dfs_postorder_to_vector(tree, nodes);
 
     // for each X in a bottom-up traversal of the dominator tree do
     for(auto& node : nodes)

@@ -761,7 +761,7 @@ namespace tests
 
                 timer.start();
 
-                graph_algorithms<dominator_vertex>::dfs_to_vector(gr, result);
+                graph_algorithms<dominator_vertex>::dfs_preorder_to_vector(gr, result);
 
                 timer.stop();
 
@@ -801,7 +801,7 @@ namespace tests
 
                 auto start = std::chrono::high_resolution_clock::now();
 
-                graph_algorithms<dominator_vertex>::dfs_to_vector(gr, result);
+                graph_algorithms<dominator_vertex>::dfs_preorder_to_vector(gr, result);
 
                 auto finish = std::chrono::high_resolution_clock::now();
                 auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(finish-start).count();
@@ -845,7 +845,7 @@ namespace tests
 
                 (*gr).root() = entry;
 
-                graph_algorithms<dominator_vertex>::generate_graphviz_file(gr, LR"(d:\tmp\GraphAlgorithmsComputeDominatorsMuchnik.dot)", false);
+                graph_algorithms<dominator_vertex>::generate_graphviz_file(gr, LR"(d:\tmp\GraphAlgorithmsComputeDominatorsNaiveMuchnik.dot)", false);
 
                 auto start = std::chrono::high_resolution_clock::now();
 
@@ -911,7 +911,7 @@ namespace tests
 
                 (*gr).root() = r;
 
-                graph_algorithms<dominator_vertex>::generate_graphviz_file(gr, LR"(d:\tmp\GraphAlgorithmsComputeDominatorsLengauerTarjan.dot)", false);
+                graph_algorithms<dominator_vertex>::generate_graphviz_file(gr, LR"(d:\tmp\GraphAlgorithmsComputeDominatorsNaiveLengauerTarjan.dot)", false);
 
                 auto start = std::chrono::high_resolution_clock::now();
 
@@ -970,7 +970,7 @@ namespace tests
 
                 (*gr).root() = n1;
 
-                graph_algorithms<dominator_vertex>::generate_graphviz_file(gr, LR"(d:\tmp\GraphAlgorithmsComputeDominatorsAppel.dot)", false);
+                graph_algorithms<dominator_vertex>::generate_graphviz_file(gr, LR"(d:\tmp\GraphAlgorithmsComputeDominatorsNaiveAppel.dot)", false);
 
                 auto start = std::chrono::high_resolution_clock::now();
 
@@ -1036,7 +1036,7 @@ namespace tests
 
                 (*gr).root() = n1;
 
-                graph_algorithms<dominator_vertex>::generate_graphviz_file(gr, LR"(d:\tmp\GraphAlgorithmsComputeDominatorsCharlesFischer.dot)", false);
+                graph_algorithms<dominator_vertex>::generate_graphviz_file(gr, LR"(d:\tmp\GraphAlgorithmsComputeDominatorsNaiveCharlesFischer.dot)", false);
 
                 auto start = std::chrono::high_resolution_clock::now();
 
@@ -1101,7 +1101,7 @@ namespace tests
 
                 (*gr).root() = en;
 
-                graph_algorithms<dominator_vertex>::generate_graphviz_file(gr, LR"(d:\tmp\GraphAlgorithmsComputeDominatorsCytron.dot)", false);
+                graph_algorithms<dominator_vertex>::generate_graphviz_file(gr, LR"(d:\tmp\GraphAlgorithmsComputeDominatorsNaiveCytron.dot)", false);
 
                 auto start = std::chrono::high_resolution_clock::now();
 
@@ -1473,7 +1473,7 @@ namespace tests
 
                 auto start = std::chrono::high_resolution_clock::now();
 
-                graph_algorithms<dominator_vertex>::postorder_to_vector(tree, result);
+                graph_algorithms<dominator_vertex>::dfs_postorder_to_vector(tree, result);
 
                 auto finish = std::chrono::high_resolution_clock::now();
                 auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(finish-start).count();
@@ -1727,6 +1727,445 @@ namespace tests
                 }
 
                 Logger::WriteMessage(std::to_string(elapsed / 1000000.0).c_str());
+            }
+
+            TEST_METHOD(GraphAlgorithmsComputeDominatorsLengauerTarjan)
+            {
+                std::shared_ptr<graph<dominator_vertex>> graph(factory::create<graph<dominator_vertex>>());
+
+                const auto& r = *(*graph).add_vertex(factory::create<dominator_vertex>(1,  L"R")).first;
+                const auto& a = *(*graph).add_vertex(factory::create<dominator_vertex>(2,  L"A")).first;
+                const auto& b = *(*graph).add_vertex(factory::create<dominator_vertex>(3,  L"B")).first;
+                const auto& c = *(*graph).add_vertex(factory::create<dominator_vertex>(4,  L"C")).first;
+                const auto& d = *(*graph).add_vertex(factory::create<dominator_vertex>(5,  L"D")).first;
+                const auto& e = *(*graph).add_vertex(factory::create<dominator_vertex>(6,  L"E")).first;
+                const auto& f = *(*graph).add_vertex(factory::create<dominator_vertex>(7,  L"F")).first;
+                const auto& g = *(*graph).add_vertex(factory::create<dominator_vertex>(8,  L"G")).first;
+                const auto& h = *(*graph).add_vertex(factory::create<dominator_vertex>(9,  L"H")).first;
+                const auto& i = *(*graph).add_vertex(factory::create<dominator_vertex>(10, L"I")).first;
+                const auto& j = *(*graph).add_vertex(factory::create<dominator_vertex>(11, L"J")).first;
+                const auto& k = *(*graph).add_vertex(factory::create<dominator_vertex>(12, L"K")).first;
+                const auto& l = *(*graph).add_vertex(factory::create<dominator_vertex>(13, L"L")).first;
+
+                (*graph).add_edge(r, a, 0.1);
+                (*graph).add_edge(r, b, 0.1);
+                (*graph).add_edge(r, c, 0.1);
+
+                (*graph).add_edge(a, d, 0.1);
+
+                (*graph).add_edge(b, a, 0.1);
+                (*graph).add_edge(b, d, 0.1);
+                (*graph).add_edge(b, e, 0.1);
+
+                (*graph).add_edge(c, f, 0.1);
+                (*graph).add_edge(c, g, 0.1);
+
+                (*graph).add_edge(d, l, 0.1);
+
+                (*graph).add_edge(e, h, 0.1);
+
+                (*graph).add_edge(f, i, 0.1);
+
+                (*graph).add_edge(g, i, 0.1);
+                (*graph).add_edge(g, j, 0.1);
+
+                (*graph).add_edge(h, e, 0.1);
+                (*graph).add_edge(h, k, 0.1);
+
+                (*graph).add_edge(i, k, 0.1);
+
+                (*graph).add_edge(j, i, 0.1);
+
+                (*graph).add_edge(k, r, 0.1);
+                (*graph).add_edge(k, i, 0.1);
+
+                (*graph).add_edge(l, h, 0.1);
+
+                (*graph).root() = r;
+
+                graph_algorithms<dominator_vertex>::generate_graphviz_file(graph, LR"(d:\tmp\GraphAlgorithmsComputeDominatorsLengauerTarjan.dot)", false);
+
+                auto start = std::chrono::high_resolution_clock::now();
+
+                graph_algorithms<dominator_vertex>::compute_dominators_lengauer_tarjan(graph);
+
+                auto finish = std::chrono::high_resolution_clock::now();
+                auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(finish-start).count();
+
+                std::unordered_map<string_type, std::vector<string_type>> doms;
+                std::unordered_map<string_type, string_type> idoms;
+                for(auto& vertex : (*graph).vertices())
+                {
+                    std::vector<string_type> dom;
+                    for(auto& d : (*vertex).dominators())
+                        dom.push_back((*d).label());
+                    doms[(*vertex).label()] = dom;
+                    if((*vertex).idominator() != nullptr)
+                        idoms[(*vertex).label()] = (*(*vertex).idominator()).label();
+                }
+
+                Logger::WriteMessage(std::to_string(elapsed / 1000000.0).c_str());
+            }
+
+            TEST_METHOD(GraphAlgorithmsComputeDominatorsMuchnik)
+            {
+                std::shared_ptr<graph<dominator_vertex>> gr(factory::create<graph<dominator_vertex>>());
+
+                const auto& entry = *(*gr).add_vertex(factory::create<dominator_vertex>(10, L"entry")).first;
+                const auto& b1 = *(*gr).add_vertex(factory::create<dominator_vertex>(11, L"B1")).first;
+                const auto& b2 = *(*gr).add_vertex(factory::create<dominator_vertex>(12, L"B2")).first;
+                const auto& b3 = *(*gr).add_vertex(factory::create<dominator_vertex>(13, L"B3")).first;
+                const auto& b4 = *(*gr).add_vertex(factory::create<dominator_vertex>(14, L"B4")).first;
+                const auto& b5 = *(*gr).add_vertex(factory::create<dominator_vertex>(15, L"B5")).first;
+                const auto& b6 = *(*gr).add_vertex(factory::create<dominator_vertex>(16, L"B6")).first;
+                const auto& exit = *(*gr).add_vertex(factory::create<dominator_vertex>(100, L"exit")).first;
+
+                (*gr).add_edge(entry, b1, 0.1);
+
+                (*gr).add_edge(b1, b2, 0.2);
+                (*gr).add_edge(b1, b3, 0.2);
+
+                (*gr).add_edge(b2, exit, 0.3);
+
+                (*gr).add_edge(b3, b4, 0.4);
+
+                (*gr).add_edge(b4, b5, 0.5);
+                (*gr).add_edge(b4, b6, 0.5);
+
+                (*gr).add_edge(b5, exit, 0.6);
+
+                (*gr).add_edge(b6, b4, 0.7);
+
+                (*gr).root() = entry;
+
+                graph_algorithms<dominator_vertex>::generate_graphviz_file(gr, LR"(d:\tmp\GraphAlgorithmsComputeDominatorsMuchnik.dot)", false);
+
+                auto start = std::chrono::high_resolution_clock::now();
+
+                graph_algorithms<dominator_vertex>::compute_dominators_lengauer_tarjan(gr);
+
+                auto finish = std::chrono::high_resolution_clock::now();
+                auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(finish-start).count();
+
+                std::unordered_map<string_type, std::vector<string_type>> doms;
+                std::unordered_map<string_type, string_type> idoms;
+                for(auto& vertex : (*gr).vertices())
+                {
+                    std::vector<string_type> dom;
+                    for(auto& d : (*vertex).dominators())
+                        dom.push_back((*d).label());
+                    doms[(*vertex).label()] = dom;
+                    if((*vertex).idominator() != nullptr)
+                        idoms[(*vertex).label()] = (*(*vertex).idominator()).label();
+                }
+
+                Logger::WriteMessage(std::to_string(elapsed / 1000000.0).c_str());
+            }
+
+            TEST_METHOD(GraphAlgorithmsComputeDominatorsAppel)
+            {
+                std::shared_ptr<graph<dominator_vertex>> gr(factory::create<graph<dominator_vertex>>());
+
+                const auto& n1  = *(*gr).add_vertex(factory::create<dominator_vertex>(1,  L"1")).first;
+                const auto& n2  = *(*gr).add_vertex(factory::create<dominator_vertex>(2,  L"2")).first;
+                const auto& n3  = *(*gr).add_vertex(factory::create<dominator_vertex>(3,  L"3")).first;
+                const auto& n4  = *(*gr).add_vertex(factory::create<dominator_vertex>(4,  L"4")).first;
+                const auto& n5  = *(*gr).add_vertex(factory::create<dominator_vertex>(5,  L"5")).first;
+                const auto& n6  = *(*gr).add_vertex(factory::create<dominator_vertex>(6,  L"6")).first;
+                const auto& n7  = *(*gr).add_vertex(factory::create<dominator_vertex>(7,  L"7")).first;
+                const auto& n8  = *(*gr).add_vertex(factory::create<dominator_vertex>(8,  L"8")).first;
+                const auto& n9  = *(*gr).add_vertex(factory::create<dominator_vertex>(9,  L"9")).first;
+                const auto& n10 = *(*gr).add_vertex(factory::create<dominator_vertex>(10, L"10")).first;
+                const auto& n11 = *(*gr).add_vertex(factory::create<dominator_vertex>(11, L"11")).first;
+                const auto& n12 = *(*gr).add_vertex(factory::create<dominator_vertex>(12, L"12")).first;
+
+                (*gr).add_edge(n1, n2, 0.1);
+
+                (*gr).add_edge(n2, n3, 0.1);
+                (*gr).add_edge(n2, n4, 0.1);
+
+                (*gr).add_edge(n3, n2, 0.1);
+
+                (*gr).add_edge(n4, n2, 0.1);
+                (*gr).add_edge(n4, n5, 0.1);
+                (*gr).add_edge(n4, n6, 0.1);
+
+                (*gr).add_edge(n5, n7, 0.1);
+                (*gr).add_edge(n5, n8, 0.1);
+
+                (*gr).add_edge(n6, n7, 0.1);
+
+                (*gr).add_edge(n7, n11, 0.1);
+
+                (*gr).add_edge(n8, n9, 0.1);
+
+                (*gr).add_edge(n9, n8, 0.1);
+                (*gr).add_edge(n9, n10, 0.1);
+
+                (*gr).add_edge(n10, n5, 0.1);
+                (*gr).add_edge(n10, n12, 0.1);
+
+                (*gr).add_edge(n11, n12, 0.1);
+
+                (*gr).root() = n1;
+
+                graph_algorithms<dominator_vertex>::generate_graphviz_file(gr, LR"(d:\tmp\GraphAlgorithmsComputeDominatorsAppel.dot)", false);
+
+                auto start = std::chrono::high_resolution_clock::now();
+
+                graph_algorithms<dominator_vertex>::compute_dominators_lengauer_tarjan(gr);
+
+                auto finish = std::chrono::high_resolution_clock::now();
+                auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(finish-start).count();
+
+                std::unordered_map<string_type, std::vector<string_type>> doms;
+                std::unordered_map<string_type, string_type> idoms;
+                for(auto& vertex : (*gr).vertices())
+                {
+                    std::vector<string_type> dom;
+                    for(auto& d : (*vertex).dominators())
+                        dom.push_back((*d).label());
+                    doms[(*vertex).label()] = dom;
+                    if((*vertex).idominator() != nullptr)
+                        idoms[(*vertex).label()] = (*(*vertex).idominator()).label();
+                }
+
+                Logger::WriteMessage(std::to_string(elapsed / 1000000.0).c_str());
+            }
+
+            TEST_METHOD(GraphAlgorithmsComputeDominatorsCharlesFischer)
+            {
+                std::shared_ptr<graph<dominator_vertex>> gr(factory::create<graph<dominator_vertex>>());
+
+                const auto& n1  = *(*gr).add_vertex(factory::create<dominator_vertex>(1,  L"1")).first;
+                const auto& n2  = *(*gr).add_vertex(factory::create<dominator_vertex>(2,  L"2")).first;
+                const auto& n3  = *(*gr).add_vertex(factory::create<dominator_vertex>(3,  L"3")).first;
+                const auto& n4  = *(*gr).add_vertex(factory::create<dominator_vertex>(4,  L"4")).first;
+                const auto& n5  = *(*gr).add_vertex(factory::create<dominator_vertex>(5,  L"5")).first;
+                const auto& n6  = *(*gr).add_vertex(factory::create<dominator_vertex>(6,  L"6")).first;
+                const auto& n7  = *(*gr).add_vertex(factory::create<dominator_vertex>(7,  L"7")).first;
+                const auto& n8  = *(*gr).add_vertex(factory::create<dominator_vertex>(8,  L"8")).first;
+                const auto& n9  = *(*gr).add_vertex(factory::create<dominator_vertex>(9,  L"9")).first;
+                const auto& n10 = *(*gr).add_vertex(factory::create<dominator_vertex>(10, L"10")).first;
+                const auto& n11 = *(*gr).add_vertex(factory::create<dominator_vertex>(11, L"11")).first;
+                const auto& n12 = *(*gr).add_vertex(factory::create<dominator_vertex>(12, L"12")).first;
+                const auto& n13 = *(*gr).add_vertex(factory::create<dominator_vertex>(13, L"13")).first;
+
+                (*gr).add_edge(n1, n2, 0.1);
+                (*gr).add_edge(n1, n3, 0.1);
+
+                (*gr).add_edge(n2, n3, 0.1);
+                (*gr).add_edge(n2, n4, 0.1);
+                (*gr).add_edge(n2, n11, 0.1);
+
+                (*gr).add_edge(n3, n4, 0.1);
+                (*gr).add_edge(n3, n9, 0.1);
+
+                (*gr).add_edge(n4, n5, 0.1);
+                (*gr).add_edge(n4, n8, 0.1);
+
+                (*gr).add_edge(n5, n3, 0.1);
+                (*gr).add_edge(n5, n6, 0.1);
+
+                (*gr).add_edge(n6, n5, 0.1);
+                (*gr).add_edge(n6, n7, 0.1);
+
+                (*gr).add_edge(n8, n6, 0.1);
+
+                (*gr).add_edge(n9, n8, 0.1);
+                (*gr).add_edge(n9, n10, 0.1);
+
+                (*gr).add_edge(n10, n6, 0.1);
+
+                (*gr).add_edge(n11, n12, 0.1);
+                (*gr).add_edge(n11, n13, 0.1);
+
+                (*gr).add_edge(n12, n7, 0.1);
+                (*gr).add_edge(n12, n11, 0.1);
+
+                (*gr).add_edge(n13, n12, 0.1);
+
+                (*gr).root() = n1;
+
+                graph_algorithms<dominator_vertex>::generate_graphviz_file(gr, LR"(d:\tmp\GraphAlgorithmsComputeDominatorsCharlesFischer.dot)", false);
+
+                auto start = std::chrono::high_resolution_clock::now();
+
+                graph_algorithms<dominator_vertex>::compute_dominators_lengauer_tarjan(gr);
+
+                auto finish = std::chrono::high_resolution_clock::now();
+                auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(finish-start).count();
+
+                std::unordered_map<string_type, std::vector<string_type>> doms;
+                std::unordered_map<string_type, string_type> idoms;
+                for(auto& vertex : (*gr).vertices())
+                {
+                    std::vector<string_type> dom;
+                    for(auto& d : (*vertex).dominators())
+                        dom.push_back((*d).label());
+                    doms[(*vertex).label()] = dom;
+                    if((*vertex).idominator() != nullptr)
+                        idoms[(*vertex).label()] = (*(*vertex).idominator()).label();
+                }
+
+                Logger::WriteMessage(std::to_string(elapsed / 1000000.0).c_str());
+            }
+
+            TEST_METHOD(GraphAlgorithmsComputeDominatorsPerformance)
+            {
+                const int n = 5011;
+
+                std::shared_ptr<graph<dominator_vertex>> graph(factory::create<graph<dominator_vertex>>());
+
+                (*graph).root() = *(*graph).add_vertex(factory::create<dominator_vertex>(0)).first;
+
+                std::srand((unsigned int)std::time(nullptr));
+
+                for(auto k = 0; k < n; k += 2)
+                {
+                    const auto& v1 = *(*graph).add_vertex(factory::create<dominator_vertex>(std::rand() % n)).first;
+                    (*v1).label() = std::to_wstring((*v1).id());
+                    const auto& v2 = *(*graph).add_vertex(factory::create<dominator_vertex>(std::rand() % n)).first;
+                    (*v2).label() = std::to_wstring((*v2).id());
+
+                    (*graph).add_edge(v1, v2, 0.1);
+
+                    (*graph).add_edge((*graph).root(), v1, 0.1);
+                    (*graph).add_edge((*graph).root(), v2, 0.1);
+                }
+
+                //graph_algorithms<dominator_vertex>::generate_graphviz_file(graph, LR"(d:\tmp\GraphAlgorithmsComputeDominatorsPerformance.dot)", false);
+
+                auto start_lengauer_tarjan = std::chrono::high_resolution_clock::now();
+
+                graph_algorithms<dominator_vertex>::compute_dominators_lengauer_tarjan(graph);
+
+                auto finish_lengauer_tarjan = std::chrono::high_resolution_clock::now();
+                auto elapsed_lengauer_tarjan = std::chrono::duration_cast<std::chrono::nanoseconds>(finish_lengauer_tarjan - start_lengauer_tarjan).count();
+
+                Logger::WriteMessage(("Lengauer Tarjan: " + std::to_string(elapsed_lengauer_tarjan / 1000000.0)).c_str());
+                Logger::WriteMessage("\n");
+
+                std::unordered_map<string_type, string_type> idoms_lengauer_tarjan;
+                for(auto& vertex : (*graph).vertices())
+                {
+                    if((*vertex).idominator() != nullptr)
+                    {
+                        idoms_lengauer_tarjan[(*vertex).label()] = (*(*vertex).idominator()).label();
+                        (*vertex).idominator().reset();
+                    }
+                }
+
+                auto start = std::chrono::high_resolution_clock::now();
+
+                graph_algorithms<dominator_vertex>::compute_dominators(graph);
+
+                auto finish = std::chrono::high_resolution_clock::now();
+                auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(finish-start).count();
+
+                Logger::WriteMessage(("Naive bitset:       " + std::to_string(elapsed / 1000000.0)).c_str());
+
+                std::unordered_map<string_type, string_type> idoms;
+                for(auto& vertex : (*graph).vertices())
+                {
+                    if((*vertex).idominator() != nullptr)
+                        idoms[(*vertex).label()] = (*(*vertex).idominator()).label();
+                }
+
+                bool rc = idoms_lengauer_tarjan == idoms;
+                Assert::IsTrue(rc);
+            }
+
+            TEST_METHOD(GraphAlgorithmsComputeDominatorsPerformance2)
+            {
+                std::shared_ptr<graph<dominator_vertex>> graph(factory::create<graph<dominator_vertex>>());
+
+                std::srand((unsigned int)std::time(nullptr));
+
+                //(*graph).root() = *(*graph).vertices().begin();
+
+                //for(auto& vertex : (*graph).vertices())
+                //{
+                //    if(vertex != (*graph).root())
+                //    {
+                //        graph_algorithms<dominator_vertex>::vertices_type predecessors;
+
+                //        (*graph).collect_predecessors(vertex, predecessors);
+
+                //        if(predecessors.empty() || (predecessors.size() == 1 && predecessors.find(vertex) != predecessors.end()))
+                //        {
+                //            (*graph).add_edge((*graph).root(), vertex, 0.10);
+                //        }
+                //    }
+                //}
+
+                //std::shared_ptr<graph<dominator_vertex>> graph(factory::create<graph<dominator_vertex>>());
+
+                //const auto& n0  = *(*graph).add_vertex(factory::create<dominator_vertex>(1,  L"0")).first;
+                //const auto& n1  = *(*graph).add_vertex(factory::create<dominator_vertex>(2,  L"1")).first;
+                //const auto& n2  = *(*graph).add_vertex(factory::create<dominator_vertex>(3,  L"2")).first;
+                //const auto& n3  = *(*graph).add_vertex(factory::create<dominator_vertex>(4,  L"3")).first;
+                //const auto& n4  = *(*graph).add_vertex(factory::create<dominator_vertex>(5,  L"4")).first;
+                //const auto& n5  = *(*graph).add_vertex(factory::create<dominator_vertex>(6,  L"5")).first;
+                //const auto& n8  = *(*graph).add_vertex(factory::create<dominator_vertex>(8,  L"8")).first;
+
+                //(*graph).add_edge(n0, n1, 0.1);
+
+                //(*graph).add_edge(n1, n0, 0.1);
+                //(*graph).add_edge(n1, n3, 0.1);
+                //(*graph).add_edge(n1, n5, 0.1);
+                //(*graph).add_edge(n1, n8, 0.1);
+
+                //(*graph).add_edge(n2, n4, 0.1);
+
+                //(*graph).add_edge(n3, n4, 0.1);
+
+                //(*graph).add_edge(n4, n2, 0.1);
+
+                //(*graph).add_edge(n8, n4, 0.1);
+
+                //(*graph).root() = n0;
+
+                graph_algorithms<dominator_vertex>::generate_graphviz_file(graph, LR"(d:\tmp\GraphAlgorithmsComputeDominatorsPerformance2.dot)", false);
+
+                auto start_lengauer_tarjan = std::chrono::high_resolution_clock::now();
+
+                graph_algorithms<dominator_vertex>::compute_dominators_lengauer_tarjan(graph);
+
+                auto finish_lengauer_tarjan = std::chrono::high_resolution_clock::now();
+                auto elapsed_lengauer_tarjan = std::chrono::duration_cast<std::chrono::nanoseconds>(finish_lengauer_tarjan - start_lengauer_tarjan).count();
+
+                Logger::WriteMessage(("Lengauer Tarjan: " + std::to_string(elapsed_lengauer_tarjan / 1000000.0)).c_str());
+                Logger::WriteMessage("\n");
+
+                std::unordered_map<string_type, string_type> idoms_lengauer_tarjan;
+                for(auto& vertex : (*graph).vertices())
+                {
+                    if((*vertex).idominator() != nullptr)
+                    {
+                        idoms_lengauer_tarjan[(*vertex).label()] = (*(*vertex).idominator()).label();
+                        (*vertex).idominator().reset();
+                    }
+                }
+
+                auto start = std::chrono::high_resolution_clock::now();
+
+                graph_algorithms<dominator_vertex>::compute_dominators(graph);
+
+                auto finish = std::chrono::high_resolution_clock::now();
+                auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(finish-start).count();
+
+                Logger::WriteMessage(("Naive bitset:       " + std::to_string(elapsed / 1000000.0)).c_str());
+
+                std::unordered_map<string_type, string_type> idoms;
+                for(auto& vertex : (*graph).vertices())
+                {
+                    if((*vertex).idominator() != nullptr)
+                        idoms[(*vertex).label()] = (*(*vertex).idominator()).label();
+                }
+
+                bool rc = idoms_lengauer_tarjan == idoms;
+                Assert::IsTrue(rc);
             }
     };
 }

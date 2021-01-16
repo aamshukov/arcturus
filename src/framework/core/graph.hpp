@@ -126,6 +126,10 @@ inline graph<TVertex, TEdgeValue, N>::add_vertex(const typename graph<TVertex, T
     {
         (*vertex).id() = my_vertices_counter.number();
     }
+    else
+    {
+        my_vertices_counter.number();
+    }
 
     (*vertex).adjacencies().clear();
 
@@ -189,10 +193,18 @@ graph<TVertex, TEdgeValue, N>::add_edge(const typename graph<TVertex, TEdgeValue
     {
         (*vertex_u).id() = my_vertices_counter.number();
     }
+    else
+    {
+        my_vertices_counter.number();
+    }
 
     if((*vertex_v).id() == 0)
     {
         (*vertex_v).id() = my_vertices_counter.number();
+    }
+    else
+    {
+        my_vertices_counter.number();
     }
 
     // add vertex, U -(>) V
