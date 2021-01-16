@@ -21,14 +21,14 @@ class graph_algorithms : private noncopyable
 
         using dominance_tree_type = std::shared_ptr<dominance_tree>;
 
-        using number_vertex_type = std::unordered_map<size_type, vertex_type>;
-        using vertex_number_type = std::unordered_map<vertex_type, size_type, vertex_hash<dominator_vertex>, vertex_eq_key_comparator<dominator_vertex>>;
-        using vertex_vertex_type = std::unordered_map<vertex_type, vertex_type, vertex_hash<dominator_vertex>, vertex_eq_key_comparator<dominator_vertex>>;
-        using vertex_vertices_type = std::unordered_map<vertex_type, vertices_type, vertex_hash<dominator_vertex>, vertex_eq_key_comparator<dominator_vertex>>;
-
     private:
         struct lengauer_tarjan_context
         {
+            using number_vertex_type = std::unordered_map<size_type, vertex_type>;
+            using vertex_number_type = std::unordered_map<vertex_type, size_type, vertex_hash<dominator_vertex>, vertex_eq_key_comparator<dominator_vertex>>;
+            using vertex_vertex_type = std::unordered_map<vertex_type, vertex_type, vertex_hash<dominator_vertex>, vertex_eq_key_comparator<dominator_vertex>>;
+            using vertex_vertices_type = std::unordered_map<vertex_type, vertices_type, vertex_hash<dominator_vertex>, vertex_eq_key_comparator<dominator_vertex>>;
+
             vertex_number_type semidominators;  // holds semidominator numbers of vertices after computation
 
             number_vertex_type vertices;
