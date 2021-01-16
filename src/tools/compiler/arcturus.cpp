@@ -17,6 +17,7 @@
 #include <core/dominance_tree.hpp>
 #include <core/edge.hpp>
 #include <core/graph.hpp>
+#include <core/graph_algorithms.hpp>
 
 #include <core/timer.hpp>
 

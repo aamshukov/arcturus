@@ -1110,6 +1110,13 @@ namespace tests
                 auto finish = std::chrono::high_resolution_clock::now();
                 auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(finish-start).count();
 
+                std::unordered_map<string_type, string_type> idoms;
+                for(auto& vertex : (*gr).vertices())
+                {
+                    if((*vertex).idominator() != nullptr)
+                        idoms[(*vertex).label()] = (*(*vertex).idominator()).label();
+                }
+
                 Logger::WriteMessage(std::to_string(elapsed / 1000000.0).c_str());
             }
 
@@ -2004,6 +2011,78 @@ namespace tests
                     for(auto& d : (*vertex).dominators())
                         dom.push_back((*d).label());
                     doms[(*vertex).label()] = dom;
+                    if((*vertex).idominator() != nullptr)
+                        idoms[(*vertex).label()] = (*(*vertex).idominator()).label();
+                }
+
+                Logger::WriteMessage(std::to_string(elapsed / 1000000.0).c_str());
+            }
+
+            TEST_METHOD(GraphAlgorithmsComputeDominatorsCytron)
+            {
+                std::shared_ptr<graph<dominator_vertex>> gr(factory::create<graph<dominator_vertex>>());
+
+                const auto& en  = *(*gr).add_vertex(factory::create<dominator_vertex>(10,  L"Entry")).first;
+                const auto& n1  = *(*gr).add_vertex(factory::create<dominator_vertex>(11,  L"1")).first;
+                const auto& n2  = *(*gr).add_vertex(factory::create<dominator_vertex>(12,  L"2")).first;
+                const auto& n3  = *(*gr).add_vertex(factory::create<dominator_vertex>(13,  L"3")).first;
+                const auto& n4  = *(*gr).add_vertex(factory::create<dominator_vertex>(14,  L"4")).first;
+                const auto& n5  = *(*gr).add_vertex(factory::create<dominator_vertex>(15,  L"5")).first;
+                const auto& n6  = *(*gr).add_vertex(factory::create<dominator_vertex>(16,  L"6")).first;
+                const auto& n7  = *(*gr).add_vertex(factory::create<dominator_vertex>(17,  L"7")).first;
+                const auto& n8  = *(*gr).add_vertex(factory::create<dominator_vertex>(18,  L"8")).first;
+                const auto& n9  = *(*gr).add_vertex(factory::create<dominator_vertex>(19,  L"9")).first;
+                const auto& n10 = *(*gr).add_vertex(factory::create<dominator_vertex>(20,  L"10")).first;
+                const auto& n11 = *(*gr).add_vertex(factory::create<dominator_vertex>(21,  L"11")).first;
+                const auto& n12 = *(*gr).add_vertex(factory::create<dominator_vertex>(22,  L"12")).first;
+                const auto& ex  = *(*gr).add_vertex(factory::create<dominator_vertex>(110, L"Exit")).first;
+
+                (*gr).add_edge(en, n1, 0.1);
+                (*gr).add_edge(en, ex, 0.1);
+
+                (*gr).add_edge(n1, n2, 0.1);
+
+                (*gr).add_edge(n2, n3, 0.1);
+                (*gr).add_edge(n2, n7, 0.1);
+
+                (*gr).add_edge(n3, n4, 0.1);
+                (*gr).add_edge(n3, n5, 0.1);
+
+                (*gr).add_edge(n4, n6, 0.1);
+
+                (*gr).add_edge(n5, n6, 0.1);
+
+                (*gr).add_edge(n6, n8, 0.1);
+
+                (*gr).add_edge(n7, n8, 0.1);
+
+                (*gr).add_edge(n8, n9, 0.1);
+
+                (*gr).add_edge(n9, n10, 0.1);
+                (*gr).add_edge(n9, n11, 0.1);
+
+                (*gr).add_edge(n10, n11, 0.1);
+
+                (*gr).add_edge(n11, n9, 0.1);
+                (*gr).add_edge(n11, n12, 0.1);
+
+                (*gr).add_edge(n12, n2, 0.1);
+                (*gr).add_edge(n12, ex, 0.1);
+
+                (*gr).root() = en;
+
+                graph_algorithms<dominator_vertex>::generate_graphviz_file(gr, LR"(d:\tmp\GraphAlgorithmsComputeDominatorsCytron.dot)", false);
+
+                auto start = std::chrono::high_resolution_clock::now();
+
+                graph_algorithms<dominator_vertex>::compute_dominators_lengauer_tarjan(gr);
+
+                auto finish = std::chrono::high_resolution_clock::now();
+                auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(finish-start).count();
+
+                std::unordered_map<string_type, string_type> idoms;
+                for(auto& vertex : (*gr).vertices())
+                {
                     if((*vertex).idominator() != nullptr)
                         idoms[(*vertex).label()] = (*(*vertex).idominator()).label();
                 }
