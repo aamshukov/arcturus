@@ -14,47 +14,19 @@ USINGNAMESPACE(symtable)
 
 // 𝛗
 
-template <typename Instruction>
+template <typename TBasicBlock>
 class ssa : private noncopyable
 {
     public:
-        using instruction_type = Instruction;
-        using control_flow_graph_type = control_flow_graph<instruction_type>;
-        using basic_block_type = typename control_flow_graph<instruction_type>::basic_block_type;
-        using basic_blocks_type = std::set<basic_block_type>;
-        using dominance_frontier_type = std::unordered_map<basic_block_type, basic_blocks_type>;
-        using dominance_frontiers_type = std::vector<dominance_frontier_type>;
+        using instruction_type = typename TBasicBlock::instruction_type;
 
-        struct dominator_tree : public tree, public visitable
-        {
-            using vertex_type = basic_block_type;
+        using basic_block_type = std::shared_ptr<basic_block<instruction_type>>;
+        using basic_blocks_type = std::vector<basic_block_type>;
 
-            vertex_type my_vertex;
-
-            const vertex_type& vertex() const
-            {
-                return my_vertex;
-            }
-
-            vertex_type& vertex()
-            {
-                return my_vertex;
-            }
-
-            ACCEPT_METHOD;
-        };
-
-        using dominator_tree_type =  dominator_tree;
-
-    private:
-        static void build_dominator_tree(const control_flow_graph_type& cfg, dominator_tree_type& dominator_tree);
-        static void get_dominance_frontiers(const control_flow_graph_type& cfg, dominance_frontiers_type& dominance_frontiers);
+        using control_flow_graph_type = std::shared_ptr<control_flow_graph<basic_block<instruction_type>>>;
 
     public:
-        static void build_ssa_form(const control_flow_graph_type& cfg_non_ssa, control_flow_graph_type& cfg_ssa);
-        static void build_normal_form(const control_flow_graph_type& cfg_ssa, control_flow_graph_type& cfg_non_ssa);
-
-        //static void restore(); //??
+        static void build_ssa_form(control_flow_graph_type& cfg);
 };
 
 END_NAMESPACE

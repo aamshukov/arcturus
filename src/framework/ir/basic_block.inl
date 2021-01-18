@@ -14,7 +14,7 @@ USINGNAMESPACE(symtable)
 
 template <typename Instruction>
 basic_block<Instruction>::basic_block(const typename basic_block<Instruction>::id_type& id, const string_type& label)
-                        : dominator_vertex(id), my_label(label)
+                        : dominator_vertex(id, label)
 {
 }
 

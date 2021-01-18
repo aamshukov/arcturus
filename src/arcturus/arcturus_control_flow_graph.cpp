@@ -108,8 +108,10 @@ USINGNAMESPACE(frontend)
 USINGNAMESPACE(symtable)
 USINGNAMESPACE(backend)
 
-void arcturus_control_flow_graph::build_hir(typename arcturus_control_flow_graph::code_type& code)
+void arcturus_control_flow_graph::build_hir(typename arcturus_control_flow_graph::code_type& code0)
 {
+    auto& code(*code0);
+
     auto instruction = code.instructions();
 
     if(instruction != code.end_instruction())
@@ -164,10 +166,7 @@ void arcturus_control_flow_graph::build_hir(typename arcturus_control_flow_graph
 
         instruction = code.instructions(); // restart
 
-        using block_type = std::shared_ptr<basic_block<instruction_type>>;
-        using blocks_type = std::vector<block_type>;
-
-        blocks_type blocks;
+        basic_blocks_type blocks;
 
         // entry point
         auto entry_block(factory::create<basic_block<instruction_type>>(id, format(label, id))); // id = 0
@@ -180,7 +179,7 @@ void arcturus_control_flow_graph::build_hir(typename arcturus_control_flow_graph
 
         blocks.emplace_back(current_block);
 
-        std::unordered_map<id_type, block_type> inst_block_map; // maps instruction to block
+        std::unordered_map<id_type, basic_block_type> inst_block_map; // maps instruction to block
 
         do
         {
@@ -227,7 +226,7 @@ void arcturus_control_flow_graph::build_hir(typename arcturus_control_flow_graph
 
             if(instruction != block->code().start_instruction())
             {
-                block_type target_block;
+                basic_block_type target_block;
 
                 // there is a branch from last instruction in B1 to the leader of B2 ...
                 if((*instruction).operation == arcturus_operation_code_traits::operation_code::if_true_hir ||
@@ -290,12 +289,29 @@ void arcturus_control_flow_graph::generate_graphviz_file(const string_type& file
             log_error(L"Failed to generate graphviz file: stream is either open or in a bad condition.");
         }
 
-        //const char_type* indent(get_indent(4));
+        const char_type* indent(get_indent(4));
 
         stream << L"digraph CFG" << std::endl;
         stream << L"{" << std::endl;
 
+        for(const auto& vertex : vertices())
+        {
+            stream << indent << ((*vertex).label().empty() ? std::to_wstring((*vertex).id()) : (*vertex).label()) << L" node [shape = circle];" << std::endl;
+        }
 
+        for(const auto& edge : edges())
+        {
+            const auto& vertex_u((*edge).endpoints()[0]);
+            const auto& vertex_v((*edge).endpoints()[1]);
+
+            // generate label for U
+            string_type u_label(((*vertex_u).label().empty() ? std::to_wstring((*vertex_u).id()) : (*vertex_u).label()));
+
+            // generate label for V
+            string_type v_label(((*vertex_v).label().empty() ? std::to_wstring((*vertex_v).id()) : (*vertex_v).label()));
+
+            stream << indent << u_label << L" -> " << v_label  << L";" << std::endl;
+        }
 
         stream << L"}" << std::endl;
 
@@ -309,8 +325,6 @@ void arcturus_control_flow_graph::generate_graphviz_file(const string_type& file
     }
 
     log_info(L"Generated graphviz file.");
-
-    // D:\Soft\graphviz\2.38\release\bin\dot -Tpng d:\tmp\cfg.dot -o d:\tmp\cfg.png
 }
 
 END_NAMESPACE

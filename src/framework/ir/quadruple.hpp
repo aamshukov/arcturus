@@ -87,7 +87,7 @@ struct quadruple : public list
 
     using quadruple_type = std::shared_ptr<quadruple<token_type, traits_type>>;
 
-    using id_type = std::size_t;
+    using id_type = int;
 
     using result_type = std::variant<symbol_type,       // temporary variable introduced during evaluation
                                      quadruple_type>;   // target label used with 'goto' or branch/jump op code
