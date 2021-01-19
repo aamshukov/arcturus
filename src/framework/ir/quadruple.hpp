@@ -69,11 +69,7 @@ USINGNAMESPACE(symtable)
 //  putparam            pN                                                      put param
 //  call                foo             N
 //
-//  𝛗-param             p1
-//  𝛗-param             p2
-//  ...                 ...
-//  𝛗-param             pN
-//  𝛗                   N
+//  𝛗                   y               N                                      N - how many params (predecessors)
 //
 template <typename Token, typename OpCodeTraits>
 struct quadruple : public list
@@ -82,14 +78,14 @@ struct quadruple : public list
     using traits_type = OpCodeTraits;
     using operation_code = typename traits_type::operation_code;
 
+    using id_type = int;
+
     using symbol_type = std::shared_ptr<symtable::symbol<token_type>>;
-    using symbols_type = std::vector<symbol_type>;
+    using argument_type = std::pair<symbol_type, id_type>; // <symbol, version>
 
     using quadruple_type = std::shared_ptr<quadruple<token_type, traits_type>>;
 
-    using id_type = int;
-
-    using result_type = std::variant<symbol_type,       // temporary variable introduced during evaluation
+    using result_type = std::variant<argument_type,     // temporary variable introduced during evaluation
                                      quadruple_type>;   // target label used with 'goto' or branch/jump op code
     enum class flag : uint64_t
     {
@@ -106,8 +102,8 @@ struct quadruple : public list
 
     operation_code  operation;
 
-    symbol_type     argument1;
-    symbol_type     argument2;
+    argument_type   argument1;
+    argument_type   argument2;
 
     result_type     result;
 
@@ -130,7 +126,7 @@ struct quadruple : public list
 
     quadruple(const id_type& i,
               const operation_code& operation,
-              const symbol_type& argument1,
+              const argument_type& argument1,
               const result_type& result)
         : id(i), operation(operation), argument1(argument1), result(result)
     {
@@ -138,8 +134,8 @@ struct quadruple : public list
 
     quadruple(const id_type& i,
               const operation_code& operation,
-              const symbol_type& argument1,
-              const symbol_type& argument2,
+              const argument_type& argument1,
+              const argument_type& argument2,
               const result_type& result)
         : id(i), operation(operation), argument1(argument1), argument2(argument2), result(result)
     {

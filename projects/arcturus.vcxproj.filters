@@ -452,9 +452,6 @@
     <ClCompile Include="..\src\framework\backend\codegen\amd64\activation_record_amd64.cpp">
       <Filter>framework\backend\codegen\amd64</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\framework\ir\control_flow_graph.cpp">
-      <Filter>framework\ir</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\arcturus\arcturus_lexical_tools.cpp">
       <Filter>arcturus</Filter>
     </ClCompile>

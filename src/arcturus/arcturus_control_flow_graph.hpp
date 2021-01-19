@@ -23,11 +23,14 @@ class arcturus_control_flow_graph : public control_flow_graph<basic_block<arctur
         using basic_blocks_type = typename control_flow_graph<basic_block<arcturus_quadruple>>::basic_blocks_type;
 
     public:
-        virtual void build_hir(code_type& code) override;
-        virtual void build_mir(code_type& code) override;
-        virtual void build_lir(code_type& code) override;
+                        arcturus_control_flow_graph();
+                       ~arcturus_control_flow_graph();
 
-        void generate_graphviz_file(const string_type& file_name);
+        virtual void    build_hir(code_type& code) override;
+        virtual void    build_mir(code_type& code) override;
+        virtual void    build_lir(code_type& code) override;
+
+        void            generate_graphviz_file(const string_type& file_name);
 };
 
 END_NAMESPACE

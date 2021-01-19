@@ -173,7 +173,6 @@
     <ClCompile Include="..\src\framework\frontend\grammar\rule.cpp" />
     <ClCompile Include="..\src\framework\frontend\grammar\symbol.cpp" />
     <ClCompile Include="..\src\framework\frontend\lexical_analyzer\lexical_content.cpp" />
-    <ClCompile Include="..\src\framework\ir\control_flow_graph.cpp" />
   </ItemGroup>
   <ItemGroup>
     <MASM Include="..\src\framework\backend\codegen\amd64\masm.test.asm">

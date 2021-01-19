@@ -121,7 +121,7 @@ struct arcturus_operation_code_traits
 
         // SSA
         phi                 = 5000, // 𝛗
-        phi_param,                  // 𝛗-param
+        //phi_param,                  // 𝛗-param
 
         sentinel            = 10000
     )
@@ -153,7 +153,7 @@ struct arcturus_quadruple : public quadruple<arcturus_token, arcturus_operation_
 
     arcturus_quadruple(const id_type& id,
                        const operation_code& operation,
-                       const symbol_type& argument1,
+                       const argument_type& argument1,
                        const result_type& result)
         : quadruple_base(id, operation, argument1, result)
     {
@@ -161,8 +161,8 @@ struct arcturus_quadruple : public quadruple<arcturus_token, arcturus_operation_
 
     arcturus_quadruple(const id_type& id,
                        const operation_code& operation,
-                       const symbol_type& argument1,
-                       const symbol_type& argument2,
+                       const argument_type& argument1,
+                       const argument_type& argument2,
                        const result_type& result)
         : quadruple_base(id, operation, argument1, argument2, result)
     {
@@ -274,17 +274,26 @@ struct arcturus_quadruple : public quadruple<arcturus_token, arcturus_operation_
         }
 
         // argument1
-        string_type arg1((*argument1).to_string());
+        const auto& symbol1(*argument1.first);
+        const auto& version1(argument1.second);
+
+        string_type arg1(symbol1.to_string() + std::to_wstring(version1));
 
         // argument2
-        string_type arg2((*argument2).to_string());
+        const auto& symbol2(*argument2.first);
+        const auto& version2(argument2.second);
+
+        string_type arg2(symbol2.to_string() + std::to_wstring(version2));
 
         // result
         string_type res;
 
-        if(std::holds_alternative<symbol_type>(result))
+        if(std::holds_alternative<argument_type>(result))
         {
-            res = (*std::get<0>(result)).to_string();
+            const auto& symbol_res(std::get<0>(result).first);
+            const auto& version_res(std::get<0>(result).second);
+
+            res = (*symbol_res).to_string() + std::to_wstring(version_res);
         }
         else if(std::holds_alternative<quadruple_type>(result))
         {

@@ -2154,5 +2154,15 @@ namespace tests
                 bool rc = idoms_lengauer_tarjan == idoms;
                 Assert::IsTrue(rc);
             }
+
+            TEST_METHOD(BuildArcturusHirCytron)
+            {
+                //build_hir
+            }
+
+            TEST_METHOD(BuildSSaFormCytron)
+            {
+                //ssa<>::build_ssa_form(control_flow_graph_type& cfg);
+            }
     };
 }

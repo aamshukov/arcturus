@@ -12,11 +12,45 @@ USINGNAMESPACE(core)
 USINGNAMESPACE(frontend)
 
 template <typename Token>
+struct symbol_lt_key_comparator
+{
+    using symbol_type = std::shared_ptr<Token>;
+    bool operator() (const symbol_type& lhs, const symbol_type& rhs) const
+    {
+        return (*lhs).id() < (*rhs).id();
+    }
+};
+
+template <typename Token>
+struct symbol_eq_key_comparator
+{
+    using symbol_type = std::shared_ptr<Token>;
+    bool operator() (const symbol_type& lhs, const symbol_type& rhs) const
+    {
+        return (*lhs).id() == (*rhs).id();
+    }
+};
+
+template <typename Token>
+struct symbol_hash
+{
+    using symbol_type = std::shared_ptr<Token>;
+    std::size_t operator () (const symbol_type& symbol) const
+    {
+        std::size_t result = (*symbol).id();
+        result ^= std::hash<std::size_t>{}(result + 0x9E3779B9 + (result << 6) + (result >> 2)); // aka boost hash_combine
+        return result;
+    }
+};
+
+template <typename Token>
 class symbol : private noncopyable
 {
     public:
         using token_type = Token;
         using symbol_type = std::shared_ptr<symbol<token_type>>;
+
+        using id_type = size_type;
 
         using index_type = int32_t;
         using size_type = std::size_t;
@@ -56,6 +90,7 @@ class symbol : private noncopyable
         using counter_type = counter;
 
     protected:
+        id_type                 my_id;
         codepoints_type         my_name;
 
         token_type              my_token;               // link with content
@@ -77,14 +112,17 @@ class symbol : private noncopyable
 
         metadata_type           my_metadata;            // custom attributes
 
-        std::size_t             my_ssa_id;              // 0 - unassigned, 1+
-        static counter_type     my_ssa_counter;
+        //std::size_t             my_ssa_id;              // 0 - unassigned, 1+
+        //static counter_type     my_ssa_counter;
 
         static counter_type     my_tmp_counter;
 
     public:
                                 symbol();
                                ~symbol();
+
+        const id_type&          id() const;
+        id_type&                id();
 
         const codepoints_type&  name() const;
         codepoints_type&        name();
@@ -98,8 +136,8 @@ class symbol : private noncopyable
         const type_type&        type() const;
         type_type&              type();
 
-        std::size_t             ssa_id() const;
-        std::size_t&            ssa_id();
+        //std::size_t             ssa_id() const;
+        //std::size_t&            ssa_id();
 
         std::size_t             offset() const;
         std::size_t&            offset();
@@ -123,8 +161,9 @@ typename symbol<Token>::counter_type symbol<Token>::my_tmp_counter;
 
 template <typename Token>
 symbol<Token>::symbol()
-                   : my_ssa_id(0),
+                   : //my_ssa_id(0),
                      //??my_type(type_type::kind_type::unknown_type),
+                     my_id(0),
                      my_offset(0),
                      my_size(0),
                      my_bitsize(0),
@@ -135,6 +174,18 @@ symbol<Token>::symbol()
 template <typename Token>
 symbol<Token>::~symbol()
 {
+}
+
+template <typename Token>
+inline const typename symbol<Token>::id_type& symbol<Token>::id() const
+{
+    return my_id;
+}
+
+template <typename Token>
+inline typename symbol<Token>::id_type& symbol<Token>::id()
+{
+    return my_id;
 }
 
 template <typename Token>
@@ -185,17 +236,17 @@ inline typename symbol<Token>::type_type& symbol<Token>::type()
     return my_type;
 }
 
-template <typename Token>
-inline std::size_t symbol<Token>::ssa_id() const
-{
-    return my_ssa_id;
-}
-
-template <typename Token>
-inline std::size_t& symbol<Token>::ssa_id()
-{
-    return my_ssa_id;
-}
+//template <typename Token>
+//inline std::size_t symbol<Token>::ssa_id() const
+//{
+//    return my_ssa_id;
+//}
+//
+//template <typename Token>
+//inline std::size_t& symbol<Token>::ssa_id()
+//{
+//    return my_ssa_id;
+//}
 
 template <typename Token>
 inline std::size_t symbol<Token>::offset() const
@@ -269,6 +320,7 @@ typename symbol<Token>::symbol_type symbol<Token>::get_new_temporary()
 
         result = factory::create<symbol<token_type>>();
 
+        (*result).id() = num;
         (*result).name() = t;
     }
 

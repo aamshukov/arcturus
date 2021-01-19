@@ -108,6 +108,14 @@ USINGNAMESPACE(frontend)
 USINGNAMESPACE(symtable)
 USINGNAMESPACE(backend)
 
+arcturus_control_flow_graph::arcturus_control_flow_graph()
+{
+}
+
+arcturus_control_flow_graph::~arcturus_control_flow_graph()
+{
+}
+
 void arcturus_control_flow_graph::build_hir(typename arcturus_control_flow_graph::code_type& code0)
 {
     auto& code(*code0);
@@ -187,6 +195,12 @@ void arcturus_control_flow_graph::build_hir(typename arcturus_control_flow_graph
 
             inst_block_map.insert({ (*instruction).id, current_block });
 
+            if((*instruction).operation == arcturus_operation_code_traits::operation_code::assignment_hir)
+            {
+                const auto& symbol(std::get<0>((*instruction).result).first);
+                my_assignments[symbol] = current_block;
+            }
+
             instruction = std::static_pointer_cast<arcturus_quadruple>((*instruction).next());
 
             if(((*instruction).flags & arcturus_quadruple::flags_type::leader) == arcturus_quadruple::flags_type::leader)
@@ -210,6 +224,7 @@ void arcturus_control_flow_graph::build_hir(typename arcturus_control_flow_graph
         // phase III (build CFG)
         add_vertex(entry_block);
         root() = entry_block;
+
         add_vertex(exit_block);
 
         // link entry point with the first block - there is an edge from Entry to each initial BB
@@ -296,7 +311,19 @@ void arcturus_control_flow_graph::generate_graphviz_file(const string_type& file
 
         for(const auto& vertex : vertices())
         {
-            stream << indent << ((*vertex).label().empty() ? std::to_wstring((*vertex).id()) : (*vertex).label()) << L" node [shape = circle];" << std::endl;
+            string_type label;
+
+            auto bb = std::dynamic_pointer_cast<basic_block<arcturus_quadruple>>(vertex);
+
+            auto instruction = (*bb).code().instructions();
+
+            for(; instruction != (*bb).code().end_instruction();)
+            {
+                label += (*instruction).to_string() + L"<br/>";
+                instruction = std::static_pointer_cast<arcturus_quadruple>((*(*bb).code().instructions()).next());
+            }
+
+            stream << indent << (*vertex).id() << L" node [shape=box label=<" << label << L">];" << std::endl;
         }
 
         for(const auto& edge : edges())
@@ -305,10 +332,10 @@ void arcturus_control_flow_graph::generate_graphviz_file(const string_type& file
             const auto& vertex_v((*edge).endpoints()[1]);
 
             // generate label for U
-            string_type u_label(((*vertex_u).label().empty() ? std::to_wstring((*vertex_u).id()) : (*vertex_u).label()));
+            string_type u_label(std::to_wstring((*vertex_u).id()));
 
             // generate label for V
-            string_type v_label(((*vertex_v).label().empty() ? std::to_wstring((*vertex_v).id()) : (*vertex_v).label()));
+            string_type v_label(std::to_wstring((*vertex_v).id()));
 
             stream << indent << u_label << L" -> " << v_label  << L";" << std::endl;
         }

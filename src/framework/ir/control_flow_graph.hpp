@@ -10,6 +10,7 @@ BEGIN_NAMESPACE(backend)
 
 USINGNAMESPACE(core)
 USINGNAMESPACE(frontend)
+USINGNAMESPACE(symtable)
 
 template <typename TBasicBlock>
 class control_flow_graph : public graph<TBasicBlock>
@@ -21,11 +22,48 @@ class control_flow_graph : public graph<TBasicBlock>
         using basic_block_type = std::shared_ptr<basic_block<instruction_type>>;
         using basic_blocks_type = std::vector<basic_block_type>;
 
+        using token_type = typename instruction_type::token_type;
+        using symbol_type = std::shared_ptr<symtable::symbol<token_type>>;
+        using assignments_type = std::unordered_map<symbol_type, basic_block_type,
+                                                    symbol_hash<symtable::symbol<token_type>>,
+                                                    symbol_eq_key_comparator<symtable::symbol<token_type>>>;
+    protected:
+        assignments_type        my_assignments;
+
     public:
-        virtual void build_hir(code_type& code) = 0;
-        virtual void build_mir(code_type& code) = 0;
-        virtual void build_lir(code_type& code) = 0;
+                                control_flow_graph();
+                               ~control_flow_graph();
+
+        const assignments_type& assignments() const;
+        assignments_type&       assignments();
+
+        virtual void            build_hir(code_type& code) = 0;
+        virtual void            build_mir(code_type& code) = 0;
+        virtual void            build_lir(code_type& code) = 0;
 };
+
+template <typename TBasicBlock>
+control_flow_graph<TBasicBlock>::control_flow_graph()
+                               : graph<TBasicBlock>(true)
+{
+}
+
+template <typename TBasicBlock>
+control_flow_graph<TBasicBlock>::~control_flow_graph()
+{
+}
+
+template <typename TBasicBlock>
+inline const typename control_flow_graph<TBasicBlock>::assignments_type& control_flow_graph<TBasicBlock>::assignments() const
+{
+    return my_assignments;
+}
+
+template <typename TBasicBlock>
+inline typename control_flow_graph<TBasicBlock>::assignments_type& control_flow_graph<TBasicBlock>::assignments()
+{
+    return my_assignments;
+}
 
 END_NAMESPACE
 

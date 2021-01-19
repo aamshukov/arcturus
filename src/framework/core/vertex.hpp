@@ -51,8 +51,9 @@ class vertex : public visitable
 
         enum class flag : uint64_t
         {
-            clear      = 0x0000,
-            visited    = 0x0001
+            clear   = 0x0000,
+            visited = 0x0001,
+            hasphi  = 0x0002 // related to SSA form
         };
 
         DECLARE_ENUM_OPERATORS(flag)
