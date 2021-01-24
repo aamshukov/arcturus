@@ -69,7 +69,8 @@ USINGNAMESPACE(symtable)
 //  putparam            pN                                                      put param
 //  call                foo             N
 //
-//  𝛗                   y               N                                      N - how many params (predecessors)
+//  𝛗                   y               N                                      y - symbol
+//                                                                             N - how many params (predecessors)
 //
 template <typename Token, typename OpCodeTraits>
 struct quadruple : public list
@@ -78,7 +79,7 @@ struct quadruple : public list
     using traits_type = OpCodeTraits;
     using operation_code = typename traits_type::operation_code;
 
-    using id_type = int;
+    using id_type = size_type;
 
     using symbol_type = std::shared_ptr<symtable::symbol<token_type>>;
     using argument_type = std::pair<symbol_type, id_type>; // <symbol, version>

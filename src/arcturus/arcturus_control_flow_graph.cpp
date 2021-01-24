@@ -130,8 +130,6 @@ void arcturus_control_flow_graph::build_hir(typename arcturus_control_flow_graph
         //  Любая команда (instruction), следующая непосредственно за условным или безусловным переходом or 'return', является лидером.
         (*instruction).flags |= arcturus_quadruple::flags_type::leader;
 
-        instruction = std::static_pointer_cast<arcturus_quadruple>((*instruction).next());
-
         for(; instruction != code.end_instruction();)
         {
             if((*instruction).operation == arcturus_operation_code_traits::operation_code::if_true_hir ||
@@ -172,12 +170,14 @@ void arcturus_control_flow_graph::build_hir(typename arcturus_control_flow_graph
 
         const char_type* label(L"BB-%ld");
 
-        instruction = code.instructions(); // restart
-
         basic_blocks_type blocks;
 
+        std::unordered_map<id_type, basic_block_type> inst_block_map; // maps instruction to block
+
         // entry point
-        auto entry_block(factory::create<basic_block<instruction_type>>(id, format(label, id))); // id = 0
+        auto entry_block(factory::create<basic_block<instruction_type>>(id, L"entry"));
+
+        root() = entry_block;
 
         blocks.emplace_back(entry_block);
 
@@ -187,21 +187,23 @@ void arcturus_control_flow_graph::build_hir(typename arcturus_control_flow_graph
 
         blocks.emplace_back(current_block);
 
-        std::unordered_map<id_type, basic_block_type> inst_block_map; // maps instruction to block
+        instruction = code.instructions(); // restart
 
         do
         {
-            (*current_block).code().add_instruction(instruction);
+            auto next_instruction = std::static_pointer_cast<arcturus_quadruple>((*instruction).next());
 
             inst_block_map.insert({ (*instruction).id, current_block });
 
-            if((*instruction).operation == arcturus_operation_code_traits::operation_code::assignment_hir)
+            if(is_assignement((*instruction).operation))
             {
                 const auto& symbol(std::get<0>((*instruction).result).first);
                 my_assignments[symbol] = current_block;
             }
 
-            instruction = std::static_pointer_cast<arcturus_quadruple>((*instruction).next());
+            (*current_block).code().add_instruction(instruction); // unlink from the current-block.code and link to the new block.code
+
+            instruction = next_instruction; // restore iterator for the current-block.code
 
             if(((*instruction).flags & arcturus_quadruple::flags_type::leader) == arcturus_quadruple::flags_type::leader)
             {
@@ -217,15 +219,15 @@ void arcturus_control_flow_graph::build_hir(typename arcturus_control_flow_graph
         // exit point
         id++;
 
-        auto exit_block(factory::create<basic_block<instruction_type>>(id, format(label, id)));
+        auto exit_block(factory::create<basic_block<instruction_type>>(id, L"exit"));
 
         blocks.emplace_back(exit_block);
 
         // phase III (build CFG)
-        add_vertex(entry_block);
-        root() = entry_block;
-
-        add_vertex(exit_block);
+        for(auto& block : blocks)
+        {
+            add_vertex(block);
+        }
 
         // link entry point with the first block - there is an edge from Entry to each initial BB
         // arcturus/art has only one entry point (as an alternative to Fortran 77's multiple entry points)
@@ -235,45 +237,60 @@ void arcturus_control_flow_graph::build_hir(typename arcturus_control_flow_graph
         {
             auto block(blocks[i]);
 
-            add_vertex(block);
+            instruction = std::static_pointer_cast<arcturus_quadruple>((*(*block).code().end_instruction()).prev()); // get the last instruction in a block
 
-            instruction = std::static_pointer_cast<arcturus_quadruple>((*(*block).code().instructions()).prev()); // get the last instruction in a block
-
-            if(instruction != block->code().start_instruction())
+            if(instruction != (*block).code().start_instruction())
             {
-                basic_block_type target_block;
-
                 // there is a branch from last instruction in B1 to the leader of B2 ...
                 if((*instruction).operation == arcturus_operation_code_traits::operation_code::if_true_hir ||
                     (*instruction).operation == arcturus_operation_code_traits::operation_code::if_false_hir ||
                     (*instruction).operation == arcturus_operation_code_traits::operation_code::goto_hir)
                 {
-                    auto target_instruction(std::get<1>((*instruction).result));
-                    target_block = inst_block_map[(*target_instruction).id];
-
                     // link block -> target_block
-                    add_vertex(target_block);
+                    auto target_instruction(std::get<1>((*instruction).result));
+                    auto& target_block(inst_block_map[(*target_instruction).id]);
+
                     add_edge(block, target_block, 0.0);
                 }
 
                 // B2 immediately follows B1, and B1 DOES NOT end in an unconditional branch ...
-                if((*instruction).operation != arcturus_operation_code_traits::operation_code::goto_hir)
+                if((*instruction).operation != arcturus_operation_code_traits::operation_code::goto_hir &&
+                   (*instruction).operation != arcturus_operation_code_traits::operation_code::function_return_hir)
                 {
-                    target_block = blocks[i + 1];
-
                     // link block -> target_block
-                    add_vertex(target_block);
+                    auto& target_block(blocks[i + 1]);
                     add_edge(block, target_block, 0.0);
                 }
             }
         }
 
+        // For technical reasons related to the representation of control dependences, there is also an edge from Entry to Exit
+        add_edge(entry_block, exit_block, 0.0);
+
         // link exit point with the final block(s) - there is an edge from each final BB to Exit
         //  ... final basic blocks are basic blocks either with no successors or with a 'return' statement
         for(auto& block : blocks)
         {
-            if((*block).adjacencies().empty() || 
-               (*instruction).operation != arcturus_operation_code_traits::operation_code::function_return_hir)
+            if(block == exit_block)
+                continue;
+
+            bool link_to_exit_block = (*block).adjacencies().empty();
+
+            if(!link_to_exit_block)
+            {
+                for(auto instr = (*block).code().instructions();
+                    instr != (*block).code().end_instruction();
+                    instr = std::static_pointer_cast<arcturus_quadruple>((*instr).next()))
+                {
+                    if((*instr).operation == arcturus_operation_code_traits::operation_code::function_return_hir)
+                    {
+                        link_to_exit_block = true;
+                        break;
+                    }
+                }
+            }
+
+            if(link_to_exit_block)
             {
                 add_edge(block, exit_block, 0.0);
             }
@@ -287,6 +304,11 @@ void arcturus_control_flow_graph::build_mir(typename arcturus_control_flow_graph
 
 void arcturus_control_flow_graph::build_lir(typename arcturus_control_flow_graph::code_type& /*code*/)
 {
+}
+
+bool arcturus_control_flow_graph::is_assignement(const typename arcturus_control_flow_graph::operation_code& operation)
+{
+    return operation == arcturus_operation_code_traits::operation_code::assignment_hir;
 }
 
 void arcturus_control_flow_graph::generate_graphviz_file(const string_type& file_name)
@@ -311,19 +333,18 @@ void arcturus_control_flow_graph::generate_graphviz_file(const string_type& file
 
         for(const auto& vertex : vertices())
         {
-            string_type label;
+            string_type label((*vertex).label() + L"<br/>");
 
             auto bb = std::dynamic_pointer_cast<basic_block<arcturus_quadruple>>(vertex);
 
-            auto instruction = (*bb).code().instructions();
-
-            for(; instruction != (*bb).code().end_instruction();)
+            for(auto instr = (*bb).code().instructions();
+                instr != (*bb).code().end_instruction();
+                instr = std::static_pointer_cast<arcturus_quadruple>((*instr).next()))
             {
-                label += (*instruction).to_string() + L"<br/>";
-                instruction = std::static_pointer_cast<arcturus_quadruple>((*(*bb).code().instructions()).next());
+                label += std::to_wstring((*instr).id) + L"<br/>";
             }
 
-            stream << indent << (*vertex).id() << L" node [shape=box label=<" << label << L">];" << std::endl;
+            stream << indent << (*vertex).id() << L" [shape=box label=<" << label << L">];" << std::endl;
         }
 
         for(const auto& edge : edges())

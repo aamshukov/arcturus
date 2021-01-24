@@ -14,7 +14,12 @@ USINGNAMESPACE(symtable)
 
 // 𝛗
 template <typename TBasicBlock>
-void ssa<TBasicBlock>::build_ssa_form(typename ssa<TBasicBlock>::control_flow_graph_type& cfg)
+ssa<TBasicBlock>::ssa()
+{
+}
+
+template <typename TBasicBlock>
+ssa<TBasicBlock>::~ssa()
 {
 }
 

@@ -104,6 +104,7 @@
 #include <arcturus_parser.hpp>
 #include <arcturus_quadruple.hpp>
 #include <arcturus_control_flow_graph.hpp>
+#include <arcturus_ssa.hpp>
 #include <arcturus_ir.hpp>
 #include <arcturus_pass.hpp>
 #include <arcturus_controller.hpp>
@@ -242,10 +243,6 @@ int _tmain(int argc, _TCHAR *argv[])
     config;
 
     logger::instance().initialize(log_path);
-
-    arcturus_symbol sym;
-    sym.type() = st;
-    sym.type() = at;
 
     arcturus_parse_tree f(arcturus_tree_traits::kind::identifier);
 

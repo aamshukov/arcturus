@@ -22,6 +22,11 @@ class arcturus_control_flow_graph : public control_flow_graph<basic_block<arctur
         using basic_block_type = typename control_flow_graph<basic_block<arcturus_quadruple>>::basic_block_type;
         using basic_blocks_type = typename control_flow_graph<basic_block<arcturus_quadruple>>::basic_blocks_type;
 
+        using operation_code = typename arcturus_quadruple::operation_code;
+
+    private:
+        bool            is_assignement(const operation_code& operation);
+
     public:
                         arcturus_control_flow_graph();
                        ~arcturus_control_flow_graph();

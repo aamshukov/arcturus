@@ -274,16 +274,26 @@ struct arcturus_quadruple : public quadruple<arcturus_token, arcturus_operation_
         }
 
         // argument1
-        const auto& symbol1(*argument1.first);
-        const auto& version1(argument1.second);
+        string_type arg1;
 
-        string_type arg1(symbol1.to_string() + std::to_wstring(version1));
+        if(argument1.first != nullptr)
+        {
+            const auto& symbol1(*argument1.first);
+            const auto& version1(argument1.second);
+
+            arg1 = (symbol1.to_string() + std::to_wstring(version1));
+        }
 
         // argument2
-        const auto& symbol2(*argument2.first);
-        const auto& version2(argument2.second);
+        string_type arg2;
 
-        string_type arg2(symbol2.to_string() + std::to_wstring(version2));
+        if(argument2.first != nullptr)
+        {
+            const auto& symbol2(*argument2.first);
+            const auto& version2(argument2.second);
+
+            arg2 = (symbol2.to_string() + std::to_wstring(version2));
+        }
 
         // result
         string_type res;
@@ -293,15 +303,22 @@ struct arcturus_quadruple : public quadruple<arcturus_token, arcturus_operation_
             const auto& symbol_res(std::get<0>(result).first);
             const auto& version_res(std::get<0>(result).second);
 
-            res = (*symbol_res).to_string() + std::to_wstring(version_res);
+            if(symbol_res != nullptr)
+            {
+                res = (*symbol_res).to_string() + std::to_wstring(version_res);
+            }
         }
         else if(std::holds_alternative<quadruple_type>(result))
         {
             const auto& result_quadruple(std::get<1>(result));
-            res = (*result_quadruple).to_string();
+
+            if(result_quadruple != nullptr)
+            {
+                res = L"(" + (*result_quadruple).to_string() + L")";
+            }
         }
 
-        text = format(L"%-16s%-7s%-16s%-16s%\n", res.c_str(), arg1.c_str(), op.c_str(), arg2.c_str());
+        text = format(L"%-4d%-8s%+18s%+18s%+18s", id, op.c_str(), arg1.c_str(), arg2.c_str(), res.c_str());
 
         return text;
     }

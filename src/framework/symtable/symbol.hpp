@@ -118,7 +118,7 @@ class symbol : private noncopyable
         static counter_type     my_tmp_counter;
 
     public:
-                                symbol();
+                                symbol(const id_type& id);
                                ~symbol();
 
         const id_type&          id() const;
@@ -160,14 +160,14 @@ template <typename Token>
 typename symbol<Token>::counter_type symbol<Token>::my_tmp_counter;
 
 template <typename Token>
-symbol<Token>::symbol()
-                   : //my_ssa_id(0),
-                     //??my_type(type_type::kind_type::unknown_type),
-                     my_id(0),
-                     my_offset(0),
-                     my_size(0),
-                     my_bitsize(0),
-                     my_flags(flags_type::clear)
+symbol<Token>::symbol(const id_type& id)
+             : //my_ssa_id(0),
+               //??my_type(type_type::kind_type::unknown_type),
+               my_id(id),
+               my_offset(0),
+               my_size(0),
+               my_bitsize(0),
+               my_flags(flags_type::clear)
 {
 }
 
@@ -331,6 +331,9 @@ template <typename Token>
 inline string_type symbol<Token>::to_string() const
 {
     string_type result;
+
+    result = text::codepoints_to_string(my_name.c_str(), my_name.size());
+
     return result;
 }
 

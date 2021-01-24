@@ -15,7 +15,7 @@ USINGNAMESPACE(symtable)
 class arcturus_symbol : public symtable::symbol<arcturus_token>
 {
     public:
-            arcturus_symbol();
+            arcturus_symbol(const id_type& id);
            ~arcturus_symbol();
 };
 

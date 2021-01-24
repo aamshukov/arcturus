@@ -35,6 +35,7 @@
     <ClInclude Include="..\src\arcturus\arcturus_pass.hpp" />
     <ClInclude Include="..\src\arcturus\arcturus_quadruple.hpp" />
     <ClInclude Include="..\src\arcturus\arcturus_scalar_type.hpp" />
+    <ClInclude Include="..\src\arcturus\arcturus_ssa.hpp" />
     <ClInclude Include="..\src\arcturus\arcturus_struct_type.hpp" />
     <ClInclude Include="..\src\arcturus\arcturus_symbol.hpp" />
     <ClInclude Include="..\src\arcturus\arcturus_token.hpp" />
@@ -132,6 +133,7 @@
     <ClCompile Include="..\src\arcturus\arcturus_pass.cpp" />
     <ClCompile Include="..\src\arcturus\arcturus_quadruple.cpp" />
     <ClCompile Include="..\src\arcturus\arcturus_scalar_type.cpp" />
+    <ClCompile Include="..\src\arcturus\arcturus_ssa.cpp" />
     <ClCompile Include="..\src\arcturus\arcturus_struct_type.cpp" />
     <ClCompile Include="..\src\arcturus\arcturus_symbol.cpp" />
     <ClCompile Include="..\src\arcturus\arcturus_token.cpp" />

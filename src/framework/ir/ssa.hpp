@@ -26,7 +26,8 @@ class ssa : private noncopyable
         using control_flow_graph_type = std::shared_ptr<control_flow_graph<basic_block<instruction_type>>>;
 
     public:
-        static void build_ssa_form(control_flow_graph_type& cfg);
+                    ssa();
+        virtual    ~ssa() = 0;
 };
 
 END_NAMESPACE

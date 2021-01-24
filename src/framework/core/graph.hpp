@@ -31,8 +31,7 @@ class graph : private noncopyable
 
         using vertex_edge_map_type = std::unordered_map<vertex_type, edges_type, vertex_hash<vertex>, vertex_eq_key_comparator<vertex>>;
 
-        using id_type = int;
-        using size_type = int;
+        using id_type = size_type;
 
         using counter_type = counter;
 

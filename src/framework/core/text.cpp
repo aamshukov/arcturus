@@ -79,6 +79,80 @@ bool text::chars_to_codepoints(const char* chars, const size_type& chars_count, 
     return result;
 }
 
+codepoints_type text::chars_to_codepoints(const char* chars, const size_type& chars_count)
+{
+    codepoints_type codepoints;
+
+    try
+    {
+        const UTF8*  source_start_aux(reinterpret_cast<const UTF8*>(chars));
+        const UTF8** source_start(&source_start_aux);
+        const UTF8*  source_end(source_start_aux + chars_count);
+
+        std::shared_ptr<datum_type[]> buffer(new datum_type[chars_count + 1]);
+
+        const datum_type*  target_start_org(buffer.get());
+        const datum_type*  target_start_aux(buffer.get());
+        const datum_type** target_start(&target_start_aux);
+        const datum_type*  target_end(target_start_aux + chars_count);
+
+        convert_result cr = convert_utf8_to_utf32(source_start,
+                                                  source_end,
+                                                  (UTF32**)target_start,
+                                                  (UTF32*)target_end,
+                                                  conversion_flags::strict_conversion);
+        if(cr == conversion_ok)
+        {
+            auto codepoints_count = std::ptrdiff_t(*target_start - target_start_org);
+
+            buffer[codepoints_count] = 0;
+
+            codepoints = buffer.get();
+        }
+        else
+        {
+            bool result = true;
+
+            if(cr == source_exhausted)
+            {
+                OPERATION_FAILED(status::custom_code::error,
+                                 source_exhausted,
+                                 status::contributor::core,
+                                 L"Converting chars (utf8) to codepoints: partial character in source, but hit end.")
+                log_error(diagnostics::instance().last_status().text().c_str());
+            }
+            else if(cr == target_exhausted)
+            {
+                OPERATION_FAILED(status::custom_code::error,
+                                 target_exhausted,
+                                 status::contributor::core,
+                                 L"Converting chars (utf8) to codepoints: insufficient room in target for conversion.")
+                log_error(diagnostics::instance().last_status().text().c_str());
+            }
+            else if(cr == source_illegal)
+            {
+                OPERATION_FAILED(status::custom_code::error,
+                                 source_illegal,
+                                 status::contributor::core,
+                                 L"Converting chars (utf8) to codepoints: source sequence is illegal/malformed.")
+                log_error(diagnostics::instance().last_status().text().c_str());
+            }
+        }
+    }
+    catch(const std::exception& ex)
+    {
+        bool result = false;
+
+        OPERATION_FAILED_EX(ex,
+                            status::custom_code::error,
+                            status::contributor::core,
+                            L"Converting chars (utf8) to codepoints: error occurred.")
+        log_exception(ex, diagnostics::instance().last_status().text().c_str());
+    }
+
+    return codepoints;
+}
+
 bool text::codepoints_to_chars(const datum_type* codepoints, const size_type& codepoints_count, std::shared_ptr<char[]>& chars, size_type& chars_count)
 {
     chars_count = 0;
@@ -409,6 +483,15 @@ bool text::codepoints_to_string(const datum_type* codepoints, size_type count, s
                             L"Converting codepoints to string: error occurred.")
         log_exception(ex, diagnostics::instance().last_status().text().c_str());
     }
+
+    return result;
+}
+
+string_type text::codepoints_to_string(const datum_type* codepoints, size_type count)
+{
+    string_type result;
+
+    codepoints_to_string(codepoints, count, result);
 
     return result;
 }

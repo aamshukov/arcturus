@@ -56,6 +56,7 @@
 #include <frontend/parser/parse_tree_base.hpp>
 #include <frontend/parser/parse_tree.hpp>
 #include <frontend/parser/parse_dag.hpp>
+#include <frontend/parser/parse_context.hpp>
 #include <frontend/parser/parser.hpp>
 #include <frontend/parser/parser.inl>
 #include <frontend/parser/recursive_descent_parser.hpp>
@@ -70,9 +71,12 @@
 #include <ir/basic_block.hpp>
 #include <ir/basic_block.inl>
 #include <ir/control_flow_graph.hpp>
+#include <ir/ssa.hpp>
 #include <ir/ir_visitor.hpp>
 #include <ir/ir.hpp>
 #include <ir/ir.inl>
+
+#include <backend/optimization/pass.hpp>
 
 #include <backend/codegen/activation_record.hpp>
 #include <backend/codegen/amd64/activation_record_amd64.hpp>
@@ -80,14 +84,8 @@
 
 #include <backend/optimization/pass.hpp>
 
-#include <controller/controller.hpp>
-
 #include <arcturus_configurator.hpp>
 #include <arcturus_token.hpp>
-#include <arcturus_type.hpp>
-#include <arcturus_lexical_analyzer.hpp>
-#include <arcturus_parse_tree.hpp>
-#include <arcturus_parser.hpp>
 #include <arcturus_type.hpp>
 #include <arcturus_scalar_type.hpp>
 #include <arcturus_array_type.hpp>
@@ -95,20 +93,51 @@
 #include <arcturus_enum_type.hpp>
 #include <arcturus_func_type.hpp>
 #include <arcturus_symbol.hpp>
+#include <arcturus_lexical_analyzer.hpp>
+#include <arcturus_parse_tree.hpp>
+#include <arcturus_parse_context.hpp>
+#include <arcturus_parser.hpp>
+#include <arcturus_quadruple.hpp>
+#include <arcturus_control_flow_graph.hpp>
+#include <arcturus_ssa.hpp>
 
 BEGIN_NAMESPACE(arcturus)
 
 USINGNAMESPACE(core)
 USINGNAMESPACE(frontend)
-USINGNAMESPACE(symtable)
 
-arcturus_symbol::arcturus_symbol(const id_type& id)
-               : symbol<arcturus_token>(id)
+arcturus_ssa::arcturus_ssa()
 {
 }
 
-arcturus_symbol::~arcturus_symbol()
+arcturus_ssa::~arcturus_ssa()
 {
+}
+
+void arcturus_ssa::build_ssa_form(typename arcturus_ssa::control_flow_graph_type& cfg)
+{
+    cfg;//??
+
+    auto phi(make_phi_instruction(2));
+}
+
+typename arcturus_ssa::arcturus_instruction_type arcturus_ssa::make_phi_instruction(size_type n)
+{
+    auto v_symbol(factory::create<arcturus_symbol>(0)); // version symbol
+
+    (*v_symbol).name() = text::chars_to_codepoints("V", 1);
+    (*v_symbol).value() = 0;
+
+    auto n_symbol(factory::create<arcturus_symbol>(0)); // version symbol
+
+    (*n_symbol).name() = text::chars_to_codepoints("N", 1);
+    (*n_symbol).value() = n;
+
+    arcturus_instruction_type result(factory::create<arcturus_quadruple>(0,
+                                                                         arcturus_operation_code_traits::operation_code::phi,
+                                                                         std::make_pair(v_symbol, 0),
+                                                                         std::make_pair(n_symbol, 0)));
+    return result;
 }
 
 END_NAMESPACE

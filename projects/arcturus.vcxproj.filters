@@ -363,6 +363,9 @@
     <ClInclude Include="..\src\framework\core\dominance_tree.hpp">
       <Filter>framework\core</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\arcturus\arcturus_ssa.hpp">
+      <Filter>arcturus</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\framework\core\logger.cpp">
@@ -516,6 +519,9 @@
       <Filter>framework\core</Filter>
     </ClCompile>
     <ClCompile Include="..\src\arcturus\arcturus_quadruple.cpp">
+      <Filter>arcturus</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\arcturus\arcturus_ssa.cpp">
       <Filter>arcturus</Filter>
     </ClCompile>
   </ItemGroup>

@@ -44,6 +44,9 @@ class text : private noncopyable
                                                 const size_type& chars_count,
                                                 std::shared_ptr<datum_type[]>& codepoints,
                                                 size_type& codepoints_count);
+        static codepoints_type
+                            chars_to_codepoints(const char* chars, const size_type& chars_count);
+
         static bool         codepoints_to_chars(const datum_type* codepoints,
                                                 const size_type& codepoints_count,
                                                 std::shared_ptr<char[]>& chars,
@@ -54,6 +57,7 @@ class text : private noncopyable
 
         static bool         string_to_codepoints(const string_type& text, std::shared_ptr<datum_type[]>& codepoints, size_type& count);
         static bool         codepoints_to_string(const datum_type* codepoints, size_type count, string_type& result_text);
+        static string_type  codepoints_to_string(const datum_type* codepoints, size_type count);
 
         static string_type  codepoint_to_string(datum_type codepoint);
         static bool         codepoint_to_string(datum_type codepoint, string_type& result_text);
