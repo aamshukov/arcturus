@@ -18,23 +18,19 @@ USINGNAMESPACE(backend)
 class arcturus_ssa : public ssa<basic_block<arcturus_quadruple>>
 {
     public:
-        using instruction_type = typename ssa<basic_block<arcturus_quadruple>>::instruction_type;
+        using basic_block_type = std::shared_ptr<basic_block<arcturus_quadruple>>;
+        using basic_blocks_type = std::vector<basic_block_type>;
 
-        using basic_block_type = typename ssa<basic_block<arcturus_quadruple>>::basic_block_type;
-        using basic_blocks_type = typename ssa<basic_block<arcturus_quadruple>>::basic_blocks_type;
+        using control_flow_graph_type = std::shared_ptr<arcturus_control_flow_graph>;
 
-        using control_flow_graph_type = typename ssa<basic_block<arcturus_quadruple>>::control_flow_graph_type;
-
-        using arcturus_instruction_type = std::shared_ptr<instruction_type>;
+        using arcturus_instruction_type = std::shared_ptr<arcturus_quadruple>;
 
     private:
-        arcturus_instruction_type   make_phi_instruction(size_type n);
+        static arcturus_instruction_type
+                    make_phi_instruction(size_type n);
 
     public:
-                                    arcturus_ssa();
-                                   ~arcturus_ssa();
-
-        void                        build_ssa_form(control_flow_graph_type& cfg);
+        static void build_ssa_form(control_flow_graph_type& cfg);
 };
 
 END_NAMESPACE

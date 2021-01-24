@@ -17,17 +17,6 @@ USINGNAMESPACE(symtable)
 template <typename TBasicBlock>
 class ssa : private noncopyable
 {
-    public:
-        using instruction_type = typename TBasicBlock::instruction_type;
-
-        using basic_block_type = std::shared_ptr<basic_block<instruction_type>>;
-        using basic_blocks_type = std::vector<basic_block_type>;
-
-        using control_flow_graph_type = std::shared_ptr<control_flow_graph<basic_block<instruction_type>>>;
-
-    public:
-                    ssa();
-        virtual    ~ssa() = 0;
 };
 
 END_NAMESPACE

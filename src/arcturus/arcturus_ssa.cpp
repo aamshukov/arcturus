@@ -72,6 +72,7 @@
 #include <ir/basic_block.inl>
 #include <ir/control_flow_graph.hpp>
 #include <ir/ssa.hpp>
+#include <ir/ssa.inl>
 #include <ir/ir_visitor.hpp>
 #include <ir/ir.hpp>
 #include <ir/ir.inl>
@@ -106,14 +107,6 @@ BEGIN_NAMESPACE(arcturus)
 USINGNAMESPACE(core)
 USINGNAMESPACE(frontend)
 
-arcturus_ssa::arcturus_ssa()
-{
-}
-
-arcturus_ssa::~arcturus_ssa()
-{
-}
-
 void arcturus_ssa::build_ssa_form(typename arcturus_ssa::control_flow_graph_type& cfg)
 {
     cfg;//??
@@ -128,7 +121,7 @@ typename arcturus_ssa::arcturus_instruction_type arcturus_ssa::make_phi_instruct
     (*v_symbol).name() = text::chars_to_codepoints("V", 1);
     (*v_symbol).value() = 0;
 
-    auto n_symbol(factory::create<arcturus_symbol>(0)); // version symbol
+    auto n_symbol(factory::create<arcturus_symbol>(0)); // how many params (predecessors)
 
     (*n_symbol).name() = text::chars_to_codepoints("N", 1);
     (*n_symbol).value() = n;

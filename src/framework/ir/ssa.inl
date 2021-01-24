@@ -13,15 +13,6 @@ USINGNAMESPACE(frontend)
 USINGNAMESPACE(symtable)
 
 // 𝛗
-template <typename TBasicBlock>
-ssa<TBasicBlock>::ssa()
-{
-}
-
-template <typename TBasicBlock>
-ssa<TBasicBlock>::~ssa()
-{
-}
 
 END_NAMESPACE
 

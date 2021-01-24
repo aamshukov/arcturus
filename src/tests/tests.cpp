@@ -72,6 +72,7 @@
 #include <ir/basic_block.inl>
 #include <ir/control_flow_graph.hpp>
 #include <ir/ssa.hpp>
+#include <ir/ssa.inl>
 #include <ir/ir_visitor.hpp>
 #include <ir/ir.hpp>
 #include <ir/ir.inl>
@@ -2459,14 +2460,15 @@ namespace tests
                     Logger::WriteMessage(L"\n");
                 }
 
-                arcturus_control_flow_graph cfg;
+                auto cfg(factory::create<arcturus_control_flow_graph>());
 
-                cfg.build_hir(code);
+                (*cfg).build_hir(code);
 
-                cfg.generate_graphviz_file(LR"(d:\tmp\BuildSSaFormCytron.CFG.dot)");
+                (*cfg).generate_graphviz_file(LR"(d:\tmp\BuildSSaFormCytron.CFG.dot)");
 
+                arcturus_ssa::build_ssa_form(cfg);
 
-                //cfg.generate_graphviz_file(LR"(d:\tmp\BuildSSaFormCytron.SSA.dot)");
+                (*cfg).generate_graphviz_file(LR"(d:\tmp\BuildSSaFormCytron.SSA.dot)");
             }
     };
 }
