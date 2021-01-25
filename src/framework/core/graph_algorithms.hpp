@@ -535,7 +535,7 @@ void graph_algorithms<TVertex, TEdgeValue, N>::compute_dominance_frontiers(typen
     // for each X in a bottom-up traversal of the dominator tree do
     for(auto& node : nodes)
     {
-        // DF(X) <-- 0
+        // DF(X) ← 0
         (*(*node).vertex()).frontiers().clear();
     
         vertices_type successors;
@@ -548,7 +548,7 @@ void graph_algorithms<TVertex, TEdgeValue, N>::compute_dominance_frontiers(typen
             // if idom(Y) != X
             if((*successor).idominator() != (*node).vertex())
             {
-                // then DF(X) <-- DF(X) ∪ {Y}
+                // then DF(X) ← DF(X) ∪ {Y}
                 (*(*node).vertex()).frontiers().emplace(successor); // local
             }
         }
@@ -564,7 +564,7 @@ void graph_algorithms<TVertex, TEdgeValue, N>::compute_dominance_frontiers(typen
                 // if idom(Y) != X
                 if((*frontier).idominator() != (*node).vertex())
                 {
-                    // then DF(X) <-- DF(X) ∪ {Y}
+                    // then DF(X) ← DF(X) ∪ {Y}
                     (*(*node).vertex()).frontiers().emplace(frontier); // up
                 }
             }

@@ -116,4 +116,19 @@ arcturus_ir::~arcturus_ir()
 {
 }
 
+void arcturus_ir::build_hir(code_type& code)
+{
+    code; //??
+}
+
+void arcturus_ir::build_mir(code_type& code)
+{
+    code; //??
+}
+
+void arcturus_ir::build_lir(code_type& code)
+{
+    code; //??
+}
+
 END_NAMESPACE

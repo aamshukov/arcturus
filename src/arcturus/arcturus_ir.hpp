@@ -13,24 +13,21 @@ USINGNAMESPACE(frontend)
 USINGNAMESPACE(symtable)
 USINGNAMESPACE(backend)
 
-class arcturus_ir : public ir<arcturus_token, arcturus_operation_code_traits>
+class arcturus_ir : public ir<basic_block<arcturus_quadruple>>
 {
     public:
-        //using basic_ir = ir<arcturus_token, arcturus_operation_code_traits>;
+        using code_type = typename ir<basic_block<arcturus_quadruple>>::code_type;
 
-        //using id_type = std::size_t;
-
-        //using quadruple_type = basic_ir::quadruple_type;
-        //using quadruples_type = basic_ir::quadruples_type;
-
-        //using code_type = basic_ir::code_type;
-
-        //using basic_block_type = basic_ir::basic_block_type;
-        //using basic_blocks_type = basic_ir::basic_blocks_type;
+        using basic_block_type = typename ir<basic_block<arcturus_quadruple>>::basic_block_type;
+        using basic_blocks_type = typename ir<basic_block<arcturus_quadruple>>::basic_blocks_type;
 
     public:
-                arcturus_ir();
-               ~arcturus_ir();
+                        arcturus_ir();
+                       ~arcturus_ir();
+
+        virtual void    build_hir(code_type& code) override;
+        virtual void    build_mir(code_type& code) override;
+        virtual void    build_lir(code_type& code) override;
 };
 
 END_NAMESPACE

@@ -12,9 +12,19 @@ USINGNAMESPACE(core)
 USINGNAMESPACE(frontend)
 USINGNAMESPACE(symtable)
 
-template <typename Token, typename OpCodeTraits>
+template <typename TBasicBlock>
 class ir : private noncopyable
 {
+    public:
+        using instruction_type = typename TBasicBlock::instruction_type;
+        using code_type = std::shared_ptr<code<instruction_type>>;
+
+        using basic_block_type = std::shared_ptr<basic_block<instruction_type>>;
+        using basic_blocks_type = std::vector<basic_block_type>;
+
+        using token_type = typename instruction_type::token_type;
+        using symbol_type = std::shared_ptr<symtable::symbol<token_type>>;
+
     public:
         //using token_type = Token;
         //using traits_type = OpCodeTraits;
@@ -28,9 +38,6 @@ class ir : private noncopyable
 
         //using basic_block_type = std::shared_ptr<basic_block<token_type, traits_type>>;
         //using basic_blocks_type = std::vector<basic_block_type>;
-
-
-
 
 //    public:
 //        using token_type = Token;
@@ -86,6 +93,10 @@ class ir : private noncopyable
 //    public:
 //        static void             cst_to_ast(parse_tree_type& cst);
 //        static void             ast_to_asd(const parse_tree_type& ast, parse_dag_type& result_asd);
+
+        virtual void            build_hir(code_type& code) = 0;
+        virtual void            build_mir(code_type& code) = 0;
+        virtual void            build_lir(code_type& code) = 0;
 };
 
 END_NAMESPACE

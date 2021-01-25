@@ -2462,7 +2462,7 @@ namespace tests
 
                 auto cfg(factory::create<arcturus_control_flow_graph>());
 
-                (*cfg).build_hir(code);
+                (*cfg).collect_basic_blocks(code);
 
                 (*cfg).generate_graphviz_file(LR"(d:\tmp\BuildSSaFormCytron.CFG.dot)");
 

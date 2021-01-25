@@ -1,4 +1,4 @@
-//........................................................
+﻿//........................................................
 // Underground Intelligence (UI) Lab Inc. Arthur Amshukov.
 //........................................................
 #include <core/pch.hpp>
@@ -107,30 +107,46 @@ BEGIN_NAMESPACE(arcturus)
 USINGNAMESPACE(core)
 USINGNAMESPACE(frontend)
 
+// 𝛗
+
 void arcturus_ssa::build_ssa_form(typename arcturus_ssa::control_flow_graph_type& cfg)
 {
-    cfg;//??
+    // phase I (place 𝛗 functions)
+    place_phi_functions(cfg);
 
-    auto phi(make_phi_instruction(2));
+    // phase II (rename)
+    rename_variables(cfg);
 }
 
-typename arcturus_ssa::arcturus_instruction_type arcturus_ssa::make_phi_instruction(size_type n)
+typename arcturus_ssa::arcturus_instruction_type arcturus_ssa::make_phi_instruction(const typename arcturus_ssa::symbol_type& v_symbol, id_type n)
 {
-    auto v_symbol(factory::create<arcturus_symbol>(0)); // version symbol
+    std::vector<std::pair<symbol_type, id_type>> params;
 
-    (*v_symbol).name() = text::chars_to_codepoints("V", 1);
-    (*v_symbol).value() = 0;
-
-    auto n_symbol(factory::create<arcturus_symbol>(0)); // how many params (predecessors)
-
-    (*n_symbol).name() = text::chars_to_codepoints("N", 1);
-    (*n_symbol).value() = n;
+    for(auto k = 0; k < n; k++)
+    {
+        params.emplace_back(std::make_pair(v_symbol, 0));
+    }
 
     arcturus_instruction_type result(factory::create<arcturus_quadruple>(0,
                                                                          arcturus_operation_code_traits::operation_code::phi,
                                                                          std::make_pair(v_symbol, 0),
-                                                                         std::make_pair(n_symbol, 0)));
+                                                                         params));
     return result;
+}
+
+void arcturus_ssa::place_phi_functions(typename arcturus_ssa::control_flow_graph_type& cfg)
+{
+    // 'Crafting a Compiler' by Charles N. Fischer, Ron K. Cytron, Richard J LeBlanc
+
+    cfg; //??
+
+
+    auto phi(make_phi_instruction(factory::create<arcturus_symbol>(0), 2));
+}
+
+void arcturus_ssa::rename_variables(typename arcturus_ssa::control_flow_graph_type& cfg)
+{
+    cfg; //??
 }
 
 END_NAMESPACE

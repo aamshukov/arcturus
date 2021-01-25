@@ -28,7 +28,7 @@ class control_flow_graph : public graph<TBasicBlock>
                                                     symbol_hash<symtable::symbol<token_type>>,
                                                     symbol_eq_key_comparator<symtable::symbol<token_type>>>;
     protected:
-        assignments_type        my_assignments;
+        assignments_type        my_assignments; // holds definitions and asignments of variables
 
     public:
                                 control_flow_graph();
@@ -37,9 +37,7 @@ class control_flow_graph : public graph<TBasicBlock>
         const assignments_type& assignments() const;
         assignments_type&       assignments();
 
-        virtual void            build_hir(code_type& code) = 0;
-        virtual void            build_mir(code_type& code) = 0;
-        virtual void            build_lir(code_type& code) = 0;
+        virtual void            collect_basic_blocks(code_type& code) = 0;
 };
 
 template <typename TBasicBlock>

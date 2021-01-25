@@ -116,7 +116,7 @@ arcturus_control_flow_graph::~arcturus_control_flow_graph()
 {
 }
 
-void arcturus_control_flow_graph::build_hir(typename arcturus_control_flow_graph::code_type& code0)
+void arcturus_control_flow_graph::collect_basic_blocks(typename arcturus_control_flow_graph::code_type& code0)
 {
     auto& code(*code0);
 
@@ -296,14 +296,6 @@ void arcturus_control_flow_graph::build_hir(typename arcturus_control_flow_graph
             }
         }
     }
-}
-
-void arcturus_control_flow_graph::build_mir(typename arcturus_control_flow_graph::code_type& /*code*/)
-{
-}
-
-void arcturus_control_flow_graph::build_lir(typename arcturus_control_flow_graph::code_type& /*code*/)
-{
 }
 
 bool arcturus_control_flow_graph::is_assignement(const typename arcturus_control_flow_graph::operation_code& operation)

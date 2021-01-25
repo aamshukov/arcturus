@@ -22,7 +22,7 @@ class controller : private noncopyable
 
         using parser_type = std::shared_ptr<parser<token_type>>;
 
-        using ir_type = std::shared_ptr<ir<token_type, traits_type>>;
+        using ir_type = std::shared_ptr<ir<token_type>>; //??
 
         using context_type = std::shared_ptr<context>;
 
