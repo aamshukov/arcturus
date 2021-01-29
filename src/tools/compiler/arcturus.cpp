@@ -69,7 +69,6 @@
 
 #include <ir/quadruple.hpp>
 #include <ir/code.hpp>
-#include <ir/code.inl>
 #include <ir/basic_block.hpp>
 #include <ir/basic_block.inl>
 #include <ir/control_flow_graph.hpp>

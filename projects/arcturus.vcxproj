@@ -190,7 +190,6 @@
     <None Include="..\src\framework\frontend\semantics\semantics.inl" />
     <None Include="..\src\framework\frontend\type\type.inl" />
     <None Include="..\src\framework\ir\basic_block.inl" />
-    <None Include="..\src\framework\ir\code.inl" />
     <None Include="..\src\framework\ir\ir.inl" />
     <None Include="..\src\framework\ir\ir_visualization.inl" />
     <None Include="..\src\framework\ir\ssa.inl" />

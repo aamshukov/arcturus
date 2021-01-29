@@ -67,7 +67,6 @@
 
 #include <ir/quadruple.hpp>
 #include <ir/code.hpp>
-#include <ir/code.inl>
 #include <ir/basic_block.hpp>
 #include <ir/basic_block.inl>
 #include <ir/control_flow_graph.hpp>
@@ -195,10 +194,20 @@ void arcturus_control_flow_graph::collect_basic_blocks(typename arcturus_control
 
             inst_block_map.insert({ (*instruction).id, current_block });
 
-            if(is_assignement((*instruction).operation))
+            if(is_assignment((*instruction).operation))
             {
                 const auto& symbol(std::get<0>((*instruction).result).first);
-                my_assignments[symbol] = current_block;
+
+                auto it(my_assignments.find(symbol));
+
+                if(it == my_assignments.end())
+                {
+                    (*it).second = { current_block };
+                }
+                else
+                {
+                    (*it).second.emplace_back(current_block);
+                }
             }
 
             (*current_block).code().add_instruction(instruction); // unlink from the current-block.code and link to the new block.code
@@ -298,7 +307,7 @@ void arcturus_control_flow_graph::collect_basic_blocks(typename arcturus_control
     }
 }
 
-bool arcturus_control_flow_graph::is_assignement(const typename arcturus_control_flow_graph::operation_code& operation)
+bool arcturus_control_flow_graph::is_assignment(const typename arcturus_control_flow_graph::operation_code& operation)
 {
     return operation == arcturus_operation_code_traits::operation_code::assignment_hir;
 }

@@ -24,12 +24,12 @@ class dominance_tree : public tree, public visitable
         dominator_vertex_type&          vertex();
 };
 
-dominance_tree::dominance_tree(const typename dominance_tree::dominator_vertex_type& vertex)
-              : my_vertex(vertex)
+inline dominance_tree::dominance_tree(const typename dominance_tree::dominator_vertex_type& vertex)
+                     : my_vertex(vertex)
 {
 }
 
-dominance_tree::~dominance_tree()
+inline dominance_tree::~dominance_tree()
 {
 }
 

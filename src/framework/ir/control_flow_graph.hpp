@@ -24,7 +24,8 @@ class control_flow_graph : public graph<TBasicBlock>
 
         using token_type = typename instruction_type::token_type;
         using symbol_type = std::shared_ptr<symtable::symbol<token_type>>;
-        using assignments_type = std::unordered_map<symbol_type, basic_block_type,
+        using assignments_type = std::unordered_map<symbol_type,
+                                                    basic_blocks_type,
                                                     symbol_hash<symtable::symbol<token_type>>,
                                                     symbol_eq_key_comparator<symtable::symbol<token_type>>>;
     protected:

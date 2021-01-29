@@ -27,10 +27,12 @@ class code : private noncopyable
 
         const instruction_type      instructions() const;
 
-        const instruction_type      start_instruction() const;
-        const instruction_type      end_instruction() const;
+        instruction_type            start_instruction();
+        instruction_type            end_instruction();
 
         void                        add_instruction(instruction_type& instruction);
+        void                        insert_instruction(instruction_type& instruction, instruction_type prev_instruction = nullptr);
+
         void                        remove_instruction(instruction_type& instruction);
 
         string_type                 to_string();
@@ -43,15 +45,76 @@ inline const typename code<Instruction>::instruction_type code<Instruction>::ins
 }
 
 template <typename Instruction>
-inline const typename code<Instruction>::instruction_type code<Instruction>::start_instruction() const
+inline typename code<Instruction>::instruction_type code<Instruction>::start_instruction()
 {
     return my_head;
 }
 
 template <typename Instruction>
-inline const typename code<Instruction>::instruction_type code<Instruction>::end_instruction() const
+inline typename code<Instruction>::instruction_type code<Instruction>::end_instruction()
 {
     return my_tail;
+}
+
+template <typename Instruction>
+code<Instruction>::code()
+                 : my_head(factory::create<Instruction>(-1, Instruction::operation_code::sentinel)),
+                   my_tail(factory::create<Instruction>(-1, Instruction::operation_code::sentinel))
+{
+    (*my_head).next() = my_tail;
+    (*my_tail).prev() = my_head;
+}
+
+template <typename Instruction>
+code<Instruction>::~code()
+{
+}
+
+template <typename Instruction>
+inline void code<Instruction>::add_instruction(typename code<Instruction>::instruction_type& instruction)
+{
+    // append to the end, before tail
+    (*(*my_tail).prev()).next() = instruction;
+
+    (*instruction).next() = my_tail;
+    (*instruction).prev() = (*my_tail).prev();
+
+    (*my_tail).prev() = instruction;
+}
+
+template <typename Instruction>
+inline void code<Instruction>::insert_instruction(typename code<Instruction>::instruction_type& instruction,
+                                                  typename code<Instruction>::instruction_type prev_instruction)
+{
+    if(prev_instruction == nullptr)
+        prev_instruction = my_head;
+
+    (*instruction).next() = (*prev_instruction).next();
+    (*instruction).prev() = prev_instruction;
+
+    (*(*prev_instruction).next()).prev() = instruction;
+    (*prev_instruction).next() = instruction;
+}
+
+template <typename Instruction>
+inline void code<Instruction>::remove_instruction(typename code<Instruction>::instruction_type& instruction)
+{
+    (*(*instruction).prev()).next() = (*instruction).next();
+    (*(*instruction).next()).prev() = (*instruction).prev();
+}
+
+template <typename Instruction>
+inline string_type code<Instruction>::to_string()
+{
+    string_type result;
+
+    for(auto it = instructions(); it != end_instruction(); it = std::static_pointer_cast<Instruction>((*my_head).next()))
+    {
+        result += (*it).to_string();
+        result += L"\n";
+    }
+
+    return result;
 }
 
 END_NAMESPACE

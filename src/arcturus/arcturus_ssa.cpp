@@ -14,8 +14,10 @@
 
 #include <core/vertex.hpp>
 #include <core/dominator_vertex.hpp>
+#include <core/dominance_tree.hpp>
 #include <core/edge.hpp>
 #include <core/graph.hpp>
+#include <core/graph_algorithms.hpp>
 
 #include <core/timer.hpp>
 
@@ -67,7 +69,6 @@
 
 #include <ir/quadruple.hpp>
 #include <ir/code.hpp>
-#include <ir/code.inl>
 #include <ir/basic_block.hpp>
 #include <ir/basic_block.inl>
 #include <ir/control_flow_graph.hpp>
@@ -111,42 +112,97 @@ USINGNAMESPACE(frontend)
 
 void arcturus_ssa::build_ssa_form(typename arcturus_ssa::control_flow_graph_type& cfg)
 {
-    // phase I (place 𝛗 functions)
-    place_phi_functions(cfg);
+    auto g(std::dynamic_pointer_cast<graph<basic_block<arcturus_quadruple>>>(cfg));
 
-    // phase II (rename)
-    rename_variables(cfg);
+    // phase I (compute dominators)
+    graph_algorithms<basic_block<arcturus_quadruple>>::compute_dominators(g);
+
+    // phase II (dominance tree)
+    std::shared_ptr<dominance_tree> dt;
+
+    graph_algorithms<basic_block<arcturus_quadruple>>::build_dominance_tree(g, dt);
+
+    // phase III (dominance frontiers)
+    graph_algorithms<basic_block<arcturus_quadruple>>::compute_dominance_frontiers(g, dt);
+
+    for(auto& assignment : (*cfg).assignments()) // assignements = defs, assignment = def
+    {
+        // phase IV (place 𝛗 functions)
+        place_phi_functions(assignment.first, cfg);
+
+        // phase V (rename)
+        rename_variables(assignment.first, cfg);
+    }
 }
 
-typename arcturus_ssa::arcturus_instruction_type arcturus_ssa::make_phi_instruction(const typename arcturus_ssa::symbol_type& v_symbol, id_type n)
+void arcturus_ssa::place_phi_functions(const typename arcturus_ssa::symbol_type& v, typename arcturus_ssa::control_flow_graph_type& cfg)
+{
+    // 'Crafting a Compiler' by Charles N. Fischer, Ron K. Cytron, Richard J LeBlanc
+    for(auto& vertex : (*cfg).vertices())
+    {
+        (*vertex).flags() = vertex::flag::clear;
+    }
+
+    std::queue<basic_block_type> worklist;
+
+    for(auto& assignment : (*cfg).assignments()[v]) // assignements = defs, assignment = def
+    {
+        (*assignment).flags() |= vertex::flag::processed;
+
+        worklist.emplace(assignment);
+    }
+
+    while(!worklist.empty())
+    {
+        auto x(worklist.front());
+        worklist.pop();
+
+        for(auto& y : (*x).frontiers())
+        {
+            if(((*y).flags() & vertex::flag::hasphi) != vertex::flag::hasphi)
+            {
+                (*y).flags() |= vertex::flag::hasphi;
+
+                std::set<basic_block_type, vertex_lt_key_comparator<basic_block<arcturus_quadruple>>> predecessors;
+
+                (*cfg).collect_predecessors(std::dynamic_pointer_cast<basic_block<arcturus_quadruple>>(y), predecessors);
+
+                // add 𝛗 to Y
+                auto phi(make_phi_instruction(v, predecessors.size()));
+
+                (*dynamic_cast<basic_block<arcturus_quadruple>*>(y.get())).code().insert_instruction(phi);
+
+                if(((*y).flags() & vertex::flag::processed) != vertex::flag::processed)
+                {
+                    worklist.emplace(std::dynamic_pointer_cast<basic_block<arcturus_quadruple>>(y));
+                }
+            }
+        }
+    }
+}
+
+void arcturus_ssa::rename_variables(const typename arcturus_ssa::symbol_type& v, typename arcturus_ssa::control_flow_graph_type& cfg)
+{
+    // 'Crafting a Compiler' by Charles N. Fischer, Ron K. Cytron, Richard J LeBlanc
+
+    v;
+    cfg; //??
+}
+
+typename arcturus_ssa::arcturus_instruction_type arcturus_ssa::make_phi_instruction(const typename arcturus_ssa::symbol_type& v, id_type n)
 {
     std::vector<std::pair<symbol_type, id_type>> params;
 
     for(auto k = 0; k < n; k++)
     {
-        params.emplace_back(std::make_pair(v_symbol, 0));
+        params.emplace_back(std::make_pair(v, 0));
     }
 
     arcturus_instruction_type result(factory::create<arcturus_quadruple>(0,
                                                                          arcturus_operation_code_traits::operation_code::phi,
-                                                                         std::make_pair(v_symbol, 0),
+                                                                         std::make_pair(v, 0),
                                                                          params));
     return result;
-}
-
-void arcturus_ssa::place_phi_functions(typename arcturus_ssa::control_flow_graph_type& cfg)
-{
-    // 'Crafting a Compiler' by Charles N. Fischer, Ron K. Cytron, Richard J LeBlanc
-
-    cfg; //??
-
-
-    auto phi(make_phi_instruction(factory::create<arcturus_symbol>(0), 2));
-}
-
-void arcturus_ssa::rename_variables(typename arcturus_ssa::control_flow_graph_type& cfg)
-{
-    cfg; //??
 }
 
 END_NAMESPACE

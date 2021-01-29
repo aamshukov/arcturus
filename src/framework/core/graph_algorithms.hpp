@@ -14,7 +14,7 @@ class graph_algorithms : private noncopyable
 {
     public:
         using vertex_type = std::shared_ptr<TVertex>;
-        using vertices_type = std::set<vertex_type, vertex_lt_key_comparator<vertex>>;
+        using vertices_type = std::set<vertex_type, vertex_lt_key_comparator<TVertex>>;
 
         using graph_type = std::shared_ptr<graph<TVertex, TEdgeValue, N>>;
         using bitset_type = bitset<uint64_t>;
@@ -181,7 +181,7 @@ void graph_algorithms<TVertex, TEdgeValue, N>::compute_dominators(typename graph
     {
         // phase I (compute dominators)
         // flat graph as DFS vector to use bitsets, root is the first element
-        std::vector<std::shared_ptr<dominator_vertex>> vertices;
+        std::vector<vertex_type> vertices;
 
         dfs_preorder_to_vector(graph, vertices);
 
@@ -270,23 +270,23 @@ void graph_algorithms<TVertex, TEdgeValue, N>::compute_dominators(typename graph
             while(s != bitset_type::npos)
             {
                 // for each t ∈ Tmp(n) - {s} do
-                auto t = tmp_n.find_first();
+                auto k = tmp_n.find_first(); // k = t
 
-                while(t != bitset_type::npos)
+                while(k != bitset_type::npos)
                 {
-                    if(t != s) // ... - {s}
+                    if(k != s) // ... - {s}
                     {
                         auto& tmp_s(tmp[s]);
 
                         // if t ∈ Tmp(s) then
-                        if(tmp_s[t])
+                        if(tmp_s[k])
                         {
                             // Tmp(n) -= {t}
-                            tmp_n[t] = 0;
+                            tmp_n[k] = 0;
                         }
                     }
 
-                    t = tmp_n.find_next(t);
+                    k = tmp_n.find_next(k);
                 }
 
                 s = tmp_n.find_next(s);
@@ -512,10 +512,12 @@ void graph_algorithms<TVertex, TEdgeValue, N>::build_dominance_tree(const typena
     {
         if((*vertex).idominator() != nullptr)
         {
-            auto& papa(vertex_tree_map.find((*vertex).idominator()));
-            auto& kid(vertex_tree_map.find(vertex));
+            auto papa(vertex_tree_map.find(std::dynamic_pointer_cast<TVertex>((*vertex).idominator())));
+
+            auto kid(vertex_tree_map.find(vertex));
 
             (*(*papa).second).kids().emplace_back((*kid).second);
+
             (*(*kid).second).papa() = (*papa).second;
         }
     }
@@ -540,7 +542,7 @@ void graph_algorithms<TVertex, TEdgeValue, N>::compute_dominance_frontiers(typen
     
         vertices_type successors;
 
-        (*graph).collect_successors((*node).vertex(), successors);
+        (*graph).collect_successors(std::dynamic_pointer_cast<TVertex>((*node).vertex()), successors);
 
         // for each Y ∈ Succ(X) do
         for(const auto& successor : successors)

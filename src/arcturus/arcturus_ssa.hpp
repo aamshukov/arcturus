@@ -30,10 +30,10 @@ class arcturus_ssa : public ssa<basic_block<arcturus_quadruple>>
 
     private:
         static arcturus_instruction_type
-                    make_phi_instruction(const symbol_type& v_symbol, id_type n);
+                    make_phi_instruction(const symbol_type& v, id_type n);
 
-        static void place_phi_functions(control_flow_graph_type& cfg);
-        static void rename_variables(control_flow_graph_type& cfg);
+        static void place_phi_functions(const symbol_type& v, control_flow_graph_type& cfg);
+        static void rename_variables(const symbol_type& v, control_flow_graph_type& cfg);
 
     public:
         static void build_ssa_form(control_flow_graph_type& cfg);

@@ -24,7 +24,7 @@ class arcturus_control_flow_graph : public control_flow_graph<basic_block<arctur
         using operation_code = typename arcturus_quadruple::operation_code;
 
     private:
-        bool            is_assignement(const operation_code& operation);
+        bool            is_assignment(const operation_code& operation);
 
     public:
                         arcturus_control_flow_graph();

@@ -553,9 +553,6 @@
     <None Include="..\src\framework\ir\basic_block.inl">
       <Filter>framework\ir</Filter>
     </None>
-    <None Include="..\src\framework\ir\code.inl">
-      <Filter>framework\ir</Filter>
-    </None>
     <None Include="..\src\tools\dsl\packrat.py">
       <Filter>tools\dsl</Filter>
     </None>

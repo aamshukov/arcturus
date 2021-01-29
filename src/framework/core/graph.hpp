@@ -21,7 +21,7 @@ class graph : private noncopyable
 
     public:
         using vertex_type = std::shared_ptr<TVertex>;
-        using vertices_type = std::set<vertex_type, vertex_lt_key_comparator<vertex>>;
+        using vertices_type = std::set<vertex_type, vertex_lt_key_comparator<TVertex>>;
         using vertices_iterator_type = typename vertices_type::iterator;
 
         using edge_value_type = TEdgeValue;
@@ -29,7 +29,7 @@ class graph : private noncopyable
         using edges_type = std::set<edge_type, edge_lt_key_comparator<TVertex, TEdgeValue, N>>;
         using edges_iterator_type = typename edges_type::iterator;
 
-        using vertex_edge_map_type = std::unordered_map<vertex_type, edges_type, vertex_hash<vertex>, vertex_eq_key_comparator<vertex>>;
+        using vertex_edge_map_type = std::unordered_map<vertex_type, edges_type, vertex_hash<TVertex>, vertex_eq_key_comparator<TVertex>>;
 
         using id_type = size_type;
 
