@@ -628,8 +628,6 @@ void graph_algorithms<TVertex, TEdgeValue, N>::generate_graphviz_file(const type
     }
 
     log_info(L"Generated graphviz file of a graph.");
-
-    // D:\Soft\graphviz\2.38\release\bin\dot -Tpng d:\tmp\cfg.dot -o d:\tmp\cfg.png
 }
 
 template <typename TVertex, typename TEdgeValue, std::size_t N>

@@ -16,6 +16,8 @@ USINGNAMESPACE(symtable)
 
 //  operation           argument1       argument2       result
 //  ..........................................................
+//  noop                                                                        no operation
+//
 //  decl                name            type            value                   x: integer = 0  --->  x = 0
 //  decl                                                                        x: integer
 //
@@ -69,8 +71,8 @@ USINGNAMESPACE(symtable)
 //  putparam            pN                                                      put param
 //  call                foo             N
 //
-//  𝛗                   y               N                                      y - symbol
-//                                                                             N - how many params (predecessors)
+//  𝛗                   y               N               params                  y - symbol
+//                                                                              N - how many params (predecessors)
 //
 template <typename Token, typename OpCodeTraits>
 struct quadruple : public list

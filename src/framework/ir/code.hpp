@@ -35,13 +35,15 @@ class code : private noncopyable
 
         void                        remove_instruction(instruction_type& instruction);
 
+        void                        clear();
+
         string_type                 to_string();
 };
 
 template <typename Instruction>
 inline const typename code<Instruction>::instruction_type code<Instruction>::instructions() const
 {
-    return std::static_pointer_cast<Instruction>((*my_head).next());
+    return std::dynamic_pointer_cast<Instruction>((*my_head).next());
 }
 
 template <typename Instruction>
@@ -104,11 +106,25 @@ inline void code<Instruction>::remove_instruction(typename code<Instruction>::in
 }
 
 template <typename Instruction>
+void code<Instruction>::clear()
+{
+    auto instruction((*my_head).next());
+
+    while(instruction != my_tail)
+    {
+        (*(*instruction).prev()).next() = (*instruction).next();
+        (*(*instruction).next()).prev() = (*instruction).prev();
+
+        instruction = (*instruction).next();
+    }
+}
+
+template <typename Instruction>
 inline string_type code<Instruction>::to_string()
 {
     string_type result;
 
-    for(auto it = instructions(); it != end_instruction(); it = std::static_pointer_cast<Instruction>((*my_head).next()))
+    for(auto it = instructions(); it != end_instruction(); it = std::dynamic_pointer_cast<Instruction>((*my_head).next()))
     {
         result += (*it).to_string();
         result += L"\n";

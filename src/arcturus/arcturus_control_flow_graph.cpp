@@ -202,7 +202,7 @@ void arcturus_control_flow_graph::collect_basic_blocks(typename arcturus_control
 
                 if(it == my_assignments.end())
                 {
-                    (*it).second = { current_block };
+                    my_assignments[symbol] = { current_block };
                 }
                 else
                 {
@@ -342,7 +342,14 @@ void arcturus_control_flow_graph::generate_graphviz_file(const string_type& file
                 instr != (*bb).code().end_instruction();
                 instr = std::static_pointer_cast<arcturus_quadruple>((*instr).next()))
             {
-                label += std::to_wstring((*instr).id) + L"<br/>";
+                if((*instr).operation == arcturus_operation_code_traits::operation_code::phi)
+                {
+                    label += (*instr).to_string() + L"<br/>";
+                }
+                else
+                {
+                    label += std::to_wstring((*instr).id) + L"<br/>";
+                }
             }
 
             stream << indent << (*vertex).id() << L" [shape=box label=<" << label << L">];" << std::endl;

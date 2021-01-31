@@ -2167,16 +2167,18 @@ namespace tests
                 //              L ← 3                            12 assignment_hir    3               L
                 //                                               13 label                             M2
                 //          K ← K + 1                            14 assignment_hir    K       1       K
-                //                                               15 goto                              M10
+                //                                               15 goto                              M11
                 //      else                                     16 label                             M0
                 //          K ← K + 2                            17 assignment_hir    K       2       K
-                //      repeat                                   18 label                             M10
-                //          if(R)                                19 if_false_hir      R               M3
-                //              L ← L + 4                        20 assignment_hir    L       4       L
-                //                                               21 label                             M3
-                //      until(S)                                 22 if_true_hir       S               M10
-                //      I ← I + 6                                23 assignment_hir    I       6       I
-                //  until(T)                                     24 if_true_hir       T               M100
+                //                                               18 goto                              M11
+                //                                               19 label                             M11
+                //      repeat                                   20 label                             M10
+                //          if(R)                                21 if_false_hir      R               M3
+                //              L ← L + 4                        22 assignment_hir    L       4       L
+                //                                               23 label                             M3
+                //      until(S)                                 24 if_true_hir       S               M10
+                //      I ← I + 6                                25 assignment_hir    I       6       I
+                //  until(T)                                     26 if_true_hir       T               M100
                 using arcturus_instruction = arcturus_quadruple;
                 using arcturus_code = code<arcturus_instruction>;
 
@@ -2282,7 +2284,6 @@ namespace tests
                 std::shared_ptr<arcturus_instruction> instr24;
                 std::shared_ptr<arcturus_instruction> instr25;
                 std::shared_ptr<arcturus_instruction> instr26;
-                std::shared_ptr<arcturus_instruction> instr27;
 
                 // 1 assignment_hir    1               I
                 instr1 = factory::create<arcturus_instruction>(instr_counter.number(),
@@ -2381,10 +2382,10 @@ namespace tests
                                                                 std::make_pair(symbol_k, 0));
                 (*code).add_instruction(instr14);
 
-                // 15 goto                              M10
+                // 15 goto                              M11
                 instr15 = factory::create<arcturus_instruction>(instr_counter.number(),
                                                                 op::goto_hir,
-                                                                instr18);
+                                                                instr19);
                 (*code).add_instruction(instr15);
 
                 // 16 label                             M0
@@ -2402,56 +2403,70 @@ namespace tests
                                                                 std::make_pair(symbol_k, 0));
                 (*code).add_instruction(instr17);
 
-                // 18 label                             M10
+                // 18 goto                              M11
                 instr18 = factory::create<arcturus_instruction>(instr_counter.number(),
-                                                                op::label_hir,
-                                                                std::make_pair(symbol_m10, 0));
-                (*instr15).result = instr18;
+                                                                op::goto_hir,
+                                                                instr19);
                 (*code).add_instruction(instr18);
 
-                // 19 if_false_hir      R               M3
+                // 19 label                             M11
                 instr19 = factory::create<arcturus_instruction>(instr_counter.number(),
-                                                                op::if_false_hir,
-                                                                std::make_pair(symbol_r, 0),
-                                                                instr21);
+                                                                op::label_hir,
+                                                                std::make_pair(symbol_m11, 0));
+                (*instr15).result = instr19;
+                (*instr18).result = instr19;
                 (*code).add_instruction(instr19);
 
-                // 20 assignment_hir    L       4       L
+                // 20 label                             M10
                 instr20 = factory::create<arcturus_instruction>(instr_counter.number(),
+                                                                op::label_hir,
+                                                                std::make_pair(symbol_m10, 0));
+                //(*instr15).result = instr20;
+                (*code).add_instruction(instr20);
+
+                // 21 if_false_hir      R               M3
+                instr21 = factory::create<arcturus_instruction>(instr_counter.number(),
+                                                                op::if_false_hir,
+                                                                std::make_pair(symbol_r, 0),
+                                                                instr23);
+                (*code).add_instruction(instr21);
+
+                // 22 assignment_hir    L       4       L
+                instr22 = factory::create<arcturus_instruction>(instr_counter.number(),
                                                                 op::assignment_hir,
                                                                 std::make_pair(symbol_l, 0),
                                                                 std::make_pair(symbol_4, 0),
                                                                 std::make_pair(symbol_l, 0));
-                (*code).add_instruction(instr20);
-
-                // 21 label                             M3
-                instr21 = factory::create<arcturus_instruction>(instr_counter.number(),
-                                                                op::label_hir,
-                                                                std::make_pair(symbol_m3, 0));
-                (*instr19).result = instr21;
-                (*code).add_instruction(instr21);
-
-                // 22 if_true_hir       S               M10
-                instr22 = factory::create<arcturus_instruction>(instr_counter.number(),
-                                                                op::if_true_hir,
-                                                                std::make_pair(symbol_s, 0),
-                                                                instr18);
                 (*code).add_instruction(instr22);
 
-                // 23 assignment_hir    I       6       I
+                // 23 label                             M3
                 instr23 = factory::create<arcturus_instruction>(instr_counter.number(),
+                                                                op::label_hir,
+                                                                std::make_pair(symbol_m3, 0));
+                (*instr21).result = instr23;
+                (*code).add_instruction(instr23);
+
+                // 24 if_true_hir       S               M10
+                instr24 = factory::create<arcturus_instruction>(instr_counter.number(),
+                                                                op::if_true_hir,
+                                                                std::make_pair(symbol_s, 0),
+                                                                instr20);
+                (*code).add_instruction(instr24);
+
+                // 25 assignment_hir    I       6       I
+                instr25 = factory::create<arcturus_instruction>(instr_counter.number(),
                                                                 op::assignment_hir,
                                                                 std::make_pair(symbol_i, 0),
                                                                 std::make_pair(symbol_6, 0),
                                                                 std::make_pair(symbol_i, 0));
-                (*code).add_instruction(instr23);
+                (*code).add_instruction(instr25);
 
-                // 24 if_true_hir       T               M100
-                instr24 = factory::create<arcturus_instruction>(instr_counter.number(),
+                // 26 if_true_hir       T               M100
+                instr26 = factory::create<arcturus_instruction>(instr_counter.number(),
                                                                 op::if_true_hir,
                                                                 std::make_pair(symbol_t, 0),
                                                                 instr5);
-                (*code).add_instruction(instr24);
+                (*code).add_instruction(instr26);
 
                 for(auto it = (*code).instructions(); it != (*code).end_instruction(); it = std::static_pointer_cast<arcturus_quadruple>((*it).next()))
                 {

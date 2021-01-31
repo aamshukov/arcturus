@@ -21,6 +21,8 @@ struct arcturus_operation_code_traits
         uint32_t,
         unknown = 0,
 
+        noop = 5,
+
         // HIR - high-level intermediate representation (IR)
         declaration_hir = 100,
 
@@ -187,6 +189,9 @@ struct arcturus_quadruple : public quadruple<arcturus_token, arcturus_operation_
 
         switch(operation)
         {
+            case arcturus_operation_code_traits::operation_code::noop:
+                op = L"noop";
+                break;
             case arcturus_operation_code_traits::operation_code::assignment_hir:
                 op = L"=";
                 break;
@@ -271,54 +276,82 @@ struct arcturus_quadruple : public quadruple<arcturus_token, arcturus_operation_
             case arcturus_operation_code_traits::operation_code::function_call_hir:
                 op = L"call";
                 break;
+            case arcturus_operation_code_traits::operation_code::phi:
+                op = L"phi";
+                break;
         }
 
-        // argument1
-        string_type arg1;
-
-        if(argument1.first != nullptr)
+        if(operation == arcturus_operation_code_traits::operation_code::phi)
         {
-            const auto& symbol1(*argument1.first);
-            const auto& version1(argument1.second);
+            // Vk <- 𝛗(V0, V1, ... , Vm)
+            const auto& symbol(*argument1.first);
+            auto symbol_name(symbol.to_string());
 
-            arg1 = (symbol1.to_string() + std::to_wstring(version1));
-        }
+            auto version = std::to_wstring(argument1.second);
 
-        // argument2
-        string_type arg2;
+            text = symbol_name + version + L" - phi(";
 
-        if(argument2.first != nullptr)
-        {
-            const auto& symbol2(*argument2.first);
-            const auto& version2(argument2.second);
+            const auto& params(std::get<2>(result));
 
-            arg2 = (symbol2.to_string() + std::to_wstring(version2));
-        }
-
-        // result
-        string_type res;
-
-        if(std::holds_alternative<argument_type>(result))
-        {
-            const auto& symbol_res(std::get<0>(result).first);
-            const auto& version_res(std::get<0>(result).second);
-
-            if(symbol_res != nullptr)
+            for(const auto& param : params)
             {
-                res = (*symbol_res).to_string() + std::to_wstring(version_res);
+                version = std::to_wstring(param.second);
+                text += symbol_name + version + L", ";
             }
+
+            text = text.substr(0, text.size() - 2);
+
+            text += L")";
         }
-        else if(std::holds_alternative<quadruple_type>(result))
+        else
         {
-            const auto& result_quadruple(std::get<1>(result));
+            // argument1
+            string_type arg1;
 
-            if(result_quadruple != nullptr)
+            if(argument1.first != nullptr)
             {
-                res = L"(" + (*result_quadruple).to_string() + L")";
-            }
-        }
+                const auto& symbol1(*argument1.first);
+                const auto& version1(argument1.second);
 
-        text = format(L"%-4d%-8s%+18s%+18s%+18s", id, op.c_str(), arg1.c_str(), arg2.c_str(), res.c_str());
+                arg1 = (symbol1.to_string() + std::to_wstring(version1));
+            }
+
+            // argument2
+            string_type arg2;
+
+            if(argument2.first != nullptr)
+            {
+                const auto& symbol2(*argument2.first);
+                const auto& version2(argument2.second);
+
+                arg2 = (symbol2.to_string() + std::to_wstring(version2));
+            }
+
+            // result
+            string_type res;
+
+            if(std::holds_alternative<argument_type>(result))
+            {
+                const auto& symbol_res(std::get<0>(result).first);
+                const auto& version_res(std::get<0>(result).second);
+
+                if(symbol_res != nullptr)
+                {
+                    res = (*symbol_res).to_string() + std::to_wstring(version_res);
+                }
+            }
+            else if(std::holds_alternative<quadruple_type>(result))
+            {
+                const auto& result_quadruple(std::get<1>(result));
+
+                if(result_quadruple != nullptr)
+                {
+                    res = L"(" + (*result_quadruple).to_string() + L")";
+                }
+            }
+
+            text = format(L"%-4d%-8s%+18s%+18s%+18s", id, op.c_str(), arg1.c_str(), arg2.c_str(), res.c_str());
+        }
 
         return text;
     }

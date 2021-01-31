@@ -133,6 +133,20 @@ void arcturus_ssa::build_ssa_form(typename arcturus_ssa::control_flow_graph_type
         // phase V (rename)
         rename_variables(assignment.first, cfg);
     }
+
+    // clean up 'exit' block
+    std::set<basic_block_type, vertex_lt_key_comparator<basic_block<arcturus_quadruple>>> successors;
+
+    (*cfg).collect_successors((*cfg).root(), successors);
+
+    for(auto& successor : successors)
+    {
+        if((*successor).label() == L"exit")
+        {
+            (*successor).code().clear();
+            break;
+        }
+    }
 }
 
 void arcturus_ssa::place_phi_functions(const typename arcturus_ssa::symbol_type& v, typename arcturus_ssa::control_flow_graph_type& cfg)
