@@ -117,14 +117,15 @@ void arcturus_ssa::build_ssa_form(typename arcturus_ssa::control_flow_graph_type
     // phase I (compute dominators)
     graph_algorithms<basic_block<arcturus_quadruple>>::compute_dominators(g);
 
-    // phase II (dominance tree)
+    // phase II (build dominance tree)
     std::shared_ptr<dominance_tree> dt;
 
     graph_algorithms<basic_block<arcturus_quadruple>>::build_dominance_tree(g, dt);
 
-    // phase III (dominance frontiers)
+    // phase III (compute dominance frontiers)
     graph_algorithms<basic_block<arcturus_quadruple>>::compute_dominance_frontiers(g, dt);
 
+    // phase IV (placement of 𝛗-functions and renaming)
     for(auto& assignment : (*cfg).assignments()) // assignements = defs, assignment = def
     {
         // phase IV (place 𝛗 functions)
@@ -134,7 +135,7 @@ void arcturus_ssa::build_ssa_form(typename arcturus_ssa::control_flow_graph_type
         rename_variables(assignment.first, cfg);
     }
 
-    // clean up 'exit' block
+    // phase V (clean up 'exit' block, etc.)
     std::set<basic_block_type, vertex_lt_key_comparator<basic_block<arcturus_quadruple>>> successors;
 
     (*cfg).collect_successors((*cfg).root(), successors);
