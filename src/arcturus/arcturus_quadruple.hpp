@@ -132,6 +132,10 @@ struct arcturus_operation_code_traits
 struct arcturus_quadruple : public quadruple<arcturus_token, arcturus_operation_code_traits>
 {
     using quadruple_base = quadruple<arcturus_token, arcturus_operation_code_traits>;
+
+    using argument_type = typename quadruple_base::argument_type;
+    using phi_params_type = typename quadruple_base::phi_params_type;
+
     using id_type = typename quadruple_base::id_type;
     using flags_type = typename quadruple_base::flags_type;
 
@@ -168,6 +172,11 @@ struct arcturus_quadruple : public quadruple<arcturus_token, arcturus_operation_
                        const result_type& result)
         : quadruple_base(id, operation, argument1, argument2, result)
     {
+    }
+
+    static bool is_assignment(const typename arcturus_operation_code_traits::operation_code& opcode)
+    {
+        return opcode == arcturus_operation_code_traits::operation_code::assignment_hir;
     }
 
     static string_type opcode_name(const typename arcturus_operation_code_traits::operation_code& opcode)

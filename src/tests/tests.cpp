@@ -760,12 +760,12 @@ namespace tests
                 timer.stop();
 
                 auto finish = std::chrono::high_resolution_clock::now();
-                auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(finish-start).count();
+                auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(finish - start).count();
 
                 string_type elapsed_time = timer.elapsed_time_as_string();
                 string_type total_elapsed_time = timer.total_elapsed_time_as_string();
 
-                Logger::WriteMessage(std::to_string(elapsed / 1000000.0).c_str());
+                Logger::WriteMessage(std::to_string(elapsed).c_str());
                 Logger::WriteMessage("\n");
                 Logger::WriteMessage(elapsed_time.c_str());
                 Logger::WriteMessage("\n");
@@ -798,11 +798,11 @@ namespace tests
                 graph_algorithms<dominator_vertex>::dfs_preorder_to_vector(gr, result);
 
                 auto finish = std::chrono::high_resolution_clock::now();
-                auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(finish-start).count();
+                auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(finish - start).count();
 
                 graph_algorithms<dominator_vertex>::generate_graphviz_file(gr, LR"(d:\tmp\GraphAlgorithmsDfsToVector.dot)", false);
 
-                Logger::WriteMessage(std::to_string(elapsed / 1000000.0).c_str());
+                Logger::WriteMessage(std::to_string(elapsed).c_str());
                 Logger::WriteMessage("\n");
 
                 Assert::AreEqual((*gr).vertices().size(), result.size());
@@ -846,9 +846,9 @@ namespace tests
                 graph_algorithms<dominator_vertex>::compute_dominators(gr);
 
                 auto finish = std::chrono::high_resolution_clock::now();
-                auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(finish-start).count();
+                auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(finish - start).count();
 
-                Logger::WriteMessage(std::to_string(elapsed / 1000000.0).c_str());
+                Logger::WriteMessage(std::to_string(elapsed).c_str());
             }
 
             TEST_METHOD(GraphAlgorithmsComputeDominatorsNaiveLengauerTarjan)
@@ -912,9 +912,9 @@ namespace tests
                 graph_algorithms<dominator_vertex>::compute_dominators(gr);
 
                 auto finish = std::chrono::high_resolution_clock::now();
-                auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(finish-start).count();
+                auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(finish - start).count();
 
-                Logger::WriteMessage(std::to_string(elapsed / 1000000.0).c_str());
+                Logger::WriteMessage(std::to_string(elapsed).c_str());
             }
 
             TEST_METHOD(GraphAlgorithmsComputeDominatorsNaiveAppel)
@@ -971,9 +971,9 @@ namespace tests
                 graph_algorithms<dominator_vertex>::compute_dominators(gr);
 
                 auto finish = std::chrono::high_resolution_clock::now();
-                auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(finish-start).count();
+                auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(finish - start).count();
 
-                Logger::WriteMessage(std::to_string(elapsed / 1000000.0).c_str());
+                Logger::WriteMessage(std::to_string(elapsed).c_str());
             }
 
             TEST_METHOD(GraphAlgorithmsComputeDominatorsNaiveCharlesFischer)
@@ -1037,9 +1037,9 @@ namespace tests
                 graph_algorithms<dominator_vertex>::compute_dominators(gr);
 
                 auto finish = std::chrono::high_resolution_clock::now();
-                auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(finish-start).count();
+                auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(finish - start).count();
 
-                Logger::WriteMessage(std::to_string(elapsed / 1000000.0).c_str());
+                Logger::WriteMessage(std::to_string(elapsed).c_str());
             }
 
             TEST_METHOD(GraphAlgorithmsComputeDominatorsNaiveCytron)
@@ -1102,7 +1102,7 @@ namespace tests
                 graph_algorithms<dominator_vertex>::compute_dominators(gr);
 
                 auto finish = std::chrono::high_resolution_clock::now();
-                auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(finish-start).count();
+                auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(finish - start).count();
 
                 std::unordered_map<string_type, string_type> idoms;
                 for(auto& vertex : (*gr).vertices())
@@ -1111,7 +1111,7 @@ namespace tests
                         idoms[(*vertex).label()] = (*(*vertex).idominator()).label();
                 }
 
-                Logger::WriteMessage(std::to_string(elapsed / 1000000.0).c_str());
+                Logger::WriteMessage(std::to_string(elapsed).c_str());
             }
 
             TEST_METHOD(GraphAlgorithmsBuildDominanceTreeNaiveMuchnik)
@@ -1154,11 +1154,11 @@ namespace tests
                 graph_algorithms<dominator_vertex>::build_dominance_tree(gr, tree);
 
                 auto finish = std::chrono::high_resolution_clock::now();
-                auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(finish-start).count();
+                auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(finish - start).count();
 
                 graph_algorithms<dominator_vertex>::generate_graphviz_file(tree, LR"(d:\tmp\GraphAlgorithmsBuildDominanceTreeNaiveMuchnik.Tree.dot)");
 
-                Logger::WriteMessage(std::to_string(elapsed / 1000000.0).c_str());
+                Logger::WriteMessage(std::to_string(elapsed).c_str());
             }
 
             TEST_METHOD(GraphAlgorithmsBuildDominanceTreeNaiveLengauerTarjan)
@@ -1224,11 +1224,11 @@ namespace tests
                 graph_algorithms<dominator_vertex>::build_dominance_tree(gr, tree);
 
                 auto finish = std::chrono::high_resolution_clock::now();
-                auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(finish-start).count();
+                auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(finish - start).count();
 
                 graph_algorithms<dominator_vertex>::generate_graphviz_file(tree, LR"(d:\tmp\GraphAlgorithmsDominanceTreeNaiveLengauerTarjan.Tree.dot)");
 
-                Logger::WriteMessage(std::to_string(elapsed / 1000000.0).c_str());
+                Logger::WriteMessage(std::to_string(elapsed).c_str());
             }
 
             TEST_METHOD(GraphAlgorithmsBuildDominanceTreeNaiveAppel)
@@ -1287,11 +1287,11 @@ namespace tests
                 graph_algorithms<dominator_vertex>::build_dominance_tree(gr, tree);
 
                 auto finish = std::chrono::high_resolution_clock::now();
-                auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(finish-start).count();
+                auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(finish - start).count();
 
                 graph_algorithms<dominator_vertex>::generate_graphviz_file(tree, LR"(d:\tmp\GraphAlgorithmsDominanceTreeNaiveAppel.Tree.dot)");
 
-                Logger::WriteMessage(std::to_string(elapsed / 1000000.0).c_str());
+                Logger::WriteMessage(std::to_string(elapsed).c_str());
             }
 
             TEST_METHOD(GraphAlgorithmsBuildDominanceTreeNaiveCharlesFischer)
@@ -1357,11 +1357,11 @@ namespace tests
                 graph_algorithms<dominator_vertex>::build_dominance_tree(gr, tree);
 
                 auto finish = std::chrono::high_resolution_clock::now();
-                auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(finish-start).count();
+                auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(finish - start).count();
 
                 graph_algorithms<dominator_vertex>::generate_graphviz_file(tree, LR"(d:\tmp\GraphAlgorithmsDominanceTreeNaiveCharlesFischer.Tree.dot)");
 
-                Logger::WriteMessage(std::to_string(elapsed / 1000000.0).c_str());
+                Logger::WriteMessage(std::to_string(elapsed).c_str());
             }
 
             TEST_METHOD(GraphAlgorithmsBuildDominanceTreeNaiveCytron)
@@ -1426,11 +1426,11 @@ namespace tests
                 graph_algorithms<dominator_vertex>::build_dominance_tree(gr, tree);
 
                 auto finish = std::chrono::high_resolution_clock::now();
-                auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(finish-start).count();
+                auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(finish - start).count();
 
                 graph_algorithms<dominator_vertex>::generate_graphviz_file(tree, LR"(d:\tmp\GraphAlgorithmsDominanceTreeNaiveCytron.Tree.dot)");
 
-                Logger::WriteMessage(std::to_string(elapsed / 1000000.0).c_str());
+                Logger::WriteMessage(std::to_string(elapsed).c_str());
             }
 
             TEST_METHOD(GraphAlgorithmsPostOrderToVectorNaiveMuchnik)
@@ -1477,9 +1477,9 @@ namespace tests
                 graph_algorithms<dominator_vertex>::dfs_postorder_to_vector(tree, result);
 
                 auto finish = std::chrono::high_resolution_clock::now();
-                auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(finish-start).count();
+                auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(finish - start).count();
 
-                Logger::WriteMessage(std::to_string(elapsed / 1000000.0).c_str());
+                Logger::WriteMessage(std::to_string(elapsed).c_str());
             }
 
             TEST_METHOD(GraphAlgorithmsComputeDominanceFrontierNaiveCytron)
@@ -1546,7 +1546,7 @@ namespace tests
                 graph_algorithms<dominator_vertex>::compute_dominance_frontiers(graph, dominance_tree);
 
                 auto finish = std::chrono::high_resolution_clock::now();
-                auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(finish-start).count();
+                auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(finish - start).count();
 
                 graph_algorithms<dominator_vertex>::generate_graphviz_file(graph, LR"(d:\tmp\GraphAlgorithmsComputeDominanceFrontierNaiveCytron.Graph.dot)", false);
                 graph_algorithms<dominator_vertex>::generate_graphviz_file(dominance_tree, LR"(d:\tmp\GraphAlgorithmsComputeDominanceFrontierNaiveCytron.Tree.dot)");
@@ -1560,7 +1560,7 @@ namespace tests
                     frontiers[(*vertex).label()] = frontier;
                 }
 
-                Logger::WriteMessage(std::to_string(elapsed / 1000000.0).c_str());
+                Logger::WriteMessage(std::to_string(elapsed).c_str());
             }
 
             TEST_METHOD(GraphAlgorithmsComputeDominanceFrontierNaiveMuchnik)
@@ -1606,7 +1606,7 @@ namespace tests
                 graph_algorithms<dominator_vertex>::compute_dominance_frontiers(graph, dominance_tree);
 
                 auto finish = std::chrono::high_resolution_clock::now();
-                auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(finish-start).count();
+                auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(finish - start).count();
 
                 graph_algorithms<dominator_vertex>::generate_graphviz_file(graph, LR"(d:\tmp\GraphAlgorithmsComputeDominanceFrontierNaiveMuchnik.Graph.dot)", false);
                 graph_algorithms<dominator_vertex>::generate_graphviz_file(dominance_tree, LR"(d:\tmp\GraphAlgorithmsComputeDominanceFrontierNaiveMuchnik.Tree.dot)");
@@ -1620,7 +1620,7 @@ namespace tests
                     frontiers[(*vertex).label()] = frontier;
                 }
 
-                Logger::WriteMessage(std::to_string(elapsed / 1000000.0).c_str());
+                Logger::WriteMessage(std::to_string(elapsed).c_str());
             }
 
             TEST_METHOD(GraphAlgorithmsComputeDominanceFrontierNaiveAppel)
@@ -1663,7 +1663,7 @@ namespace tests
                 graph_algorithms<dominator_vertex>::compute_dominance_frontiers(graph, dominance_tree);
 
                 auto finish = std::chrono::high_resolution_clock::now();
-                auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(finish-start).count();
+                auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(finish - start).count();
 
                 graph_algorithms<dominator_vertex>::generate_graphviz_file(graph, LR"(d:\tmp\GraphAlgorithmsComputeDominanceFrontierNaiveAppel.Graph.dot)", false);
                 graph_algorithms<dominator_vertex>::generate_graphviz_file(dominance_tree, LR"(d:\tmp\GraphAlgorithmsComputeDominanceFrontierNaiveAppel.Tree.dot)");
@@ -1677,7 +1677,7 @@ namespace tests
                     frontiers[(*vertex).label()] = frontier;
                 }
 
-                Logger::WriteMessage(std::to_string(elapsed / 1000000.0).c_str());
+                Logger::WriteMessage(std::to_string(elapsed).c_str());
             }
 
             TEST_METHOD(GraphAlgorithmsComputeDominanceFrontierNaiveSlides_hw1)
@@ -1713,7 +1713,7 @@ namespace tests
                 graph_algorithms<dominator_vertex>::compute_dominance_frontiers(graph, dominance_tree);
 
                 auto finish = std::chrono::high_resolution_clock::now();
-                auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(finish-start).count();
+                auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(finish - start).count();
 
                 graph_algorithms<dominator_vertex>::generate_graphviz_file(graph, LR"(d:\tmp\GraphAlgorithmsComputeDominanceFrontierNaiveSlides_hw1.Graph.dot)", false);
                 graph_algorithms<dominator_vertex>::generate_graphviz_file(dominance_tree, LR"(d:\tmp\GraphAlgorithmsComputeDominanceFrontierNaiveSlides_hw1.Tree.dot)");
@@ -1727,7 +1727,7 @@ namespace tests
                     frontiers[(*vertex).label()] = frontier;
                 }
 
-                Logger::WriteMessage(std::to_string(elapsed / 1000000.0).c_str());
+                Logger::WriteMessage(std::to_string(elapsed).c_str());
             }
 
             TEST_METHOD(GraphAlgorithmsComputeDominatorsLengauerTarjan)
@@ -1791,7 +1791,7 @@ namespace tests
                 graph_algorithms<dominator_vertex>::compute_dominators_lengauer_tarjan(graph);
 
                 auto finish = std::chrono::high_resolution_clock::now();
-                auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(finish-start).count();
+                auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(finish - start).count();
 
                 std::unordered_map<string_type, std::vector<string_type>> doms;
                 std::unordered_map<string_type, string_type> idoms;
@@ -1805,7 +1805,7 @@ namespace tests
                         idoms[(*vertex).label()] = (*(*vertex).idominator()).label();
                 }
 
-                Logger::WriteMessage(std::to_string(elapsed / 1000000.0).c_str());
+                Logger::WriteMessage(std::to_string(elapsed).c_str());
             }
 
             TEST_METHOD(GraphAlgorithmsComputeDominatorsMuchnik)
@@ -1846,7 +1846,7 @@ namespace tests
                 graph_algorithms<dominator_vertex>::compute_dominators_lengauer_tarjan(gr);
 
                 auto finish = std::chrono::high_resolution_clock::now();
-                auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(finish-start).count();
+                auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(finish - start).count();
 
                 std::unordered_map<string_type, std::vector<string_type>> doms;
                 std::unordered_map<string_type, string_type> idoms;
@@ -1860,7 +1860,7 @@ namespace tests
                         idoms[(*vertex).label()] = (*(*vertex).idominator()).label();
                 }
 
-                Logger::WriteMessage(std::to_string(elapsed / 1000000.0).c_str());
+                Logger::WriteMessage(std::to_string(elapsed).c_str());
             }
 
             TEST_METHOD(GraphAlgorithmsComputeDominatorsAppel)
@@ -1917,7 +1917,7 @@ namespace tests
                 graph_algorithms<dominator_vertex>::compute_dominators_lengauer_tarjan(gr);
 
                 auto finish = std::chrono::high_resolution_clock::now();
-                auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(finish-start).count();
+                auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(finish - start).count();
 
                 std::unordered_map<string_type, std::vector<string_type>> doms;
                 std::unordered_map<string_type, string_type> idoms;
@@ -1931,7 +1931,7 @@ namespace tests
                         idoms[(*vertex).label()] = (*(*vertex).idominator()).label();
                 }
 
-                Logger::WriteMessage(std::to_string(elapsed / 1000000.0).c_str());
+                Logger::WriteMessage(std::to_string(elapsed).c_str());
             }
 
             TEST_METHOD(GraphAlgorithmsComputeDominatorsCharlesFischer)
@@ -1995,7 +1995,7 @@ namespace tests
                 graph_algorithms<dominator_vertex>::compute_dominators_lengauer_tarjan(gr);
 
                 auto finish = std::chrono::high_resolution_clock::now();
-                auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(finish-start).count();
+                auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(finish - start).count();
 
                 std::unordered_map<string_type, std::vector<string_type>> doms;
                 std::unordered_map<string_type, string_type> idoms;
@@ -2009,7 +2009,7 @@ namespace tests
                         idoms[(*vertex).label()] = (*(*vertex).idominator()).label();
                 }
 
-                Logger::WriteMessage(std::to_string(elapsed / 1000000.0).c_str());
+                Logger::WriteMessage(std::to_string(elapsed).c_str());
             }
 
             TEST_METHOD(GraphAlgorithmsComputeDominatorsCytron)
@@ -2072,7 +2072,7 @@ namespace tests
                 graph_algorithms<dominator_vertex>::compute_dominators_lengauer_tarjan(gr);
 
                 auto finish = std::chrono::high_resolution_clock::now();
-                auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(finish-start).count();
+                auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(finish - start).count();
 
                 std::unordered_map<string_type, string_type> idoms;
                 for(auto& vertex : (*gr).vertices())
@@ -2081,7 +2081,7 @@ namespace tests
                         idoms[(*vertex).label()] = (*(*vertex).idominator()).label();
                 }
 
-                Logger::WriteMessage(std::to_string(elapsed / 1000000.0).c_str());
+                Logger::WriteMessage(std::to_string(elapsed).c_str());
             }
 
             TEST_METHOD(GraphAlgorithmsComputeDominatorsPerformance)
@@ -2109,14 +2109,14 @@ namespace tests
 
                 //graph_algorithms<dominator_vertex>::generate_graphviz_file(graph, LR"(d:\tmp\GraphAlgorithmsComputeDominatorsPerformance.dot)", false);
 
-                auto start_lengauer_tarjan = std::chrono::high_resolution_clock::now();
+                auto start_lengauer_tarjan = std::chrono::steady_clock::now();
 
                 graph_algorithms<dominator_vertex>::compute_dominators_lengauer_tarjan(graph);
 
-                auto finish_lengauer_tarjan = std::chrono::high_resolution_clock::now();
-                auto elapsed_lengauer_tarjan = std::chrono::duration_cast<std::chrono::nanoseconds>(finish_lengauer_tarjan - start_lengauer_tarjan).count();
+                auto finish_lengauer_tarjan = std::chrono::steady_clock::now();
+                auto elapsed_lengauer_tarjan = std::chrono::duration_cast<std::chrono::milliseconds>(finish_lengauer_tarjan - start_lengauer_tarjan).count();
 
-                Logger::WriteMessage(("Lengauer Tarjan: " + std::to_string(elapsed_lengauer_tarjan / 1000000.0)).c_str());
+                Logger::WriteMessage(("Lengauer Tarjan: " + std::to_string(elapsed_lengauer_tarjan)).c_str());
                 Logger::WriteMessage("\n");
 
                 std::unordered_map<string_type, string_type> idoms_lengauer_tarjan;
@@ -2129,14 +2129,14 @@ namespace tests
                     }
                 }
 
-                auto start = std::chrono::high_resolution_clock::now();
+                auto start = std::chrono::steady_clock::now();
 
                 graph_algorithms<dominator_vertex>::compute_dominators(graph);
 
-                auto finish = std::chrono::high_resolution_clock::now();
-                auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(finish-start).count();
+                auto finish = std::chrono::steady_clock::now();
+                auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(finish - start).count();
 
-                Logger::WriteMessage(("Naive bitset:       " + std::to_string(elapsed / 1000000.0)).c_str());
+                Logger::WriteMessage(("Naive bitset:       " + std::to_string(elapsed)).c_str());
 
                 std::unordered_map<string_type, string_type> idoms;
                 for(auto& vertex : (*graph).vertices())
@@ -2474,6 +2474,8 @@ namespace tests
                     Logger::WriteMessage(L"\n");
                 }
 
+                auto start = std::chrono::high_resolution_clock::now();
+
                 auto cfg(factory::create<arcturus_control_flow_graph>());
 
                 (*cfg).collect_basic_blocks(code);
@@ -2483,6 +2485,11 @@ namespace tests
                 arcturus_ssa::build_ssa_form(cfg);
 
                 (*cfg).generate_graphviz_file(LR"(d:\tmp\BuildSSaFormCytron.SSA.dot)");
+
+                auto finish = std::chrono::high_resolution_clock::now();
+                auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(finish - start).count();
+
+                Logger::WriteMessage(("Build SSA form:       " + std::to_string(elapsed)).c_str());
             }
     };
 }

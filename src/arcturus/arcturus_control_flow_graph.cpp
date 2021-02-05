@@ -194,7 +194,7 @@ void arcturus_control_flow_graph::collect_basic_blocks(typename arcturus_control
 
             inst_block_map.insert({ (*instruction).id, current_block });
 
-            if(is_assignment((*instruction).operation))
+            if(arcturus_quadruple::is_assignment((*instruction).operation))
             {
                 const auto& symbol(std::get<0>((*instruction).result).first);
 
@@ -305,11 +305,6 @@ void arcturus_control_flow_graph::collect_basic_blocks(typename arcturus_control
             }
         }
     }
-}
-
-bool arcturus_control_flow_graph::is_assignment(const typename arcturus_control_flow_graph::operation_code& operation)
-{
-    return operation == arcturus_operation_code_traits::operation_code::assignment_hir;
 }
 
 void arcturus_control_flow_graph::generate_graphviz_file(const string_type& file_name)

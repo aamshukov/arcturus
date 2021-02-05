@@ -118,7 +118,7 @@ void arcturus_ssa::build_ssa_form(typename arcturus_ssa::control_flow_graph_type
     graph_algorithms<basic_block<arcturus_quadruple>>::compute_dominators(g);
 
     // phase II (build dominance tree)
-    std::shared_ptr<dominance_tree> dt;
+    dominance_tree_type dt;
 
     graph_algorithms<basic_block<arcturus_quadruple>>::build_dominance_tree(g, dt);
 
@@ -132,7 +132,7 @@ void arcturus_ssa::build_ssa_form(typename arcturus_ssa::control_flow_graph_type
         place_phi_functions(assignment.first, cfg);
 
         // phase V (rename)
-        rename_variables(assignment.first, cfg);
+        rename_variables(assignment.first, dt, cfg);
     }
 
     // phase V (clean up 'exit' block, etc.)
@@ -153,6 +153,8 @@ void arcturus_ssa::build_ssa_form(typename arcturus_ssa::control_flow_graph_type
 void arcturus_ssa::place_phi_functions(const typename arcturus_ssa::symbol_type& v, typename arcturus_ssa::control_flow_graph_type& cfg)
 {
     // 'Crafting a Compiler' by Charles N. Fischer, Ron K. Cytron, Richard J LeBlanc
+    // 'Modern Compiler Implementation in Java' 2nd edition, by Andrew W. Appel
+    // 'An Efficient Method of Computing Static Single Assignment Form' by Ron Cytron, etc.
     for(auto& vertex : (*cfg).vertices())
     {
         (*vertex).flags() = vertex::flag::clear;
@@ -196,12 +198,125 @@ void arcturus_ssa::place_phi_functions(const typename arcturus_ssa::symbol_type&
     }
 }
 
-void arcturus_ssa::rename_variables(const typename arcturus_ssa::symbol_type& v, typename arcturus_ssa::control_flow_graph_type& cfg)
+void arcturus_ssa::rename_variables(const typename arcturus_ssa::symbol_type& v,
+                                    const typename arcturus_ssa::dominance_tree_type& dt,
+                                    const typename arcturus_ssa::control_flow_graph_type& cfg)
 {
     // 'Crafting a Compiler' by Charles N. Fischer, Ron K. Cytron, Richard J LeBlanc
+    // 'Modern Compiler Implementation in Java' 2nd edition, by Andrew W. Appel
+    // 'An Efficient Method of Computing Static Single Assignment Form' by Ron Cytron, etc.
+    entry_type e;
 
-    v;
-    cfg; //??
+    e.version = 0;
+    e.stack.push(0);
+
+    rename_variables(v, dt, cfg, e);
+}
+
+void arcturus_ssa::rename_variables(const typename arcturus_ssa::symbol_type& v,
+                                    const typename arcturus_ssa::dominance_tree_type& x,
+                                    const typename arcturus_ssa::control_flow_graph_type& cfg,
+                                    typename arcturus_ssa::entry_type& e)
+{
+    auto contains_def = 0;
+
+    auto& code((*std::dynamic_pointer_cast<basic_block<arcturus_quadruple>>(x)).code());
+
+    for(auto instruction = code.instructions();
+        instruction != code.end_instruction();
+        instruction = std::static_pointer_cast<arcturus_quadruple>((*instruction).next()))
+    {
+        // consider only assignements which are 'v = x op y' or 𝛗-function
+        if(arcturus_quadruple::is_assignment((*instruction).operation) ||
+          (*instruction).operation == arcturus_operation_code_traits::operation_code::phi)
+        {
+            // RHS - only 'ordinary' (non 𝛗-functions) assignments' RHS
+            if(arcturus_quadruple::is_assignment((*instruction).operation))
+            {
+                for(auto k = 0; k < 2; k++) // 2 - as of form ... x op y
+                {
+                    auto& rhs_arg(k == 0 ? (*instruction).argument1 : (*instruction).argument2);
+                    auto& rhs_var(rhs_arg.first);
+
+                    if(rhs_var == v)
+                    {
+                        rhs_arg.second = e.stack.top(); // bump up version
+                    }
+                }
+            }
+
+            // LHS - all assignments including 𝛗-functions
+            auto& lhs_arg(std::get<arcturus_quadruple::argument_type>((*instruction).result)); // result must be valid because it is assignment
+            auto& lhs_var(lhs_arg.first);
+
+            if(lhs_var == v)
+            {
+                lhs_arg.second = e.version; // bump up version
+
+                e.stack.push(e.version);
+
+                e.version++;
+
+                contains_def++; // pop at the end
+            }
+        }
+    }
+
+    // process successors in CFG
+    std::set<basic_block_type, vertex_lt_key_comparator<basic_block<arcturus_quadruple>>> successors;
+
+    (*cfg).collect_successors(std::dynamic_pointer_cast<basic_block<arcturus_quadruple>>((*x).vertex()), successors);
+
+    for(const auto& successor : successors)
+    {
+        size_type k = 0;
+        size_type j = 0; // j = whichPred ... j-th parameter of 𝛗-function must correspond to j-th predecessor in control flow graph
+
+        for(const auto& s: successors)
+        {
+            if(s == successor)
+            {
+                j = k;
+                break;
+            }
+
+            k++;
+        }
+
+        auto& successor_code((*std::dynamic_pointer_cast<basic_block<arcturus_quadruple>>(successor)).code());
+
+        for(auto instruction = successor_code.instructions();
+            instruction != successor_code.end_instruction();
+            instruction = std::static_pointer_cast<arcturus_quadruple>((*instruction).next()))
+        {
+            if((*instruction).operation == arcturus_operation_code_traits::operation_code::phi)
+            {
+                auto& lhs_arg(std::get<arcturus_quadruple::argument_type>((*instruction).result)); // result must be valid because it is assignment
+                auto& lhs_var(lhs_arg.first);
+
+                if(lhs_var == v)
+                {
+                    auto& phi_params(std::get<arcturus_quadruple::phi_params_type>((*instruction).result));
+
+                    phi_params[j].second = e.stack.top(); // bump up version
+
+                    break;
+                }
+            }
+        }
+    }
+
+    // recursively walk dominance tree
+    for(auto y : (*x).kids())
+    {
+        rename_variables(v, std::dynamic_pointer_cast<dominance_tree>(y), cfg, e);
+    }
+
+    // clenup
+    if(contains_def > 0)
+    {
+        e.stack.pop();
+    }
 }
 
 typename arcturus_ssa::arcturus_instruction_type arcturus_ssa::make_phi_instruction(const typename arcturus_ssa::symbol_type& v, id_type n)

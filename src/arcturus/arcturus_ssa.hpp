@@ -28,12 +28,35 @@ class arcturus_ssa : public ssa<basic_block<arcturus_quadruple>>
         using symbol_type = typename arcturus_quadruple::symbol_type;
         using arcturus_instruction_type = std::shared_ptr<arcturus_quadruple>;
 
+        using dominance_tree_type = std::shared_ptr<dominance_tree>;
+
+        struct entry
+        {
+            size_type version;
+            std::stack<id_type> stack;
+        };
+
+        using entry_type = entry;
+
+        //??using token_type = typename arcturus_quadruple::token_type;
+        //using symbol_type = std::shared_ptr<symtable::symbol<token_type>>;
+        //using entries_type = std::unordered_map<symbol_type,
+        //                                        entry_type,
+        //                                        symbol_hash<symtable::symbol<token_type>>,
+        //                                        symbol_eq_key_comparator<symtable::symbol<token_type>>>;
     private:
         static arcturus_instruction_type
                     make_phi_instruction(const symbol_type& v, id_type n);
 
         static void place_phi_functions(const symbol_type& v, control_flow_graph_type& cfg);
-        static void rename_variables(const symbol_type& v, control_flow_graph_type& cfg);
+
+        static void rename_variables(const symbol_type& v,
+                                     const dominance_tree_type& dt,
+                                     const control_flow_graph_type& cfg);
+        static void rename_variables(const symbol_type& v,
+                                     const dominance_tree_type& x,
+                                     const control_flow_graph_type& cfg,
+                                     entry_type& e);
 
     public:
         static void build_ssa_form(control_flow_graph_type& cfg);

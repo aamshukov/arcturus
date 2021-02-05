@@ -85,12 +85,12 @@ struct quadruple : public list
 
     using symbol_type = std::shared_ptr<symtable::symbol<token_type>>;
     using argument_type = std::pair<symbol_type, id_type>; // <symbol, version>
-
     using quadruple_type = std::shared_ptr<quadruple<token_type, traits_type>>;
+    using phi_params_type = std::vector<argument_type>;
 
     using result_type = std::variant<argument_type,     // temporary variable introduced during evaluation
                                      quadruple_type,    // target label used with 'goto' or branch/jump op code
-                                     std::vector<std::pair<symbol_type, id_type>>>;
+                                     phi_params_type>;
     enum class flag : uint64_t
     {
         clear = 0x0000,
