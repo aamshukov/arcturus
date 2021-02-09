@@ -340,7 +340,7 @@ void graph_algorithms<TVertex, TEdgeValue, N>::dfs_lengauer_tarjan(const typenam
 
     for(const auto& adjacence : (*v).adjacencies())
     {
-        auto w = std::dynamic_pointer_cast<dominator_vertex>(adjacence);
+        auto w = std::dynamic_pointer_cast<TVertex>(adjacence);
 
         if(context.semidominators[w] == size_type(-1))
         {
@@ -683,8 +683,8 @@ void graph_algorithms<TVertex, TEdgeValue, N>::generate_graphviz_file(const type
 
         for(const auto& node : nodes)
         {
-            stream << indent << ((*(*node).vertex()).label().empty() ? std::to_wstring((*(*node).vertex()).id()) : (*(*node).vertex()).label())
-                             << L" node [shape = circle];" << std::endl;
+            stream << indent << L"\"" << ((*(*node).vertex()).label().empty() ? std::to_wstring((*(*node).vertex()).id()) : (*(*node).vertex()).label())
+                             << L"\" node [shape = circle];" << std::endl;
         }
 
         for(const auto& node : nodes)
@@ -694,10 +694,10 @@ void graph_algorithms<TVertex, TEdgeValue, N>::generate_graphviz_file(const type
                 auto kid(std::dynamic_pointer_cast<dominance_tree_type::element_type>(kid0));
 
                 stream << indent
-                       << ((*(*node).vertex()).label().empty() ? std::to_wstring((*(*node).vertex()).id()) : (*(*node).vertex()).label())
-                       << L" -> "
-                       << ((*(*kid).vertex()).label().empty() ? std::to_wstring((*(*kid).vertex()).id()) : (*(*kid).vertex()).label())
-                       << L";"
+                       << L"\"" << ((*(*node).vertex()).label().empty() ? std::to_wstring((*(*node).vertex()).id()) : (*(*node).vertex()).label())
+                       << L"\" -> "
+                       << L"\"" << ((*(*kid).vertex()).label().empty() ? std::to_wstring((*(*kid).vertex()).id()) : (*(*kid).vertex()).label())
+                       << L"\";"
                        << std::endl;
             }
         }

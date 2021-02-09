@@ -355,7 +355,8 @@ struct arcturus_quadruple : public quadruple<arcturus_token, arcturus_operation_
 
                 if(result_quadruple != nullptr)
                 {
-                    res = L"(" + (*result_quadruple).to_string() + L")";
+                    res = std::to_wstring((*result_quadruple).id);
+                    //res = L"(" + (*result_quadruple).to_string() + L")";
                 }
             }
 

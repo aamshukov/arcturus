@@ -124,9 +124,11 @@ inline string_type code<Instruction>::to_string()
 {
     string_type result;
 
-    for(auto it = instructions(); it != end_instruction(); it = std::dynamic_pointer_cast<Instruction>((*my_head).next()))
+    for(auto instruction = instructions();
+        instruction != end_instruction();
+        instruction = std::dynamic_pointer_cast<Instruction>((*instruction).next()))
     {
-        result += (*it).to_string();
+        result += (*instruction).to_string();
         result += L"\n";
     }
 

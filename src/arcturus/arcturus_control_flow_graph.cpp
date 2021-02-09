@@ -139,7 +139,7 @@ void arcturus_control_flow_graph::collect_basic_blocks(typename arcturus_control
                 (*std::get<1>((*instruction).result)).flags |= arcturus_quadruple::flags_type::leader;
 
                 // Любая команда (instruction), следующая непосредственно за условным или безусловным переходом ... , является лидером.
-                instruction = std::static_pointer_cast<arcturus_quadruple>((*instruction).next());
+                instruction = std::dynamic_pointer_cast<arcturus_quadruple>((*instruction).next());
 
                 if(instruction != code.end_instruction())
                 {
@@ -149,7 +149,7 @@ void arcturus_control_flow_graph::collect_basic_blocks(typename arcturus_control
             else if((*instruction).operation == arcturus_operation_code_traits::operation_code::function_return_hir)
             {
                 // Любая команда (instruction), следующая непосредственно за ... or 'return', является лидером.
-                instruction = std::static_pointer_cast<arcturus_quadruple>((*instruction).next());
+                instruction = std::dynamic_pointer_cast<arcturus_quadruple>((*instruction).next());
 
                 if(instruction != code.end_instruction())
                 {
@@ -158,7 +158,7 @@ void arcturus_control_flow_graph::collect_basic_blocks(typename arcturus_control
             }
             else
             {
-                instruction = std::static_pointer_cast<arcturus_quadruple>((*instruction).next());
+                instruction = std::dynamic_pointer_cast<arcturus_quadruple>((*instruction).next());
             }
         }
 
@@ -190,7 +190,7 @@ void arcturus_control_flow_graph::collect_basic_blocks(typename arcturus_control
 
         do
         {
-            auto next_instruction = std::static_pointer_cast<arcturus_quadruple>((*instruction).next());
+            auto next_instruction = std::dynamic_pointer_cast<arcturus_quadruple>((*instruction).next());
 
             inst_block_map.insert({ (*instruction).id, current_block });
 
@@ -246,7 +246,7 @@ void arcturus_control_flow_graph::collect_basic_blocks(typename arcturus_control
         {
             auto block(blocks[i]);
 
-            instruction = std::static_pointer_cast<arcturus_quadruple>((*(*block).code().end_instruction()).prev()); // get the last instruction in a block
+            instruction = std::dynamic_pointer_cast<arcturus_quadruple>((*(*block).code().end_instruction()).prev()); // get the last instruction in a block
 
             if(instruction != (*block).code().start_instruction())
             {
@@ -289,7 +289,7 @@ void arcturus_control_flow_graph::collect_basic_blocks(typename arcturus_control
             {
                 for(auto instr = (*block).code().instructions();
                     instr != (*block).code().end_instruction();
-                    instr = std::static_pointer_cast<arcturus_quadruple>((*instr).next()))
+                    instr = std::dynamic_pointer_cast<arcturus_quadruple>((*instr).next()))
                 {
                     if((*instr).operation == arcturus_operation_code_traits::operation_code::function_return_hir)
                     {
@@ -335,16 +335,9 @@ void arcturus_control_flow_graph::generate_graphviz_file(const string_type& file
 
             for(auto instr = (*bb).code().instructions();
                 instr != (*bb).code().end_instruction();
-                instr = std::static_pointer_cast<arcturus_quadruple>((*instr).next()))
+                instr = std::dynamic_pointer_cast<arcturus_quadruple>((*instr).next()))
             {
-                if((*instr).operation == arcturus_operation_code_traits::operation_code::phi)
-                {
-                    label += (*instr).to_string() + L"<br/>";
-                }
-                else
-                {
-                    label += std::to_wstring((*instr).id) + L"<br/>";
-                }
+                label += (*instr).to_string() + L"<br/>";
             }
 
             stream << indent << (*vertex).id() << L" [shape=box label=<" << label << L">];" << std::endl;

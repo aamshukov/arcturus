@@ -115,7 +115,10 @@ void arcturus_ssa::build_ssa_form(typename arcturus_ssa::control_flow_graph_type
     auto g(std::dynamic_pointer_cast<graph<basic_block<arcturus_quadruple>>>(cfg));
 
     // phase I (compute dominators)
-    graph_algorithms<basic_block<arcturus_quadruple>>::compute_dominators(g);
+    if((*cfg).vertices().size() > 128)
+        graph_algorithms<basic_block<arcturus_quadruple>>::compute_dominators_lengauer_tarjan(g);
+    else
+        graph_algorithms<basic_block<arcturus_quadruple>>::compute_dominators(g);
 
     // phase II (build dominance tree)
     dominance_tree_type dt;
@@ -133,20 +136,6 @@ void arcturus_ssa::build_ssa_form(typename arcturus_ssa::control_flow_graph_type
 
         // phase V (rename)
         rename_variables(assignment.first, dt, cfg);
-    }
-
-    // phase V (clean up 'exit' block, etc.)
-    std::set<basic_block_type, vertex_lt_key_comparator<basic_block<arcturus_quadruple>>> successors;
-
-    (*cfg).collect_successors((*cfg).root(), successors);
-
-    for(auto& successor : successors)
-    {
-        if((*successor).label() == L"exit")
-        {
-            (*successor).code().clear();
-            break;
-        }
     }
 }
 
@@ -196,6 +185,20 @@ void arcturus_ssa::place_phi_functions(const typename arcturus_ssa::symbol_type&
             }
         }
     }
+
+    // clean up 'exit' block
+    std::set<basic_block_type, vertex_lt_key_comparator<basic_block<arcturus_quadruple>>> successors;
+
+    (*cfg).collect_successors((*cfg).root(), successors);
+
+    for(auto& successor : successors)
+    {
+        if((*successor).label() == L"exit")
+        {
+            (*successor).code().clear();
+            break;
+        }
+    }
 }
 
 void arcturus_ssa::rename_variables(const typename arcturus_ssa::symbol_type& v,
@@ -220,11 +223,11 @@ void arcturus_ssa::rename_variables(const typename arcturus_ssa::symbol_type& v,
 {
     auto contains_def = 0;
 
-    auto& code((*std::dynamic_pointer_cast<basic_block<arcturus_quadruple>>(x)).code());
+    auto& code((*std::dynamic_pointer_cast<basic_block<arcturus_quadruple>>((*x).vertex())).code());
 
     for(auto instruction = code.instructions();
         instruction != code.end_instruction();
-        instruction = std::static_pointer_cast<arcturus_quadruple>((*instruction).next()))
+        instruction = std::dynamic_pointer_cast<arcturus_quadruple>((*instruction).next()))
     {
         // consider only assignements which are 'v = x op y' or 𝛗-function
         if(arcturus_quadruple::is_assignment((*instruction).operation) ||
@@ -246,7 +249,8 @@ void arcturus_ssa::rename_variables(const typename arcturus_ssa::symbol_type& v,
             }
 
             // LHS - all assignments including 𝛗-functions
-            auto& lhs_arg(std::get<arcturus_quadruple::argument_type>((*instruction).result)); // result must be valid because it is assignment
+            auto& lhs_arg((*instruction).operation == arcturus_operation_code_traits::operation_code::phi ?
+                          (*instruction).argument1 : std::get<arcturus_quadruple::argument_type>((*instruction).result));
             auto& lhs_var(lhs_arg.first);
 
             if(lhs_var == v)
@@ -272,9 +276,13 @@ void arcturus_ssa::rename_variables(const typename arcturus_ssa::symbol_type& v,
         size_type k = 0;
         size_type j = 0; // j = whichPred ... j-th parameter of 𝛗-function must correspond to j-th predecessor in control flow graph
 
-        for(const auto& s: successors)
+        std::set<basic_block_type, vertex_lt_key_comparator<basic_block<arcturus_quadruple>>> predecessors;
+
+        (*cfg).collect_predecessors(std::dynamic_pointer_cast<basic_block<arcturus_quadruple>>(successor), predecessors);
+
+        for(const auto& predecessor: predecessors)
         {
-            if(s == successor)
+            if(predecessor == (*x).vertex())
             {
                 j = k;
                 break;
@@ -287,11 +295,11 @@ void arcturus_ssa::rename_variables(const typename arcturus_ssa::symbol_type& v,
 
         for(auto instruction = successor_code.instructions();
             instruction != successor_code.end_instruction();
-            instruction = std::static_pointer_cast<arcturus_quadruple>((*instruction).next()))
+            instruction = std::dynamic_pointer_cast<arcturus_quadruple>((*instruction).next()))
         {
             if((*instruction).operation == arcturus_operation_code_traits::operation_code::phi)
             {
-                auto& lhs_arg(std::get<arcturus_quadruple::argument_type>((*instruction).result)); // result must be valid because it is assignment
+                auto& lhs_arg((*instruction).argument1); // arg1 must be valid because it is assignment
                 auto& lhs_var(lhs_arg.first);
 
                 if(lhs_var == v)
