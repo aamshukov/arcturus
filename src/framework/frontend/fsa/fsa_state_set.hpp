@@ -12,8 +12,8 @@ USINGNAMESPACE(core)
 class fsa_state_set
 {
     public:
-        using state_type = fsa_state::state_type;
-        using states_type = fsa_state::states_type;
+        using state_type = typename fsa_state::state_type;
+        using states_type = typename fsa_state::states_type;
 
     private:
         states_type                 my_states;

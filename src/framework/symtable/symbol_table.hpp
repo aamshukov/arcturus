@@ -11,8 +11,7 @@ BEGIN_NAMESPACE(symtable)
 USINGNAMESPACE(core)
 USINGNAMESPACE(frontend)
 
-template <typename Token>
-class symbol_table : public singleton<symbol_table<Token>>
+class symbol_table : public singleton<symbol_table>
 {
     // hashtable and stack, LeBlanc/Cook
 
@@ -26,9 +25,8 @@ class symbol_table : public singleton<symbol_table<Token>>
     //    stack_type              stack; // display
 
     public:
-        using token_type = Token;
-
-        using scope_type = std::shared_ptr<scope<token_type>>;
+        using token_type = token<token_traits>;
+        using scope_type = std::shared_ptr<scope>;
 
         using size_type = std::size_t;
 

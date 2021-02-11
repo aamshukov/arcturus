@@ -12,18 +12,18 @@ USINGNAMESPACE(core)
 class fsa_algorithm : private noncopyable
 {
     public:
-        using token_type = fsa::token_type;
+        using token_type = typename fsa::token_type;
 
-        using state_type = fsa::state_type;
-        using states_type = fsa::states_type;
+        using state_type = typename fsa::state_type;
+        using states_type = typename fsa::states_type;
 
-        using transition_type = fsa::transition_type;
-        using transitions_type = fsa::transitions_type;
+        using transition_type = typename fsa::transition_type;
+        using transitions_type = typename fsa::transitions_type;
 
-        using predicate_type = fsa::predicate_type;
-        using predicates_type = fsa::predicates_type;
+        using predicate_type = typename fsa::predicate_type;
+        using predicates_type = typename fsa::predicates_type;
 
-        using fsa_type = fsa::fsa_type;
+        using fsa_type = typename fsa::fsa_type;
 
         using state_set_type = std::shared_ptr<fsa_state_set>;
 

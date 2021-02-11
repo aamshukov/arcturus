@@ -11,16 +11,15 @@ BEGIN_NAMESPACE(frontend)
 USINGNAMESPACE(core)
 USINGNAMESPACE(symtable)
 
-template <typename Token>
-class parse_dag : public parse_tree_base<Token>, public dag, public visitable
+class parse_dag : public parse_tree_base, public dag, public visitable
 {
     public:
-        using token_type = Token;
+        using token_type = typename parse_tree_base::token_type;
 
-        using gr_symbol_type = parse_tree_base<token_type>::gr_symbol_type;
+        using gr_symbol_type = typename parse_tree_base::gr_symbol_type;
 
-        using ir_symbol_type = parse_tree_base<token_type>::ir_symbol_type;
-        using ir_symbols_type = parse_tree_base<token_type>::ir_symbols_type;
+        using ir_symbol_type = typename parse_tree_base::ir_symbol_type;
+        using ir_symbols_type = typename parse_tree_base::ir_symbols_type;
 
     public:
                     parse_dag();
@@ -29,13 +28,11 @@ class parse_dag : public parse_tree_base<Token>, public dag, public visitable
         ACCEPT_METHOD;
 };
 
-template <typename Token>
-parse_dag<Token>::parse_dag()
+inline parse_dag::parse_dag()
 {
 }
 
-template <typename Token>
-parse_dag<Token>::~parse_dag()
+inline parse_dag::~parse_dag()
 {
 }
 

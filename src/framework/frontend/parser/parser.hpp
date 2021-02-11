@@ -9,21 +9,20 @@
 BEGIN_NAMESPACE(frontend)
 USINGNAMESPACE(core)
 
-template <typename Token>
 class parser : private noncopyable
 {
     public:
-        using token_type = Token;
+        using token_type = token<token_traits>;
         using tokens_type = std::vector<token_type>;
 
-        using parse_tree_type = std::shared_ptr<parse_tree<token_type>>;
+        using parse_tree_type = std::shared_ptr<parse_tree>;
         using parse_trees_type = std::vector<parse_tree_type>;
 
-        using parse_dag_type = std::shared_ptr<parse_dag<token_type>>;
+        using parse_dag_type = std::shared_ptr<parse_dag>;
         using parse_dags_type = std::vector<parse_dag_type>;
 
-        using lexical_analyzer_type = std::shared_ptr<lexical_analyzer<token_type>>;
-        using lexical_analyzers_type = std::unordered_map<typename lexical_analyzer<token_type>::id_type, lexical_analyzer_type>;
+        using lexical_analyzer_type = std::shared_ptr<lexical_analyzer>;
+        using lexical_analyzers_type = std::unordered_map<typename lexical_analyzer::id_type, lexical_analyzer_type>;
 
     protected:
         lexical_analyzer_type   my_lexical_analyzer;    // master lexer, id = 0
@@ -48,20 +47,17 @@ class parser : private noncopyable
         operation_status&       status();
 };
 
-template <typename Token>
-inline const typename parser<Token>::parse_trees_type& parser<Token>::trees() const
+inline const typename parser::parse_trees_type& parser::trees() const
 {
     return my_trees;
 }
 
-template <typename Token>
-inline const operation_status& parser<Token>::status() const
+inline const operation_status& parser::status() const
 {
     return my_status;
 }
 
-template <typename Token>
-inline operation_status& parser<Token>::status()
+inline operation_status& parser::status()
 {
     return my_status;
 }

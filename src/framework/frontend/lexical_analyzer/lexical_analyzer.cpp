@@ -1,32 +1,33 @@
 //........................................................
 // Underground Intelligence (UI) Lab Inc. Arthur Amshukov.
 //........................................................
-#ifndef __LEXICAL_ANALYZER_INL__
-#define __LEXICAL_ANALYZER_INL__
+#include <core/pch.hpp>
 
-#pragma once
+#include <content/data_provider.hpp>
+#include <content/content.hpp>
+
+#include <frontend/lexical_analyzer/token.hpp>
+#include <frontend/lexical_analyzer/lexical_content.hpp>
+#include <frontend/lexical_analyzer/lexical_analyzer.hpp>
 
 BEGIN_NAMESPACE(frontend)
 USINGNAMESPACE(core)
 
-template <typename Token>
-lexical_analyzer<Token>::lexical_analyzer(const typename lexical_analyzer<Token>::content_type& content)
-                       : my_id(0),
-                         my_content(content),
-                         my_start_content((*my_content).data()),
-                         my_end_content(my_start_content + (*my_content).count()),
-                         my_ptr(my_start_content),
-                         my_ptr_lexeme(nullptr)
+lexical_analyzer::lexical_analyzer(const typename lexical_analyzer::content_type& content)
+                : my_id(0),
+                  my_content(content),
+                  my_start_content((*my_content).data()),
+                  my_end_content(my_start_content + (*my_content).count()),
+                  my_ptr(my_start_content),
+                  my_ptr_lexeme(nullptr)
 {
 }
 
-template <typename Token>
-lexical_analyzer<Token>::~lexical_analyzer()
+lexical_analyzer::~lexical_analyzer()
 {
 }
 
-template <typename Token>
-void lexical_analyzer<Token>::next_lexeme()
+void lexical_analyzer::next_lexeme()
 {
     if(!is_eos())
     {
@@ -47,8 +48,7 @@ void lexical_analyzer<Token>::next_lexeme()
     }
 }
 
-template <typename Token>
-const typename lexical_analyzer<Token>::token_type& lexical_analyzer<Token>::lookahead_lexeme()
+const typename lexical_analyzer::token_type& lexical_analyzer::lookahead_lexeme()
 {
     token_type* result(nullptr);
 
@@ -105,16 +105,14 @@ const typename lexical_analyzer<Token>::token_type& lexical_analyzer<Token>::loo
     return *result;
 }
 
-template <typename Token>
-inline void lexical_analyzer<Token>::prolog()
+inline void lexical_analyzer::prolog()
 {
     my_token.reset();
 
     my_ptr_lexeme = my_ptr;
 }
 
-template <typename Token>
-inline void lexical_analyzer<Token>::epilog()
+inline void lexical_analyzer::epilog()
 {
     if(my_ptr > my_end_content)
     {
@@ -134,5 +132,3 @@ inline void lexical_analyzer<Token>::epilog()
 }
 
 END_NAMESPACE
-
-#endif // __LEXICAL_ANALYZER_INL__

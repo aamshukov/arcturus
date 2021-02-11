@@ -11,44 +11,11 @@ BEGIN_NAMESPACE(symtable)
 USINGNAMESPACE(core)
 USINGNAMESPACE(frontend)
 
-template <typename Token>
-struct symbol_lt_key_comparator
-{
-    using symbol_type = std::shared_ptr<Token>;
-    bool operator() (const symbol_type& lhs, const symbol_type& rhs) const
-    {
-        return (*lhs).id() < (*rhs).id();
-    }
-};
-
-template <typename Token>
-struct symbol_eq_key_comparator
-{
-    using symbol_type = std::shared_ptr<Token>;
-    bool operator() (const symbol_type& lhs, const symbol_type& rhs) const
-    {
-        return (*lhs).id() == (*rhs).id();
-    }
-};
-
-template <typename Token>
-struct symbol_hash
-{
-    using symbol_type = std::shared_ptr<Token>;
-    std::size_t operator () (const symbol_type& symbol) const
-    {
-        std::size_t result = (*symbol).id();
-        result ^= std::hash<std::size_t>{}(result + 0x9E3779B9 + (result << 6) + (result >> 2)); // aka boost hash_combine
-        return result;
-    }
-};
-
-template <typename Token>
 class symbol : private noncopyable
 {
     public:
-        using token_type = Token;
-        using symbol_type = std::shared_ptr<symbol<token_type>>;
+        using token_type = token<token_traits>;
+        using symbol_type = std::shared_ptr<symbol>;
 
         using id_type = size_type;
 
@@ -112,9 +79,6 @@ class symbol : private noncopyable
 
         metadata_type           my_metadata;            // custom attributes
 
-        //std::size_t             my_ssa_id;              // 0 - unassigned, 1+
-        //static counter_type     my_ssa_counter;
-
         static counter_type     my_tmp_counter;
 
     public:
@@ -156,14 +120,39 @@ class symbol : private noncopyable
         string_type             to_string() const;
 };
 
-template <typename Token>
-typename symbol<Token>::counter_type symbol<Token>::my_tmp_counter;
+inline typename symbol::counter_type symbol::my_tmp_counter;
 
-template <typename Token>
-symbol<Token>::symbol(const id_type& id)
-             : //my_ssa_id(0),
-               //??my_type(type_type::kind_type::unknown_type),
-               my_id(id),
+struct symbol_lt_key_comparator
+{
+    using symbol_type = std::shared_ptr<symbol>;
+    bool operator() (const symbol_type& lhs, const symbol_type& rhs) const
+    {
+        return (*lhs).id() < (*rhs).id();
+    }
+};
+
+struct symbol_eq_key_comparator
+{
+    using symbol_type = std::shared_ptr<symbol>;
+    bool operator() (const symbol_type& lhs, const symbol_type& rhs) const
+    {
+        return (*lhs).id() == (*rhs).id();
+    }
+};
+
+struct symbol_hash
+{
+    using symbol_type = std::shared_ptr<symbol>;
+    std::size_t operator () (const symbol_type& symbol) const
+    {
+        std::size_t result = (*symbol).id();
+        result ^= std::hash<std::size_t>{}(result + 0x9E3779B9 + (result << 6) + (result >> 2)); // aka boost hash_combine
+        return result;
+    }
+};
+
+inline symbol::symbol(const id_type& id)
+             : my_id(id),
                my_offset(0),
                my_size(0),
                my_bitsize(0),
@@ -171,133 +160,101 @@ symbol<Token>::symbol(const id_type& id)
 {
 }
 
-template <typename Token>
-symbol<Token>::~symbol()
+inline symbol::~symbol()
 {
 }
 
-template <typename Token>
-inline const typename symbol<Token>::id_type& symbol<Token>::id() const
+inline const typename symbol::id_type& symbol::id() const
 {
     return my_id;
 }
 
-template <typename Token>
-inline typename symbol<Token>::id_type& symbol<Token>::id()
+inline typename symbol::id_type& symbol::id()
 {
     return my_id;
 }
 
-template <typename Token>
-inline const typename codepoints_type& symbol<Token>::name() const
+inline const typename codepoints_type& symbol::name() const
 {
     return my_name;
 }
 
-template <typename Token>
-inline typename codepoints_type& symbol<Token>::name()
+inline typename codepoints_type& symbol::name()
 {
     return my_name;
 }
 
-template <typename Token>
-inline const typename symbol<Token>::token_type& symbol<Token>::token() const
+inline const typename symbol::token_type& symbol::token() const
 {
     return my_token;
 }
 
-template <typename Token>
-inline typename symbol<Token>::token_type& symbol<Token>::token()
+inline typename symbol::token_type& symbol::token()
 {
     return my_token;
 }
 
-template <typename Token>
-inline const typename symbol<Token>::value_type& symbol<Token>::value() const
+inline const typename symbol::value_type& symbol::value() const
 {
     return my_value;
 }
 
-template <typename Token>
-inline typename symbol<Token>::value_type& symbol<Token>::value()
+inline typename symbol::value_type& symbol::value()
 {
     return my_value;
 }
 
-template <typename Token>
-inline const typename symbol<Token>::type_type& symbol<Token>::type() const
+inline const typename symbol::type_type& symbol::type() const
 {
     return my_type;
 }
 
-template <typename Token>
-inline typename symbol<Token>::type_type& symbol<Token>::type()
+inline typename symbol::type_type& symbol::type()
 {
     return my_type;
 }
 
-//template <typename Token>
-//inline std::size_t symbol<Token>::ssa_id() const
-//{
-//    return my_ssa_id;
-//}
-//
-//template <typename Token>
-//inline std::size_t& symbol<Token>::ssa_id()
-//{
-//    return my_ssa_id;
-//}
-
-template <typename Token>
-inline std::size_t symbol<Token>::offset() const
+inline std::size_t symbol::offset() const
 {
     return my_offset;
 }
 
-template <typename Token>
-inline std::size_t& symbol<Token>::offset()
+inline std::size_t& symbol::offset()
 {
     return my_offset;
 }
 
-template <typename Token>
-inline std::size_t symbol<Token>::size() const
+inline std::size_t symbol::size() const
 {
     return my_size;
 }
 
-template <typename Token>
-inline std::size_t& symbol<Token>::size()
+inline std::size_t& symbol::size()
 {
     return my_size;
 }
 
-template <typename Token>
-inline typename symbol<Token>::flags_type symbol<Token>::flags() const
+inline typename symbol::flags_type symbol::flags() const
 {
     return my_flags;
 }
 
-template <typename Token>
-inline typename symbol<Token>::flags_type& symbol<Token>::flags()
+inline typename symbol::flags_type& symbol::flags()
 {
     return my_flags;
 }
 
-template <typename Token>
-inline const typename symbol<Token>::metadata_type& symbol<Token>::metadata() const
+inline const typename symbol::metadata_type& symbol::metadata() const
 {
     return my_metadata;
 }
 
-template <typename Token>
-inline typename symbol<Token>::metadata_type& symbol<Token>::metadata()
+inline typename symbol::metadata_type& symbol::metadata()
 {
     return my_metadata;
 }
 
-template <typename Token>
-typename symbol<Token>::symbol_type symbol<Token>::get_new_temporary()
+inline typename symbol::symbol_type symbol::get_new_temporary()
 {
     symbol_type result;
 
@@ -305,7 +262,7 @@ typename symbol<Token>::symbol_type symbol<Token>::get_new_temporary()
 
     if(num < 999999)
     {
-        datum_type t [] = { '0', '0', '0', '0', '0', '0', '~', '$', '_', 'T', 'M', 'P', '_', '$', '~' }; // 15 + 0 = 16
+        datum_type t [] = { '0', '0', '0', '0', '0', '0', '~', '$', '_', 'T', 'M', 'P', '_', '$', '~', 0 }; // 15 + 0 = 16
 
         char b [] = { '0', '0', '0', '0', '0', '0' };
 
@@ -318,17 +275,15 @@ typename symbol<Token>::symbol_type symbol<Token>::get_new_temporary()
             t[k] = b[k];
         }
 
-        result = factory::create<symbol<token_type>>();
+        result = factory::create<symbol>(num);
 
-        (*result).id() = num;
         (*result).name() = t;
     }
 
     return result;
 }
 
-template <typename Token>
-inline string_type symbol<Token>::to_string() const
+inline string_type symbol::to_string() const
 {
     string_type result;
 

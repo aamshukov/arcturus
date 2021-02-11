@@ -11,15 +11,14 @@ BEGIN_NAMESPACE(frontend)
 USINGNAMESPACE(core)
 USINGNAMESPACE(symtable)
 
-template <typename Token>
 class parse_tree_base
 {
     public:
-        using token_type = Token;
+        using token_type = token<token_traits>;
 
         using gr_symbol_type = grammar::symbol_type;
 
-        using ir_symbol_type = std::shared_ptr<symtable::symbol<token_type>>;
+        using ir_symbol_type = std::shared_ptr<symtable::symbol>;
         using ir_symbols_type = std::vector<ir_symbol_type>;
 
     protected:
@@ -39,36 +38,30 @@ class parse_tree_base
         ACCEPT_METHOD;
 };
 
-template <typename Token>
-parse_tree_base<Token>::parse_tree_base()
+inline parse_tree_base::parse_tree_base()
 {
 }
 
-template <typename Token>
-parse_tree_base<Token>::~parse_tree_base()
+inline parse_tree_base::~parse_tree_base()
 {
 }
 
-template <typename Token>
-inline const typename parse_tree_base<Token>::gr_symbol_type& parse_tree_base<Token>::gr_symbol() const
+inline const typename parse_tree_base::gr_symbol_type& parse_tree_base::gr_symbol() const
 {
     return my_gr_symbol;
 }
 
-template <typename Token>
-inline typename parse_tree_base<Token>::gr_symbol_type& parse_tree_base<Token>::gr_symbol()
+inline typename parse_tree_base::gr_symbol_type& parse_tree_base::gr_symbol()
 {
     return my_gr_symbol;
 }
 
-template <typename Token>
-inline const typename parse_tree_base<Token>::ir_symbol_type& parse_tree_base<Token>::ir_symbol() const
+inline const typename parse_tree_base::ir_symbol_type& parse_tree_base::ir_symbol() const
 {
     return my_ir_symbol;
 }
 
-template <typename Token>
-inline typename parse_tree_base<Token>::ir_symbol_type& parse_tree_base<Token>::ir_symbol()
+inline typename parse_tree_base::ir_symbol_type& parse_tree_base::ir_symbol()
 {
     return my_ir_symbol;
 }

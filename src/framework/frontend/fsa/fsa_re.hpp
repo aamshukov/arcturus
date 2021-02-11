@@ -15,10 +15,10 @@ USINGNAMESPACE(core)
 class fsa_re : private noncopyable
 {
     public:
-        using token_type = fsa::token_type;
+        using token_type = typename fsa::token_type;
 
-        using state_type = fsa::state_type;
-        using fsa_type = fsa::fsa_type;
+        using state_type = typename fsa::state_type;
+        using fsa_type = typename fsa::fsa_type;
 
     public:
         struct fsa_tree : public tree

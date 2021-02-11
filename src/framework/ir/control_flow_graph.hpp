@@ -22,12 +22,9 @@ class control_flow_graph : public graph<TBasicBlock>
         using basic_block_type = std::shared_ptr<basic_block<instruction_type>>;
         using basic_blocks_type = std::vector<basic_block_type>;
 
-        using token_type = typename instruction_type::token_type;
-        using symbol_type = std::shared_ptr<symtable::symbol<token_type>>;
-        using assignments_type = std::unordered_map<symbol_type,
-                                                    basic_blocks_type,
-                                                    symbol_hash<symtable::symbol<token_type>>,
-                                                    symbol_eq_key_comparator<symtable::symbol<token_type>>>;
+        using symbol_type = std::shared_ptr<symtable::symbol>;
+        using assignments_type = std::unordered_map<symbol_type, basic_blocks_type, symbol_hash, symbol_eq_key_comparator>;
+
     protected:
         assignments_type        my_assignments; // holds definitions and asignments of variables
 

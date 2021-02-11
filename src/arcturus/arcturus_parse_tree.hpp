@@ -29,10 +29,10 @@ struct arcturus_tree_traits
     )
 };
 
-class arcturus_parse_tree : public parse_tree<arcturus_token>
+class arcturus_parse_tree : public parse_tree
 {
     public:
-        using token_type = arcturus_token;
+        using token_type = typename parse_tree::token_type;
 
         using traits_type = arcturus_tree_traits;
         using tree_kind = traits_type::kind;

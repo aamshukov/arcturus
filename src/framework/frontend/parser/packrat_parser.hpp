@@ -11,16 +11,14 @@
 BEGIN_NAMESPACE(frontend)
 USINGNAMESPACE(core)
 
-template <typename Token>
-class packrat_parser : private recursive_descent_parser<Token>
+class packrat_parser : private recursive_descent_parser
 {
     // Memoization table:
     //  Memo: (Rule, Position) -> (Tree|Fail, Position)
     //                             node mark  the next char of the input stream
     public:
-        using token_type = Token;
-
-        using lexical_analyzer_type = typename parser<token_type>::lexical_analyzer_type;
+        using token_type = typename recursive_descent_parser::token_type;
+        using lexical_analyzer_type = typename recursive_descent_parser::lexical_analyzer_type;
 
     public:
                 packrat_parser(const lexical_analyzer_type& lexical_analyzer);

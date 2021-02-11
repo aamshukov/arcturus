@@ -12,7 +12,7 @@ USINGNAMESPACE(core)
 USINGNAMESPACE(frontend)
 USINGNAMESPACE(symtable)
 
-class arcturus_symbol : public symtable::symbol<arcturus_token>
+class arcturus_symbol : public symtable::symbol
 {
     public:
             arcturus_symbol(const id_type& id);

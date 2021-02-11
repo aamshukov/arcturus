@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\arcturus\arcturus.hpp" />
     <ClInclude Include="..\src\arcturus\arcturus_array_type.hpp" />
     <ClInclude Include="..\src\arcturus\arcturus_configurator.hpp" />
     <ClInclude Include="..\src\arcturus\arcturus_controller.hpp" />
@@ -152,9 +153,11 @@
     <ClCompile Include="..\src\framework\core\logger.cpp" />
     <ClCompile Include="..\src\framework\core\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">core\pch.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">core/pch.hpp</PrecompiledHeaderFile>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">core\pch.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">core/pch.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\src\framework\core\status.cpp" />
     <ClCompile Include="..\src\framework\core\text.cpp" />
@@ -174,7 +177,14 @@
     <ClCompile Include="..\src\framework\frontend\grammar\grammar_visualization.cpp" />
     <ClCompile Include="..\src\framework\frontend\grammar\rule.cpp" />
     <ClCompile Include="..\src\framework\frontend\grammar\symbol.cpp" />
+    <ClCompile Include="..\src\framework\frontend\lexical_analyzer\lexical_analyzer.cpp" />
     <ClCompile Include="..\src\framework\frontend\lexical_analyzer\lexical_content.cpp" />
+    <ClCompile Include="..\src\framework\frontend\lexical_analyzer\token.cpp" />
+    <ClCompile Include="..\src\framework\frontend\parser\packrat_parser.cpp" />
+    <ClCompile Include="..\src\framework\frontend\parser\parser.cpp" />
+    <ClCompile Include="..\src\framework\frontend\parser\recursive_descent_parser.cpp" />
+    <ClCompile Include="..\src\framework\frontend\semantics\semantics.cpp" />
+    <ClCompile Include="..\src\framework\symtable\symbol_table.cpp" />
   </ItemGroup>
   <ItemGroup>
     <MASM Include="..\src\framework\backend\codegen\amd64\masm.test.asm">
@@ -183,17 +193,11 @@
       <TreatWarningsAsErrors Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</TreatWarningsAsErrors>
       <MakeAllSymbolsPublic Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</MakeAllSymbolsPublic>
     </MASM>
-    <None Include="..\src\framework\frontend\lexical_analyzer\lexical_analyzer.inl" />
-    <None Include="..\src\framework\frontend\parser\packrat_parser.inl" />
-    <None Include="..\src\framework\frontend\parser\parser.inl" />
-    <None Include="..\src\framework\frontend\parser\recursive_descent_parser.inl" />
-    <None Include="..\src\framework\frontend\semantics\semantics.inl" />
     <None Include="..\src\framework\frontend\type\type.inl" />
     <None Include="..\src\framework\ir\basic_block.inl" />
     <None Include="..\src\framework\ir\ir.inl" />
     <None Include="..\src\framework\ir\ir_visualization.inl" />
     <None Include="..\src\framework\ir\ssa.inl" />
-    <None Include="..\src\framework\symtable\symbol_table.inl" />
     <None Include="..\src\tools\dsl\packrat.py" />
   </ItemGroup>
   <ItemGroup>
@@ -267,12 +271,12 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>core/pch.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -286,7 +290,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <PrecompiledHeaderFile>core\pch.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>core/pch.hpp</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(SolutionDir)..\src\arcturus;$(SolutionDir)..\src\framework;$(SolutionDir)..\libs\ICU\icu4c-60_2\include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <CompileAsManaged>false</CompileAsManaged>
@@ -308,14 +312,14 @@ xcopy $(SolutionDir)..\libs\ICU\icu4c-60_2\bin64\*.dll $(SolutionDir)..\build\$(
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>core/pch.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -333,7 +337,7 @@ xcopy $(SolutionDir)..\libs\ICU\icu4c-60_2\bin64\*.dll $(SolutionDir)..\build\$(
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <PrecompiledHeaderFile>core\pch.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>core/pch.hpp</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(SolutionDir)..\src\arcturus;$(SolutionDir)..\src\framework;$(SolutionDir)..\libs\ICU\icu4c-60_2\include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <CompileAsManaged>false</CompileAsManaged>

@@ -14,13 +14,13 @@ USINGNAMESPACE(core)
 class fsa_codegen : private noncopyable
 {
     public:
-        using state_type = fsa::state_type;
-        using states_type = fsa::states_type;
+        using state_type = typename fsa::state_type;
+        using states_type = typename fsa::states_type;
 
-        using transition_type = fsa::transition_type;
-        using transitions_type = fsa::transitions_type;
+        using transition_type = typename fsa::transition_type;
+        using transitions_type = typename fsa::transitions_type;
 
-        using fsa_type = fsa::fsa_type;
+        using fsa_type = typename fsa::fsa_type;
 
     private:
         static string_type build_predicate(const string_type& predicate);

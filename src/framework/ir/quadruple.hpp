@@ -74,18 +74,18 @@ USINGNAMESPACE(symtable)
 //  𝛗                   y               N               params                  y - symbol
 //                                                                              N - how many params (predecessors)
 //
-template <typename Token, typename OpCodeTraits>
+template <typename OpCodeTraits>
 struct quadruple : public list
 {
-    using token_type = Token;
+    using token_type = token<token_traits>;
     using traits_type = OpCodeTraits;
     using operation_code = typename traits_type::operation_code;
 
     using id_type = size_type;
 
-    using symbol_type = std::shared_ptr<symtable::symbol<token_type>>;
+    using symbol_type = std::shared_ptr<symtable::symbol>;
     using argument_type = std::pair<symbol_type, id_type>; // <symbol, version>
-    using quadruple_type = std::shared_ptr<quadruple<token_type, traits_type>>;
+    using quadruple_type = std::shared_ptr<quadruple<traits_type>>;
     using phi_params_type = std::vector<argument_type>;
 
     using result_type = std::variant<argument_type,     // temporary variable introduced during evaluation

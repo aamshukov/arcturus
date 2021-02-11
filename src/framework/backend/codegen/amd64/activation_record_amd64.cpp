@@ -31,7 +31,6 @@
 
 #include <frontend/lexical_analyzer/lexical_content.hpp>
 #include <frontend/lexical_analyzer/lexical_analyzer.hpp>
-#include <frontend/lexical_analyzer/lexical_analyzer.inl>
 
 #include <frontend/type/type.hpp>
 #include <frontend/type/type.inl>
@@ -39,7 +38,6 @@
 #include <symtable/symbol.hpp>
 #include <symtable/scope/scope.hpp>
 #include <symtable/symbol_table.hpp>
-#include <symtable/symbol_table.inl>
 
 #include <backend/codegen/activation_record.hpp>
 #include <backend/codegen/amd64/activation_record_amd64.hpp>

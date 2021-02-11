@@ -11,15 +11,12 @@ BEGIN_NAMESPACE(symtable)
 USINGNAMESPACE(core)
 USINGNAMESPACE(frontend)
 
-template <typename Token>
 class scope : public tree
 {
     public:
-        using token_type = Token;
+        using symbol_type = std::shared_ptr<symbol>;
 
-        using symbol_type = std::shared_ptr<symbol<token_type>>;
-
-        using key_type = typename token_type::codepoints_type;
+        using key_type = codepoints_type;
         using value_type = symbol_type;
 
         using symbols_type = std::unordered_map<key_type, value_type>;
@@ -54,14 +51,12 @@ class scope : public tree
         symbols_type&       symbols();
 };
 
-template <typename Token>
-inline const typename scope<Token>::symbols_type& scope<Token>::symbols() const
+inline const typename scope::symbols_type& scope::symbols() const
 {
     return my_symbols;
 }
 
-template <typename Token>
-inline typename scope<Token>::symbols_type& scope<Token>::symbols()
+inline typename scope::symbols_type& scope::symbols()
 {
     return my_symbols;
 }

@@ -18,7 +18,6 @@
 #include <symtable/symbol.hpp>
 #include <symtable/scope/scope.hpp>
 #include <symtable/symbol_table.hpp>
-#include <symtable/symbol_table.inl>
 
 #include <ir/quadruple.hpp>
 

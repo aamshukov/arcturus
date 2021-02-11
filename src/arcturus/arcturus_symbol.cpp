@@ -43,7 +43,6 @@
 
 #include <frontend/lexical_analyzer/lexical_content.hpp>
 #include <frontend/lexical_analyzer/lexical_analyzer.hpp>
-#include <frontend/lexical_analyzer/lexical_analyzer.inl>
 
 #include <frontend/type/type.hpp>
 #include <frontend/type/type.inl>
@@ -51,18 +50,14 @@
 #include <symtable/symbol.hpp>
 #include <symtable/scope/scope.hpp>
 #include <symtable/symbol_table.hpp>
-#include <symtable/symbol_table.inl>
 
 #include <frontend/parser/parse_tree_base.hpp>
 #include <frontend/parser/parse_tree.hpp>
 #include <frontend/parser/parse_dag.hpp>
 #include <frontend/parser/parser.hpp>
-#include <frontend/parser/parser.inl>
 #include <frontend/parser/recursive_descent_parser.hpp>
-#include <frontend/parser/recursive_descent_parser.inl>
 
 #include <frontend/semantics/semantics.hpp>
-#include <frontend/semantics/semantics.inl>
 
 #include <ir/quadruple.hpp>
 #include <ir/code.hpp>
@@ -102,7 +97,7 @@ USINGNAMESPACE(frontend)
 USINGNAMESPACE(symtable)
 
 arcturus_symbol::arcturus_symbol(const id_type& id)
-               : symbol<arcturus_token>(id)
+               : symbol(id)
 {
 }
 

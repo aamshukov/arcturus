@@ -14,16 +14,16 @@ class fsa_algorithm;
 class fsa : private noncopyable
 {
     public:
-        using token_type = fsa_state::token_type;
+        using token_type = typename fsa_state::token_type;
 
-        using state_type = fsa_state::state_type;
-        using states_type = fsa_state::states_type;
+        using state_type = typename fsa_state::state_type;
+        using states_type = typename fsa_state::states_type;
 
-        using transition_type = fsa_state::transition_type;
-        using transitions_type = fsa_state::transitions_type;
+        using transition_type = typename fsa_state::transition_type;
+        using transitions_type = typename fsa_state::transitions_type;
 
-        using predicate_type = fsa_transition::predicate_type;
-        using predicates_type = fsa_transition::predicates_type;
+        using predicate_type = typename fsa_transition::predicate_type;
+        using predicates_type = typename fsa_transition::predicates_type;
 
         using fsa_type = std::shared_ptr<fsa>;
 

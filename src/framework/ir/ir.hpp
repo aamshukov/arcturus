@@ -23,7 +23,7 @@ class ir : private noncopyable
         using basic_blocks_type = std::vector<basic_block_type>;
 
         using token_type = typename instruction_type::token_type;
-        using symbol_type = std::shared_ptr<symtable::symbol<token_type>>;
+        using symbol_type = std::shared_ptr<symtable::symbol>;
 
     public:
         //using token_type = Token;
@@ -52,7 +52,7 @@ class ir : private noncopyable
 //        using symbols_type = std::vector<symbol_type>;
 //
 //        using dag_key_pair = std::tuple<typename token_type::token_type,
-//                                        typename token_type::codepoints_type,
+//                                        codepoints_type,
 //                                        typename symtable::symbol<token_type>::value_type>;
 //        using dag_key_type = std::vector<dag_key_pair>;
 //

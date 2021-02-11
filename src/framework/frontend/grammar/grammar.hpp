@@ -12,8 +12,8 @@ USINGNAMESPACE(core)
 class grammar : private noncopyable
 {
     public:
-        using symbol_type = rule::symbol_type;
-        using symbols_type = rule::symbols_type;
+        using symbol_type = typename rule::symbol_type;
+        using symbols_type = typename rule::symbols_type;
 
         using pool_type = std::map<string_type, symbol_type>;
         using pool_index_type = std::map<uint32_t, symbol_type>;
@@ -23,8 +23,8 @@ class grammar : private noncopyable
 
         using nts_rules_type = std::map<string_type, rules_type>; // mapping nonterminal to rules
 
-        using set_type = symbol::set_type;
-        using sets_type = symbol::sets_type;
+        using set_type = typename symbol::set_type;
+        using sets_type = typename symbol::sets_type;
 
     private:
         rules_type              my_rules;

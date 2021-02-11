@@ -11,12 +11,11 @@ BEGIN_NAMESPACE(frontend)
 USINGNAMESPACE(core)
 USINGNAMESPACE(symtable)
 
-template <typename Token>
 class parse_context : public context
 {
     public:
-        using token_type = Token;
-        using tree_type = parse_tree_base<token_type>;
+        using token_type = token<token_traits>;
+        using tree_type = parse_tree_base;
 
     private:
         // parse tree
@@ -26,13 +25,11 @@ class parse_context : public context
         virtual    ~parse_context();
 };
 
-template <typename Token>
-parse_context<Token>::parse_context()
+inline parse_context::parse_context()
 {
 }
 
-template <typename Token>
-parse_context<Token>::~parse_context()
+inline parse_context::~parse_context()
 {
 }
 

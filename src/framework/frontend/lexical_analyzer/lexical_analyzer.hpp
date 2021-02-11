@@ -9,13 +9,12 @@
 BEGIN_NAMESPACE(frontend)
 USINGNAMESPACE(core)
 
-template <typename Token>
 class lexical_analyzer : private noncopyable
 {
     public:
         using content_type = std::shared_ptr<lexical_content>;
 
-        using token_type = Token;
+        using token_type = token<token_traits>;
         using tokens_type = std::queue<token_type>;
 
         using snapshots_type = std::stack<const datum_type*>;
@@ -80,86 +79,72 @@ class lexical_analyzer : private noncopyable
         void                        rewind_to_snapshot(); // backtrack
 };
 
-template <typename Token>
-inline typename lexical_analyzer<Token>::id_type lexical_analyzer<Token>::id() const
+inline typename lexical_analyzer::id_type lexical_analyzer::id() const
 {
     return my_id;
 }
 
-template <typename Token>
-inline typename lexical_analyzer<Token>::id_type& lexical_analyzer<Token>::id()
+inline typename lexical_analyzer::id_type& lexical_analyzer::id()
 {
     return my_id;
 }
 
-template <typename Token>
-inline const typename lexical_analyzer<Token>::content_type& lexical_analyzer<Token>::content() const
+inline const typename lexical_analyzer::content_type& lexical_analyzer::content() const
 {
     return my_content;
 }
 
-template <typename Token>
-inline typename lexical_analyzer<Token>::content_type& lexical_analyzer<Token>::content()
+inline typename lexical_analyzer::content_type& lexical_analyzer::content()
 {
     return const_cast<content_type&>(static_cast<const lexical_analyzer&>(*this).content());
 }
 
-template <typename Token>
-inline datum_type typename lexical_analyzer<Token>::current() const
+inline datum_type typename lexical_analyzer::current() const
 {
     return *my_ptr;
 }
 
-template <typename Token>
-inline const typename lexical_analyzer<Token>::token_type& lexical_analyzer<Token>::token()
+inline const typename lexical_analyzer::token_type& lexical_analyzer::token()
 {
     return my_token;
 }
 
-template <typename Token>
-inline bool lexical_analyzer<Token>::is_eol() const
+inline bool lexical_analyzer::is_eol() const
 {
     return my_token.type == token_type::traits::type::eol;
 }
 
-template <typename Token>
-inline bool lexical_analyzer<Token>::is_eos() const
+inline bool lexical_analyzer::is_eos() const
 {
     return my_token.type == token_type::traits::type::eos;
 }
 
-template <typename Token>
-inline typename codepoints_type lexical_analyzer<Token>::lexeme_to_codepoints() const
+inline typename codepoints_type lexical_analyzer::lexeme_to_codepoints() const
 {
     return my_token.codepoints(my_start_content);
 }
 
-template <typename Token>
-inline typename codepoints_type lexical_analyzer<Token>::lexeme_to_codepoints(const typename lexical_analyzer<Token>::token_type& token) const
+inline typename codepoints_type lexical_analyzer::lexeme_to_codepoints(const typename lexical_analyzer::token_type& token) const
 {
     return token.codepoints(my_start_content);
 }
 
-template <typename Token>
-inline string_type lexical_analyzer<Token>::lexeme_to_string() const
+inline string_type lexical_analyzer::lexeme_to_string() const
 {
     return my_token.to_string(my_start_content);
 }
 
-template <typename Token>
-inline string_type lexical_analyzer<Token>::lexeme_to_string(const typename lexical_analyzer<Token>::token_type& token) const
+inline string_type lexical_analyzer::lexeme_to_string(const typename lexical_analyzer::token_type& token) const
 {
     return token.to_string(my_start_content);
 }
 
-template <typename Token>
-inline void lexical_analyzer<Token>::take_snapshot()
+inline void lexical_analyzer::take_snapshot()
 {
     my_snapshots.push(my_ptr);
 }
 
-template <typename Token>
-inline void lexical_analyzer<Token>::rewind_to_snapshot()
+inline void lexical_analyzer::rewind_to_snapshot()
 {
     if(!my_snapshots.empty())
     {
@@ -168,7 +153,9 @@ inline void lexical_analyzer<Token>::rewind_to_snapshot()
         my_snapshots.pop();
 
         my_token.reset();
-        my_tokens.clear();
+
+        tokens_type empty;
+        std::swap(my_tokens, empty);
     }
 }
 
@@ -177,7 +164,5 @@ END_NAMESPACE
 #define CURRENT_LOCATION                                                                                                                \
     (*my_content).get_line_number(std::ptrdiff_t(std::ptrdiff_t(my_ptr - my_start_content) - std::ptrdiff_t(my_ptr - my_ptr_lexeme))),  \
     (*my_content).get_column_number(std::ptrdiff_t(std::ptrdiff_t(my_ptr - my_start_content) - std::ptrdiff_t(my_ptr - my_ptr_lexeme)))
-
-#include <frontend\lexical_analyzer\lexical_analyzer.inl>
 
 #endif // __LEXICAL_ANALYZER_H__

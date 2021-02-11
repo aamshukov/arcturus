@@ -1,14 +1,11 @@
 //........................................................
 // Underground Intelligence (UI) Lab Inc. Arthur Amshukov.
 //........................................................
-#ifndef __SEMANTICS_INL__
-#define __SEMANTICS_INL__
-
-#pragma once
+#include <core/pch.hpp>
+#include <frontend/lexical_analyzer/token.hpp>
 
 BEGIN_NAMESPACE(frontend)
-USINGNAMESPACE(core)
+
+typename token_traits::enum_map_type token_traits::mapping;
 
 END_NAMESPACE
-
-#endif // __SEMANTICS_INL__

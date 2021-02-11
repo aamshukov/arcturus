@@ -366,6 +366,9 @@
     <ClInclude Include="..\src\arcturus\arcturus_ssa.hpp">
       <Filter>arcturus</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\arcturus\arcturus.hpp">
+      <Filter>arcturus</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\framework\core\logger.cpp">
@@ -524,28 +527,34 @@
     <ClCompile Include="..\src\arcturus\arcturus_ssa.cpp">
       <Filter>arcturus</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\framework\frontend\lexical_analyzer\token.cpp">
+      <Filter>framework\frontend\lexical_analyzer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\framework\frontend\lexical_analyzer\lexical_analyzer.cpp">
+      <Filter>framework\frontend\lexical_analyzer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\framework\symtable\symbol_table.cpp">
+      <Filter>framework\symtable</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\framework\frontend\parser\parser.cpp">
+      <Filter>framework\frontend\parser</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\framework\frontend\parser\recursive_descent_parser.cpp">
+      <Filter>framework\frontend\parser</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\framework\frontend\parser\packrat_parser.cpp">
+      <Filter>framework\frontend\parser</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\framework\frontend\semantics\semantics.cpp">
+      <Filter>framework\frontend\semantics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\src\framework\frontend\lexical_analyzer\lexical_analyzer.inl">
-      <Filter>framework\frontend\lexical_analyzer</Filter>
-    </None>
-    <None Include="..\src\framework\frontend\parser\recursive_descent_parser.inl">
-      <Filter>framework\frontend\parser</Filter>
-    </None>
-    <None Include="..\src\framework\frontend\parser\parser.inl">
-      <Filter>framework\frontend\parser</Filter>
-    </None>
-    <None Include="..\src\framework\symtable\symbol_table.inl">
-      <Filter>framework\symtable</Filter>
-    </None>
     <None Include="..\src\framework\frontend\type\type.inl">
       <Filter>framework\frontend\type</Filter>
     </None>
     <None Include="..\src\framework\ir\ir.inl">
       <Filter>framework\ir</Filter>
-    </None>
-    <None Include="..\src\framework\frontend\semantics\semantics.inl">
-      <Filter>framework\frontend\semantics</Filter>
     </None>
     <None Include="..\src\framework\ir\ir_visualization.inl">
       <Filter>framework\ir</Filter>
@@ -555,9 +564,6 @@
     </None>
     <None Include="..\src\tools\dsl\packrat.py">
       <Filter>tools\dsl</Filter>
-    </None>
-    <None Include="..\src\framework\frontend\parser\packrat_parser.inl">
-      <Filter>framework\frontend\parser</Filter>
     </None>
     <None Include="..\src\framework\ir\ssa.inl">
       <Filter>framework\ir</Filter>

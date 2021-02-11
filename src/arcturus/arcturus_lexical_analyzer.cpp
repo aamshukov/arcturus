@@ -40,7 +40,6 @@
 
 #include <frontend/lexical_analyzer/lexical_content.hpp>
 #include <frontend/lexical_analyzer/lexical_analyzer.hpp>
-#include <frontend/lexical_analyzer/lexical_analyzer.inl>
 
 #include <arcturus_token.hpp>
 #include <arcturus_lexical_analyzer.hpp>

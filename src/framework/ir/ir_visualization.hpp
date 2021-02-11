@@ -12,20 +12,20 @@ USINGNAMESPACE(core)
 USINGNAMESPACE(frontend)
 USINGNAMESPACE(symtable)
 
-template <typename Token, typename TreeTraits>
+template <typename TreeTraits>
 class ir_visualization : private noncopyable
 {
     public:
-        using symbol_type = grammar::symbol_type;
-        using symbols_type = grammar::symbols_type;
+        using symbol_type = typename grammar::symbol_type;
+        using symbols_type = typename grammar::symbols_type;
 
-        using set_type = frontend::symbol::set_type;
-        using sets_type = frontend::symbol::sets_type;
+        using set_type = typename frontend::symbol::set_type;
+        using sets_type = typename frontend::symbol::sets_type;
 
-        using rule_type = grammar::rule_type;
-        using rules_type = grammar::rules_type;
+        using rule_type = typename grammar::rule_type;
+        using rules_type = typename grammar::rules_type;
 
-        using ir_type = typename ir<Token, TreeTraits>;
+        using ir_type = typename ir<TreeTraits>;
         using token_type = typename ir_type::token_type;
         using tree_traits_type = typename ir_type::tree_traits_type;
 

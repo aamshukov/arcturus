@@ -12,8 +12,8 @@ USINGNAMESPACE(core)
 class rule
 {
     public:
-        using symbol_type = symbol::symbol_type;
-        using symbols_type = symbol::symbols_type;
+        using symbol_type = typename symbol::symbol_type;
+        using symbols_type = typename symbol::symbols_type;
 
         enum class flag : uint64_t
         {

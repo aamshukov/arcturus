@@ -13,16 +13,16 @@ USINGNAMESPACE(symtable)
 USINGNAMESPACE(frontend)
 USINGNAMESPACE(backend)
 
-template <typename Token, typename OpCodeTraits>
+template <typename OpCodeTraits>
 class controller : private noncopyable
 {
     public:
-        using token_type = Token;
+        using token_type = token<token_traits>;
         using traits_type = OpCodeTraits;
 
-        using parser_type = std::shared_ptr<parser<token_type>>;
+        using parser_type = std::shared_ptr<parser>;
 
-        using ir_type = std::shared_ptr<ir<token_type>>; //??
+        using ir_type = std::shared_ptr<ir<int>>; //??
 
         using context_type = std::shared_ptr<context>;
 
@@ -57,22 +57,22 @@ class controller : private noncopyable
         virtual                ~controller();
 };
 
-template <typename Token, typename OpCodeTraits>
-controller<Token, OpCodeTraits>::controller(const parser_type& parser,
-                                      const ir_type& ir,
-                                      const passes_type& passes,
-                                      const codegen_type& codegen,
-                                      const context_type& context)
-                 : my_parser(parser),
-                   my_ir(ir),
-                   my_passes(passes),
-                   my_codegen(codegen),
-                   my_context(context)
+template <typename OpCodeTraits>
+controller<OpCodeTraits>::controller(const parser_type& parser,
+                                     const ir_type& ir,
+                                     const passes_type& passes,
+                                     const codegen_type& codegen,
+                                     const context_type& context)
+                        : my_parser(parser),
+                          my_ir(ir),
+                          my_passes(passes),
+                          my_codegen(codegen),
+                          my_context(context)
 {
 }                 
 
-template <typename Token, typename OpCodeTraits>
-controller<Token, OpCodeTraits>::~controller()
+template <typename OpCodeTraits>
+controller<OpCodeTraits>::~controller()
 {
 }
 

@@ -11,10 +11,10 @@ BEGIN_NAMESPACE(arcturus)
 USINGNAMESPACE(core)
 USINGNAMESPACE(frontend)
 
-class arcturus_parse_context : public parse_context<arcturus_token>
+class arcturus_parse_context : public parse_context
 {
     public:
-        using tree_type = parse_tree_base<arcturus_token>;
+        using tree_type = typename parse_context::tree_type;
 
     private:
         // extra data

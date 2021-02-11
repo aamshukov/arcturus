@@ -12,16 +12,16 @@ USINGNAMESPACE(core)
 class grammar_algorithm : private noncopyable
 {
     public:
-        using symbol_type = grammar::symbol_type;
-        using symbols_type = grammar::symbols_type;
+        using symbol_type = typename grammar::symbol_type;
+        using symbols_type = typename grammar::symbols_type;
 
-        using pool_type = grammar::pool_type;
+        using pool_type = typename grammar::pool_type;
 
-        using rule_type = grammar::rule_type;
-        using rules_type = grammar::rules_type;
+        using rule_type = typename grammar::rule_type;
+        using rules_type = typename grammar::rules_type;
 
-        using set_type = grammar::set_type;
-        using sets_type = grammar::sets_type;
+        using set_type = typename grammar::set_type;
+        using sets_type = typename grammar::sets_type;
 
     public:
         static void         create_production_combinations(const symbols_type& rhs,

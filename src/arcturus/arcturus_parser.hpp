@@ -11,12 +11,11 @@ BEGIN_NAMESPACE(arcturus)
 USINGNAMESPACE(core)
 USINGNAMESPACE(frontend)
 
-class arcturus_parser : public recursive_descent_parser<arcturus_token>
+class arcturus_parser : public recursive_descent_parser
 {
     public:
-        using token_type = arcturus_token;
-
-        using lexical_analyzer_type = typename parser<token_type>::lexical_analyzer_type;
+        using token_type = typename recursive_descent_parser::token_type;
+        using lexical_analyzer_type = typename recursive_descent_parser::lexical_analyzer_type;
 
     private:
         void    parse() override;

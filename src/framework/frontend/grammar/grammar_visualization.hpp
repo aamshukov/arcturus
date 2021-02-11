@@ -12,14 +12,14 @@ USINGNAMESPACE(core)
 class grammar_visualization : private noncopyable
 {
     public:
-        using symbol_type = grammar::symbol_type;
-        using symbols_type = grammar::symbols_type;
+        using symbol_type = typename grammar::symbol_type;
+        using symbols_type = typename grammar::symbols_type;
 
-        using set_type = grammar::set_type;
-        using sets_type = grammar::sets_type;
+        using set_type = typename grammar::set_type;
+        using sets_type = typename grammar::sets_type;
 
-        using rule_type = grammar::rule_type;
-        using rules_type = grammar::rules_type;
+        using rule_type = typename grammar::rule_type;
+        using rules_type = typename grammar::rules_type;
 
     public:
         static string_type  decorate_set(const set_type& set, bool add_brackets = true);

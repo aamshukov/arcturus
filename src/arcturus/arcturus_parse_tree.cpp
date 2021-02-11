@@ -25,7 +25,6 @@
 
 #include <frontend/lexical_analyzer/lexical_content.hpp>
 #include <frontend/lexical_analyzer/lexical_analyzer.hpp>
-#include <frontend/lexical_analyzer/lexical_analyzer.inl>
 
 #include <frontend/type/type.hpp>
 #include <frontend/type/type.inl>
