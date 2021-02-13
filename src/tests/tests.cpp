@@ -2391,5 +2391,174 @@ namespace tests
 
                 Logger::WriteMessage(("Build SSA form:       " + std::to_string(elapsed)).c_str());
             }
+
+            TEST_METHOD(BuildDisjointSets)
+            {
+                std::shared_ptr<graph<dominator_vertex>> gr(factory::create<graph<dominator_vertex>>());
+
+                const auto& b1 = *(*gr).add_vertex(factory::create<dominator_vertex>(11, L"B1")).first;
+                const auto& b2 = *(*gr).add_vertex(factory::create<dominator_vertex>(12, L"B2")).first;
+                const auto& b3 = *(*gr).add_vertex(factory::create<dominator_vertex>(13, L"B3")).first;
+                const auto& b4 = *(*gr).add_vertex(factory::create<dominator_vertex>(14, L"B4")).first;
+                const auto& b5 = *(*gr).add_vertex(factory::create<dominator_vertex>(15, L"B5")).first;
+                const auto& b6 = *(*gr).add_vertex(factory::create<dominator_vertex>(16, L"B6")).first;
+
+                using vertex_type = std::shared_ptr<dominator_vertex>;
+                using vertices_type = std::set<vertex_type, vertex_lt_key_comparator<dominator_vertex>>;
+
+                disjoint_sets<vertices_type, vertex_type> ds((*gr).vertices());
+
+                Assert::IsTrue(ds.find(b1) != ds.find(b2));
+
+                ds.union_sets(b1, b2);
+                Assert::IsTrue(ds.find(b1) == ds.find(b2));
+
+                ds.union_sets(b3, b4);
+                ds.union_sets(b2, b3);
+                Assert::IsTrue(ds.find(b1) == ds.find(b4));
+            }
+
+            TEST_METHOD(BuildDisjointSetsInteger)
+            {
+                const int n = 10000; // even
+
+                std::vector<int> rands;
+
+                std::srand((unsigned int)std::time(nullptr));
+
+                for(auto k = 0; k < n; k++)
+                {
+                    rands.emplace_back(std::rand() % n);
+                }
+
+                std::vector<int> numbers(rands.begin(), rands.end());
+
+                disjoint_sets<std::vector<int>, int> ds(numbers);
+
+                for(auto k = 0; k < n; k += 2)
+                {
+                    ds.union_sets(rands[k + 0], rands[k + 1]);
+                    Assert::IsTrue(ds.find(rands[k + 0]) == ds.find(rands[k + 1]));
+                }
+
+                for(auto k = 0; k < n; k++)
+                {
+                    ds.find(rands[k]);
+                }
+            }
+
+            TEST_METHOD(BuildDisjointSetsIntegerSedgewick)
+            {
+                std::vector<int> numbers { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+                disjoint_sets<std::vector<int>, int> ds(numbers);
+
+                ds.union_sets(4, 3);
+                ds.union_sets(3, 8);
+                ds.union_sets(6, 5);
+                ds.union_sets(9, 4);
+                ds.union_sets(2, 1);
+                ds.union_sets(5, 0);
+                ds.union_sets(7, 2);
+                ds.union_sets(6, 1);
+
+                Assert::IsTrue(ds.find(4) == ds.find(3));
+                Assert::IsTrue(ds.find(3) == ds.find(8));
+                Assert::IsTrue(ds.find(6) == ds.find(5));
+                Assert::IsTrue(ds.find(9) == ds.find(4));
+                Assert::IsTrue(ds.find(2) == ds.find(1));
+                Assert::IsTrue(ds.find(5) == ds.find(0));
+                Assert::IsTrue(ds.find(7) == ds.find(2));
+                Assert::IsTrue(ds.find(6) == ds.find(1));
+
+                Assert::IsTrue(ds.count() == 2);
+            }
+
+            void populate(std::vector<int>& numbers, std::size_t n)
+            {
+                numbers.reserve(n);
+
+                for(auto k = 0; k < n; k++)
+                {
+                    numbers.emplace_back(k);
+                }
+            }
+
+            void read_data(const std::string& filename, std::vector<std::pair<int, int>>& data)
+            {
+                std::ifstream stream;
+
+                stream.open(filename);
+
+                if(stream.is_open() && !stream.bad() && !stream.fail())
+                {
+                    int a, b;
+
+                    while(stream >> a >> b)
+                    {
+                        data.push_back(std::make_pair(a, b));
+                    }
+                }
+            }
+
+            TEST_METHOD(BuildDisjointSetsIntegerSedgewickTiny)
+            {
+                std::vector<int> numbers;
+
+                populate(numbers, 10);
+
+                disjoint_sets<std::vector<int>, int> ds(numbers);
+
+                std::vector<std::pair<int, int>> data;
+
+                read_data(R"(..\..\..\..\src\tests\tiny_ds.txt)", data);
+
+                for(const auto& d : data)
+                {
+                    ds.union_sets(d.first, d.second);
+                }
+
+                Assert::IsTrue(ds.count() == 2);
+            }
+
+            TEST_METHOD(BuildDisjointSetsIntegerSedgewickMedium)
+            {
+                std::vector<int> numbers;
+
+                populate(numbers, 625);
+
+                disjoint_sets<std::vector<int>, int> ds(numbers);
+
+                std::vector<std::pair<int, int>> data;
+
+                read_data(R"(..\..\..\..\src\tests\medium_ds.txt)", data);
+
+                for(const auto& d : data)
+                {
+                    ds.union_sets(d.first, d.second);
+                }
+
+                Assert::IsTrue(ds.count() == 3);
+            }
+
+            TEST_METHOD(BuildDisjointSetsIntegerSedgewickLarge)
+            {
+                std::vector<int> numbers;
+
+                populate(numbers, 1000000);
+
+                disjoint_sets<std::vector<int>, int> ds(numbers);
+
+                std::vector<std::pair<int, int>> data;
+
+                read_data(R"(..\..\..\..\src\tests\large_ds.txt)", data);
+
+                for(const auto& d : data)
+                {
+                    ds.union_sets(d.first, d.second);
+                }
+
+                Assert::IsTrue(ds.count() == 6);
+            }
     };
 }

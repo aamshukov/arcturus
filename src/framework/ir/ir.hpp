@@ -64,7 +64,7 @@ class ir : private noncopyable
 //
 //                for(auto e : key)
 //                {
-//                    result ^= std::hash<std::size_t>{}(static_cast<std::size_t>(std::get<0>(e))) + 0x9E3779B9 + (result << 6) + (result >> 2); // aka boost hash_combine
+//                    result ^= combine_hash(static_cast<std::size_t>(std::get<0>(e)); //??
 //                }
 //
 //                return result;

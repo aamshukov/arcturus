@@ -35,8 +35,10 @@ class dag : private noncopyable
 
         using kids_type = std::set<dag_type, dag_key_comparator>;
 
+        using id_type = size_type;
+
     protected:
-        std::size_t         my_id; // key
+        id_type             my_id; // key
 
         dags_type           my_papas; // parents
         kids_type           my_kids;
@@ -47,8 +49,8 @@ class dag : private noncopyable
                             dag();
         virtual            ~dag() = 0;
 
-        std::size_t         id() const;
-        std::size_t&        id();
+        id_type             id() const;
+        id_type&            id();
 
         const dags_type&    papas() const;
         dags_type&          papas();
@@ -60,12 +62,12 @@ class dag : private noncopyable
         flags_type&         flags();
 };
 
-inline std::size_t dag::id() const
+inline typename dag::id_type dag::id() const
 {
     return my_id;
 }
 
-inline std::size_t& dag::id()
+inline typename dag::id_type& dag::id()
 {
     return my_id;
 }

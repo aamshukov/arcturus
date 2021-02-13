@@ -27,7 +27,11 @@ class tree : private noncopyable
 
         using flags_type = flag;
 
+        using id_type = size_type;
+
     protected:
+        id_type             my_id; // key
+
         tree_type           my_papa; // parent
         trees_type          my_kids;
 
@@ -36,6 +40,9 @@ class tree : private noncopyable
     public:
                             tree();
         virtual            ~tree() = 0;
+
+        id_type             id() const;
+        id_type&            id();
 
         const tree_type&    papa() const;
         tree_type&          papa();
@@ -46,6 +53,16 @@ class tree : private noncopyable
         const flags_type&   flags() const;
         flags_type&         flags();
 };
+
+inline typename tree::id_type tree::id() const
+{
+    return my_id;
+}
+
+inline typename tree::id_type& tree::id()
+{
+    return my_id;
+}
 
 inline const typename tree::tree_type& tree::papa() const
 {

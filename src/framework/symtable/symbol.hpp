@@ -143,10 +143,10 @@ struct symbol_eq_key_comparator
 struct symbol_hash
 {
     using symbol_type = std::shared_ptr<symbol>;
-    std::size_t operator () (const symbol_type& symbol) const
+    size_type operator () (const symbol_type& symbol) const
     {
-        std::size_t result = (*symbol).id();
-        result ^= std::hash<std::size_t>{}(result + 0x9E3779B9 + (result << 6) + (result >> 2)); // aka boost hash_combine
+        size_type result = (*symbol).id();
+        result ^= combine_hash(result);
         return result;
     }
 };

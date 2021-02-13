@@ -42,7 +42,7 @@ class edge : private noncopyable
 
         using value_type = TValue; // edge value, might be weight
 
-        using id_type = std::size_t;
+        using id_type = size_type;
 
     private:
         id_type                 my_id;

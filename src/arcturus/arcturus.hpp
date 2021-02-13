@@ -10,6 +10,7 @@
 #include <core/visitor.hpp>
 
 #include <core/bitset.hpp>
+#include <core/disjoint_sets.hpp>
 
 #include <core/list.hpp>
 #include <core/tree.hpp>

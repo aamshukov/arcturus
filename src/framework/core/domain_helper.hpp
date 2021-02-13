@@ -190,6 +190,10 @@ constexpr T integer_log2(T n)
     return ((n < 2) ? 1 : 1 + integer_log2<T>(n / 2));
 }
 
+inline size_type combine_hash(size_type number)
+{
+    return std::hash<size_type>{}(number + 0x9E3779B9 + (number << 6) + (number >> 2)); // aka boost hash_combine
+}
 
 bool is_little_endian();
 bool is_big_endian();
