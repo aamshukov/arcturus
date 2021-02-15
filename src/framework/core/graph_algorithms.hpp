@@ -56,6 +56,9 @@ class graph_algorithms : private noncopyable
         static void         flat_to_vector(const graph_type& graph, std::vector<vertex_type>& result_vector);
 
         static void         dfs_preorder_to_vector(const graph_type& graph, std::vector<vertex_type>& result_vector);
+        static void         dfs_postorder_to_vector(const graph_type& graph, std::vector<vertex_type>& result_vector);
+        static void         dfs_reverse_postorder_to_vector(const graph_type& graph, std::vector<vertex_type>& result_vector); // topological
+
         static void         dfs_postorder_to_vector(const dominance_tree_type& tree, std::vector<dominance_tree_type>& result_vector);
 
         static void         compute_dominators(graph_type& graph);
@@ -103,39 +106,120 @@ void graph_algorithms<TVertex, TEdgeValue, N>::dfs_preorder_to_vector(const type
     //
     //  3. To make the iterative DFS yield the same result as the recursive one - you need to add elements to the stack in reverse order
     //     [for each node, insert its last child first and its first child last]
-    std::vector<vertex_type> vertices;
-
-    vertices.reserve((*graph).vertices().size());
-
-    std::stack<vertex_type> stack;
-
-    stack.push((*graph).root());
-
-    while(!stack.empty())
+    if(!(*graph).vertices().empty() && (*graph).digraph())
     {
-        auto vertex(stack.top());
-        stack.pop();
+        std::vector<vertex_type> vertices;
 
-        if(((*vertex).flags() & vertex::flag::visited) == vertex::flag::visited)
+        vertices.reserve((*graph).vertices().size());
+
+        std::stack<std::pair<vertex_type, bool>> stack; // holds pairs of vertex and flag (post processing or continue traverse)
+                                                        // for this pre-order traversal this <vertex, flag> pair can be avoided and just vertex can be pushed
+        stack.push(std::make_pair((*graph).root(), false));
+
+        while(!stack.empty())
         {
-            continue;
-        }
+            auto entry(stack.top());
+            stack.pop();
 
-        (*vertex).flags() |= vertex::flag::visited;
+            auto vertex(entry.first);
 
-        vertices.emplace_back(std::dynamic_pointer_cast<vertex_type::element_type>(vertex)); // 1 ... faster
-        //vertices.emplace(vertices.begin(), std::dynamic_pointer_cast<vertex_type::element_type>(vertex)); // 3 ...
-
-        for(const auto& adjacent : (*vertex).adjacencies())
-        {
-            if(((*adjacent).flags() & vertex::flag::visited) != vertex::flag::visited)
+            if(entry.second) // enqueue papa ... then all kids to be processed
             {
-                stack.push(std::dynamic_pointer_cast<vertex_type::element_type>(adjacent));
+                vertices.emplace_back(std::dynamic_pointer_cast<vertex_type::element_type>(vertex));
+            }
+            else
+            {
+                if(((*vertex).flags() & vertex::flag::visited) != vertex::flag::visited)
+                {
+                    (*vertex).flags() |= vertex::flag::visited;
+
+                    for(auto it = (*vertex).adjacencies().rbegin(); it != (*vertex).adjacencies().rend(); ++it) // 3 ... add elements to the stack in reverse order
+                    {
+                        auto& adjacent(*it);
+                        stack.push(std::make_pair(std::dynamic_pointer_cast<vertex_type::element_type>(adjacent), false));
+                    }
+
+                    stack.push(std::make_pair(vertex, true)); // 3 ... add elements to the stack in reverse order
+                }
             }
         }
-    }
 
-    result_vector.swap(vertices);
+        result_vector.swap(vertices);
+    }
+}
+
+template <typename TVertex, typename TEdgeValue, std::size_t N>
+void graph_algorithms<TVertex, TEdgeValue, N>::dfs_postorder_to_vector(const typename graph_algorithms<TVertex, TEdgeValue, N>::graph_type& graph,
+                                                                       std::vector<typename graph_algorithms<TVertex, TEdgeValue, N>::vertex_type>& result_vector)
+{
+    // mimics recursive version ...
+    //      (*vertex).flags() |= vertex::flag::visited;
+    //      
+    //      for(auto adjacent : (*vertex).adjacencies())
+    //      {
+    //          if(((*adjacent).flags() & vertex::flag::visited) != vertex::flag::visited)
+    //          {
+    //              dfs_postorder_to_vector(graph, std::dynamic_pointer_cast<vertex_type::element_type>(adjacent), result_vector);
+    //          }
+    //      }
+    //      
+    //      result_vector.emplace_back(std::dynamic_pointer_cast<vertex_type::element_type>(vertex));
+    //
+    if(!(*graph).vertices().empty() && (*graph).digraph())
+    {
+        std::vector<vertex_type> vertices;
+
+        vertices.reserve((*graph).vertices().size());
+
+        std::stack<std::pair<vertex_type, bool>> stack; // holds pairs of vertex and flag (post processing or continue traverse)
+
+        stack.push(std::make_pair((*graph).root(), false));
+
+        while(!stack.empty())
+        {
+            auto entry(stack.top());
+            stack.pop();
+
+            auto vertex(entry.first);
+
+            if(entry.second) // all kids have been processed ...  enqueue papa
+            {
+                vertices.emplace_back(std::dynamic_pointer_cast<vertex_type::element_type>(vertex));
+            }
+            else
+            {
+                if(((*vertex).flags() & vertex::flag::visited) != vertex::flag::visited)
+                {
+                    (*vertex).flags() |= vertex::flag::visited;
+
+                    stack.push(std::make_pair(vertex, true)); // 3 ... add elements to the stack in reverse order
+
+                    for(auto it = (*vertex).adjacencies().rbegin(); it != (*vertex).adjacencies().rend(); ++it) // 3 ... add elements to the stack in reverse order
+                    {
+                        auto& adjacent(*it);
+                        stack.push(std::make_pair(std::dynamic_pointer_cast<vertex_type::element_type>(adjacent), false));
+                    }
+                }
+            }
+        }
+
+        result_vector.swap(vertices);
+    }
+}
+
+template <typename TVertex, typename TEdgeValue, std::size_t N>
+void graph_algorithms<TVertex, TEdgeValue, N>::dfs_reverse_postorder_to_vector(const typename graph_algorithms<TVertex, TEdgeValue, N>::graph_type& graph,
+                                                                               std::vector<typename graph_algorithms<TVertex, TEdgeValue, N>::vertex_type>& result_vector)
+{
+    std::vector<vertex_type> vertices;
+
+    dfs_postorder_to_vector(graph, vertices);
+
+    if(!vertices.empty())
+    {
+        std::reverse(std::begin(vertices), std::end(vertices));
+        result_vector.swap(vertices);
+    }
 }
 
 template <typename TVertex, typename TEdgeValue, std::size_t N>

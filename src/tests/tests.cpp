@@ -2560,5 +2560,64 @@ namespace tests
 
                 Assert::IsTrue(ds.count() == 6);
             }
+
+            TEST_METHOD(GraphDfsTraversals)
+            {
+                std::shared_ptr<graph<vertex>> graph(factory::create<graph<vertex>>());
+
+                const auto& a = *(*graph).add_vertex(factory::create<dominator_vertex>(1, L"A")).first;
+                const auto& x = *(*graph).add_vertex(factory::create<dominator_vertex>(2, L"X")).first;
+                const auto& c = *(*graph).add_vertex(factory::create<dominator_vertex>(3, L"C")).first;
+                const auto& b = *(*graph).add_vertex(factory::create<dominator_vertex>(4, L"B")).first;
+                const auto& e = *(*graph).add_vertex(factory::create<dominator_vertex>(5, L"E")).first;
+                const auto& d = *(*graph).add_vertex(factory::create<dominator_vertex>(6, L"D")).first;
+
+                (*graph).add_edge(a, x, 0.0);
+                (*graph).add_edge(a, c, 0.0);
+                (*graph).add_edge(a, b, 0.0);
+
+                (*graph).add_edge(x, b, 0.0);
+
+                (*graph).add_edge(c, b, 0.0);
+                (*graph).add_edge(c, e, 0.0);
+
+                (*graph).add_edge(b, d, 0.0);
+
+                (*graph).add_edge(e, d, 0.0);
+
+                (*graph).root() = a;
+
+                graph_algorithms<vertex>::generate_graphviz_file(graph, LR"(d:\tmp\GraphDfsTraversals.dot)", false);
+
+                std::for_each((*graph).vertices().begin(), (*graph).vertices().end(), [](auto& vertex){ (*vertex).flags() = vertex::flag::clear; });
+                std::vector<typename graph_algorithms<vertex>::vertex_type> dfs_preorder;
+                graph_algorithms<vertex>::dfs_preorder_to_vector(graph, dfs_preorder);
+                Assert::IsTrue((*dfs_preorder[0]).label() == L"A" &&
+                               (*dfs_preorder[1]).label() == L"X" && 
+                               (*dfs_preorder[2]).label() == L"B" && 
+                               (*dfs_preorder[3]).label() == L"D" && 
+                               (*dfs_preorder[4]).label() == L"C" && 
+                               (*dfs_preorder[5]).label() == L"E");
+
+                std::for_each((*graph).vertices().begin(), (*graph).vertices().end(), [](auto& vertex){ (*vertex).flags() = vertex::flag::clear; });
+                std::vector<typename graph_algorithms<vertex>::vertex_type> dfs_postorder;
+                graph_algorithms<vertex>::dfs_postorder_to_vector(graph, dfs_postorder);
+                Assert::IsTrue((*dfs_postorder[0]).label() == L"D" &&
+                               (*dfs_postorder[1]).label() == L"B" && 
+                               (*dfs_postorder[2]).label() == L"X" && 
+                               (*dfs_postorder[3]).label() == L"E" && 
+                               (*dfs_postorder[4]).label() == L"C" && 
+                               (*dfs_postorder[5]).label() == L"A");
+
+                std::for_each((*graph).vertices().begin(), (*graph).vertices().end(), [](auto& vertex){ (*vertex).flags() = vertex::flag::clear; });
+                std::vector<typename graph_algorithms<vertex>::vertex_type> dfs_reverse_postorder;
+                graph_algorithms<vertex>::dfs_reverse_postorder_to_vector(graph, dfs_reverse_postorder);
+                Assert::IsTrue((*dfs_reverse_postorder[0]).label() == L"A" &&
+                               (*dfs_reverse_postorder[1]).label() == L"C" && 
+                               (*dfs_reverse_postorder[2]).label() == L"E" && 
+                               (*dfs_reverse_postorder[3]).label() == L"X" && 
+                               (*dfs_reverse_postorder[4]).label() == L"B" && 
+                               (*dfs_reverse_postorder[5]).label() == L"D");
+            }
     };
 }
