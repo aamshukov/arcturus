@@ -14,7 +14,6 @@ class diagnostics : public singleton<diagnostics>
         using status_type = status;
 
         using data_type = std::vector<status_type>;
-        using size_type = std::size_t;
 
         using message_template_key_type = uint64_t;
         using message_templates_type = std::unordered_map<message_template_key_type, string_type>;
@@ -23,7 +22,7 @@ class diagnostics : public singleton<diagnostics>
         data_type                       my_data;
         bool                            my_state; // quick state check, true - valid (continue), false - erroneous
 
-        size_type                       my_spurious_errors; // how many spurious error before termination
+        std::size_t                     my_spurious_errors; // how many spurious error before termination
 
         message_templates_type          my_message_templates;
 
@@ -40,8 +39,8 @@ class diagnostics : public singleton<diagnostics>
         bool                            state() const;
         bool&                           state();
 
-        size_type                       spurious_errors() const;
-        size_type&                      spurious_errors();
+        std::size_t                     spurious_errors() const;
+        std::size_t&                    spurious_errors();
 
         const message_templates_type&   message_templates() const;
         message_templates_type&         message_templates();
@@ -117,12 +116,12 @@ inline bool& diagnostics::state()
     return my_state;
 }
 
-inline typename diagnostics::size_type diagnostics::spurious_errors() const
+inline std::size_t diagnostics::spurious_errors() const
 {
     return my_spurious_errors;
 }
 
-inline typename diagnostics::size_type& diagnostics::spurious_errors()
+inline std::size_t& diagnostics::spurious_errors()
 {
     return my_spurious_errors;
 }

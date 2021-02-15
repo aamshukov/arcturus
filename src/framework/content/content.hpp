@@ -21,7 +21,7 @@ class content : private noncopyable
         source_type         my_source;
 
         data_type           my_data;
-        size_type           my_count;
+        std::size_t         my_count;
 
     public:
                             content(const id_type& id, const source_type& source);
@@ -34,7 +34,7 @@ class content : private noncopyable
         source_type&        source();
 
         const datum_type*   data() const;
-        size_type           count() const;
+        std::size_t         count() const;
 
         virtual bool        load(data_provider& provider);
 };
@@ -71,7 +71,7 @@ inline const datum_type* content::data() const
     return result;
 }
 
-inline size_type content::count() const
+inline std::size_t content::count() const
 {
     return my_count;
 }

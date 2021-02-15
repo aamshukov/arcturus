@@ -32,9 +32,9 @@ template <typename TVertex>
 struct vertex_hash
 {
     using vertex_type = std::shared_ptr<TVertex>;
-    size_type operator () (const vertex_type& vertex) const
+    std::size_t operator () (const vertex_type& vertex) const
     {
-        size_type result = (*vertex).id();
+        std::size_t result = (*vertex).id();
         result ^= combine_hash(result);
         return result;
     }
@@ -59,7 +59,7 @@ class vertex : public visitable
 
         using flags_type = flag;
 
-        using id_type = size_type;
+        using id_type = std::size_t;
 
     protected:
         id_type                 my_id;
@@ -69,7 +69,7 @@ class vertex : public visitable
 
         flags_type              my_flags;
 
-        size_type               my_ref_count; // if the vertex is referenced by another vertices
+        std::size_t             my_ref_count; // if the vertex is referenced by another vertices
 
     public:
                                 vertex(const id_type& id, const string_type& label = empty_string());
@@ -87,9 +87,9 @@ class vertex : public visitable
         const flags_type&       flags() const;
         flags_type&             flags();
 
-        size_type               ref_count() const;
-        size_type               add_ref();
-        size_type               release();
+        std::size_t             ref_count() const;
+        std::size_t             add_ref();
+        std::size_t             release();
 
         ACCEPT_METHOD;
 };
@@ -144,17 +144,17 @@ inline typename vertex::flags_type& vertex::flags()
     return my_flags;
 }
 
-inline size_type vertex::ref_count() const
+inline std::size_t vertex::ref_count() const
 {
     return my_ref_count;
 }
 
-inline size_type vertex::add_ref()
+inline std::size_t vertex::add_ref()
 {
     return ++my_ref_count;
 }
 
-inline size_type vertex::release()
+inline std::size_t vertex::release()
 {
     if(my_ref_count > 0)
     {

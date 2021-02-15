@@ -82,13 +82,13 @@ string_type fsa_state_set::decorate() const
 {
     string_type result;
 
-    std::vector<uint32_t> states;
+    std::vector<std::size_t> states;
 
     std::for_each(my_states.begin(), my_states.end(), [&states](const auto& state_kvp) { states.emplace_back(state_kvp.first); });
 
     std::sort(states.begin(), states.end(), [] (auto id1, auto id2) { return id1 < id2; });
 
-    std::for_each(states.begin(), states.end(), [&states, &result](uint32_t state) { result += L" " + std::to_wstring(state); });
+    std::for_each(states.begin(), states.end(), [&states, &result](std::size_t state) { result += L" " + std::to_wstring(state); });
 
     return result;
 }
@@ -99,14 +99,14 @@ bool operator == (const fsa_state_set& lhs, const fsa_state_set& rhs)
 
     if(result)
     {
-        std::vector<std::pair<uint32_t, typename fsa_state_set::state_type>> lhs_vector(lhs.states().begin(), lhs.states().end());
+        std::vector<std::pair<std::size_t, typename fsa_state_set::state_type>> lhs_vector(lhs.states().begin(), lhs.states().end());
 
         std::sort(lhs_vector.begin(), lhs_vector.end(), [] (const auto& s1_kvp, const auto& s2_kvp)
                                                         {
                                                             return s1_kvp.first < s2_kvp.first;
                                                         });
 
-        std::vector<std::pair<uint32_t, typename fsa_state_set::state_type>> rhs_vector(rhs.states().begin(), rhs.states().end());
+        std::vector<std::pair<std::size_t, typename fsa_state_set::state_type>> rhs_vector(rhs.states().begin(), rhs.states().end());
 
         std::sort(rhs_vector.begin(), rhs_vector.end(), [] (const auto& s1_kvp, const auto& s2_kvp)
                                                         {

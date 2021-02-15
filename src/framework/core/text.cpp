@@ -5,7 +5,7 @@
 
 BEGIN_NAMESPACE(core)
 
-bool text::chars_to_codepoints(const char* chars, const size_type& chars_count, std::shared_ptr<datum_type[]>& codepoints, size_type& codepoints_count)
+bool text::chars_to_codepoints(const char* chars, const std::size_t& chars_count, std::shared_ptr<datum_type[]>& codepoints, std::size_t& codepoints_count)
 {
     codepoints_count = 0;
 
@@ -79,7 +79,7 @@ bool text::chars_to_codepoints(const char* chars, const size_type& chars_count, 
     return result;
 }
 
-codepoints_type text::chars_to_codepoints(const char* chars, const size_type& chars_count)
+codepoints_type text::chars_to_codepoints(const char* chars, const std::size_t& chars_count)
 {
     codepoints_type codepoints;
 
@@ -153,7 +153,7 @@ codepoints_type text::chars_to_codepoints(const char* chars, const size_type& ch
     return codepoints;
 }
 
-bool text::codepoints_to_chars(const datum_type* codepoints, const size_type& codepoints_count, std::shared_ptr<char[]>& chars, size_type& chars_count)
+bool text::codepoints_to_chars(const datum_type* codepoints, const std::size_t& codepoints_count, std::shared_ptr<char[]>& chars, std::size_t& chars_count)
 {
     chars_count = 0;
 
@@ -165,10 +165,10 @@ bool text::codepoints_to_chars(const datum_type* codepoints, const size_type& co
         const uint32_t** source_start(&source_start_aux);
         const uint32_t*  source_end(source_start_aux + codepoints_count);
 
-        size_type count = (codepoints_count + 1) * 6; // UTF-8 is a multibyte encoding able to encode the whole Unicode charset.
-                                                      // An encoded character takes between 1 and 4 bytes.
-                                                      // UTF-8 encoding supports longer byte sequences, up to 6 bytes,
-                                                      // but the biggest code point of Unicode 6.0 (U+10FFFF) only takes 4 bytes.
+        std::size_t count = (codepoints_count + 1) * 6; // UTF-8 is a multibyte encoding able to encode the whole Unicode charset.
+                                                        // An encoded character takes between 1 and 4 bytes.
+                                                        // UTF-8 encoding supports longer byte sequences, up to 6 bytes,
+                                                        // but the biggest code point of Unicode 6.0 (U+10FFFF) only takes 4 bytes.
 
         std::shared_ptr<char[]> buffer(new char[count]);
 
@@ -232,7 +232,7 @@ bool text::codepoints_to_chars(const datum_type* codepoints, const size_type& co
     return result;
 }
 
-bool text::string_to_codepoints0(const string_type& text, std::shared_ptr<datum_type[]>& codepoints, size_type& count)
+bool text::string_to_codepoints0(const string_type& text, std::shared_ptr<datum_type[]>& codepoints, std::size_t& count)
 {
     count = 0;
 
@@ -310,7 +310,7 @@ bool text::string_to_codepoints0(const string_type& text, std::shared_ptr<datum_
     return result;
 }
 
-bool text::codepoints_to_string0(const datum_type* codepoints, size_type count, string_type& result_text)
+bool text::codepoints_to_string0(const datum_type* codepoints, std::size_t count, string_type& result_text)
 {
     bool result = false;
 
@@ -320,7 +320,7 @@ bool text::codepoints_to_string0(const datum_type* codepoints, size_type count, 
         const uint32_t** source_start(&source_start_aux);
         const uint32_t*  source_end(source_start_aux + count);
 
-        size_type string_count = (count + 1) * 2;
+        std::size_t string_count = (count + 1) * 2;
 
         std::shared_ptr<uint16_t[]> buffer(new uint16_t[string_count]);
 
@@ -384,7 +384,7 @@ bool text::codepoints_to_string0(const datum_type* codepoints, size_type count, 
     return result;
 }
 
-bool text::string_to_codepoints(const string_type& text, std::shared_ptr<datum_type[]>& codepoints, size_type& count)
+bool text::string_to_codepoints(const string_type& text, std::shared_ptr<datum_type[]>& codepoints, std::size_t& count)
 {
     count = 0;
 
@@ -444,7 +444,7 @@ bool text::string_to_codepoints(const string_type& text, std::shared_ptr<datum_t
     return result;
 }
 
-bool text::codepoints_to_string(const datum_type* codepoints, size_type count, string_type& result_text)
+bool text::codepoints_to_string(const datum_type* codepoints, std::size_t count, string_type& result_text)
 {
     bool result = false;
 
@@ -487,7 +487,7 @@ bool text::codepoints_to_string(const datum_type* codepoints, size_type count, s
     return result;
 }
 
-string_type text::codepoints_to_string(const datum_type* codepoints, size_type count)
+string_type text::codepoints_to_string(const datum_type* codepoints, std::size_t count)
 {
     string_type result;
 
@@ -560,7 +560,7 @@ void text::trim(const string_type& text, const string_type& delimiters, string_t
     }
 
     // find right offset
-    size_type right_offset = text.size() - 1;
+    std::size_t right_offset = text.size() - 1;
 
     while(right_offset >= 0 && (delimiters.find(data[right_offset]) != string_type::npos))
     {
@@ -578,7 +578,7 @@ void text::split(const string_type& text, const string_type& delimiters, std::ve
 {
     const char_type* data(text.c_str());
 
-    size_type offset = 0;
+    std::size_t offset = 0;
 
     while(data[offset] != 0)
     {
@@ -587,8 +587,8 @@ void text::split(const string_type& text, const string_type& delimiters, std::ve
             offset++;
         }
 
-        size_type entry_start = offset;
-        size_type entry_length = 0;
+        std::size_t entry_start = offset;
+        std::size_t entry_length = 0;
         
         while(data[offset] != 0 && (delimiters.find(data[offset]) == string_type::npos)) // populate entry
         {

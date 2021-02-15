@@ -17,10 +17,10 @@ class disjoint_sets : private noncopyable
         using element_type = TElement;
         using elements_type = TElements;
 
-        using parents_type = std::vector<size_type>;
-        using ranks_type = std::vector<size_type>;
+        using parents_type = std::vector<std::size_t>;
+        using ranks_type = std::vector<std::size_t>;
 
-        using element_index_map_type = std::unordered_map<element_type, size_type>;
+        using element_index_map_type = std::unordered_map<element_type, std::size_t>;
 
     private:
         parents_type            my_parents;
@@ -28,15 +28,15 @@ class disjoint_sets : private noncopyable
 
         element_index_map_type  my_element_index_map;
 
-        size_type               my_count;
+        std::size_t             my_count;
 
     public:
         explicit                disjoint_sets(const elements_type& elements);
                                ~disjoint_sets();
 
-        size_type               count() const;
+        std::size_t             count() const;
 
-        size_type               find(const element_type& element);
+        std::size_t             find(const element_type& element);
         void                    union_sets(const element_type& element1, const element_type& element2);
 };
 
@@ -65,13 +65,13 @@ inline disjoint_sets<TElements, TElement>::~disjoint_sets()
 }
 
 template <typename TElements, typename TElement>
-inline size_type disjoint_sets<TElements, TElement>::count() const
+inline std::size_t disjoint_sets<TElements, TElement>::count() const
 {
     return my_count;
 }
 
 template <typename TElements, typename TElement>
-size_type disjoint_sets<TElements, TElement>::find(const typename disjoint_sets<TElements, TElement>::element_type& element)
+std::size_t disjoint_sets<TElements, TElement>::find(const typename disjoint_sets<TElements, TElement>::element_type& element)
 {
     auto r = my_element_index_map[element]; // get index
 

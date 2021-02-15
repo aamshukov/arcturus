@@ -14,7 +14,7 @@ struct token_traits
     DECLARE_ENUM
     (
         type,
-        uint32_t,
+        std::size_t,
         unknown = 0,
         epsilon = 5,
         ws,                                     //  6
@@ -188,7 +188,7 @@ struct token
     token_type      type;    // type of lexeme
 
     loc_type        offset;  // offset in context (absolute address)
-    uint32_t        length;  // length of lexeme
+    std::size_t     length;  // length of lexeme
 
     codepoints_type literal; // string or char literal (if unicode - always decoded), numeric value
 

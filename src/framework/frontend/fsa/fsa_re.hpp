@@ -57,19 +57,19 @@ class fsa_re : private noncopyable
 
         static bool         is_literal(datum_type ch);
 
-        static size_type    preprocess(const std::shared_ptr<datum_type[]>& infix_re,
-                                       size_type count,
+        static std::size_t  preprocess(const std::shared_ptr<datum_type[]>& infix_re,
+                                       std::size_t count,
                                        std::shared_ptr<datum_type[]>& processed_re);
 
         static bool         infix_to_postfix(const std::shared_ptr<datum_type[]>& infix_re,
-                                             size_type count,
+                                             std::size_t count,
                                              std::shared_ptr<datum_type[]>& postfix_refsa);
         static tree_type    postfix_to_tree(const std::shared_ptr<datum_type[]>& postfix_re,
                                             leaves_type& leaves,
                                             std::size_t& finalpos,
                                             std::size_t& terminals);
 
-        static string_type  postfix_re_to_string(const std::shared_ptr<datum_type[]>& postfix_re, size_type count);
+        static string_type  postfix_re_to_string(const std::shared_ptr<datum_type[]>& postfix_re, std::size_t count);
 
         static bool         process_combine(std::stack<fsa::fsa_type>& fragments);
         static bool         process_concatenate(std::stack<fsa::fsa_type>& fragments);
@@ -101,7 +101,7 @@ class fsa_re : private noncopyable
 
     public:
         static bool         re_to_fsa(const std::shared_ptr<datum_type[]>& re,
-                                      size_type count,
+                                      std::size_t count,
                                       token_type token,
                                       token_type escape_token,
                                       const string_type& escape_predicate,

@@ -17,7 +17,7 @@ struct arcturus_tree_traits
     DECLARE_ENUM
     (
         kind,
-        uint32_t,
+        std::size_t,
         unknown = 0,
 
         identifier = 100,

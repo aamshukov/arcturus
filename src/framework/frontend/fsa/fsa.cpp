@@ -83,7 +83,7 @@ bool fsa::add_state(const state_type& state)
     return result;
 }
 
-bool fsa::remove_state(uint32_t id)
+bool fsa::remove_state(std::size_t id)
 {
     log_info(L"Removing FSA state '%ld' ...", id);
 
@@ -248,7 +248,7 @@ bool fsa::combine(const fsa_type& fsa1, const fsa_type& fsa2, fsa_type& result_f
 
         fsa_type fsas [] = { fsa1, fsa2 };
 
-        using map_type = std::map<uint32_t, uint32_t>;
+        using map_type = std::map<std::size_t, std::size_t>;
 
         map_type map1;
         map_type map2;
@@ -267,7 +267,7 @@ bool fsa::combine(const fsa_type& fsa1, const fsa_type& fsa2, fsa_type& result_f
         (*fsa0).add_state(new_start_state);
         (*fsa0).start_state() = new_start_state;
 
-        for(size_type k = 0; k < array_size(fsas); k++)
+        for(std::size_t k = 0; k < array_size(fsas); k++)
         {
             auto& fsa = fsas[k];
             auto& map = *maps[k];
@@ -302,8 +302,8 @@ bool fsa::combine(const fsa_type& fsa1, const fsa_type& fsa2, fsa_type& result_f
             }
         }
 
-        uint32_t fsa1_s_id = map1.at((*(*fsa1).start_state()).id());
-        uint32_t fsa2_s_id = map2.at((*(*fsa2).start_state()).id());
+        std::size_t fsa1_s_id = map1.at((*(*fsa1).start_state()).id());
+        std::size_t fsa2_s_id = map2.at((*(*fsa2).start_state()).id());
 
         (*fsa0).add_transition((*fsa0).start_state(), (*fsa0).states().at(fsa1_s_id), fsa_transition::epsilon_predicate());
         (*fsa0).add_transition((*fsa0).start_state(), (*fsa0).states().at(fsa2_s_id), fsa_transition::epsilon_predicate());
@@ -336,7 +336,7 @@ bool fsa::combine(const std::vector<fsa_type>& fsas, fsa_type& result_fsa)
     {
         auto fsa0(factory::create<fsa>());
 
-        using map_type = std::map<uint32_t, uint32_t>;
+        using map_type = std::map<std::size_t, std::size_t>;
         using partition_type = std::vector<fsa::state_type>;
 
         std::vector<map_type> maps(fsas.size());
@@ -347,7 +347,7 @@ bool fsa::combine(const std::vector<fsa_type>& fsas, fsa_type& result_fsa)
         (*fsa0).add_state(new_start_state);
         (*fsa0).start_state() = new_start_state;
 
-        for(size_type k = 0; k < fsas.size(); k++)
+        for(std::size_t k = 0; k < fsas.size(); k++)
         {
             auto& fsa = fsas[k];
             auto& map = maps[k];
@@ -382,7 +382,7 @@ bool fsa::combine(const std::vector<fsa_type>& fsas, fsa_type& result_fsa)
                 }
             }
 
-            uint32_t fsa_s_id = map.at((*(*fsa).start_state()).id());
+            std::size_t fsa_s_id = map.at((*(*fsa).start_state()).id());
 
             (*fsa0).add_transition((*fsa0).start_state(), (*fsa0).states().at(fsa_s_id), fsa_transition::epsilon_predicate());
         }
@@ -423,7 +423,7 @@ bool fsa::concatenate(const fsa_type& fsa1, const fsa_type& fsa2, fsa_type& resu
 
         fsa_type fsas [] = { fsa1, fsa2 };
 
-        using map_type = std::map<uint32_t, uint32_t>;
+        using map_type = std::map<std::size_t, std::size_t>;
 
         map_type map1;
         map_type map2;
@@ -474,17 +474,17 @@ bool fsa::concatenate(const fsa_type& fsa1, const fsa_type& fsa2, fsa_type& resu
 
         (*fsa0).start_state() = (*fsa0).states().at((*(*fsa1).start_state()).id());
 
-        uint32_t fsa1_s_id = map1.at((*(*fsa1).start_state()).id());
+        std::size_t fsa1_s_id = map1.at((*(*fsa1).start_state()).id());
 
         (*fsa0).add_transition((*fsa0).start_state(), (*fsa0).states().at(fsa1_s_id), fsa_transition::epsilon_predicate());
 
-        uint32_t fsa2_s_id = map2.at((*(*fsa1).start_state()).id());
+        std::size_t fsa2_s_id = map2.at((*(*fsa1).start_state()).id());
 
         auto fsa2_start_state((*fsa0).states().at(fsa2_s_id));
 
         for(const auto& kvp : (*fsa1).final_states())
         {
-            uint32_t fsa1_f_id = map1.at((*kvp.second).id());
+            std::size_t fsa1_f_id = map1.at((*kvp.second).id());
 
             const auto& fsa1_final_state((*fsa0).states().at(fsa1_f_id));
             

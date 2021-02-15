@@ -15,16 +15,16 @@ USINGNAMESPACE(core)
 class fsa_state
 {
     public:
-        using token_type = uint32_t;
+        using token_type = std::size_t;
 
         using state_type = std::shared_ptr<fsa_state>;
-        using states_type = std::map<uint32_t, state_type>;
+        using states_type = std::map<std::size_t, state_type>;
 
         using transition_type = std::shared_ptr<fsa_transition>;
-        using transitions_type = std::map<uint32_t, transition_type>;
+        using transitions_type = std::map<std::size_t, transition_type>;
 
     private:
-        uint32_t                my_id;
+        std::size_t             my_id;
         string_type             my_label;
 
         token_type              my_token;       // final state token type
@@ -46,8 +46,8 @@ class fsa_state
         fsa_state&              operator = (const fsa_state& other);
         fsa_state&              operator = (fsa_state&& other);
 
-        uint32_t                id() const;
-        uint32_t&               id();
+        std::size_t             id() const;
+        std::size_t&            id();
 
         const string_type&      label() const;
         string_type&            label();
@@ -66,12 +66,12 @@ class fsa_state
         state_type              clone() const;
 };
 
-inline uint32_t fsa_state::id() const
+inline std::size_t fsa_state::id() const
 {
     return my_id;
 }
 
-inline uint32_t& fsa_state::id()
+inline std::size_t& fsa_state::id()
 {
     return my_id;
 }

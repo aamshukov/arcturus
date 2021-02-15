@@ -16,7 +16,7 @@ string_data_provider::~string_data_provider()
 {
 }
 
-bool string_data_provider::load(std::shared_ptr<datum_type[]>& data, size_type& count)
+bool string_data_provider::load(std::shared_ptr<datum_type[]>& data, std::size_t& count)
 {
     log_info(L"Loading string content ...");
 

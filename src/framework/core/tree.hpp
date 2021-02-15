@@ -27,7 +27,7 @@ class tree : private noncopyable
 
         using flags_type = flag;
 
-        using id_type = size_type;
+        using id_type = std::size_t;
 
     protected:
         id_type             my_id; // key

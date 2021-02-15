@@ -177,8 +177,8 @@ void multiply(bool a[N][N], bool b[N][N], bool c[N][N])
     }
 }
 
-template <typename T = size_type>
-constexpr auto calculate_alignment(T value, size_type alignment) noexcept
+template <typename T = std::size_t>
+constexpr auto calculate_alignment(T value, std::size_t alignment) noexcept
 {
     // align value 'value' to boundary 'alignment' which should be power of 2
     return ((value + (alignment - 1)) & ~(alignment - 1));
@@ -190,9 +190,9 @@ constexpr T integer_log2(T n)
     return ((n < 2) ? 1 : 1 + integer_log2<T>(n / 2));
 }
 
-inline size_type combine_hash(size_type number)
+inline std::size_t combine_hash(std::size_t number)
 {
-    return std::hash<size_type>{}(number + 0x9E3779B9 + (number << 6) + (number >> 2)); // aka boost hash_combine
+    return std::hash<std::size_t>{}(number + 0x9E3779B9 + (number << 6) + (number >> 2)); // aka boost hash_combine
 }
 
 bool is_little_endian();

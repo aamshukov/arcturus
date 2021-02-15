@@ -81,7 +81,7 @@ struct quadruple : public list
     using traits_type = OpCodeTraits;
     using operation_code = typename traits_type::operation_code;
 
-    using id_type = size_type;
+    using id_type = std::size_t;
 
     using symbol_type = std::shared_ptr<symtable::symbol>;
     using argument_type = std::pair<symbol_type, id_type>; // <symbol, version>

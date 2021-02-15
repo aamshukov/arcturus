@@ -46,8 +46,8 @@ class status
         };
 
         using custom_code_type = custom_code;
-        using system_code_type = uint32_t;
-        using library_code_type = uint32_t;
+        using system_code_type = std::size_t;
+        using library_code_type = std::size_t;
 
         using contributor_type = contributor;
 

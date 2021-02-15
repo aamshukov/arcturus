@@ -300,7 +300,7 @@ void grammar_algorithm::remove_undefined_nonterminals(grammar& gr)
     // Undefined non-terminals (Grune and Jacobs)
     //  The right-hand sides of some rules may contain non-terminals for which no production rule is given
     //  - (non-terminals) do not appear on the left hand side of any rule.
-    std::set<uint32_t> lhs_symbols; // all lhs symbols
+    std::set<std::size_t> lhs_symbols; // all lhs symbols
 
     // collect all lhs symbols
     for(const auto& rule : gr.rules())
@@ -521,7 +521,7 @@ void grammar_algorithm::remove_unit_productions(grammar& gr)
     // substitute productions
     chain_rules.clear();
 
-    uint32_t chain_rules_count = 500000;
+    std::size_t chain_rules_count = 500000;
 
     for(const auto chain_set_kvp : chain_sets)
     {
@@ -536,7 +536,7 @@ void grammar_algorithm::remove_unit_productions(grammar& gr)
                 if((*(*gr_rule).lhs().front()).id() == (*chain_symb).id())
                 {
                     // add a new production A -> w
-                    rule_type production(factory::create<rule>(static_cast<uint32_t>(chain_rules_count++), (*nonterminal).name())); // rule name is the LHS's symbol name
+                    rule_type production(factory::create<rule>(static_cast<std::size_t>(chain_rules_count++), (*nonterminal).name())); // rule name is the LHS's symbol name
 
                     (*production).add_lhs_symbol(nonterminal);
                     std::for_each((*gr_rule).rhs().begin(), (*gr_rule).rhs().end(), [&production](const auto& symb){ (*production).add_rhs_symbol(symb); });
@@ -708,7 +708,7 @@ void grammar_algorithm::remove_empty_productions(grammar& gr)
               });
 
     // remove empty productions
-    uint32_t new_productions_count = 900000;
+    std::size_t new_productions_count = 900000;
 
     for(const auto& nullable_nonterminal : nullable_nonterminals)
     {
@@ -728,7 +728,7 @@ void grammar_algorithm::remove_empty_productions(grammar& gr)
 
                 for(const auto& rhs : productions)
                 {
-                    rule_type production(factory::create<rule>(static_cast<uint32_t>(new_productions_count++), (*lhs_symbol).name())); // rule name is the LHS's symbol name
+                    rule_type production(factory::create<rule>(static_cast<std::size_t>(new_productions_count++), (*lhs_symbol).name())); // rule name is the LHS's symbol name
 
                     (*production).add_lhs_symbol(lhs_symbol);
                     std::for_each(rhs.begin(), rhs.end(), [&production](const auto& symb){ (*production).add_rhs_symbol(symb); });
@@ -759,7 +759,7 @@ void grammar_algorithm::remove_empty_productions(grammar& gr)
     // preserve S -> λ
     if((*start_symbol).nullable())
     {
-        rule_type production(factory::create<rule>(static_cast<uint32_t>(new_productions_count), (*start_symbol).name())); // rule name is the LHS's symbol name
+        rule_type production(factory::create<rule>(static_cast<std::size_t>(new_productions_count), (*start_symbol).name())); // rule name is the LHS's symbol name
 
         (*production).add_lhs_symbol(start_symbol);
         (*production).add_rhs_symbol(symbol::epsilon);
@@ -1858,7 +1858,7 @@ void grammar_algorithm::remove_immediate_left_recursion(grammar& gr,
             {
                 auto new_symbol_name((*nonterminal).name() + std::to_wstring(suffix_number++));
 
-                new_nonterminal = (factory::create<symbol>(static_cast<uint32_t>(symbols_count++), new_symbol_name, symbol::kind::nonterminal));
+                new_nonterminal = (factory::create<symbol>(static_cast<std::size_t>(symbols_count++), new_symbol_name, symbol::kind::nonterminal));
 
                 gr.pool().emplace(pool_type::value_type(new_symbol_name, new_nonterminal)); // add to symbols pool
 
@@ -1877,7 +1877,7 @@ void grammar_algorithm::remove_immediate_left_recursion(grammar& gr,
                 if((*(*nonterminal_rule).lhs().front()).id() == (*(*nonterminal_rule).rhs().front()).id()) // A -> A b c ...
                 {
                     // alpha
-                    rule_type production(factory::create<rule>(static_cast<uint32_t>(rules_count++), (*new_nonterminal).name()));
+                    rule_type production(factory::create<rule>(static_cast<std::size_t>(rules_count++), (*new_nonterminal).name()));
 
                     (*production).add_lhs_symbol(new_nonterminal);
 
@@ -1907,7 +1907,7 @@ void grammar_algorithm::remove_immediate_left_recursion(grammar& gr,
             }
 
             // A' -> λ
-            rule_type production(factory::create<rule>(static_cast<uint32_t>(rules_count++), (*new_nonterminal).name()));
+            rule_type production(factory::create<rule>(static_cast<std::size_t>(rules_count++), (*new_nonterminal).name()));
 
             (*production).add_lhs_symbol(new_nonterminal);
             (*production).add_rhs_symbol(symbol::epsilon);
@@ -1982,7 +1982,7 @@ void grammar_algorithm::remove_left_recursion(grammar& gr)
                         for(auto& aj_production : aj_nt_rules)
                         {
                             // add Ai -> β α to the grammar
-                            rule_type ai_production(factory::create<rule>(static_cast<uint32_t>(rules_count++), (*ai_nonterminal).name()));
+                            rule_type ai_production(factory::create<rule>(static_cast<std::size_t>(rules_count++), (*ai_nonterminal).name()));
 
                             (*ai_production).add_lhs_symbol(ai_nonterminal);
 
@@ -2191,7 +2191,7 @@ void grammar_algorithm::renumber_grammar(grammar& gr)
                   return (*(*rule1).lhs().front()).id() < (*(*rule2).lhs().front()).id();
               });
 
-    uint32_t k = 0;
+    std::size_t k = 0;
 
     std::for_each(gr.rules().begin(), gr.rules().end(), [&k](const auto& gr_rule){ (*gr_rule).id() = k++; });
 }
@@ -2268,12 +2268,12 @@ void grammar_algorithm::factor_rules(grammar& gr,
 {
     // A'
     auto new_factored_symbol_name((*nonterminal).name() + std::to_wstring(suffix_number++));
-    auto new_factored_symbol((factory::create<symbol>(static_cast<uint32_t>(symbols_count++), new_factored_symbol_name, symbol::kind::nonterminal)));
+    auto new_factored_symbol((factory::create<symbol>(static_cast<std::size_t>(symbols_count++), new_factored_symbol_name, symbol::kind::nonterminal)));
 
     gr.pool().emplace(pool_type::value_type(new_factored_symbol_name, new_factored_symbol)); // add to symbols pool
 
     // A -> α A'
-    rule_type production(factory::create<rule>(static_cast<uint32_t>(rules_count++), (*nonterminal).name()));
+    rule_type production(factory::create<rule>(static_cast<std::size_t>(rules_count++), (*nonterminal).name()));
 
     (*production).add_lhs_symbol(nonterminal);
 
@@ -2292,7 +2292,7 @@ void grammar_algorithm::factor_rules(grammar& gr,
     // A' -> β1 | ... | βN
     for(const auto& factored_rule : factored_rules)
     {
-        rule_type factored_production(factory::create<rule>(static_cast<uint32_t>(rules_count++), new_factored_symbol_name));
+        rule_type factored_production(factory::create<rule>(static_cast<std::size_t>(rules_count++), new_factored_symbol_name));
 
         (*factored_production).add_lhs_symbol(new_factored_symbol);
 

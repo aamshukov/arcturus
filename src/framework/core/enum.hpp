@@ -61,7 +61,7 @@ static std::map<T, string_type> parse_enum(const string_type& values)
 
     text::split(values, L",", parts);
 
-    size_type k = 0;
+    std::size_t k = 0;
 
     for(const auto& part : parts)
     {

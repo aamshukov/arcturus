@@ -66,7 +66,7 @@ void fsa_codegen::generate(const typename fsa_codegen::fsa_type& fsa, const stri
 
             bool final_state = (*fsa).is_final_state(state);
 
-            size_type index = 0;
+            std::size_t index = 0;
 
             bool local_case_mode = case_mode && (*state).transitions().size() > 1;
 

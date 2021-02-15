@@ -10,33 +10,30 @@ BEGIN_NAMESPACE(core)
 
 class counter : private noncopyable
 {
-    public:
-        using size_type = uint32_t;
-
     private:
-        size_type   my_count;
+        std::size_t my_count;
 
     public:
-        explicit    counter(size_type count = 0);
+        explicit    counter(std::size_t count = 0);
 
-        size_type   number();
-        size_type   value();
+        std::size_t number();
+        std::size_t value();
 
         void        rewind();
-        void        reset(size_type count = 0);
+        void        reset(std::size_t count = 0);
 };
 
-inline counter::counter(typename counter::size_type count)
+inline counter::counter(std::size_t count)
               : my_count(count)
 {
 }
 
-inline typename counter::size_type counter::number()
+inline std::size_t counter::number()
 {
     return my_count++;
 }
 
-inline typename counter::size_type counter::value()
+inline std::size_t counter::value()
 {
     return my_count;
 }
@@ -46,7 +43,7 @@ inline void counter::rewind()
     my_count--;
 }
 
-inline void counter::reset(typename counter::size_type count)
+inline void counter::reset(std::size_t count)
 {
     my_count = count;
 }

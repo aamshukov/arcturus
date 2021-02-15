@@ -16,7 +16,7 @@ class grammar : private noncopyable
         using symbols_type = typename rule::symbols_type;
 
         using pool_type = std::map<string_type, symbol_type>;
-        using pool_index_type = std::map<uint32_t, symbol_type>;
+        using pool_index_type = std::map<std::size_t, symbol_type>;
 
         using rule_type = std::shared_ptr<rule>;
         using rules_type = std::vector<rule_type>;

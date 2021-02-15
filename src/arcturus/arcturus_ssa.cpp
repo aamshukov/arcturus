@@ -268,8 +268,8 @@ void arcturus_ssa::rename_variables(const typename arcturus_ssa::symbol_type& v,
 
     for(const auto& successor : successors)
     {
-        size_type k = 0;
-        size_type j = 0; // j = whichPred ... j-th parameter of 𝛗-function must correspond to j-th predecessor in control flow graph
+        std::size_t k = 0;
+        std::size_t j = 0; // j = whichPred ... j-th parameter of 𝛗-function must correspond to j-th predecessor in control flow graph
 
         std::set<basic_block_type, vertex_lt_key_comparator<basic_block<arcturus_quadruple>>> predecessors;
 

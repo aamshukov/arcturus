@@ -17,10 +17,9 @@ class symbol : private noncopyable
         using token_type = token<token_traits>;
         using symbol_type = std::shared_ptr<symbol>;
 
-        using id_type = size_type;
+        using id_type = std::size_t;
 
         using index_type = int32_t;
-        using size_type = std::size_t;
 
         using value_type = std::variant<int8_t,
                                         uint8_t,
@@ -67,10 +66,10 @@ class symbol : private noncopyable
 
         string_type             my_machine_type; //??
 
-        size_type               my_offset;              // runtime offset
+        std::size_t             my_offset;              // runtime offset
 
-        size_type               my_size;                // runtime size in bytes, might be aligned
-        size_type               my_bitsize;             // runtime size in bits
+        std::size_t             my_size;                // runtime size in bytes, might be aligned
+        std::size_t             my_bitsize;             // runtime size in bits
         bool                    my_align_required; //??
 
         //class_type              my_storage_class;     //??
@@ -143,9 +142,9 @@ struct symbol_eq_key_comparator
 struct symbol_hash
 {
     using symbol_type = std::shared_ptr<symbol>;
-    size_type operator () (const symbol_type& symbol) const
+    std::size_t operator () (const symbol_type& symbol) const
     {
-        size_type result = (*symbol).id();
+        std::size_t result = (*symbol).id();
         result ^= combine_hash(result);
         return result;
     }
@@ -268,7 +267,7 @@ inline typename symbol::symbol_type symbol::get_new_temporary()
 
         auto n = array_size(b);
 
-        _itoa_s(num, b, n, 10);
+        _itoa_s(static_cast<int>(num), b, n, 10);
 
         for(auto k = 0; k < n; k++)
         {

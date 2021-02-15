@@ -18,11 +18,11 @@ class bitset : private noncopyable
 
             private:
                 bitset*     my_bitset;   // referenced bitset
-                size_type   my_position; // position in bitset
+                std::size_t my_position; // position in bitset
 
             private:
                             bit();
-                            bit(bitset& bs, size_type position);
+                            bit(bitset& bs, std::size_t position);
 
             public:
                            ~bit();
@@ -39,36 +39,36 @@ class bitset : private noncopyable
         using data_type = T;
         using bits_type = std::unique_ptr<data_type[]>;
 
-        static constexpr size_type npos = std::numeric_limits<data_type>::max();
+        static constexpr std::size_t npos = std::numeric_limits<data_type>::max();
 
     private:
-        static constexpr size_type chunk_size = bits_in_byte * sizeof(data_type); // in bits
+        static constexpr std::size_t chunk_size = bits_in_byte * sizeof(data_type); // in bits
 
         bits_type       my_bits;        // bit array - sequence of chunks of T
 
-        size_type       my_size;        // how many bits
-        size_type       my_capacity;    // how many chunks
+        std::size_t     my_size;        // how many bits
+        std::size_t     my_capacity;    // how many chunks
 
     private:
         void            adjust();
 
     public:
                         bitset();
-        explicit        bitset(size_type size);
+        explicit        bitset(std::size_t size);
                         bitset(const bitset& other);
                         bitset(bitset&& other);
                        ~bitset();
 
-        void            create(size_type size);
+        void            create(std::size_t size);
 
-        size_type       size() const;
-        size_type       capacity() const;
+        std::size_t     size() const;
+        std::size_t     capacity() const;
 
         const bitset&   operator = (const bitset& other);
         bitset&         operator = (bitset&& other);
 
-        bool            operator [] (size_type position) const;
-        bit             operator [] (size_type position);
+        bool            operator [] (std::size_t position) const;
+        bit             operator [] (std::size_t position);
 
         bitset&         operator &= (const bitset& other);
         bitset&         operator |= (const bitset& other);
@@ -78,16 +78,16 @@ class bitset : private noncopyable
         bool            operator != (const bitset& other) const;
 
         bitset&         set();
-        bitset&         set(size_type position, bool value = true);
+        bitset&         set(std::size_t position, bool value = true);
 
         bitset&         reset();
-        bitset&         reset(size_type position);
+        bitset&         reset(std::size_t position);
 
         bitset&         flip();
-        bitset&         flip(size_type position);
+        bitset&         flip(std::size_t position);
 
-        size_type       find_first(size_type position = 0) const;
-        size_type       find_next(size_type position) const;
+        std::size_t     find_first(std::size_t position = 0) const;
+        std::size_t     find_next(std::size_t position) const;
 
         string_type     to_string() const;
 };
@@ -99,7 +99,7 @@ inline bitset<T>::bitset()
 }
 
 template <typename T>
-inline bitset<T>::bitset(size_type size)
+inline bitset<T>::bitset(std::size_t size)
 {
     create(size);
     reset();
@@ -137,7 +137,7 @@ inline bitset<T>::~bitset()
 }
 
 template <typename T>
-inline void bitset<T>::create(size_type size)
+inline void bitset<T>::create(std::size_t size)
 {
     my_size = size;
     my_capacity = (size == 0 ? 0 : size / chunk_size) + 1;
@@ -146,13 +146,13 @@ inline void bitset<T>::create(size_type size)
 }
 
 template <typename T>
-inline size_type bitset<T>::size() const
+inline std::size_t bitset<T>::size() const
 {
     return my_size;
 }
 
 template <typename T>
-inline size_type bitset<T>::capacity() const
+inline std::size_t bitset<T>::capacity() const
 {
     return my_capacity;
 }
@@ -188,13 +188,13 @@ inline bitset<T>& bitset<T>::operator = (bitset<T>&& other)
 }
 
 template <typename T>
-inline bool bitset<T>::operator [] (size_type position) const
+inline bool bitset<T>::operator [] (std::size_t position) const
 {
     return (my_bits[position / chunk_size] & (data_type(1) << position % chunk_size)) != 0;
 }
 
 template <typename T>
-inline typename bitset<T>::bit bitset<T>::operator [] (size_type position)
+inline typename bitset<T>::bit bitset<T>::operator [] (std::size_t position)
 {
     return bit(*this, position);
 }
@@ -204,7 +204,7 @@ bitset<T>& bitset<T>::operator &= (const bitset<T>& other)
 {
     if(this != &other)
     {
-        for(size_type k = 0; k < my_capacity; k++)
+        for(std::size_t k = 0; k < my_capacity; k++)
         {
             my_bits[k] &= other.my_bits[k];
         }
@@ -218,7 +218,7 @@ bitset<T>& bitset<T>::operator |= (const bitset<T>& other)
 {
     if(this != &other)
     {
-        for(size_type k = 0; k < my_capacity; k++)
+        for(std::size_t k = 0; k < my_capacity; k++)
         {
             my_bits[k] |= other.my_bits[k];
         }
@@ -232,7 +232,7 @@ bitset<T>& bitset<T>::operator ^= (const bitset<T>& other)
 {
     if(this != &other)
     {
-        for(size_type k = 0; k < my_capacity; k++)
+        for(std::size_t k = 0; k < my_capacity; k++)
         {
             my_bits[k] ^= other.my_bits[k];
         }
@@ -264,7 +264,7 @@ bitset<T>& bitset<T>::set()
 }
 
 template <typename T>
-inline bitset<T>& bitset<T>::set(size_type position, bool value)
+inline bitset<T>& bitset<T>::set(std::size_t position, bool value)
 {
     data_type& chunk(my_bits[position / chunk_size]);
 
@@ -286,7 +286,7 @@ inline bitset<T>& bitset<T>::reset()
 }
 
 template <typename T>
-inline bitset<T>& bitset<T>::reset(size_type position)
+inline bitset<T>& bitset<T>::reset(std::size_t position)
 {
     return set(position, false);
 }
@@ -294,7 +294,7 @@ inline bitset<T>& bitset<T>::reset(size_type position)
 template <typename T>
 bitset<T>& bitset<T>::flip()
 {
-    for(size_type k = 0; k < my_capacity; k++)
+    for(std::size_t k = 0; k < my_capacity; k++)
     {
         my_bits[k] = ~my_bits[k];
     }
@@ -305,7 +305,7 @@ bitset<T>& bitset<T>::flip()
 }
 
 template <typename T>
-inline bitset<T>& bitset<T>::flip(size_type position)
+inline bitset<T>& bitset<T>::flip(std::size_t position)
 {
     my_bits[position / chunk_size] ^= data_type(1) << position % chunk_size;
     return *this;
@@ -332,13 +332,13 @@ inline void bitset<T>::adjust()
 }
 
 template <typename T>
-size_type bitset<T>::find_first(size_type position) const
+std::size_t bitset<T>::find_first(std::size_t position) const
 {
     auto result = bitset<data_type>::npos;
 
     auto chunk_index = position / chunk_size;
 
-    for(size_type k = chunk_index; k < my_capacity; k++)
+    for(std::size_t k = chunk_index; k < my_capacity; k++)
     {
         if(my_bits[k] != data_type(0))
         {
@@ -352,7 +352,7 @@ size_type bitset<T>::find_first(size_type position) const
 }
 
 template <typename T>
-size_type bitset<T>::find_next(size_type position) const
+std::size_t bitset<T>::find_next(std::size_t position) const
 {
     auto result = bitset<data_type>::npos;
 
@@ -402,7 +402,7 @@ inline bitset<T>::bit::bit()
 }
 
 template <typename T>
-inline bitset<T>::bit::bit(bitset<T>& bs, size_type position)
+inline bitset<T>::bit::bit(bitset<T>& bs, std::size_t position)
                 : my_bitset(&bs), my_position(position)
 {
 }

@@ -24,8 +24,8 @@ class graph_algorithms : private noncopyable
     private:
         struct lengauer_tarjan_context
         {
-            using number_vertex_type = std::unordered_map<size_type, vertex_type>;
-            using vertex_number_type = std::unordered_map<vertex_type, size_type, vertex_hash<dominator_vertex>, vertex_eq_key_comparator<dominator_vertex>>;
+            using number_vertex_type = std::unordered_map<std::size_t, vertex_type>;
+            using vertex_number_type = std::unordered_map<vertex_type, std::size_t, vertex_hash<dominator_vertex>, vertex_eq_key_comparator<dominator_vertex>>;
             using vertex_vertex_type = std::unordered_map<vertex_type, vertex_type, vertex_hash<dominator_vertex>, vertex_eq_key_comparator<dominator_vertex>>;
             using vertex_vertices_type = std::unordered_map<vertex_type, vertices_type, vertex_hash<dominator_vertex>, vertex_eq_key_comparator<dominator_vertex>>;
 
@@ -41,7 +41,7 @@ class graph_algorithms : private noncopyable
 
             vertex_vertices_type buckets;
 
-            size_type n;
+            std::size_t n;
         };
 
         using lengauer_tarjan_context_type = lengauer_tarjan_context;
@@ -114,7 +114,7 @@ void graph_algorithms<TVertex, TEdgeValue, N>::dfs_preorder_to_vector(const type
 
         std::stack<std::pair<vertex_type, bool>> stack; // holds pairs of vertex and flag (post processing or continue traverse)
                                                         // for this pre-order traversal this <vertex, flag> pair can be avoided and just vertex can be pushed
-        stack.push(std::make_pair((*graph).root(), false));
+        stack.push(std::make_pair((*graph).root(), false)); // must be single rooted
 
         while(!stack.empty())
         {
@@ -173,7 +173,7 @@ void graph_algorithms<TVertex, TEdgeValue, N>::dfs_postorder_to_vector(const typ
 
         std::stack<std::pair<vertex_type, bool>> stack; // holds pairs of vertex and flag (post processing or continue traverse)
 
-        stack.push(std::make_pair((*graph).root(), false));
+        stack.push(std::make_pair((*graph).root(), false)); // must be single rooted
 
         while(!stack.empty())
         {
@@ -213,7 +213,7 @@ void graph_algorithms<TVertex, TEdgeValue, N>::dfs_reverse_postorder_to_vector(c
 {
     std::vector<vertex_type> vertices;
 
-    dfs_postorder_to_vector(graph, vertices);
+    dfs_postorder_to_vector(graph, vertices); // must be single rooted
 
     if(!vertices.empty())
     {
@@ -278,7 +278,7 @@ void graph_algorithms<TVertex, TEdgeValue, N>::compute_dominators(typename graph
 
         // initialize each vertex with all vertices as dominators excluding root
         // for each n ∈ N - {r} do
-        for(size_type k = 1; k < vertices_size; k++) // k = 1 - except root
+        for(std::size_t k = 1; k < vertices_size; k++) // k = 1 - except root
         {
             auto& n(vertices[k]);
 
@@ -298,7 +298,7 @@ void graph_algorithms<TVertex, TEdgeValue, N>::compute_dominators(typename graph
             changed = false;
 
             // for each n ∈ N - {r} do
-            for(size_type k = 1; k < vertices_size; k++) // k = 1 - except root
+            for(std::size_t k = 1; k < vertices_size; k++) // k = 1 - except root
             {
                 // T := N
                 t.set();
@@ -334,7 +334,7 @@ void graph_algorithms<TVertex, TEdgeValue, N>::compute_dominators(typename graph
         std::vector<bitset_type> tmp(vertices_size, bitset_type()); // Tmp
 
         // for each n ∈ N do
-        for(size_type k = 0; k < vertices_size; k++)
+        for(std::size_t k = 0; k < vertices_size; k++)
         {
             auto& n(vertices[k]);
 
@@ -344,7 +344,7 @@ void graph_algorithms<TVertex, TEdgeValue, N>::compute_dominators(typename graph
         }
 
         // for each n ∈ N - {r} do
-        for(size_type n = 1; n < vertices_size; n++) // k = 1 - except root
+        for(std::size_t n = 1; n < vertices_size; n++) // k = 1 - except root
         {
             auto& tmp_n(tmp[n]);
 
@@ -378,7 +378,7 @@ void graph_algorithms<TVertex, TEdgeValue, N>::compute_dominators(typename graph
         }
 
         // for each n ∈ N - {r} do
-        for(size_type n = 1; n < vertices_size; n++) // k = 1 - except root
+        for(std::size_t n = 1; n < vertices_size; n++) // k = 1 - except root
         {
             auto& idom(vertices[n]);
             auto& tmp_n(tmp[n]);
@@ -426,7 +426,7 @@ void graph_algorithms<TVertex, TEdgeValue, N>::dfs_lengauer_tarjan(const typenam
     {
         auto w = std::dynamic_pointer_cast<TVertex>(adjacence);
 
-        if(context.semidominators[w] == size_type(-1))
+        if(context.semidominators[w] == std::size_t(-1))
         {
             context.parents[w] = v;
             
@@ -505,7 +505,7 @@ void graph_algorithms<TVertex, TEdgeValue, N>::compute_dominators_lengauer_tarja
         // phase I (step 1 - initialize, DFS numbering)
         for(const auto& v : (*graph).vertices())
         {
-            context.semidominators[v] = size_type(-1);
+            context.semidominators[v] = std::size_t(-1);
         }
 
         context.n = 0;

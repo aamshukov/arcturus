@@ -41,23 +41,23 @@ class text : private noncopyable
 
     public:
         static bool         chars_to_codepoints(const char* chars,
-                                                const size_type& chars_count,
+                                                const std::size_t& chars_count,
                                                 std::shared_ptr<datum_type[]>& codepoints,
-                                                size_type& codepoints_count);
+                                                std::size_t& codepoints_count);
         static codepoints_type
-                            chars_to_codepoints(const char* chars, const size_type& chars_count);
+                            chars_to_codepoints(const char* chars, const std::size_t& chars_count);
 
         static bool         codepoints_to_chars(const datum_type* codepoints,
-                                                const size_type& codepoints_count,
+                                                const std::size_t& codepoints_count,
                                                 std::shared_ptr<char[]>& chars,
-                                                size_type& chars_count);
+                                                std::size_t& chars_count);
 
-        static bool         string_to_codepoints0(const string_type& text, std::shared_ptr<datum_type[]>& codepoints, size_type& count);
-        static bool         codepoints_to_string0(const datum_type* codepoints, size_type count, string_type& result_text);
+        static bool         string_to_codepoints0(const string_type& text, std::shared_ptr<datum_type[]>& codepoints, std::size_t& count);
+        static bool         codepoints_to_string0(const datum_type* codepoints, std::size_t count, string_type& result_text);
 
-        static bool         string_to_codepoints(const string_type& text, std::shared_ptr<datum_type[]>& codepoints, size_type& count);
-        static bool         codepoints_to_string(const datum_type* codepoints, size_type count, string_type& result_text);
-        static string_type  codepoints_to_string(const datum_type* codepoints, size_type count);
+        static bool         string_to_codepoints(const string_type& text, std::shared_ptr<datum_type[]>& codepoints, std::size_t& count);
+        static bool         codepoints_to_string(const datum_type* codepoints, std::size_t count, string_type& result_text);
+        static string_type  codepoints_to_string(const datum_type* codepoints, std::size_t count);
 
         static string_type  codepoint_to_string(datum_type codepoint);
         static bool         codepoint_to_string(datum_type codepoint, string_type& result_text);

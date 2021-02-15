@@ -19,8 +19,8 @@ void ir_visualization<TreeTraits>::print_tree(const typename ir_visualization<Tr
         stream << "    ";
     }
 
-    if(static_cast<uint32_t>((*(*tree).ir_symbol).token().type) != 0)
-        stream << (*(*tree).gr_symbol).name() << L":" << static_cast<uint32_t>((*(*tree).ir_symbol).token().type) << std::endl;
+    if(static_cast<std::size_t>((*(*tree).ir_symbol).token().type) != 0)
+        stream << (*(*tree).gr_symbol).name() << L":" << static_cast<std::size_t>((*(*tree).ir_symbol).token().type) << std::endl;
     else
         stream << (*(*tree).gr_symbol).name() << std::endl;
 

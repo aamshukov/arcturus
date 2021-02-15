@@ -12,7 +12,7 @@
 BEGIN_NAMESPACE(frontend)
 USINGNAMESPACE(core)
 
-rule::rule(uint32_t id, const string_type& name)
+rule::rule(std::size_t id, const string_type& name)
     : my_id(id),
       my_name(name),
       my_lhs_terminal_count(0),

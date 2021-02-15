@@ -66,7 +66,7 @@ string_type grammar_visualization::decorate_symbol(const typename grammar_visual
 
     char_type buffer[64];
 
-    snwprintf(buffer, array_size(buffer), TRUNCATE, L"[%4ld] ", (*sym).id());
+    snwprintf(buffer, array_size(buffer), TRUNCATE, L"[%4ld] ", static_cast<uint32_t>((*sym).id()));
 
     result += buffer;
     result += (*sym).name();
@@ -170,7 +170,7 @@ string_type grammar_visualization::decorate_rule(const typename grammar_visualiz
     {
         if(decorate)
         {
-            snwprintf(buffer, array_size(buffer), TRUNCATE, L"[%4ld] ", (*rule).id());
+            snwprintf(buffer, array_size(buffer), TRUNCATE, L"[%4ld] ", static_cast<uint32_t>((*rule).id()));
 
             result += buffer;
 

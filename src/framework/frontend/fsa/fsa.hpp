@@ -50,7 +50,7 @@ class fsa : private noncopyable
         const state_type&       start_state() const;
         state_type&             start_state();
 
-        bool                    is_start_state(uint32_t id) const;
+        bool                    is_start_state(std::size_t id) const;
         bool                    is_start_state(const state_type& state) const;
 
         const states_type&      states() const;
@@ -59,13 +59,13 @@ class fsa : private noncopyable
         const states_type&      final_states() const;
         states_type&            final_states();
 
-        bool                    is_final_state(uint32_t id) const;
+        bool                    is_final_state(std::size_t id) const;
         bool                    is_final_state(const state_type& state) const;
 
         predicates_type         predicates() const;
 
         bool                    add_state(const state_type& state);
-        bool                    remove_state(uint32_t id);
+        bool                    remove_state(std::size_t id);
 
         bool                    add_final_state(const state_type& state);
 
@@ -88,7 +88,7 @@ inline typename fsa::state_type& fsa::start_state()
     return const_cast<state_type&>(static_cast<const fsa&>(*this).start_state());
 }
 
-inline bool fsa::is_start_state(uint32_t id) const
+inline bool fsa::is_start_state(std::size_t id) const
 {
     return (*my_start_state).id() == id;
 }
@@ -118,7 +118,7 @@ inline typename fsa::states_type& fsa::final_states()
     return const_cast<states_type&>(static_cast<const fsa&>(*this).final_states());
 }
 
-inline bool fsa::is_final_state(uint32_t id) const
+inline bool fsa::is_final_state(std::size_t id) const
 {
     return final_states().find(id) != final_states().end();
 }

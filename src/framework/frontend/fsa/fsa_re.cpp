@@ -31,7 +31,7 @@ USINGNAMESPACE(core)
 #define ERROR_DATUM     (text::bad_codepoint())
 
 bool fsa_re::re_to_fsa(const std::shared_ptr<datum_type[]>& re,
-                       size_type count,
+                       std::size_t count,
                        typename fsa_re::token_type token,
                        typename fsa_re::token_type escape_token,
                        const string_type& escape_predicate,
@@ -45,7 +45,7 @@ bool fsa_re::re_to_fsa(const std::shared_ptr<datum_type[]>& re,
     {
         std::shared_ptr<datum_type[]> processed_re;
 
-        size_type new_count = preprocess(re, count, processed_re);
+        std::size_t new_count = preprocess(re, count, processed_re);
 
         std::shared_ptr<datum_type[]> postfix_re;
 
@@ -142,7 +142,7 @@ bool fsa_re::re_to_dfa(const string_type& re,
 
     std::shared_ptr<datum_type[]> re_data;
 
-    size_type count = 0;
+    std::size_t count = 0;
 
     string_type augmented_re(L"(" + re + L")#");
 
@@ -163,7 +163,7 @@ bool fsa_re::re_to_dfa(const string_type& re,
         {
             std::shared_ptr<datum_type[]> processed_re;
 
-            size_type new_count = preprocess(re_data, count, processed_re);
+            std::size_t new_count = preprocess(re_data, count, processed_re);
 
             std::shared_ptr<datum_type[]> postfix_re;
 
@@ -409,16 +409,16 @@ bool fsa_re::is_literal(datum_type ch)
            ch != ZERO_OR_ONE_OP;
 }
 
-size_type fsa_re::preprocess(const std::shared_ptr<datum_type[]>& infix_re,
-                             size_type count,
-                             std::shared_ptr<datum_type[]>& processed_re)
+std::size_t fsa_re::preprocess(const std::shared_ptr<datum_type[]>& infix_re,
+                               std::size_t count,
+                               std::shared_ptr<datum_type[]>& processed_re)
 {
     std::shared_ptr<datum_type[]> buffer(new datum_type[count * 2 + 1]);
     datum_type* p_dst(buffer.get());
 
     const datum_type* p_src(infix_re.get());
 
-    size_type k = 0;
+    std::size_t k = 0;
 
     datum_type ch = get_codepoint(p_src);
 
@@ -443,7 +443,7 @@ size_type fsa_re::preprocess(const std::shared_ptr<datum_type[]>& infix_re,
 }
 
 bool fsa_re::infix_to_postfix(const std::shared_ptr<datum_type[]>& infix_re,
-                              size_type count,
+                              std::size_t count,
                               std::shared_ptr<datum_type[]>& postfix_re)
 {
     // a(bb)+a ==> abb.+.a.
@@ -474,7 +474,7 @@ bool fsa_re::infix_to_postfix(const std::shared_ptr<datum_type[]>& infix_re,
 
     const datum_type* p_src(infix_re.get());    // tokens
 
-    size_type k = 0;
+    std::size_t k = 0;
 
     while(*p_src)
     {
@@ -700,7 +700,7 @@ typename fsa_re::tree_type fsa_re::postfix_to_tree(const std::shared_ptr<datum_t
     return result;
 }
 
-string_type fsa_re::postfix_re_to_string(const std::shared_ptr<datum_type[]>& postfix_re, size_type count)
+string_type fsa_re::postfix_re_to_string(const std::shared_ptr<datum_type[]>& postfix_re, std::size_t count)
 {
     string_type result;
 
@@ -855,7 +855,7 @@ bool fsa_re::process_zero_or_more(std::stack<fsa::fsa_type>& fragments)
             (*fsa0).add_state(start_state);
             (*fsa0).start_state() = start_state;
 
-            using map_type = std::map<uint32_t, uint32_t>;
+            using map_type = std::map<std::size_t, std::size_t>;
 
             map_type map;
 
@@ -951,7 +951,7 @@ bool fsa_re::process_one_or_more(std::stack<fsa::fsa_type>& fragments)
             (*fsa0).add_state(start_state);
             (*fsa0).start_state() = start_state;
 
-            using map_type = std::map<uint32_t, uint32_t>;
+            using map_type = std::map<std::size_t, std::size_t>;
 
             map_type map;
 
@@ -1043,7 +1043,7 @@ bool fsa_re::process_zero_or_one(std::stack<fsa::fsa_type>& fragments)
             (*fsa0).add_state(start_state);
             (*fsa0).start_state() = start_state;
 
-            using map_type = std::map<uint32_t, uint32_t>;
+            using map_type = std::map<std::size_t, std::size_t>;
 
             map_type map;
 

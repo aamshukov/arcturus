@@ -58,7 +58,7 @@ class symbol
         static symbol_type              op_mark; // operator precedence mark symbol, #
 
     private:
-        uint32_t                        my_id;              // enumerable type, will be cast to specific enum values
+        std::size_t                     my_id;              // enumerable type, will be cast to specific enum values
         string_type                     my_name;            // name (label) of the symbol
 
         kind                            my_kind;            // terminal or non-terminal
@@ -85,7 +85,7 @@ class symbol
         string_type                     my_semantic_action; // semantic action (C++ code)
 
     public:
-                                        symbol(uint32_t id, const string_type& name, kind type);
+                                        symbol(std::size_t id, const string_type& name, kind type);
 
                                         symbol(const symbol& other);
                                         symbol(symbol&& other);
@@ -95,8 +95,8 @@ class symbol
         symbol&                         operator = (const symbol& other);
         symbol&                         operator = (symbol&& other);
 
-        uint32_t                        id() const;
-        uint32_t&                       id();
+        std::size_t                     id() const;
+        std::size_t&                    id();
 
         const string_type&              name() const;
 
@@ -143,12 +143,12 @@ class symbol
         string_type&                    semantic_action();
 };
 
-inline uint32_t symbol::id() const
+inline std::size_t symbol::id() const
 {
     return my_id;
 }
 
-inline uint32_t& symbol::id()
+inline std::size_t& symbol::id()
 {
     return my_id;
 }

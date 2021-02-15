@@ -11,7 +11,7 @@ typename symbol::symbol_type symbol::epsilon(factory::create<symbol>(std::numeri
 typename symbol::symbol_type symbol::eof(factory::create<symbol>(std::numeric_limits<int32_t>::max() - 2, L"$", symbol::kind::terminal));
 typename symbol::symbol_type symbol::op_mark(factory::create<symbol>(std::numeric_limits<int32_t>::max() - 3, L"#", symbol::kind::terminal));
 
-symbol::symbol(uint32_t id, const string_type& name, symbol::kind type)
+symbol::symbol(std::size_t id, const string_type& name, symbol::kind type)
       : my_id(id),
         my_name(name),
         my_kind(type),

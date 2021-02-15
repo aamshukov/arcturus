@@ -27,7 +27,7 @@ class rule
         using ast_operators_type = std::map<std::size_t, tree::flags_type>;
 
     private:
-        uint32_t                    my_id; // enumerable type, will be cast to specific enum values
+        std::size_t                 my_id; // enumerable type, will be cast to specific enum values
         string_type                 my_name;
 
         uint8_t                     my_lhs_terminal_count;
@@ -47,7 +47,7 @@ class rule
         ast_operators_type          my_ast_operators; // indices of RHS
 
     public:
-                                    rule(uint32_t id, const string_type& name);
+                                    rule(std::size_t id, const string_type& name);
 
                                     rule(const rule& other);
                                     rule(rule&& other);
@@ -57,8 +57,8 @@ class rule
         rule&                       operator = (const rule& other);
         rule&                       operator = (rule&& other);
 
-        uint32_t                    id() const;
-        uint32_t&                   id();
+        std::size_t                 id() const;
+        std::size_t&                id();
 
         const string_type&          name() const;
         string_type&                name();
@@ -102,12 +102,12 @@ class rule
         friend bool                 operator != (const rule& rule1, const rule& rule2);
 };
 
-inline uint32_t rule::id() const
+inline std::size_t rule::id() const
 {
     return my_id;
 }
 
-inline uint32_t& rule::id()
+inline std::size_t& rule::id()
 {
     return my_id;
 }

@@ -19,9 +19,9 @@ file_data_provider::~file_data_provider()
 {
 }
 
-size_type file_data_provider::get_file_size(const string_type& file_name)
+std::size_t file_data_provider::get_file_size(const string_type& file_name)
 {
-    size_type result = 0;
+    std::size_t result = 0;
 
     FILE* file;
 
@@ -124,7 +124,7 @@ string_type file_data_provider::get_encoding(const string_type& file_name)
 
 bool file_data_provider::read_raw_data(const string_type& file_name,
                                        std::shared_ptr<byte[]>& data,
-                                       size_type& count,
+                                       std::size_t& count,
                                        offset_type offset)
 {
     log_info(L"Reading raw content ...");
@@ -141,7 +141,7 @@ bool file_data_provider::read_raw_data(const string_type& file_name,
         {
             fseek(file, 0, SEEK_END);
 
-            size_type size = ftell(file);
+            std::size_t size = ftell(file);
 
             std::rewind(file);
 
@@ -173,9 +173,9 @@ bool file_data_provider::read_raw_data(const string_type& file_name,
 }
 
 bool file_data_provider::read_utf8_data(std::shared_ptr<byte[]> raw_data,
-                                        size_type raw_count,
+                                        std::size_t raw_count,
                                         std::shared_ptr<datum_type[]>& data,
-                                        size_type& count)
+                                        std::size_t& count)
 {
     log_info(L"Reading UTF-8 content ...");
 
@@ -254,9 +254,9 @@ bool file_data_provider::read_utf8_data(std::shared_ptr<byte[]> raw_data,
 }
 
 bool file_data_provider::read_utf16_data(std::shared_ptr<byte[]> raw_data,
-                                         size_type raw_count,
+                                         std::size_t raw_count,
                                          std::shared_ptr<datum_type[]>& data,
-                                         size_type& count,
+                                         std::size_t& count,
                                          bool big_endian)
 {
     log_info(L"Reading UTF-16 content ...");
@@ -347,9 +347,9 @@ bool file_data_provider::read_utf16_data(std::shared_ptr<byte[]> raw_data,
 }
 
 bool file_data_provider::read_utf32_data(std::shared_ptr<byte[]> raw_data,
-                                         size_type raw_count,
+                                         std::size_t raw_count,
                                          std::shared_ptr<datum_type[]>& data,
-                                         size_type& count,
+                                         std::size_t& count,
                                          bool big_endian)
 {
     log_info(L"Reading UTF-32 content ...");
@@ -374,7 +374,7 @@ bool file_data_provider::read_utf32_data(std::shared_ptr<byte[]> raw_data,
 
             std::shared_ptr<datum_type[]> buffer(new datum_type[count + 1]);
 
-            for(size_type i = 0, k = 0; k < raw_count; k += sizeof(uint32_t))
+            for(std::size_t i = 0, k = 0; k < raw_count; k += sizeof(uint32_t))
             {
                 uint32_t v =  (raw_data[k + 0] << 24) & 0xFF000000;
                          v |= (raw_data[k + 1] << 16) & 0x00FF0000;
@@ -410,7 +410,7 @@ bool file_data_provider::read_utf32_data(std::shared_ptr<byte[]> raw_data,
     return result;
 }
 
-bool file_data_provider::load(std::shared_ptr<datum_type[]>& data, size_type& count)
+bool file_data_provider::load(std::shared_ptr<datum_type[]>& data, std::size_t& count)
 {
     log_info(L"Loading content ...");
 
@@ -420,7 +420,7 @@ bool file_data_provider::load(std::shared_ptr<datum_type[]>& data, size_type& co
 
     try
     {
-        size_type file_size = get_file_size(my_file_name);
+        std::size_t file_size = get_file_size(my_file_name);
 
         string_type encoding(get_encoding(my_file_name));
 
@@ -474,7 +474,7 @@ bool file_data_provider::load(std::shared_ptr<datum_type[]>& data, size_type& co
 
             datum_type ch = u_fgetcx(ufile);
 
-            size_type k = 0;
+            std::size_t k = 0;
 
             const byte* bom(reinterpret_cast<const byte*>(&ch));
 

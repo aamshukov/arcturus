@@ -25,10 +25,10 @@ class arcturus_lexical_analyzer : public lexical_analyzer
     //private:
     //    bool                    my_unicode;         // true if the last obtained codepoint from unicode-escape
     //    uint8_t                 my_unicode_length;
-    //    uint32_t                my_unicode_backslash_count;
+    //    std::size_t             my_unicode_backslash_count;
 
     //    //line_map_type           my_line_map;        // start position of each line
-    //    //uint32_t                my_line_map_size;
+    //    //std::size_t             my_line_map_size;
     //    //loc_type                my_cached_line;
     //    //loc_type                my_cached_line_position;
 

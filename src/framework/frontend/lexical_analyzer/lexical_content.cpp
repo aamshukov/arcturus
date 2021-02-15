@@ -33,7 +33,7 @@ void lexical_content::build_line_map()
 
     my_tab_map.resize(my_count);
 
-    uint32_t k = 0;
+    std::size_t k = 0;
 
     line_map_type line_map(std::make_unique<loc_type[]>(my_count));
 

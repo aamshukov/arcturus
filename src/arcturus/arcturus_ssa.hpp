@@ -23,7 +23,7 @@ class arcturus_ssa : public ssa<basic_block<arcturus_quadruple>>
 
         using control_flow_graph_type = std::shared_ptr<arcturus_control_flow_graph>;
 
-        using id_type = size_type;
+        using id_type = std::size_t;
 
         using symbol_type = typename arcturus_quadruple::symbol_type;
         using arcturus_instruction_type = std::shared_ptr<arcturus_quadruple>;
@@ -32,7 +32,7 @@ class arcturus_ssa : public ssa<basic_block<arcturus_quadruple>>
 
         struct entry
         {
-            size_type version;
+            std::size_t version;
             std::stack<id_type> stack;
         };
 

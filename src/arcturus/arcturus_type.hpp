@@ -16,7 +16,7 @@ struct arcturus_type_traits
     DECLARE_ENUM
     (
         kind,
-        uint32_t,
+        std::size_t,
         unknown_type     = 0,
 
         byte_type        = 100,

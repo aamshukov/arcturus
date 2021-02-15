@@ -24,39 +24,39 @@ BEGIN_NAMESPACE(core)
 class file_data_provider : public data_provider, private noncopyable
 {
     public:
-        using callback_type = std::function<bool(std::shared_ptr<datum_type[]>, void*, size_type&)>;
+        using callback_type = std::function<bool(std::shared_ptr<datum_type[]>, void*, std::size_t&)>;
 
     private:
         string_type         my_file_name;
         callback_type       my_callback;
 
     private:
-        static size_type    get_file_size(const string_type& file_name);
+        static std::size_t  get_file_size(const string_type& file_name);
         static string_type  get_encoding(const string_type& file_name);
 
-        static bool         read_raw_data(const string_type& file_name, std::shared_ptr<byte[]>& data, size_type& count, offset_type offset);
+        static bool         read_raw_data(const string_type& file_name, std::shared_ptr<byte[]>& data, std::size_t& count, offset_type offset);
 
         static bool         read_utf8_data(std::shared_ptr<byte[]> raw_data,
-                                           size_type raw_count,
+                                           std::size_t raw_count,
                                            std::shared_ptr<datum_type[]>& data,
-                                           size_type& count);
+                                           std::size_t& count);
 
         static bool         read_utf16_data(std::shared_ptr<byte[]> raw_data,
-                                            size_type raw_count,
+                                            std::size_t raw_count,
                                             std::shared_ptr<datum_type[]>& data,
-                                            size_type& count,
+                                            std::size_t& count,
                                             bool big_endian);
 
         static bool         read_utf32_data(std::shared_ptr<byte[]> raw_data,
-                                            size_type raw_count,
+                                            std::size_t raw_count,
                                             std::shared_ptr<datum_type[]>& data,
-                                            size_type& count,
+                                            std::size_t& count,
                                             bool big_endian);
     public:
                             file_data_provider(const string_type& file_name, callback_type callback = nullptr);
         virtual            ~file_data_provider();
 
-        virtual bool        load(std::shared_ptr<datum_type[]>& data, size_type& count) override;
+        virtual bool        load(std::shared_ptr<datum_type[]>& data, std::size_t& count) override;
 };
 
 END_NAMESPACE

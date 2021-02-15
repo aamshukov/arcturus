@@ -99,11 +99,11 @@ USINGNAMESPACE(frontend)
 //
 //    std::shared_ptr<datum_type[]> re_data;
 //
-//    size_type count = 0;
+//    std::size_t count = 0;
 //    text::string_to_codepoints(re, re_data, count, status);
 //
 //    fsa::fsa_type nfa;
-//    fsa_re::re_to_fsa(re_data, count, static_cast<uint32_t>(token), static_cast<uint32_t>(escape_token), escape_predicate, nfa, status);
+//    fsa_re::re_to_fsa(re_data, count, static_cast<std::size_t>(token), static_cast<std::size_t>(escape_token), escape_predicate, nfa, status);
 //
 //    fsa::fsa_type dfa;
 //    fsa_algorithm::nfa_to_dfa(nfa, dfa, status);
@@ -412,7 +412,7 @@ USINGNAMESPACE(frontend)
 //
 //            const auto& end_state((*mindfa).states()[(*transition).end_state()]);
 //
-//            if((*end_state).token() == static_cast<uint32_t>(token_type::traits::type::identifier))
+//            if((*end_state).token() == static_cast<std::size_t>(token_type::traits::type::identifier))
 //            {
 //                if((*transition).predicate().compare(IDENTIFIER_START) == 0 ||
 //                   (*transition).predicate().compare(IDENTIFIER_PART) == 0)
@@ -444,8 +444,8 @@ USINGNAMESPACE(frontend)
 //
 //    datum_type calculated = 0;
 //
-//    size_type i = 0;
-//    size_type n = 4;
+//    std::size_t i = 0;
+//    std::size_t n = 4;
 //
 //    for(; i < n && my_ptr < my_end_content; i++)
 //    {
@@ -607,7 +607,7 @@ USINGNAMESPACE(frontend)
 ////
 ////    my_tab_map.resize((*my_content).count());
 ////
-////    uint32_t k = 0;
+////    std::size_t k = 0;
 ////
 ////    line_map_type line_map(std::make_unique<loc_type[]>((*my_content).count()));
 ////

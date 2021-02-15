@@ -13,7 +13,6 @@ class type
 {
     public:
         using index_type = int32_t;
-        using size_type = std::size_t;
 
         enum class flag : uint64_t
         {
@@ -27,14 +26,14 @@ class type
     protected:
         string_type         my_name;
 
-        size_type           my_size;            // size in bits, abstract width, like C type hierarchy
-        size_type           my_platform_size;   // size in bits, platform specific width
+        std::size_t         my_size;            // size in bits, abstract width, like C type hierarchy
+        std::size_t         my_platform_size;   // size in bits, platform specific width
 
-        size_type           my_alignment;       // alignment in memory
+        std::size_t         my_alignment;       // alignment in memory
 
         flags_type          my_flags;
 
-        size_type           my_cardinality;     // scalar (0), vector/1D-array(1), matrix/2D-array(2), etc.
+        std::size_t         my_cardinality;     // scalar (0), vector/1D-array(1), matrix/2D-array(2), etc.
 
     public:
                             type();
@@ -50,20 +49,20 @@ class type
         const string_type&  name() const;
         string_type&        name();
 
-        size_type           size() const;
-        size_type&          size();
+        std::size_t         size() const;
+        std::size_t&        size();
 
-        size_type           platform_size() const;
-        size_type&          platform_size();
+        std::size_t         platform_size() const;
+        std::size_t&        platform_size();
 
-        size_type           alignment() const;
-        size_type&          alignment();
+        std::size_t         alignment() const;
+        std::size_t&        alignment();
 
         flags_type          flags() const;
         flags_type&         flags();
 
-        size_type           cardinality() const;
-        size_type&          cardinality();
+        std::size_t         cardinality() const;
+        std::size_t&        cardinality();
 };
 
 template <typename Traits>

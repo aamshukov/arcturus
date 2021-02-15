@@ -38,7 +38,7 @@ bool grammar::char_to_skip(char_type ch, const char_type* delimiters)
 {
     bool result = false;
 
-    for(uint32_t k = 0; delimiters[k] != 0; k++)
+    for(std::size_t k = 0; delimiters[k] != 0; k++)
     {
         if(ch == delimiters[k])
         {
@@ -73,8 +73,8 @@ void grammar::load(const string_type& file_name)
     }
     else
     {
-        uint32_t symbol_number = 0;
-        uint32_t rule_number = 0;
+        std::size_t symbol_number = 0;
+        std::size_t rule_number = 0;
 
         char_type buffer[MAX_LINE_SIZE];
 
@@ -98,7 +98,7 @@ void grammar::load(const string_type& file_name)
                 break;
             }
 
-            uint32_t offset = 0;
+            std::size_t offset = 0;
 
             while(buffer[offset] != 0 && char_to_skip(buffer[offset], delimiters)) // skip delimiters
             {
@@ -112,8 +112,8 @@ void grammar::load(const string_type& file_name)
 
             if(lhs_symbol_name.empty())
             {
-                uint32_t lhs_start = offset;
-                uint32_t lhs_count = 0;
+                std::size_t lhs_start = offset;
+                std::size_t lhs_count = 0;
 
                 while(buffer[offset] != 0 && !char_to_skip(buffer[offset], delimiters) && buffer[offset] != L':') // populate lhs
                 {
@@ -141,7 +141,7 @@ void grammar::load(const string_type& file_name)
                     continue;
                 }
 
-                lhs_symbol_name.assign(buffer, lhs_start, std::max(static_cast<uint32_t>(0), lhs_count));
+                lhs_symbol_name.assign(buffer, lhs_start, std::max(static_cast<std::size_t>(0), lhs_count));
             }
             else
             {

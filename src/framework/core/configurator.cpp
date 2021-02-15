@@ -20,7 +20,7 @@ bool configurator::configure(int argc, char_type *argv[])
 
     if(argc > 0)
     {
-        size_type count = 0;
+        std::size_t count = 0;
 
         std::shared_ptr<datum_type[]> codepoints;
 

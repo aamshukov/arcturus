@@ -12,12 +12,12 @@ fsa_transition::fsa_transition()
 {
 }
 
-fsa_transition::fsa_transition(uint32_t start_state, uint32_t end_state, const typename fsa_transition::predicate_type& predicate)
+fsa_transition::fsa_transition(std::size_t start_state, std::size_t end_state, const typename fsa_transition::predicate_type& predicate)
               : my_id(0), my_start_state(start_state), my_end_state(end_state), my_predicate(predicate), my_switch_predicate(text::bad_codepoint()), my_rank(0)
 {
 }
 
-fsa_transition::fsa_transition(uint32_t start_state, uint32_t end_state, datum_type switch_predicate)
+fsa_transition::fsa_transition(std::size_t start_state, std::size_t end_state, datum_type switch_predicate)
               : my_id(0), my_start_state(start_state), my_end_state(end_state), my_switch_predicate(switch_predicate), my_rank(0)
 {
 }

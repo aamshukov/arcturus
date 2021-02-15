@@ -27,32 +27,32 @@ inline string_type& type::name()
     return my_name;
 }
 
-inline typename type::size_type type::size() const
+inline std::size_t type::size() const
 {
     return my_size;
 }
 
-inline typename type::size_type& type::size()
+inline std::size_t& type::size()
 {
     return my_size;
 }
 
-inline typename type::size_type type::platform_size() const
+inline std::size_t type::platform_size() const
 {
     return my_platform_size;
 }
 
-inline typename type::size_type& type::platform_size()
+inline std::size_t& type::platform_size()
 {
     return my_platform_size;
 }
 
-inline size_type type::alignment() const
+inline std::size_t type::alignment() const
 {
     return my_alignment;
 }
 
-inline size_type& type::alignment()
+inline std::size_t& type::alignment()
 {
     return my_alignment;
 }
@@ -68,12 +68,12 @@ inline typename type::flags_type& type::flags()
 }
 
 
-inline typename type::size_type type::cardinality() const
+inline std::size_t type::cardinality() const
 {
     return my_cardinality;
 }
 
-inline typename type::size_type& type::cardinality()
+inline std::size_t& type::cardinality()
 {
     return my_cardinality;
 }

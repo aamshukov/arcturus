@@ -18,7 +18,7 @@ struct arcturus_operation_code_traits
     DECLARE_ENUM
     (
         operation_code,
-        uint32_t,
+        std::size_t,
         unknown = 0,
 
         noop = 5,

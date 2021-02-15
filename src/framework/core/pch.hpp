@@ -86,12 +86,11 @@
 #endif
 #define interface struct
 
-#define INVALID_VALUE (static_cast<uint32_t>(-1))
+#define INVALID_VALUE (static_cast<std::size_t>(-1))
 
 BEGIN_NAMESPACE(core)
 
 using byte = uint8_t;
-using size_type = std::size_t;
 
 using offset_type = long;   // fseek, etc.
 using loc_type = int64_t;   // position, locus, location ...

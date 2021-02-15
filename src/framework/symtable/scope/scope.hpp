@@ -18,10 +18,7 @@ class scope : public tree
 
         using key_type = codepoints_type;
         using value_type = symbol_type;
-
         using symbols_type = std::unordered_map<key_type, value_type>;
-
-        using size_type = std::size_t;
         using scope_type = std::shared_ptr<scope>;
 
     public:
@@ -38,7 +35,7 @@ class scope : public tree
         //??scope::kind     my_kind;
         scope_type      my_papa;    // parent scope
 
-        size_type       my_level;   // depth
+        std::size_t     my_level;   // depth
         string_type     my_name;    // x:level
 
         symbols_type    my_symbols; // content

@@ -16,10 +16,10 @@ class fsa_transition
         using predicates_type = std::set<predicate_type>;
 
     private:
-        uint32_t                        my_id;
+        std::size_t                     my_id;
 
-        uint32_t                        my_start_state;
-        uint32_t                        my_end_state;
+        std::size_t                     my_start_state;
+        std::size_t                     my_end_state;
 
         predicate_type                  my_predicate;
         datum_type                      my_switch_predicate; // short text predicate, indicates if predicate has simple form, and can be used in switched code generation
@@ -32,8 +32,8 @@ class fsa_transition
                                                  // is_identifier_part() than recognition of a keyword "while"
     public:
                                         fsa_transition();
-                                        fsa_transition(uint32_t start_state, uint32_t end_state, const predicate_type& predicate);
-                                        fsa_transition(uint32_t start_state, uint32_t end_state, datum_type switch_predicate);
+                                        fsa_transition(std::size_t start_state, std::size_t end_state, const predicate_type& predicate);
+                                        fsa_transition(std::size_t start_state, std::size_t end_state, datum_type switch_predicate);
 
                                         fsa_transition(const fsa_transition& other);
                                         fsa_transition(fsa_transition&& other);
@@ -41,14 +41,14 @@ class fsa_transition
         fsa_transition&                 operator = (const fsa_transition& other);
         fsa_transition&                 operator = (fsa_transition&& other);
 
-        uint32_t                        id() const;
-        uint32_t&                       id();
+        std::size_t                     id() const;
+        std::size_t&                    id();
 
-        uint32_t                        start_state() const;
-        uint32_t&                       start_state();
+        std::size_t                     start_state() const;
+        std::size_t&                    start_state();
 
-        uint32_t                        end_state() const;
-        uint32_t&                       end_state();
+        std::size_t                     end_state() const;
+        std::size_t&                    end_state();
 
         const predicate_type&           predicate() const;
         predicate_type&                 predicate();
@@ -65,32 +65,32 @@ class fsa_transition
         static const predicate_type&    epsilon_predicate();
 };
 
-inline uint32_t fsa_transition::id() const
+inline std::size_t fsa_transition::id() const
 {
     return my_id;
 }
 
-inline uint32_t& fsa_transition::id()
+inline std::size_t& fsa_transition::id()
 {
     return my_id;
 }
 
-inline uint32_t fsa_transition::start_state() const
+inline std::size_t fsa_transition::start_state() const
 {
     return my_start_state;
 }
 
-inline uint32_t& fsa_transition::start_state()
+inline std::size_t& fsa_transition::start_state()
 {
     return my_start_state;
 }
 
-inline uint32_t fsa_transition::end_state() const
+inline std::size_t fsa_transition::end_state() const
 {
     return my_end_state;
 }
 
-inline uint32_t& fsa_transition::end_state()
+inline std::size_t& fsa_transition::end_state()
 {
     return my_end_state;
 }

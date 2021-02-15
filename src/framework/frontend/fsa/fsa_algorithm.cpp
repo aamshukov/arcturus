@@ -40,7 +40,7 @@ typename fsa_algorithm::state_set_type fsa_algorithm::calculate_states_eclosure(
     //  End;
     state_set_type result(factory::create<fsa_state_set>());
 
-    std::stack<std::pair<uint32_t, state_type>> stack;
+    std::stack<std::pair<std::size_t, state_type>> stack;
 
     for(const auto& state : (*state_set).states())
     {
@@ -142,13 +142,13 @@ void fsa_algorithm::remove_useless_states(const fsa_type& fsa0, fsa_type& result
     // calculate transitive closure, Warshall's algorithm, gde to utashil
     std::size_t n = (*fsa0).states().size();
 
-    for(uint32_t i = 0; i < n; i++)
+    for(std::size_t i = 0; i < n; i++)
     {
-        for(uint32_t j = 0; j < n; j++)
+        for(std::size_t j = 0; j < n; j++)
         {
             if(tc[j][i])
             {
-                for(uint32_t k = 0; k <= n; k++)
+                for(std::size_t k = 0; k <= n; k++)
                 {
                     if(tc[i][k])
                     {
@@ -162,10 +162,10 @@ void fsa_algorithm::remove_useless_states(const fsa_type& fsa0, fsa_type& result
     // cleanup
     fsa_type fsa1((*fsa0).clone());
 
-    std::vector<uint32_t> states_to_remove;
+    std::vector<std::size_t> states_to_remove;
 
     // remove all the states not reachable from initial state
-    for(uint32_t i = 0; i < n; i++)
+    for(std::size_t i = 0; i < n; i++)
     {
         if(!tc[(*(*fsa1).start_state()).id()][i])
         {
@@ -174,7 +174,7 @@ void fsa_algorithm::remove_useless_states(const fsa_type& fsa0, fsa_type& result
     }
 
     // remove all states not reaching a final state
-    for(uint32_t i = 0; i < n; i++)
+    for(std::size_t i = 0; i < n; i++)
     {
         bool reached = false;
 
@@ -374,15 +374,15 @@ void fsa_algorithm::combine_transitions(const typename fsa_algorithm::state_type
     }
 }
 
-uint32_t fsa_algorithm::get_equivalence_class_index(const state_type& state, const equivalence_classes_type& equivalence_classes)
+std::size_t fsa_algorithm::get_equivalence_class_index(const state_type& state, const equivalence_classes_type& equivalence_classes)
 {
-    uint32_t result = INVALID_VALUE;
+    std::size_t result = INVALID_VALUE;
 
     for(std::size_t k = 0, n = equivalence_classes.size(); k < n; k++)
     {
         if(equivalence_classes[k].find((*state).id()) != equivalence_classes[k].end())
         {
-            result = static_cast<uint32_t>(k);
+            result = k;
             break;
         }
     }
@@ -394,21 +394,21 @@ string_type fsa_algorithm::decorate_equivalence_class(const typename fsa_algorit
 {
     string_type result;
 
-    std::vector<uint32_t> states;
+    std::vector<std::size_t> states;
 
     std::for_each(equivalence_class.begin(), equivalence_class.end(), [&states](const auto& state_kvp) { states.emplace_back(state_kvp.first); });
 
     std::sort(states.begin(), states.end(), [] (auto id1, auto id2) { return id1 < id2; });
 
-    std::for_each(states.begin(), states.end(), [&states, &result](uint32_t state) { result += L" " + std::to_wstring(state); });
+    std::for_each(states.begin(), states.end(), [&states, &result](std::size_t state) { result += L" " + std::to_wstring(state); });
 
     return result;
 }
 
 void typename fsa_algorithm::build_equivalence_class_combinations(const typename fsa_algorithm::equivalence_class_type& equivalence_class,
-                                                                  std::vector<std::pair<std::pair<uint32_t,
+                                                                  std::vector<std::pair<std::pair<std::size_t,
                                                                   typename fsa_algorithm::state_type>,
-                                                                  std::pair<uint32_t, typename fsa_algorithm::state_type>>>& combinations)
+                                                                  std::pair<std::size_t, typename fsa_algorithm::state_type>>>& combinations)
 {
     /* 24.12.2008 last modification: 26.06.2013
     Copyright (c) 2008-2013 by Siegfried Koepf
@@ -501,7 +501,7 @@ void typename fsa_algorithm::build_equivalence_class_combinations(const typename
     }
 
     // populate according indices ...
-    std::vector<std::pair<uint32_t, state_type>> states(equivalence_class.begin(), equivalence_class.end());
+    std::vector<std::pair<std::size_t, state_type>> states(equivalence_class.begin(), equivalence_class.end());
 
     std::sort(states.begin(), states.end(), [] (const auto& s1_kvp, const auto& s2_kvp) { return s1_kvp.first < s2_kvp.first; });
 
@@ -603,7 +603,7 @@ void fsa_algorithm::build_k_equivalence_classes0(const typename fsa_algorithm::f
                 continue;
             }
 
-            std::vector<std::pair<std::pair<uint32_t, state_type>, std::pair<uint32_t, state_type>>> states_combinations;
+            std::vector<std::pair<std::pair<std::size_t, state_type>, std::pair<std::size_t, state_type>>> states_combinations;
 
             build_equivalence_class_combinations(set, states_combinations);
 
@@ -611,7 +611,7 @@ void fsa_algorithm::build_k_equivalence_classes0(const typename fsa_algorithm::f
             {
                 if(states_equivalent(fsa0, sets, states_combination.first.second, states_combination.second.second))
                 {
-                    uint32_t index = get_equivalence_class_index(states_combination.first.second, new_sets);
+                    std::size_t index = get_equivalence_class_index(states_combination.first.second, new_sets);
 
                     if(index == INVALID_VALUE)
                     {
@@ -639,7 +639,7 @@ void fsa_algorithm::build_k_equivalence_classes0(const typename fsa_algorithm::f
 
                     for(const auto& fs_state : fs_states)
                     {
-                        uint32_t index = get_equivalence_class_index(fs_state, new_sets);
+                        std::size_t index = get_equivalence_class_index(fs_state, new_sets);
 
                         if(index != INVALID_VALUE)
                         {
@@ -866,7 +866,7 @@ void fsa_algorithm::build_fsa_from_equivalence_classes(const typename fsa_algori
     }
 
     // build transitions
-    for(uint32_t k = 0, n = static_cast<uint32_t>(equivalence_classes.size()); k < n; k++)
+    for(std::size_t k = 0, n = static_cast<std::size_t>(equivalence_classes.size()); k < n; k++)
     {
         const auto& equivalence_class(equivalence_classes[k]);
 
@@ -884,7 +884,7 @@ void fsa_algorithm::build_fsa_from_equivalence_classes(const typename fsa_algori
             const auto& fsa_end_state((*fsa0).states()[(*transition).end_state()]);
 
             // find equivalence class containing new transition end state from original fsa0
-            for(uint32_t j = 0, m = static_cast<uint32_t>(equivalence_classes.size()); j < m; j++)
+            for(std::size_t j = 0, m = static_cast<std::size_t>(equivalence_classes.size()); j < m; j++)
             {
                 const auto& equivalence_class0(equivalence_classes[j]);
 
@@ -951,11 +951,11 @@ void fsa_algorithm::minimize_dfa(const typename fsa_algorithm::fsa_type& fsa0, t
     log_info(L"Minimized DFA .");
 }
 
-uint32_t fsa_algorithm::validate_dfa(const typename fsa_algorithm::fsa_type& fsa0, const string_type& input)
+std::size_t fsa_algorithm::validate_dfa(const typename fsa_algorithm::fsa_type& fsa0, const string_type& input)
 {
     log_info(L"Validating DFA ...");
 
-    uint32_t result = 0; // unknown
+    std::size_t result = 0; // unknown
 
     auto state((*fsa0).start_state());
 
