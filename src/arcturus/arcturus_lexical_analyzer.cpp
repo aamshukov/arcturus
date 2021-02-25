@@ -520,7 +520,7 @@ USINGNAMESPACE(frontend)
 //        {
 //            if(my_unicode_backslash_count % 2 == 0)
 //            {
-//                const datum_type* ptr(my_ptr);
+//                const datum_type *ptr(my_ptr);
 //
 //                if(*(my_ptr + 1) == datum_type(L'u'))
 //                {
@@ -572,7 +572,7 @@ USINGNAMESPACE(frontend)
 //{
 //    datum_type result = text::invalid_codepoint;
 //
-//    const datum_type* ptr(my_ptr);
+//    const datum_type *ptr(my_ptr);
 //    bool unicode = my_unicode;
 //
 //    for(uint16_t i = 0; i < k; i++)
@@ -601,9 +601,9 @@ USINGNAMESPACE(frontend)
 ////// OpenJDK 9+ for more details ...
 ////void java_lexical_analyzer::build_line_map()
 ////{
-////    const datum_type* ptr(my_ptr);
-////    const datum_type* start_content(my_start_content);
-////    const datum_type* end_content(my_end_content);
+////    const datum_type *ptr(my_ptr);
+////    const datum_type *start_content(my_start_content);
+////    const datum_type *end_content(my_end_content);
 ////
 ////    my_tab_map.resize((*my_content).count());
 ////
@@ -727,7 +727,7 @@ USINGNAMESPACE(frontend)
 //
 //void java_lexical_analyzer::calculate_indentation()
 //{
-//    const datum_type* ptr(my_ptr);
+//    const datum_type *ptr(my_ptr);
 //
 //    if(my_boll)
 //    {

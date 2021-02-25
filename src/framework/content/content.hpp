@@ -61,7 +61,7 @@ inline content::source_type& content::source()
 
 inline const datum_type* content::data() const
 {
-    const datum_type* result(nullptr);
+    const datum_type *result(nullptr);
 
     if(my_data)
     {

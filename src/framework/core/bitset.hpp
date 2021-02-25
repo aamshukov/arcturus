@@ -17,7 +17,7 @@ class bitset : private noncopyable
             friend class bitset;
 
             private:
-                bitset*     my_bitset;   // referenced bitset
+                bitset     *my_bitset;   // referenced bitset
                 std::size_t my_position; // position in bitset
 
             private:

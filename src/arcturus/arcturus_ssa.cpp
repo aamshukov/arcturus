@@ -338,4 +338,39 @@ typename arcturus_ssa::arcturus_instruction_type arcturus_ssa::make_phi_instruct
     return result;
 }
 
+void arcturus_ssa::destruct_ssa_form(typename arcturus_ssa::control_flow_graph_type& cfg)
+{
+    // 'Translating Out of Static Single Assignment Form' by Vugranam C. Sreedhar, Roy Dz-Ching Ju2, David M. Gillies3, and Vatsa Santhanam
+    // ... method I
+    //
+    // two issues are not covered by this implementation - as of 'Towards an SSA based compiler back-end' by Benoit Boissinot:
+    //  1) Depending on the branching instruction, the copies cannot always be inserted at the very end of the block, i.e., after all variables uses and defnitions.
+    //     For example, for a 𝛗-function after a conditional branch that uses a variable 'u', the copies must be inserted before the use of 'u'.
+    //  2) When the basic block contains variables defned after the point of copy insertion. This conguration is possible
+    //     in embedded environments, where some DSP-like branching instructions have a behavior similar to a hardware loop:
+    //     in addition to the condition, a counter 'u' is decremented by the instruction itself ...
+    for(const auto& vertex : (*cfg).vertices())
+    {
+        auto& code((*vertex).code());
+
+        for(auto instruction = code.instructions();
+            instruction != code.end_instruction();
+            instruction = std::dynamic_pointer_cast<arcturus_quadruple>((*instruction).next()))
+        {
+            if((*instruction).operation != arcturus_operation_code_traits::operation_code::phi)
+                continue;
+
+            auto& phi_var((*instruction).argument1.first); // arg1 must be valid because it is assignment
+            auto& phi_params(std::get<arcturus_quadruple::phi_params_type>((*instruction).result));
+
+            // phase I (applying method I - translate SSA into CSSA (Conventional SSA))
+
+
+
+
+            // phase II (eliminate 𝛗-functions)
+        }
+    }
+}
+
 END_NAMESPACE

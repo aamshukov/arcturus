@@ -162,7 +162,7 @@ void arcturus_control_flow_graph::collect_basic_blocks(typename arcturus_control
         //  до конца промежуточной программы.
         id_type id = 0;
 
-        const char_type* label(L"BB-%ld");
+        const char_type *label(L"BB-%ld");
 
         basic_blocks_type blocks;
 
@@ -317,7 +317,7 @@ void arcturus_control_flow_graph::generate_graphviz_file(const string_type& file
             log_error(L"Failed to generate graphviz file: stream is either open or in a bad condition.");
         }
 
-        const char_type* indent(get_indent(4));
+        const char_type *indent(get_indent(4));
 
         stream << L"digraph CFG" << std::endl;
         stream << L"{" << std::endl;

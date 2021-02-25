@@ -32,7 +32,7 @@ bool configurator::configure(int argc, char_type *argv[])
 
         for(auto k = 1; k < argc; k++)
         {
-            const char_type* p = argv[k];
+            const char_type *p = argv[k];
 
             if(*p++ == '-')
             {

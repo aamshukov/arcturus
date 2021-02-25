@@ -27,7 +27,7 @@ bool is_big_endian()
     return !is_little_endian();
 }
 
-string_type format(const char_type* format_template, ...)
+string_type format(const char_type *format_template, ...)
 {
     string_type result;
     

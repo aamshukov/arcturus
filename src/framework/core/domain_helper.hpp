@@ -48,8 +48,8 @@ static T arrange_type(T value)
 {
     T result;
 
-    byte* pval((byte*)&value);
-    byte* pres((byte*)&result);
+    byte *pval((byte*)&value);
+    byte *pres((byte*)&result);
 
     for(std::size_t i = 0, j = sizeof(T) - 1; j >= 0;)
     {

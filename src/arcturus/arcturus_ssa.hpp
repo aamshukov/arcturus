@@ -54,6 +54,7 @@ class arcturus_ssa : public ssa<basic_block<arcturus_quadruple>>
 
     public:
         static void build_ssa_form(control_flow_graph_type& cfg);
+        static void destruct_ssa_form(control_flow_graph_type& cfg);
 };
 
 END_NAMESPACE

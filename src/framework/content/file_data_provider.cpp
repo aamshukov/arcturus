@@ -23,7 +23,7 @@ std::size_t file_data_provider::get_file_size(const string_type& file_name)
 {
     std::size_t result = 0;
 
-    FILE* file;
+    FILE *file;
 
     if(_wfopen_s(&file, file_name.c_str(), L"rb") == 0)
     {
@@ -41,7 +41,7 @@ string_type file_data_provider::get_encoding(const string_type& file_name)
 
     string_type result;
 
-    FILE* file;
+    FILE *file;
 
     if(_wfopen_s(&file, file_name.c_str(), L"rb") == 0)
     {
@@ -135,7 +135,7 @@ bool file_data_provider::read_raw_data(const string_type& file_name,
 
     try
     {
-        FILE* file;
+        FILE *file;
 
         if(_wfopen_s(&file, file_name.c_str(), L"rb") == 0)
         {
@@ -185,16 +185,16 @@ bool file_data_provider::read_utf8_data(std::shared_ptr<byte[]> raw_data,
 
     try
     {
-        const byte*  source_start_aux(raw_data.get());
-        const byte** source_start(&source_start_aux);
-        const byte*  source_end(source_start_aux + raw_count);
+        const byte  *source_start_aux(raw_data.get());
+        const byte **source_start(&source_start_aux);
+        const byte  *source_end(source_start_aux + raw_count);
 
         std::shared_ptr<datum_type[]> buffer(new datum_type[raw_count + 1]);
 
-        const datum_type*  target_start_org(buffer.get());
-        const datum_type*  target_start_aux(buffer.get());
-        const datum_type** target_start(&target_start_aux);
-        const datum_type*  target_end(target_start_aux + raw_count);
+        const datum_type  *target_start_org(buffer.get());
+        const datum_type  *target_start_aux(buffer.get());
+        const datum_type **target_start(&target_start_aux);
+        const datum_type  *target_end(target_start_aux + raw_count);
             
         convert_result cr = convert_utf8_to_utf32(source_start,
                                                   source_end,
@@ -279,15 +279,15 @@ bool file_data_provider::read_utf16_data(std::shared_ptr<byte[]> raw_data,
         {
             raw_count /= 2;
 
-            const uint16_t*  source_start_aux(reinterpret_cast<uint16_t*>(raw_data.get()));
-            const uint16_t** source_start(&source_start_aux);
-            const uint16_t*  source_end(source_start_aux + raw_count);
+            const uint16_t  *source_start_aux(reinterpret_cast<uint16_t*>(raw_data.get()));
+            const uint16_t **source_start(&source_start_aux);
+            const uint16_t  *source_end(source_start_aux + raw_count);
 
             std::shared_ptr<datum_type[]> buffer(new datum_type[raw_count + 1]);
 
-            const datum_type*  target_start_aux(buffer.get());
-            const datum_type** target_start(&target_start_aux);
-            const datum_type*  target_end(target_start_aux + raw_count);
+            const datum_type  *target_start_aux(buffer.get());
+            const datum_type **target_start(&target_start_aux);
+            const datum_type  *target_end(target_start_aux + raw_count);
 
             convert_result cr = convert_utf16_to_utf32(source_start,
                                                        source_end,
@@ -464,7 +464,7 @@ bool file_data_provider::load(std::shared_ptr<datum_type[]>& data, std::size_t& 
             icu_encoding = "UTF-8";
         }
 
-        UFILE* ufile(u_fopen_u(reinterpret_cast<const UChar*>(my_file_name.c_str()), "rb", NULL, icu_encoding.c_str()));
+        UFILE *ufile(u_fopen_u(reinterpret_cast<const UChar*>(my_file_name.c_str()), "rb", NULL, icu_encoding.c_str()));
 
         if(ufile != nullptr)
         {
@@ -476,7 +476,7 @@ bool file_data_provider::load(std::shared_ptr<datum_type[]>& data, std::size_t& 
 
             std::size_t k = 0;
 
-            const byte* bom(reinterpret_cast<const byte*>(&ch));
+            const byte *bom(reinterpret_cast<const byte*>(&ch));
 
             if(!((bom[0] == 0xEF && bom[1] == 0xBB && bom[2] == 0xBF) ||
                 ((bom[0] == 0xFE && bom[1] == 0xFF) || (bom[0] == 0xFF && bom[1] == 0xFE)) ||

@@ -581,6 +581,8 @@
     </Text>
   </ItemGroup>
   <ItemGroup>
-    <MASM Include="..\src\framework\backend\codegen\amd64\masm.test.asm" />
+    <MASM Include="..\src\framework\backend\codegen\amd64\masm.test.asm">
+      <Filter>framework\backend\codegen\amd64</Filter>
+    </MASM>
   </ItemGroup>
 </Project>
