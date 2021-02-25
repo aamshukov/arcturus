@@ -346,7 +346,7 @@ void arcturus_ssa::destruct_ssa_form(typename arcturus_ssa::control_flow_graph_t
     // two issues are not covered by this implementation - as of 'Towards an SSA based compiler back-end' by Benoit Boissinot:
     //  1) Depending on the branching instruction, the copies cannot always be inserted at the very end of the block, i.e., after all variables uses and defnitions.
     //     For example, for a 𝛗-function after a conditional branch that uses a variable 'u', the copies must be inserted before the use of 'u'.
-    //  2) When the basic block contains variables defned after the point of copy insertion. This conguration is possible
+    //  2) When the basic block contains variables defned after the point of copy insertion. This confguration is possible
     //     in embedded environments, where some DSP-like branching instructions have a behavior similar to a hardware loop:
     //     in addition to the condition, a counter 'u' is decremented by the instruction itself ...
     for(const auto& vertex : (*cfg).vertices())
