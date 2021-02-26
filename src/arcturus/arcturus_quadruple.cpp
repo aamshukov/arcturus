@@ -6,9 +6,16 @@
 #include <core/visitable.hpp>
 #include <core/visitor.hpp>
 
+#include <core/bitset.hpp>
+
 #include <core/list.hpp>
 #include <core/tree.hpp>
 #include <core/dag.hpp>
+
+#include <core/vertex.hpp>
+#include <core/dominator_vertex.hpp>
+#include <core/edge.hpp>
+#include <core/graph.hpp>
 
 #include <frontend/lexical_analyzer/token.hpp>
 

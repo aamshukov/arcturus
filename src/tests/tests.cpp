@@ -2090,70 +2090,70 @@ namespace tests
                 symb_counter.number(); // starts from 1
                 instr_counter.number(); // starts from 1
 
-                auto symbol_1(factory::create<arcturus_symbol>(symb_counter.number()));
+                auto symbol_1(factory::create<arcturus_symbol>());
                 (*symbol_1).name() = text::chars_to_codepoints("1", 1);
 
-                auto symbol_2(factory::create<arcturus_symbol>(symb_counter.number()));
+                auto symbol_2(factory::create<arcturus_symbol>());
                 (*symbol_2).name() = text::chars_to_codepoints("2", 1);
 
-                auto symbol_3(factory::create<arcturus_symbol>(symb_counter.number()));
+                auto symbol_3(factory::create<arcturus_symbol>());
                 (*symbol_3).name() = text::chars_to_codepoints("3", 1);
 
-                auto symbol_4(factory::create<arcturus_symbol>(symb_counter.number()));
+                auto symbol_4(factory::create<arcturus_symbol>());
                 (*symbol_4).name() = text::chars_to_codepoints("4", 1);
 
-                auto symbol_6(factory::create<arcturus_symbol>(symb_counter.number()));
+                auto symbol_6(factory::create<arcturus_symbol>());
                 (*symbol_6).name() = text::chars_to_codepoints("6", 1);
 
-                auto symbol_i(factory::create<arcturus_symbol>(symb_counter.number()));
+                auto symbol_i(factory::create<arcturus_symbol>());
                 (*symbol_i).name() = text::chars_to_codepoints("I", 1);
 
-                auto symbol_j(factory::create<arcturus_symbol>(symb_counter.number()));
+                auto symbol_j(factory::create<arcturus_symbol>());
                 (*symbol_j).name() = text::chars_to_codepoints("J", 1);
 
-                auto symbol_k(factory::create<arcturus_symbol>(symb_counter.number()));
+                auto symbol_k(factory::create<arcturus_symbol>());
                 (*symbol_k).name() = text::chars_to_codepoints("K", 1);
 
-                auto symbol_l(factory::create<arcturus_symbol>(symb_counter.number()));
+                auto symbol_l(factory::create<arcturus_symbol>());
                 (*symbol_l).name() = text::chars_to_codepoints("L", 1);
 
-                auto symbol_p(factory::create<arcturus_symbol>(symb_counter.number()));
+                auto symbol_p(factory::create<arcturus_symbol>());
                 (*symbol_p).name() = text::chars_to_codepoints("P", 1);
 
-                auto symbol_q(factory::create<arcturus_symbol>(symb_counter.number()));
+                auto symbol_q(factory::create<arcturus_symbol>());
                 (*symbol_q).name() = text::chars_to_codepoints("Q", 1);
 
-                auto symbol_r(factory::create<arcturus_symbol>(symb_counter.number()));
+                auto symbol_r(factory::create<arcturus_symbol>());
                 (*symbol_r).name() = text::chars_to_codepoints("R", 1);
 
-                auto symbol_s(factory::create<arcturus_symbol>(symb_counter.number()));
+                auto symbol_s(factory::create<arcturus_symbol>());
                 (*symbol_s).name() = text::chars_to_codepoints("S", 1);
 
-                auto symbol_t(factory::create<arcturus_symbol>(symb_counter.number()));
+                auto symbol_t(factory::create<arcturus_symbol>());
                 (*symbol_t).name() = text::chars_to_codepoints("T", 1);
 
-                auto symbol_m0(factory::create<arcturus_symbol>(symb_counter.number()));
+                auto symbol_m0(factory::create<arcturus_symbol>());
                 (*symbol_m0).name() = text::chars_to_codepoints("M0", 2);
 
-                auto symbol_m1(factory::create<arcturus_symbol>(symb_counter.number()));
+                auto symbol_m1(factory::create<arcturus_symbol>());
                 (*symbol_m1).name() = text::chars_to_codepoints("M1", 2);
 
-                auto symbol_m2(factory::create<arcturus_symbol>(symb_counter.number()));
+                auto symbol_m2(factory::create<arcturus_symbol>());
                 (*symbol_m2).name() = text::chars_to_codepoints("M2", 2);
 
-                auto symbol_m3(factory::create<arcturus_symbol>(symb_counter.number()));
+                auto symbol_m3(factory::create<arcturus_symbol>());
                 (*symbol_m3).name() = text::chars_to_codepoints("M3", 2);
 
-                auto symbol_m10(factory::create<arcturus_symbol>(symb_counter.number()));
+                auto symbol_m10(factory::create<arcturus_symbol>());
                 (*symbol_m10).name() = text::chars_to_codepoints("M10", 3);
 
-                auto symbol_m11(factory::create<arcturus_symbol>(symb_counter.number()));
+                auto symbol_m11(factory::create<arcturus_symbol>());
                 (*symbol_m11).name() = text::chars_to_codepoints("M11", 3);
 
-                auto symbol_m100(factory::create<arcturus_symbol>(symb_counter.number()));
+                auto symbol_m100(factory::create<arcturus_symbol>());
                 (*symbol_m100).name() = text::chars_to_codepoints("M100", 4);
 
-                auto symbol_m101(factory::create<arcturus_symbol>(symb_counter.number()));
+                auto symbol_m101(factory::create<arcturus_symbol>());
                 (*symbol_m101).name() = text::chars_to_codepoints("M101", 4);
 
                 auto code(factory::create<arcturus_code>());

@@ -169,7 +169,7 @@ void arcturus_ssa::place_phi_functions(const typename arcturus_ssa::symbol_type&
                 (*cfg).collect_predecessors(std::dynamic_pointer_cast<basic_block<arcturus_quadruple>>(y), predecessors);
 
                 // add 𝛗 to Y
-                auto phi(make_phi_instruction(v, predecessors.size()));
+                auto phi(make_phi_instruction(v, predecessors));
 
                 (*dynamic_cast<basic_block<arcturus_quadruple>*>(y.get())).code().insert_instruction(phi);
 
@@ -301,7 +301,7 @@ void arcturus_ssa::rename_variables(const typename arcturus_ssa::symbol_type& v,
                 {
                     auto& phi_params(std::get<arcturus_quadruple::phi_params_type>((*instruction).result));
 
-                    phi_params[j].second = e.stack.top(); // bump up version
+                    phi_params[j].first.second = e.stack.top(); // bump up version
 
                     break;
                 }
@@ -322,13 +322,14 @@ void arcturus_ssa::rename_variables(const typename arcturus_ssa::symbol_type& v,
     }
 }
 
-typename arcturus_ssa::arcturus_instruction_type arcturus_ssa::make_phi_instruction(const typename arcturus_ssa::symbol_type& v, id_type n)
+typename arcturus_ssa::arcturus_instruction_type arcturus_ssa::make_phi_instruction(const typename arcturus_ssa::symbol_type& v,
+                                                                                    const typename arcturus_ssa::basic_blocks_type& predecessors)
 {
-    std::vector<std::pair<symbol_type, id_type>> params;
+    arcturus_quadruple::phi_params_type params;
 
-    for(auto k = 0; k < n; k++)
+    for(auto& predecessor : predecessors)
     {
-        params.emplace_back(std::make_pair(v, 0));
+        params.emplace_back(std::make_pair(std::make_pair(v, 0), predecessor));
     }
 
     arcturus_instruction_type result(factory::create<arcturus_quadruple>(0,
@@ -351,7 +352,7 @@ void arcturus_ssa::destruct_ssa_form(typename arcturus_ssa::control_flow_graph_t
     //     in addition to the condition, a counter 'u' is decremented by the instruction itself ...
     using op = arcturus_operation_code_traits::operation_code;
 
-    for(const auto& vertex : (*cfg).vertices())
+    for(const auto& vertex : (*cfg).vertices())  // vertex is basic block
     {
         auto& code((*vertex).code());
 
@@ -365,34 +366,16 @@ void arcturus_ssa::destruct_ssa_form(typename arcturus_ssa::control_flow_graph_t
             auto& phi_params(std::get<arcturus_quadruple::phi_params_type>((*instruction).result));
 
             // phase I (applying method I - translate SSA into CSSA (Conventional SSA))
-            std::set<basic_block_type, vertex_lt_key_comparator<basic_block<arcturus_quadruple>>> predecessors;
-
-            (*cfg).collect_predecessors(std::dynamic_pointer_cast<basic_block<arcturus_quadruple>>(vertex), predecessors);
-
-            for(const auto& predecessor: predecessors)
+            for(const auto& phi_param : phi_params)
             {
-                std::size_t k = 0;
-                std::size_t j = 0; // j-th parameter of 𝛗-function must correspond to j-th predecessor in control flow graph
-
-                for(const auto& p: predecessors)
-                {
-                    if(p == vertex)
-                    {
-                        j = k;
-                        break;
-                    }
-
-                    k++;
-                }
+                auto predecessor(std::dynamic_pointer_cast<basic_block<arcturus_quadruple>>(phi_param.second));
 
                 // x1' = x1
-                const auto& phi_param(phi_params[k]);
+                const auto& x1(phi_param.first.first);
+                auto x1_ver(phi_param.first.second);
 
-                const auto& x1(phi_param.first);
-                auto x1_ver(phi_param.second);
-
-                auto x1p(factory::create<arcturus_symbol>(0)); // x1'
-                (*x1p).name() = (*phi_param.first).name() + cp_type{'\''};
+                auto x1p(factory::create<arcturus_symbol>()); // x1', todo: should be cloned from x1
+                (*x1p).name() = (*phi_param.first.first).name() + cp_type{'\''};
 
                 auto x1_x1p(factory::create<arcturus_quadruple>(0,
                                                                 op::assignment_hir,
@@ -405,24 +388,45 @@ void arcturus_ssa::destruct_ssa_form(typename arcturus_ssa::control_flow_graph_t
             auto& x3((*instruction).argument1.first); // arg1 must be valid because it is assignment
             auto x3_ver((*instruction).argument1.second);
 
-            auto x3p(factory::create<arcturus_symbol>(0)); // x3'
+            auto x3p(factory::create<arcturus_symbol>()); // x3', todo: should be cloned from x3
             (*x3p).name() = (*x3).name() + cp_type{'\''};
 
             auto x3_x3p(factory::create<arcturus_quadruple>(0,
                                                             op::assignment_hir,
                                                             std::make_pair(x3, x3_ver),
                                                             std::make_pair(x3p, x3_ver)));
-            (*vertex).code().add_instruction(x3_x3p);
+            (*vertex).code().insert_instruction(x3_x3p, std::dynamic_pointer_cast<arcturus_quadruple>((*instruction).next()));
 
             // add ' to all members of the 𝛗-instruction
             (*x3).name() += cp_type{'\''};
 
             for(auto& phi_param : phi_params)
             {
-                (*phi_param.first).name() += cp_type{'\''};
+                (*phi_param.first.first).name() += cp_type{'\''};
             }
 
             // phase II (eliminate 𝛗-functions)
+            for(const auto& phi_param : phi_params)
+            {
+                // add to each predecessor x3' = x1'
+                auto& x1p_phi(phi_param.first.first);
+                auto& x1p_phi_ver(phi_param.first.second);
+
+                auto& x3p_phi((*instruction).argument1.first); // arg1 already has been processed and has x3'
+                auto& x3p_phi_ver((*instruction).argument1.second);
+
+                auto& pred_phi(phi_param.second); // predeccessor
+
+                auto x3p_phi_x1p(factory::create<arcturus_quadruple>(0,
+                                                                     op::assignment_hir,
+                                                                     std::make_pair(x1p_phi, x1p_phi_ver),
+                                                                     std::make_pair(x3p_phi, x3p_phi_ver)));
+
+                (*std::dynamic_pointer_cast<basic_block<arcturus_quadruple>>(pred_phi)).code().add_instruction(x3p_phi_x1p);
+            }
+
+            // remove 𝛗-function
+            (*vertex).code().remove_instruction(instruction);
         }
     }
 }

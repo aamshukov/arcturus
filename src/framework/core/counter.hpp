@@ -11,8 +11,8 @@ BEGIN_NAMESPACE(core)
 class counter : private noncopyable
 {
     private:
-        std::size_t my_count;
-
+        std::atomic<std::size_t>
+                    my_count;
     public:
         explicit    counter(std::size_t count = 0);
 

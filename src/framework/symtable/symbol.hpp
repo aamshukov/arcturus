@@ -78,10 +78,10 @@ class symbol : private noncopyable
 
         metadata_type           my_metadata;            // custom attributes
 
-        static counter_type     my_tmp_counter;
+        static counter_type     my_counter;
 
     public:
-                                symbol(const id_type& id);
+                                symbol();
                                ~symbol();
 
         const id_type&          id() const;
@@ -119,7 +119,7 @@ class symbol : private noncopyable
         string_type             to_string() const;
 };
 
-inline typename symbol::counter_type symbol::my_tmp_counter;
+inline typename symbol::counter_type symbol::my_counter;
 
 struct symbol_lt_key_comparator
 {
@@ -150,8 +150,8 @@ struct symbol_hash
     }
 };
 
-inline symbol::symbol(const id_type& id)
-             : my_id(id),
+inline symbol::symbol()
+             : my_id(my_counter.number()),
                my_offset(0),
                my_size(0),
                my_bitsize(0),
@@ -257,7 +257,7 @@ inline typename symbol::symbol_type symbol::get_new_temporary()
 {
     symbol_type result;
 
-    auto num = my_tmp_counter.value();
+    auto num = my_counter.value();
 
     if(num < 999999)
     {
@@ -274,7 +274,7 @@ inline typename symbol::symbol_type symbol::get_new_temporary()
             t[k] = b[k];
         }
 
-        result = factory::create<symbol>(num);
+        result = factory::create<symbol>();
 
         (*result).name() = t;
     }

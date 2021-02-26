@@ -19,7 +19,7 @@ class arcturus_ssa : public ssa<basic_block<arcturus_quadruple>>
 {
     public:
         using basic_block_type = std::shared_ptr<basic_block<arcturus_quadruple>>;
-        using basic_blocks_type = std::vector<basic_block_type>;
+        using basic_blocks_type = std::set<basic_block_type, vertex_lt_key_comparator<basic_block<arcturus_quadruple>>>;
 
         using control_flow_graph_type = std::shared_ptr<arcturus_control_flow_graph>;
 
@@ -40,7 +40,7 @@ class arcturus_ssa : public ssa<basic_block<arcturus_quadruple>>
 
     private:
         static arcturus_instruction_type
-                    make_phi_instruction(const symbol_type& v, id_type n);
+                    make_phi_instruction(const symbol_type& v, const basic_blocks_type& predecessors);
 
         static void place_phi_functions(const symbol_type& v, control_flow_graph_type& cfg);
 

@@ -86,7 +86,9 @@ struct quadruple : public list
     using symbol_type = std::shared_ptr<symtable::symbol>;
     using argument_type = std::pair<symbol_type, id_type>; // <symbol, version>
     using quadruple_type = std::shared_ptr<quadruple<traits_type>>;
-    using phi_params_type = std::vector<argument_type>;
+
+    using phi_param_type = std::pair<argument_type, std::shared_ptr<vertex>>; // holds symbol:basic_block
+    using phi_params_type = std::vector<phi_param_type>;
 
     using result_type = std::variant<argument_type,     // temporary variable introduced during evaluation
                                      quadruple_type,    // target label used with 'goto' or branch/jump op code

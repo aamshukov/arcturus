@@ -17,8 +17,6 @@
 #include <core/edge.hpp>
 #include <core/graph.hpp>
 
-#include <core/timer.hpp>
-
 #include <content/data_provider.hpp>
 #include <content/file_data_provider.hpp>
 
@@ -96,8 +94,7 @@ USINGNAMESPACE(core)
 USINGNAMESPACE(frontend)
 USINGNAMESPACE(symtable)
 
-arcturus_symbol::arcturus_symbol(const id_type& id)
-               : symbol(id)
+arcturus_symbol::arcturus_symbol()
 {
 }
 

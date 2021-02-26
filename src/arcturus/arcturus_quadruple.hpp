@@ -304,7 +304,7 @@ struct arcturus_quadruple : public quadruple<arcturus_operation_code_traits>
 
             for(const auto& param : params)
             {
-                version = std::to_wstring(param.second);
+                version = std::to_wstring(param.first.second);
                 text += symbol_name + L"." + version + L", ";
             }
 
