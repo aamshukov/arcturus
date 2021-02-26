@@ -2390,6 +2390,17 @@ namespace tests
                 (*cfg).generate_graphviz_file(LR"(d:\tmp\BuildSSaFormCytron.SSA.dot)");
 
                 Logger::WriteMessage(("Build SSA form:       " + std::to_string(elapsed)).c_str());
+
+                start = std::chrono::high_resolution_clock::now();
+
+                arcturus_ssa::destruct_ssa_form(cfg);
+
+                finish = std::chrono::high_resolution_clock::now();
+                elapsed = std::chrono::duration_cast<duration_type>(finish - start).count();
+
+                (*cfg).generate_graphviz_file(LR"(d:\tmp\BuildSSaFormCytron.NonSSA.dot)");
+
+                Logger::WriteMessage(("Destructed SSA form:       " + std::to_string(elapsed)).c_str());
             }
 
             TEST_METHOD(BuildDisjointSets)

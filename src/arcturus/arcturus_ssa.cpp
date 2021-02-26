@@ -349,6 +349,8 @@ void arcturus_ssa::destruct_ssa_form(typename arcturus_ssa::control_flow_graph_t
     //  2) When the basic block contains variables defned after the point of copy insertion. This confguration is possible
     //     in embedded environments, where some DSP-like branching instructions have a behavior similar to a hardware loop:
     //     in addition to the condition, a counter 'u' is decremented by the instruction itself ...
+    using op = arcturus_operation_code_traits::operation_code;
+
     for(const auto& vertex : (*cfg).vertices())
     {
         auto& code((*vertex).code());
@@ -360,13 +362,65 @@ void arcturus_ssa::destruct_ssa_form(typename arcturus_ssa::control_flow_graph_t
             if((*instruction).operation != arcturus_operation_code_traits::operation_code::phi)
                 continue;
 
-            auto& phi_var((*instruction).argument1.first); // arg1 must be valid because it is assignment
             auto& phi_params(std::get<arcturus_quadruple::phi_params_type>((*instruction).result));
 
             // phase I (applying method I - translate SSA into CSSA (Conventional SSA))
+            std::set<basic_block_type, vertex_lt_key_comparator<basic_block<arcturus_quadruple>>> predecessors;
 
+            (*cfg).collect_predecessors(std::dynamic_pointer_cast<basic_block<arcturus_quadruple>>(vertex), predecessors);
 
+            for(const auto& predecessor: predecessors)
+            {
+                std::size_t k = 0;
+                std::size_t j = 0; // j-th parameter of 𝛗-function must correspond to j-th predecessor in control flow graph
 
+                for(const auto& p: predecessors)
+                {
+                    if(p == vertex)
+                    {
+                        j = k;
+                        break;
+                    }
+
+                    k++;
+                }
+
+                // x1' = x1
+                const auto& phi_param(phi_params[k]);
+
+                const auto& x1(phi_param.first);
+                auto x1_ver(phi_param.second);
+
+                auto x1p(factory::create<arcturus_symbol>(0)); // x1'
+                (*x1p).name() = (*phi_param.first).name() + cp_type{'\''};
+
+                auto x1_x1p(factory::create<arcturus_quadruple>(0,
+                                                                op::assignment_hir,
+                                                                std::make_pair(x1, x1_ver),
+                                                                std::make_pair(x1p, x1_ver)));
+                (*predecessor).code().add_instruction(x1_x1p);
+            }
+
+            // x3' = x3
+            auto& x3((*instruction).argument1.first); // arg1 must be valid because it is assignment
+            auto x3_ver((*instruction).argument1.second);
+
+            auto x3p(factory::create<arcturus_symbol>(0)); // x3'
+            (*x3p).name() = (*x3).name() + cp_type{'\''};
+
+            auto x3_x3p(factory::create<arcturus_quadruple>(0,
+                                                            op::assignment_hir,
+                                                            std::make_pair(x3, x3_ver),
+                                                            std::make_pair(x3p, x3_ver)));
+            (*vertex).code().add_instruction(x3_x3p);
+
+            // add ' to all members of the 𝛗-instruction
+            (*x3).name() += cp_type{'\''};
+
+            for(auto& phi_param : phi_params)
+            {
+                (*phi_param.first).name() += cp_type{'\''};
+            }
 
             // phase II (eliminate 𝛗-functions)
         }
