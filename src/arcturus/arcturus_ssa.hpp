@@ -51,6 +51,7 @@ class arcturus_ssa : public ssa<basic_block<arcturus_quadruple>>
                                      const dominance_tree_type& x,
                                      const control_flow_graph_type& cfg,
                                      entry_type& e);
+        static void rename_variables(const control_flow_graph_type& cfg);
 
     public:
         static void build_ssa_form(control_flow_graph_type& cfg);

@@ -29,6 +29,7 @@
 #include <ir/quadruple.hpp>
 
 #include <arcturus_token.hpp>
+#include <arcturus_symbol.hpp>
 #include <arcturus_quadruple.hpp>
 
 BEGIN_NAMESPACE(arcturus)

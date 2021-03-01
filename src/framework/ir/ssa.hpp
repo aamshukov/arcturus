@@ -17,6 +17,8 @@ USINGNAMESPACE(symtable)
 template <typename TBasicBlock>
 class ssa : private noncopyable
 {
+    protected:
+        static const cp_type ssa_suffix = { '`' };
 };
 
 END_NAMESPACE

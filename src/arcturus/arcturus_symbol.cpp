@@ -98,8 +98,28 @@ arcturus_symbol::arcturus_symbol()
 {
 }
 
+arcturus_symbol::arcturus_symbol(const arcturus_symbol& other) : symbol(other)
+{
+}
+
+arcturus_symbol::arcturus_symbol(arcturus_symbol&& other) : symbol(other)
+{
+}
+
 arcturus_symbol::~arcturus_symbol()
 {
+}
+
+arcturus_symbol& arcturus_symbol::operator = (const arcturus_symbol& other)
+{
+    symbol::operator = (other);
+    return *this;
+}
+
+arcturus_symbol& arcturus_symbol::operator = (arcturus_symbol&& other)
+{
+    symbol::operator = (other);
+    return *this;
 }
 
 END_NAMESPACE

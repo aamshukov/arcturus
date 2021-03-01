@@ -11,7 +11,7 @@ BEGIN_NAMESPACE(symtable)
 USINGNAMESPACE(core)
 USINGNAMESPACE(frontend)
 
-class symbol : private noncopyable
+class symbol
 {
     public:
         using token_type = token<token_traits>;
@@ -82,7 +82,12 @@ class symbol : private noncopyable
 
     public:
                                 symbol();
+                                symbol(const symbol& other);
+                                symbol(symbol&& other);
                                ~symbol();
+
+        symbol&                 operator = (const symbol& other);
+        symbol&                 operator = (symbol&& other);
 
         const id_type&          id() const;
         id_type&                id();
@@ -157,6 +162,87 @@ inline symbol::symbol()
                my_bitsize(0),
                my_flags(flags_type::clear)
 {
+}
+
+inline symbol::symbol(const symbol& other)
+{
+    if(this != &other)
+    {
+        my_id = other.my_id;
+        my_name = other.my_name;
+        my_token = other.my_token;
+        my_value = other.my_value;
+        my_type = other.my_type;
+        my_machine_type = other.my_machine_type;
+        my_offset = other.my_offset;
+        my_size = other.my_size;
+        my_bitsize = other.my_bitsize;
+        my_align_required = other.my_align_required;
+        my_flags = other.my_flags;
+        my_metadata = other.my_metadata;
+    }
+}
+
+inline symbol::symbol(symbol&& other)
+{
+    if(this != &other)
+    {
+        my_id = other.my_id;
+        my_name = std::move(other.my_name);
+        my_token = std::move(other.my_token);
+        my_value = std::move(other.my_value);
+        my_type = std::move(other.my_type);
+        my_machine_type = std::move(other.my_machine_type);
+        my_offset = other.my_offset;
+        my_size = other.my_size;
+        my_bitsize = other.my_bitsize;
+        my_align_required = other.my_align_required;
+        my_flags = other.my_flags;
+        my_metadata = std::move(other.my_metadata);
+    }
+}
+
+
+inline symbol& symbol::operator = (const symbol& other)
+{
+    if(this != &other)
+    {
+        my_id = other.my_id;
+        my_name = other.my_name;
+        my_token = other.my_token;
+        my_value = other.my_value;
+        my_type = other.my_type;
+        my_machine_type = other.my_machine_type;
+        my_offset = other.my_offset;
+        my_size = other.my_size;
+        my_bitsize = other.my_bitsize;
+        my_align_required = other.my_align_required;
+        my_flags = other.my_flags;
+        my_metadata = other.my_metadata;
+    }
+
+    return *this;
+}
+
+inline symbol& symbol::operator = (symbol&& other)
+{
+    if(this != &other)
+    {
+        my_id = other.my_id;
+        my_name = std::move(other.my_name);
+        my_token = std::move(other.my_token);
+        my_value = std::move(other.my_value);
+        my_type = std::move(other.my_type);
+        my_machine_type = std::move(other.my_machine_type);
+        my_offset = other.my_offset;
+        my_size = other.my_size;
+        my_bitsize = other.my_bitsize;
+        my_align_required = other.my_align_required;
+        my_flags = other.my_flags;
+        my_metadata = std::move(other.my_metadata);
+    }
+
+    return *this;
 }
 
 inline symbol::~symbol()

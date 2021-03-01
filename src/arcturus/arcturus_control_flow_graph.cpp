@@ -191,13 +191,13 @@ void arcturus_control_flow_graph::collect_basic_blocks(typename arcturus_control
 
             if(arcturus_quadruple::is_assignment((*instruction).operation))
             {
-                const auto& symbol(std::get<0>((*instruction).result).first);
+                const auto& symbol(std::get<0>((*instruction).result));
 
-                auto it(my_assignments.find(symbol));
+                auto it(my_assignments.find(symbol.first));
 
                 if(it == my_assignments.end())
                 {
-                    my_assignments[symbol] = { current_block };
+                    my_assignments[symbol.first] = { current_block };
                 }
                 else
                 {
@@ -328,11 +328,11 @@ void arcturus_control_flow_graph::generate_graphviz_file(const string_type& file
 
             auto bb = std::dynamic_pointer_cast<basic_block<arcturus_quadruple>>(vertex);
 
-            for(auto instr = (*bb).code().instructions();
-                instr != (*bb).code().end_instruction();
-                instr = std::dynamic_pointer_cast<arcturus_quadruple>((*instr).next()))
+            for(auto instruction = (*bb).code().instructions();
+                instruction != (*bb).code().end_instruction();
+                instruction = std::dynamic_pointer_cast<arcturus_quadruple>((*instruction).next()))
             {
-                label += (*instr).to_string() + L"<br/>";
+                label += (*instruction).to_string() + L"<br/>";
             }
 
             stream << indent << (*vertex).id() << L" [shape=box label=<" << label << L">];" << std::endl;

@@ -22,7 +22,7 @@ class control_flow_graph : public graph<TBasicBlock>
         using basic_block_type = std::shared_ptr<basic_block<instruction_type>>;
         using basic_blocks_type = std::vector<basic_block_type>;
 
-        using symbol_type = std::shared_ptr<symtable::symbol>;
+        using symbol_type = typename instruction_type::symbol_type;
         using assignments_type = std::unordered_map<symbol_type, basic_blocks_type, symbol_hash, symbol_eq_key_comparator>;
 
     protected:

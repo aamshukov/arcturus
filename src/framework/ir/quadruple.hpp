@@ -71,10 +71,10 @@ USINGNAMESPACE(symtable)
 //  putparam            pN                                                      put param
 //  call                foo             N
 //
-//  𝛗                   y               N               params                  y - symbol
+//  𝛗                   y                               params                  y - symbol
 //                                                                              N - how many params (predecessors)
 //
-template <typename OpCodeTraits>
+template <typename TSymbol, typename OpCodeTraits>
 struct quadruple : public list
 {
     using token_type = token<token_traits>;
@@ -83,9 +83,9 @@ struct quadruple : public list
 
     using id_type = std::size_t;
 
-    using symbol_type = std::shared_ptr<symtable::symbol>;
-    using argument_type = std::pair<symbol_type, id_type>; // <symbol, version>
-    using quadruple_type = std::shared_ptr<quadruple<traits_type>>;
+    using symbol_type = std::shared_ptr<TSymbol>;
+    using argument_type = std::pair<symbol_type, id_type>; // <symbol, ssa version>
+    using quadruple_type = std::shared_ptr<quadruple<TSymbol, traits_type>>;
 
     using phi_param_type = std::pair<argument_type, std::shared_ptr<vertex>>; // holds symbol:basic_block
     using phi_params_type = std::vector<phi_param_type>;

@@ -129,9 +129,9 @@ struct arcturus_operation_code_traits
     )
 };
 
-struct arcturus_quadruple : public quadruple<arcturus_operation_code_traits>
+struct arcturus_quadruple : public quadruple<arcturus_symbol, arcturus_operation_code_traits>
 {
-    using quadruple_base = quadruple<arcturus_operation_code_traits>;
+    using quadruple_base = quadruple<arcturus_symbol, arcturus_operation_code_traits>;
 
     using argument_type = typename quadruple_base::argument_type;
     using phi_params_type = typename quadruple_base::phi_params_type;
@@ -296,16 +296,14 @@ struct arcturus_quadruple : public quadruple<arcturus_operation_code_traits>
             const auto& symbol(*argument1.first);
             auto symbol_name(symbol.to_string());
 
-            auto version = std::to_wstring(argument1.second);
-
-            text = symbol_name + L"." + version + L" - phi(";
+            text = symbol_name + L" - phi(";
 
             const auto& params(std::get<2>(result));
 
             for(const auto& param : params)
             {
-                version = std::to_wstring(param.first.second);
-                text += symbol_name + L"." + version + L", ";
+                symbol_name = ((*param.first.first).to_string());
+                text += symbol_name + L", ";
             }
 
             text = text.substr(0, text.size() - 2);
@@ -319,10 +317,7 @@ struct arcturus_quadruple : public quadruple<arcturus_operation_code_traits>
 
             if(argument1.first != nullptr)
             {
-                const auto& symbol1(*argument1.first);
-                const auto& version1(argument1.second);
-
-                arg1 = (symbol1.to_string() + L"." + std::to_wstring(version1));
+                arg1 = (*argument1.first).to_string();
             }
 
             // argument2
@@ -330,10 +325,7 @@ struct arcturus_quadruple : public quadruple<arcturus_operation_code_traits>
 
             if(argument2.first != nullptr)
             {
-                const auto& symbol2(*argument2.first);
-                const auto& version2(argument2.second);
-
-                arg2 = (symbol2.to_string() + L"." + std::to_wstring(version2));
+                arg2 = (*argument2.first).to_string();
             }
 
             // result
@@ -341,12 +333,11 @@ struct arcturus_quadruple : public quadruple<arcturus_operation_code_traits>
 
             if(std::holds_alternative<argument_type>(result))
             {
-                const auto& symbol_res(std::get<0>(result).first);
-                const auto& version_res(std::get<0>(result).second);
+                const auto& symbol_res(std::get<0>(result));
 
-                if(symbol_res != nullptr)
+                if(symbol_res.first != nullptr)
                 {
-                    res = (*symbol_res).to_string() + L"." + std::to_wstring(version_res);
+                    res = (*symbol_res.first).to_string();
                 }
             }
             else if(std::holds_alternative<quadruple_type>(result))

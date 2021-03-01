@@ -86,8 +86,8 @@
 
 #include <controller/controller.hpp>
 
-#include <arcturus_configurator.hpp>
 #include <arcturus_token.hpp>
+#include <arcturus_symbol.hpp>
 #include <arcturus_type.hpp>
 #include <arcturus_scalar_type.hpp>
 #include <arcturus_array_type.hpp>
@@ -105,5 +105,6 @@
 #include <arcturus_ir.hpp>
 #include <arcturus_pass.hpp>
 #include <arcturus_controller.hpp>
+#include <arcturus_configurator.hpp>
 
 #endif // __ARCTURUS_H__

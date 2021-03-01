@@ -23,7 +23,7 @@ class ir : private noncopyable
         using basic_blocks_type = std::vector<basic_block_type>;
 
         using token_type = typename instruction_type::token_type;
-        using symbol_type = std::shared_ptr<symtable::symbol>;
+        using symbol_type = typename instruction_type::symbol_type;
 
     public:
         //using token_type = Token;
