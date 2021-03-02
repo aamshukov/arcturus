@@ -33,7 +33,7 @@ void build_code_aho_ullman(arcturus_code& code)
     // 15) a[t6] = 1.0 
     // 16) i = i + 1 
     // 17) if i <= 10 goto (13) 
-    auto instr1(factory::create<arcturus_instruction>(0, arcturus_operation_code_traits::operation_code::assignment_hir));
+    auto instr1(factory::create<arcturus_instruction>(0, arcturus_operation_code_traits::operation_code::assignment_mir));
     code.add_instruction(instr1);
 
 
@@ -52,13 +52,13 @@ void build_code(arcturus_code& code) //??
     }
     std::cout << std::endl;
 
-    auto instruction1(factory::create<arcturus_instruction>(0, arcturus_operation_code_traits::operation_code::unary_op_plus_hir));
+    auto instruction1(factory::create<arcturus_instruction>(0, arcturus_operation_code_traits::operation_code::unary_op_plus_mir));
     code.add_instruction(instruction1);
 
-    auto instruction2(factory::create<arcturus_quadruple>(1, arcturus_operation_code_traits::operation_code::binary_op_add_hir));
+    auto instruction2(factory::create<arcturus_quadruple>(1, arcturus_operation_code_traits::operation_code::binary_op_add_mir));
     code.add_instruction(instruction2);
 
-    auto instruction3(factory::create<arcturus_quadruple>(2, arcturus_operation_code_traits::operation_code::binary_op_divide_hir));
+    auto instruction3(factory::create<arcturus_quadruple>(2, arcturus_operation_code_traits::operation_code::binary_op_divide_mir));
     code.add_instruction(instruction3);
 
     for(auto it = code.instructions(); ;)
@@ -113,7 +113,7 @@ int _tmain(int argc, _TCHAR *argv[])
 
     arcturus_control_flow_graph cfg;
 
-    //cfg.build_hir(code);
+    //cfg.build_mir(code);
 
     auto st(factory::create<arcturus_scalar_type>(arcturus_type::kind_type::integer_type));
     auto at(factory::create<arcturus_array_type>(st));

@@ -430,7 +430,7 @@ void arcturus_ssa::destruct_ssa_form(typename arcturus_ssa::control_flow_graph_t
                 (*x1p).name() += ssa_suffix;
 
                 auto x1_x1p(factory::create<arcturus_quadruple>(0,
-                                                                op::assignment_hir,
+                                                                op::assignment_mir,
                                                                 std::make_pair(x1, 0),
                                                                 std::make_pair(x1p, 0)));
                 (*predecessor).code().add_instruction(x1_x1p);
@@ -443,7 +443,7 @@ void arcturus_ssa::destruct_ssa_form(typename arcturus_ssa::control_flow_graph_t
             (*x3p).name() += ssa_suffix;
 
             auto x3_x3p(factory::create<arcturus_quadruple>(0,
-                                                            op::assignment_hir,
+                                                            op::assignment_mir,
                                                             std::make_pair(x3p, 0),
                                                             std::make_pair(x3, 0)));
 
@@ -477,7 +477,7 @@ void arcturus_ssa::destruct_ssa_form(typename arcturus_ssa::control_flow_graph_t
                 auto& pred_phi(phi_param.second); // predeccessor
 
                 auto x3p_new_x1p(factory::create<arcturus_quadruple>(0,
-                                                                     op::assignment_hir,
+                                                                     op::assignment_mir,
                                                                      std::make_pair(x1p_new, 0),
                                                                      std::make_pair(x3p_new, 0)));
 

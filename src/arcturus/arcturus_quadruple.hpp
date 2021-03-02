@@ -23,48 +23,48 @@ struct arcturus_operation_code_traits
 
         noop = 5,
 
-        // HIR - high-level intermediate representation (IR)
-        declaration_hir = 100,
+        // HIR - high-level intermediate representation (IR), usually AST/CST forest
 
-        assignment_hir,
-
-        unary_op_plus_hir,
-        unary_op_negation_hir,
-        unary_op_multiply_hir,
-        unary_op_divide_hir,
-        unary_op_negate_hir,
-        unary_op_complement_hir,    // ~
-
-        binary_op_add_hir,
-        binary_op_subtract_hir,
-        binary_op_multiply_hir,
-        binary_op_divide_hir,
-        binary_op_equal_hir,
-        binary_op_notequal_hir,
-        binary_op_lessthan_hir,
-        binary_op_biggerthan_hir,
-        binary_op_logical_and_hir,  // &&
-        binary_op_logical_or_hir,   // ||
-        binary_op_and_hir,          // &
-        binary_op_inclusive_or_hir, // |
-        binary_op_exclusive_or_hir, // ^
-
-        if_true_hir,
-        if_false_hir,
-        goto_hir,
-        label_hir,
-
-        function_hir,               // foo
-        function_formal_param_hir,
-        function_begin_hir,
-        function_return_hir,
-        function_end_hir,
-
-        function_argument_hir,
-        function_call_hir,
 
         // MIR - mid-level intermediate representation (IR)
+        declaration_mir = 100,
 
+        assignment_mir,
+
+        unary_op_plus_mir,
+        unary_op_negation_mir,
+        unary_op_multiply_mir,
+        unary_op_divide_mir,
+        unary_op_negate_mir,
+        unary_op_complement_mir,    // ~
+
+        binary_op_add_mir,
+        binary_op_subtract_mir,
+        binary_op_multiply_mir,
+        binary_op_divide_mir,
+        binary_op_equal_mir,
+        binary_op_notequal_mir,
+        binary_op_lessthan_mir,
+        binary_op_biggerthan_mir,
+        binary_op_logical_and_mir,  // &&
+        binary_op_logical_or_mir,   // ||
+        binary_op_and_mir,          // &
+        binary_op_inclusive_or_mir, // |
+        binary_op_exclusive_or_mir, // ^
+
+        if_true_mir,
+        if_false_mir,
+        goto_mir,
+        label_mir,
+
+        function_mir,               // foo
+        function_formal_param_mir,
+        function_begin_mir,
+        function_return_mir,
+        function_end_mir,
+
+        function_argument_mir,
+        function_call_mir,
 
         // LIR - low-level intermediate representation (IR)
 
@@ -176,7 +176,7 @@ struct arcturus_quadruple : public quadruple<arcturus_symbol, arcturus_operation
 
     static bool is_assignment(const typename arcturus_operation_code_traits::operation_code& opcode)
     {
-        return opcode == arcturus_operation_code_traits::operation_code::assignment_hir;
+        return opcode == arcturus_operation_code_traits::operation_code::assignment_mir;
     }
 
     static string_type opcode_name(const typename arcturus_operation_code_traits::operation_code& opcode)
@@ -201,88 +201,88 @@ struct arcturus_quadruple : public quadruple<arcturus_symbol, arcturus_operation
             case arcturus_operation_code_traits::operation_code::noop:
                 op = L"noop";
                 break;
-            case arcturus_operation_code_traits::operation_code::assignment_hir:
+            case arcturus_operation_code_traits::operation_code::assignment_mir:
                 op = L"=";
                 break;
-            case arcturus_operation_code_traits::operation_code::unary_op_plus_hir:
+            case arcturus_operation_code_traits::operation_code::unary_op_plus_mir:
                 op = L"+";
                 break;
-            case arcturus_operation_code_traits::operation_code::unary_op_negation_hir:
+            case arcturus_operation_code_traits::operation_code::unary_op_negation_mir:
                 op = L"-";
                 break;
-            case arcturus_operation_code_traits::operation_code::unary_op_multiply_hir:
+            case arcturus_operation_code_traits::operation_code::unary_op_multiply_mir:
                 op = L"*";
                 break;
-            case arcturus_operation_code_traits::operation_code::unary_op_divide_hir:
+            case arcturus_operation_code_traits::operation_code::unary_op_divide_mir:
                 op = L"/";
                 break;
-            case arcturus_operation_code_traits::operation_code::unary_op_negate_hir:
+            case arcturus_operation_code_traits::operation_code::unary_op_negate_mir:
                 op = L"!";
                 break;
-            case arcturus_operation_code_traits::operation_code::unary_op_complement_hir:
+            case arcturus_operation_code_traits::operation_code::unary_op_complement_mir:
                 op = L"~";
                 break;
-            case arcturus_operation_code_traits::operation_code::binary_op_add_hir:
+            case arcturus_operation_code_traits::operation_code::binary_op_add_mir:
                 op = L"+";
                 break;
-            case arcturus_operation_code_traits::operation_code::binary_op_subtract_hir:
+            case arcturus_operation_code_traits::operation_code::binary_op_subtract_mir:
                 op = L"-";
                 break;
-            case arcturus_operation_code_traits::operation_code::binary_op_multiply_hir:
+            case arcturus_operation_code_traits::operation_code::binary_op_multiply_mir:
                 op = L"*";
                 break;
-            case arcturus_operation_code_traits::operation_code::binary_op_divide_hir:
+            case arcturus_operation_code_traits::operation_code::binary_op_divide_mir:
                 op = L"/";
                 break;
-            case arcturus_operation_code_traits::operation_code::binary_op_equal_hir:
+            case arcturus_operation_code_traits::operation_code::binary_op_equal_mir:
                 op = L"==";
                 break;
-            case arcturus_operation_code_traits::operation_code::binary_op_notequal_hir:
+            case arcturus_operation_code_traits::operation_code::binary_op_notequal_mir:
                 op = L"!=";
                 break;
-            case arcturus_operation_code_traits::operation_code::binary_op_lessthan_hir:
+            case arcturus_operation_code_traits::operation_code::binary_op_lessthan_mir:
                 op = L"<";
                 break;
-            case arcturus_operation_code_traits::operation_code::binary_op_biggerthan_hir:
+            case arcturus_operation_code_traits::operation_code::binary_op_biggerthan_mir:
                 op = L">";
                 break;
-            case arcturus_operation_code_traits::operation_code::binary_op_logical_and_hir:
+            case arcturus_operation_code_traits::operation_code::binary_op_logical_and_mir:
                 op = L"&&";
                 break;
-            case arcturus_operation_code_traits::operation_code::binary_op_logical_or_hir:
+            case arcturus_operation_code_traits::operation_code::binary_op_logical_or_mir:
                 op = L"||";
                 break;
-            case arcturus_operation_code_traits::operation_code::binary_op_and_hir:
+            case arcturus_operation_code_traits::operation_code::binary_op_and_mir:
                 op = L"&";
                 break;
-            case arcturus_operation_code_traits::operation_code::binary_op_inclusive_or_hir:
+            case arcturus_operation_code_traits::operation_code::binary_op_inclusive_or_mir:
                 op = L"|";
                 break;
-            case arcturus_operation_code_traits::operation_code::binary_op_exclusive_or_hir:
+            case arcturus_operation_code_traits::operation_code::binary_op_exclusive_or_mir:
                 op = L"^";
                 break;
-            case arcturus_operation_code_traits::operation_code::if_true_hir:
+            case arcturus_operation_code_traits::operation_code::if_true_mir:
                 op = L"if-true";
                 break;
-            case arcturus_operation_code_traits::operation_code::if_false_hir:
+            case arcturus_operation_code_traits::operation_code::if_false_mir:
                 op = L"if-false";
                 break;
-            case arcturus_operation_code_traits::operation_code::goto_hir:
+            case arcturus_operation_code_traits::operation_code::goto_mir:
                 op = L"goto";
                 break;
-            case arcturus_operation_code_traits::operation_code::label_hir:
+            case arcturus_operation_code_traits::operation_code::label_mir:
                 op = L"label";
                 break;
-            case arcturus_operation_code_traits::operation_code::declaration_hir:
+            case arcturus_operation_code_traits::operation_code::declaration_mir:
                 op = L"decl";
                 break;
-            case arcturus_operation_code_traits::operation_code::function_return_hir:
+            case arcturus_operation_code_traits::operation_code::function_return_mir:
                 op = L"return";
                 break;
-            case arcturus_operation_code_traits::operation_code::function_argument_hir:
+            case arcturus_operation_code_traits::operation_code::function_argument_mir:
                 op = L"arg";
                 break;
-            case arcturus_operation_code_traits::operation_code::function_call_hir:
+            case arcturus_operation_code_traits::operation_code::function_call_mir:
                 op = L"call";
                 break;
             case arcturus_operation_code_traits::operation_code::phi:

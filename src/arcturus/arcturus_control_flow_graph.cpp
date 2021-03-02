@@ -126,9 +126,9 @@ void arcturus_control_flow_graph::collect_basic_blocks(typename arcturus_control
 
         for(; instruction != code.end_instruction();)
         {
-            if((*instruction).operation == arcturus_operation_code_traits::operation_code::if_true_hir ||
-               (*instruction).operation == arcturus_operation_code_traits::operation_code::if_false_hir ||
-               (*instruction).operation == arcturus_operation_code_traits::operation_code::goto_hir)
+            if((*instruction).operation == arcturus_operation_code_traits::operation_code::if_true_mir ||
+               (*instruction).operation == arcturus_operation_code_traits::operation_code::if_false_mir ||
+               (*instruction).operation == arcturus_operation_code_traits::operation_code::goto_mir)
             {
                 // Любая команда (instruction), являющаяся целевой для условного или безусловного перехода, является лидером.
                 (*std::get<1>((*instruction).result)).flags |= arcturus_quadruple::flags_type::leader;
@@ -141,7 +141,7 @@ void arcturus_control_flow_graph::collect_basic_blocks(typename arcturus_control
                     (*instruction).flags |= arcturus_quadruple::flags_type::leader;
                 }
             }
-            else if((*instruction).operation == arcturus_operation_code_traits::operation_code::function_return_hir)
+            else if((*instruction).operation == arcturus_operation_code_traits::operation_code::function_return_mir)
             {
                 // Любая команда (instruction), следующая непосредственно за ... or 'return', является лидером.
                 instruction = std::dynamic_pointer_cast<arcturus_quadruple>((*instruction).next());
@@ -246,9 +246,9 @@ void arcturus_control_flow_graph::collect_basic_blocks(typename arcturus_control
             if(instruction != (*block).code().start_instruction())
             {
                 // there is a branch from last instruction in B1 to the leader of B2 ...
-                if((*instruction).operation == arcturus_operation_code_traits::operation_code::if_true_hir ||
-                    (*instruction).operation == arcturus_operation_code_traits::operation_code::if_false_hir ||
-                    (*instruction).operation == arcturus_operation_code_traits::operation_code::goto_hir)
+                if((*instruction).operation == arcturus_operation_code_traits::operation_code::if_true_mir ||
+                    (*instruction).operation == arcturus_operation_code_traits::operation_code::if_false_mir ||
+                    (*instruction).operation == arcturus_operation_code_traits::operation_code::goto_mir)
                 {
                     // link block -> target_block
                     auto target_instruction(std::get<1>((*instruction).result));
@@ -258,8 +258,8 @@ void arcturus_control_flow_graph::collect_basic_blocks(typename arcturus_control
                 }
 
                 // B2 immediately follows B1, and B1 DOES NOT end in an unconditional branch ...
-                if((*instruction).operation != arcturus_operation_code_traits::operation_code::goto_hir &&
-                   (*instruction).operation != arcturus_operation_code_traits::operation_code::function_return_hir)
+                if((*instruction).operation != arcturus_operation_code_traits::operation_code::goto_mir &&
+                   (*instruction).operation != arcturus_operation_code_traits::operation_code::function_return_mir)
                 {
                     // link block -> target_block
                     auto& target_block(blocks[i + 1]);
@@ -286,7 +286,7 @@ void arcturus_control_flow_graph::collect_basic_blocks(typename arcturus_control
                     instr != (*block).code().end_instruction();
                     instr = std::dynamic_pointer_cast<arcturus_quadruple>((*instr).next()))
                 {
-                    if((*instr).operation == arcturus_operation_code_traits::operation_code::function_return_hir)
+                    if((*instr).operation == arcturus_operation_code_traits::operation_code::function_return_mir)
                     {
                         link_to_exit_block = true;
                         break;
