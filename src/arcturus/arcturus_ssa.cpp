@@ -433,7 +433,24 @@ void arcturus_ssa::destruct_ssa_form(typename arcturus_ssa::control_flow_graph_t
                                                                 op::assignment_mir,
                                                                 std::make_pair(x1, 0),
                                                                 std::make_pair(x1p, 0)));
-                (*predecessor).code().add_instruction(x1_x1p);
+
+                // 'Optimization in Static Single Assignment Form, External Specification' by Sassa Laboratory, Graduate School of Information Science and Engineering Tokyo Institute of Technology
+                // ... When a copy statement is to be inserted into the same basic block as the 𝛗-function, we place it directly after the 𝛗-function
+                // (after all 𝛗-functions if there are multiple 𝛗-functions). When a copy statement is to be inserted in the predecessor block,
+                // it should be inserted after the last instruction of the predecessor (immediately before the last instruction,
+                // if that instruction is a conditional branch instruction)
+                auto predecessor_last_instruction(std::dynamic_pointer_cast<arcturus_quadruple>((*(*predecessor).code().end_instruction()).prev()));
+
+                if((*predecessor_last_instruction).operation == op::if_true_mir ||
+                   (*predecessor_last_instruction).operation == op::if_false_mir ||
+                   (*predecessor_last_instruction).operation == op::goto_mir)
+                {
+                    (*predecessor).code().insert_instruction(x1_x1p, predecessor_last_instruction);
+                }
+                else
+                {
+                    (*predecessor).code().add_instruction(x1_x1p);
+                }
             }
 
             // x3 = x3'
