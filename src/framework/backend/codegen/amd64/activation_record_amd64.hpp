@@ -1,5 +1,6 @@
 //........................................................
-// Underground Intelligence (UI) Lab Inc. Arthur Amshukov.
+//  2019-2021 Underground Intelligence (UI) Lab Inc.     .
+//  Arthur Amshukov, aamshukov@gmail.com                 .
 //........................................................
 #ifndef __ACTIVATION_RECORD_AMD64_H__
 #define __ACTIVATION_RECORD_AMD64_H__

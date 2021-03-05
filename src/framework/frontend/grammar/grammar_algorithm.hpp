@@ -1,5 +1,6 @@
 ﻿//........................................................
-// Underground Intelligence (UI) Lab Inc. Arthur Amshukov.
+//  2019-2021 Underground Intelligence (UI) Lab Inc.     .
+//  Arthur Amshukov, aamshukov@gmail.com                 .
 //........................................................
 #ifndef __GRAMMAR_ALGORITHM_H__
 #define __GRAMMAR_ALGORITHM_H__

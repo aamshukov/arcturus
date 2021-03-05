@@ -1,5 +1,6 @@
 //........................................................
-// Underground Intelligence (UI) Lab Inc. Arthur Amshukov.
+//  2019-2021 Underground Intelligence (UI) Lab Inc.     .
+//  Arthur Amshukov, aamshukov@gmail.com                 .
 //........................................................
 #ifndef __STATISTICS_H__
 #define __STATISTICS_H__
@@ -18,10 +19,12 @@ class statistics : public singleton<statistics>
         std::size_t my_number_of_strings;
         std::size_t my_number_of_arrays;
 
+        std::size_t my_number_of_functions;
+
         std::size_t my_number_of_cst_nodes;
         std::size_t my_number_of_ast_nodes;
 
-        std::size_t my_number_of_quadrotuples;
+        std::size_t my_number_of_quadruples;
 
         std::size_t my_number_of_basic_blocks;
 

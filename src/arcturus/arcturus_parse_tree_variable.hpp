@@ -1,5 +1,6 @@
 //........................................................
-// Underground Intelligence (UI) Lab Inc. Arthur Amshukov.
+//  2019-2021 Underground Intelligence (UI) Lab Inc.     .
+//  Arthur Amshukov, aamshukov@gmail.com                 .
 //........................................................
 #ifndef __ARCTURUS_PARSE_TREE_VARIABLE_H__
 #define __ARCTURUS_PARSE_TREE_VARIABLE_H__

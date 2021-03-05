@@ -1,6 +1,8 @@
 ﻿//........................................................
-// Underground Intelligence (UI) Lab Inc. Arthur Amshukov.
+//  2019-2021 Underground Intelligence (UI) Lab Inc.     .
+//  Arthur Amshukov, aamshukov@gmail.com                 .
 //........................................................
+
 // Alessandro Warth, James R. Douglass, Todd Millstein
 // "Packrat Parsers Can Support Left Recursion"
 #ifndef __PACKRAT_PARSER_H__
