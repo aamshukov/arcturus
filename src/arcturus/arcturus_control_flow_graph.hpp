@@ -1,7 +1,6 @@
-//........................................................
-//  2019-2021 Underground Intelligence (UI) Lab Inc.     .
-//  Arthur Amshukov, aamshukov@gmail.com                 .
-//........................................................
+//..............................
+// UI Lab Inc. Arthur Amshukov .
+//..............................
 #ifndef __ARCTURUS_CONTROL_FLOW_GRAPH_H__
 #define __ARCTURUS_CONTROL_FLOW_GRAPH_H__
 
@@ -32,6 +31,7 @@ class arcturus_control_flow_graph : public control_flow_graph<basic_block<arctur
                        ~arcturus_control_flow_graph();
 
         virtual void    collect_basic_blocks(code_type& code) override;
+        virtual void    flat_basic_blocks(code_type& code) override;
 
         void            generate_graphviz_file(const string_type& file_name);
 };

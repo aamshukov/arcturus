@@ -279,7 +279,7 @@ keyword                             : 'byte' 'integer' 'real' 'string' 'boolean'
                                     | 'continue' 'break' 'return' 'goto'
                                     | 'import'
                                     | 'namespace'
-                                    | 'block' 'leave'                                                                   --- leave my_block - exits the current block from any statment, including nested loops
+                                    | 'block' 'leave'                                                                   --- leave my_block - exits the current block from any statement, including nested loops
                                     | 'is'
                                     | 'and' 'or' 'not'
                                     | 'lazy'

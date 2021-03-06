@@ -1,7 +1,6 @@
-﻿//........................................................
-//  2019-2021 Underground Intelligence (UI) Lab Inc.     .
-//  Arthur Amshukov, aamshukov@gmail.com                 .
-//........................................................
+﻿//..............................
+// UI Lab Inc. Arthur Amshukov .
+//..............................
 #include <core/pch.hpp>
 
 #include <core/visitable.hpp>
@@ -301,6 +300,12 @@ void arcturus_control_flow_graph::collect_basic_blocks(typename arcturus_control
             }
         }
     }
+}
+
+void arcturus_control_flow_graph::flat_basic_blocks(typename arcturus_control_flow_graph::code_type& code)
+{
+    //??
+    code;
 }
 
 void arcturus_control_flow_graph::generate_graphviz_file(const string_type& file_name)

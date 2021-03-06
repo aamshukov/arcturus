@@ -1,7 +1,6 @@
-//........................................................
-//  2019-2021 Underground Intelligence (UI) Lab Inc.     .
-//  Arthur Amshukov, aamshukov@gmail.com                 .
-//........................................................
+//..............................
+// UI Lab Inc. Arthur Amshukov .
+//..............................
 #ifndef __CONTROL_FLOW_GRAPH_H__
 #define __CONTROL_FLOW_GRAPH_H__
 
@@ -37,6 +36,7 @@ class control_flow_graph : public graph<TBasicBlock>
         assignments_type&       assignments();
 
         virtual void            collect_basic_blocks(code_type& code) = 0;
+        virtual void            flat_basic_blocks(code_type& code) = 0; // back to flat list of instructions
 };
 
 template <typename TBasicBlock>
