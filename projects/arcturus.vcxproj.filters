@@ -372,6 +372,12 @@
     <ClInclude Include="..\src\framework\core\disjoint_sets.hpp">
       <Filter>framework\core</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\framework\ir\data_flow_analysis.hpp">
+      <Filter>framework\ir</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\arcturus\arcturus_data_flow_analysis.hpp">
+      <Filter>arcturus</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\framework\core\logger.cpp">
@@ -550,6 +556,9 @@
     </ClCompile>
     <ClCompile Include="..\src\framework\frontend\semantics\semantics.cpp">
       <Filter>framework\frontend\semantics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\arcturus\arcturus_data_flow_analysis.cpp">
+      <Filter>arcturus</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

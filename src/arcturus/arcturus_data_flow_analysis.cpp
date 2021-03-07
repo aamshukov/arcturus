@@ -1,16 +1,12 @@
-//..............................
+﻿//..............................
 // UI Lab Inc. Arthur Amshukov .
 //..............................
-#ifndef __ARCTURUS_H__
-#define __ARCTURUS_H__
-
-#pragma once
+#include <core/pch.hpp>
 
 #include <core/visitable.hpp>
 #include <core/visitor.hpp>
 
 #include <core/bitset.hpp>
-#include <core/disjoint_sets.hpp>
 
 #include <core/list.hpp>
 #include <core/tree.hpp>
@@ -18,10 +14,8 @@
 
 #include <core/vertex.hpp>
 #include <core/dominator_vertex.hpp>
-#include <core/dominance_tree.hpp>
 #include <core/edge.hpp>
 #include <core/graph.hpp>
-#include <core/graph_algorithms.hpp>
 
 #include <core/timer.hpp>
 
@@ -46,6 +40,7 @@
 #include <content/content.hpp>
 
 #include <frontend/lexical_analyzer/token.hpp>
+
 #include <frontend/lexical_analyzer/lexical_content.hpp>
 #include <frontend/lexical_analyzer/lexical_analyzer.hpp>
 
@@ -71,8 +66,6 @@
 #include <ir/basic_block.inl>
 #include <ir/control_flow_graph.hpp>
 #include <ir/data_flow_analysis.hpp>
-#include <ir/ssa.hpp>
-#include <ir/ssa.inl>
 #include <ir/ir_visitor.hpp>
 #include <ir/ir.hpp>
 #include <ir/ir.inl>
@@ -85,10 +78,8 @@
 
 #include <backend/optimization/pass.hpp>
 
-#include <controller/controller.hpp>
-
+#include <arcturus_configurator.hpp>
 #include <arcturus_token.hpp>
-#include <arcturus_symbol.hpp>
 #include <arcturus_type.hpp>
 #include <arcturus_scalar_type.hpp>
 #include <arcturus_array_type.hpp>
@@ -101,12 +92,76 @@
 #include <arcturus_parse_context.hpp>
 #include <arcturus_parser.hpp>
 #include <arcturus_quadruple.hpp>
-#include <arcturus_control_flow_graph.hpp>
-#include <arcturus_data_flow_analysis.hpp>
-#include <arcturus_ssa.hpp>
 #include <arcturus_ir.hpp>
 #include <arcturus_pass.hpp>
-#include <arcturus_controller.hpp>
-#include <arcturus_configurator.hpp>
+#include <arcturus_data_flow_analysis.hpp>
 
-#endif // __ARCTURUS_H__
+BEGIN_NAMESPACE(arcturus)
+
+USINGNAMESPACE(core)
+USINGNAMESPACE(frontend)
+USINGNAMESPACE(symtable)
+USINGNAMESPACE(backend)
+
+arcturus_data_flow_analysis::arcturus_data_flow_analysis()
+{
+}
+
+arcturus_data_flow_analysis::~arcturus_data_flow_analysis()
+{
+}
+
+void arcturus_data_flow_analysis::collect_gen_kills(basic_blocks_type& basic_blocks)
+{
+    // 'Engineering a Compiler' by Keith D. Cooper, Linda Torczon
+    //  ... assume block b has k operations of form 'x <-- y op z'
+    for(auto& block : basic_blocks)
+    {
+        auto& gens((*block).gens());
+        auto& kills((*block).kills());
+
+        gens.clear();
+        kills.clear();
+
+        auto& code((*block).code());
+
+        for(auto instruction = code.instructions();
+            instruction != code.end_instruction();
+            instruction = std::dynamic_pointer_cast<arcturus_quadruple>((*instruction).next()))
+        {
+            if(arcturus_quadruple::is_x_y_op_z((*instruction).operation))
+            {
+                auto& arg1((*instruction).argument1.first);
+                auto& arg2((*instruction).argument2.first);
+
+                auto& result(std::get<arcturus_quadruple::argument_type>((*instruction).result).first);
+
+                if(arg1 != nullptr && kills.find(arg1) == kills.end())
+                {
+                    gens.emplace(arg1);
+                }
+
+                if(arg2 != nullptr && kills.find(arg2) == kills.end())
+                {
+                    gens.emplace(arg2);
+                }
+
+                kills.emplace(result);
+            }
+        }
+    }
+}
+
+void arcturus_data_flow_analysis::calculate_in_outs(basic_blocks_type& basic_blocks)
+{
+    std::vector<basic_block_type> blocks(basic_blocks.size());
+
+    for(auto& block : basic_blocks)
+    {
+        blocks.emplace_back(block);
+    }
+
+
+}
+
+END_NAMESPACE

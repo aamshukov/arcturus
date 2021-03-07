@@ -179,6 +179,30 @@ struct arcturus_quadruple : public quadruple<arcturus_symbol, arcturus_operation
         return opcode == arcturus_operation_code_traits::operation_code::assignment_mir;
     }
 
+    static bool is_x_y_op_z(const typename arcturus_operation_code_traits::operation_code& opcode)
+    {
+        return opcode == arcturus_operation_code_traits::operation_code::assignment_mir ||
+               opcode == arcturus_operation_code_traits::operation_code::unary_op_plus_mir ||
+               opcode == arcturus_operation_code_traits::operation_code::unary_op_negation_mir ||
+               opcode == arcturus_operation_code_traits::operation_code::unary_op_multiply_mir ||
+               opcode == arcturus_operation_code_traits::operation_code::unary_op_divide_mir ||
+               opcode == arcturus_operation_code_traits::operation_code::unary_op_negate_mir ||
+               opcode == arcturus_operation_code_traits::operation_code::unary_op_complement_mir ||
+               opcode == arcturus_operation_code_traits::operation_code::binary_op_add_mir ||
+               opcode == arcturus_operation_code_traits::operation_code::binary_op_subtract_mir ||
+               opcode == arcturus_operation_code_traits::operation_code::binary_op_multiply_mir ||
+               opcode == arcturus_operation_code_traits::operation_code::binary_op_divide_mir ||
+               opcode == arcturus_operation_code_traits::operation_code::binary_op_equal_mir ||
+               opcode == arcturus_operation_code_traits::operation_code::binary_op_notequal_mir ||
+               opcode == arcturus_operation_code_traits::operation_code::binary_op_lessthan_mir ||
+               opcode == arcturus_operation_code_traits::operation_code::binary_op_biggerthan_mir ||
+               opcode == arcturus_operation_code_traits::operation_code::binary_op_logical_and_mir ||
+               opcode == arcturus_operation_code_traits::operation_code::binary_op_logical_or_mir ||
+               opcode == arcturus_operation_code_traits::operation_code::binary_op_and_mir ||
+               opcode == arcturus_operation_code_traits::operation_code::binary_op_inclusive_or_mir ||
+               opcode == arcturus_operation_code_traits::operation_code::binary_op_exclusive_or_mir;
+    }
+
     static string_type opcode_name(const typename arcturus_operation_code_traits::operation_code& opcode)
     {
         if(arcturus_operation_code_traits::mapping.empty())

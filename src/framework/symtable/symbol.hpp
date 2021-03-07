@@ -17,6 +17,14 @@ class symbol
         using token_type = token<token_traits>;
         using symbol_type = std::shared_ptr<symbol>;
 
+        struct symbol_key_comparator
+        {
+            bool operator() (const symbol_type& lhs, const symbol_type& rhs) const
+            {
+                return (*lhs).id() < (*rhs).id();
+            }
+        };
+
         using id_type = std::size_t;
 
         using index_type = int32_t;
