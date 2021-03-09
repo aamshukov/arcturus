@@ -159,6 +159,8 @@ void arcturus_data_flow_analysis::calculate_liveness_in_outs_sets(typename arctu
 
     for(;;)
     {
+        std::size_t ins_count = 0;
+
         for(auto& block : (*cfg).vertices())
         {
             if((*block).label() == L"exit")
@@ -179,34 +181,31 @@ void arcturus_data_flow_analysis::calculate_liveness_in_outs_sets(typename arctu
                                outs.begin(),
                                outs.end(),
                                std::inserter((*block).outs(), (*block).outs().begin()));
-
-                // IN[B] = use[B] U (OUT[B] - def[B])
-                symbols_type diffs;
-
-                std::set_difference((*block).outs().begin(), // ... (OUT[B] - def[B])
-                                    (*block).outs().end(),
-                                    (*block).defs().begin(),
-                                    (*block).defs().end(),
-                                    std::inserter(diffs, diffs.begin()));
-
-                auto ins_count = (*block).ins().size();
-
-                std::set_union((*block).uses().begin(), // IN[B] = use[B] U ...
-                               (*block).uses().end(),
-                               diffs.begin(),
-                               diffs.end(),
-                               std::inserter((*block).ins(), (*block).ins().begin()));
-
-                if((*block).ins().size() == ins_count)
-                {
-                    goto _exit;
-                }
             }
+
+            // IN[B] = use[B] U (OUT[B] - def[B])
+            symbols_type diffs;
+
+            std::set_difference((*block).outs().begin(), // ... (OUT[B] - def[B])
+                                (*block).outs().end(),
+                                (*block).defs().begin(),
+                                (*block).defs().end(),
+                                std::inserter(diffs, diffs.begin()));
+
+            std::set_union((*block).uses().begin(), // IN[B] = use[B] U ...
+                            (*block).uses().end(),
+                            diffs.begin(),
+                            diffs.end(),
+                            std::inserter((*block).ins(), (*block).ins().begin()));
+
+            ins_count += (*block).ins().size();
+        }
+
+        if(ins_count > 0)
+        {
+            break;
         }
     }
-
-_exit:
-    ;
 }
 
 END_NAMESPACE

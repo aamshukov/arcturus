@@ -22,9 +22,7 @@ class data_flow_analysis : private noncopyable
         using basic_block_type = std::shared_ptr<TBasicBlock>;
         using basic_blocks_type = std::vector<basic_block_type>;
 
-        using control_flow_graph_type = std::shared_ptr<control_flow_graph<basic_block<instruction_type>>>;
-
-        using symbol_type = typename instruction_type::symbol_type;
+        using control_flow_graph_type = std::shared_ptr<control_flow_graph<TBasicBlock>>;
 
     public:
                         data_flow_analysis();

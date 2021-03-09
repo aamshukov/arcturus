@@ -2049,38 +2049,12 @@ namespace tests
                 Assert::IsTrue(rc);
             }
 
-            TEST_METHOD(BuildSSaFormCytron)
+            using arcturus_instruction = arcturus_quadruple;
+            using arcturus_code = code<arcturus_instruction>;
+
+            std::shared_ptr<arcturus_code> build_cytron_code()
             {
-                //                                                  op                arg1    arg2    res
-                //                                                  ..................................... 
-                //  I ← 1                                         1 assignment_mir    1               I
-                //  J ← 1                                         2 assignment_mir    1               J
-                //  K ← 1                                         3 assignment_mir    1               K
-                //  L ← 1                                         4 assignment_mir    1               L
-                //  repeat                                        5 label                             M100
-                //      if(P)                                     6 if_false_mir      P               M0
-                //          J ← I                                 7 assignment_mir    I               J
-                //          if(Q)                                 8 if_false_mir      Q               M1
-                //              L ← 2                             9 assignment_mir    2               L
-                //                                               10 goto                              M2
-                //          else                                 11 label                             M1
-                //              L ← 3                            12 assignment_mir    3               L
-                //                                               13 label                             M2
-                //          K ← K + 1                            14 assignment_mir    K       1       K
-                //                                               15 goto                              M11
-                //      else                                     16 label                             M0
-                //          K ← K + 2                            17 assignment_mir    K       2       K
-                //                                               18 goto                              M11
-                //                                               19 label                             M11
-                //      repeat                                   20 label                             M10
-                //          if(R)                                21 if_false_mir      R               M3
-                //              L ← L + 4                        22 assignment_mir    L       4       L
-                //                                               23 label                             M3
-                //      until(S)                                 24 if_true_mir       S               M10
-                //      I ← I + 6                                25 assignment_mir    I       6       I
-                //  until(T)                                     26 if_true_mir       T               M100
                 using arcturus_instruction = arcturus_quadruple;
-                using arcturus_code = code<arcturus_instruction>;
 
                 using op = arcturus_operation_code_traits::operation_code;
 
@@ -2374,7 +2348,42 @@ namespace tests
                     Logger::WriteMessage(L"\n");
                 }
 
+                return code;
+            }
+
+            TEST_METHOD(BuildSSaFormCytron)
+            {
+                //                                                  op                arg1    arg2    res
+                //                                                  ..................................... 
+                //  I ← 1                                         1 assignment_mir    1               I
+                //  J ← 1                                         2 assignment_mir    1               J
+                //  K ← 1                                         3 assignment_mir    1               K
+                //  L ← 1                                         4 assignment_mir    1               L
+                //  repeat                                        5 label                             M100
+                //      if(P)                                     6 if_false_mir      P               M0
+                //          J ← I                                 7 assignment_mir    I               J
+                //          if(Q)                                 8 if_false_mir      Q               M1
+                //              L ← 2                             9 assignment_mir    2               L
+                //                                               10 goto                              M2
+                //          else                                 11 label                             M1
+                //              L ← 3                            12 assignment_mir    3               L
+                //                                               13 label                             M2
+                //          K ← K + 1                            14 assignment_mir    K       1       K
+                //                                               15 goto                              M11
+                //      else                                     16 label                             M0
+                //          K ← K + 2                            17 assignment_mir    K       2       K
+                //                                               18 goto                              M11
+                //                                               19 label                             M11
+                //      repeat                                   20 label                             M10
+                //          if(R)                                21 if_false_mir      R               M3
+                //              L ← L + 4                        22 assignment_mir    L       4       L
+                //                                               23 label                             M3
+                //      until(S)                                 24 if_true_mir       S               M10
+                //      I ← I + 6                                25 assignment_mir    I       6       I
+                //  until(T)                                     26 if_true_mir       T               M100
                 auto cfg(factory::create<arcturus_control_flow_graph>());
+
+                auto code(build_cytron_code());
 
                 (*cfg).collect_basic_blocks(code);
 
@@ -2401,6 +2410,27 @@ namespace tests
                 (*cfg).generate_graphviz_file(LR"(d:\tmp\BuildSSaFormCytron.NonSSA.dot)");
 
                 Logger::WriteMessage(("Destructed SSA form:       " + std::to_string(elapsed)).c_str());
+            }
+
+            TEST_METHOD(BuildDefUseCytron)
+            {
+                auto cfg(factory::create<arcturus_control_flow_graph>());
+
+                auto code(build_cytron_code());
+
+                (*cfg).collect_basic_blocks(code);
+
+                auto start = std::chrono::high_resolution_clock::now();
+
+                arcturus_data_flow_analysis dfa;
+
+                dfa.collect_liveness_def_use_sets(std::static_pointer_cast<control_flow_graph<basic_block<arcturus_quadruple>>>(cfg));
+                dfa.calculate_liveness_in_outs_sets(std::static_pointer_cast<control_flow_graph<basic_block<arcturus_quadruple>>>(cfg));
+
+                auto finish = std::chrono::high_resolution_clock::now();
+                auto elapsed = std::chrono::duration_cast<duration_type>(finish - start).count();
+
+                Logger::WriteMessage(("Def-Use construction:       " + std::to_string(elapsed)).c_str());
             }
 
             TEST_METHOD(BuildDisjointSets)
