@@ -63,7 +63,6 @@
 #include <ir/quadruple.hpp>
 #include <ir/code.hpp>
 #include <ir/basic_block.hpp>
-#include <ir/basic_block.inl>
 #include <ir/control_flow_graph.hpp>
 #include <ir/data_flow_analysis.hpp>
 #include <ir/ir_visitor.hpp>
@@ -111,17 +110,17 @@ arcturus_data_flow_analysis::~arcturus_data_flow_analysis()
 {
 }
 
-void arcturus_data_flow_analysis::collect_gen_kills(basic_blocks_type& basic_blocks)
+void arcturus_data_flow_analysis::collect_liveness_def_use_sets(typename arcturus_data_flow_analysis::control_flow_graph_type& cfg)
 {
     // 'Engineering a Compiler' by Keith D. Cooper, Linda Torczon
     //  ... assume block b has k operations of form 'x <-- y op z'
-    for(auto& block : basic_blocks)
+    for(auto& block : (*cfg).vertices())
     {
-        auto& gens((*block).gens());
-        auto& kills((*block).kills());
+        auto& defs((*block).defs());
+        auto& uses((*block).uses());
 
-        gens.clear();
-        kills.clear();
+        defs.clear();
+        uses.clear();
 
         auto& code((*block).code());
 
@@ -136,32 +135,78 @@ void arcturus_data_flow_analysis::collect_gen_kills(basic_blocks_type& basic_blo
 
                 auto& result(std::get<arcturus_quadruple::argument_type>((*instruction).result).first);
 
-                if(arg1 != nullptr && kills.find(arg1) == kills.end())
-                {
-                    gens.emplace(arg1);
-                }
+                if(arg1 != nullptr) // && defs.find(arg1) == defs.end())
+                    uses.emplace(arg1);
 
-                if(arg2 != nullptr && kills.find(arg2) == kills.end())
-                {
-                    gens.emplace(arg2);
-                }
+                if(arg2 != nullptr) // && defs.find(arg2) == defs.end())
+                    uses.emplace(arg2);
 
-                kills.emplace(result);
+                if(result != nullptr)
+                    defs.emplace(result);
             }
         }
     }
 }
 
-void arcturus_data_flow_analysis::calculate_in_outs(basic_blocks_type& basic_blocks)
+void arcturus_data_flow_analysis::calculate_liveness_in_outs_sets(typename arcturus_data_flow_analysis::control_flow_graph_type& cfg)
 {
-    std::vector<basic_block_type> blocks(basic_blocks.size());
-
-    for(auto& block : basic_blocks)
+    // 'Compilers : principles, techniques, and tools' by Alfred V. Aho, Ravi Sethi, Jeffrey D. Ullman. 2nd ed.
+    for(auto& block : (*cfg).vertices())
     {
-        blocks.emplace_back(block);
+        (*block).ins().clear();
+        (*block).outs().clear();
     }
 
+    for(;;)
+    {
+        for(auto& block : (*cfg).vertices())
+        {
+            if((*block).label() == L"exit")
+                continue;
 
+            std::set<basic_block_type, vertex_lt_key_comparator<basic_block<arcturus_quadruple>>> successors;
+
+            (*cfg).collect_successors(block, successors);
+
+            for(auto& successor : successors)
+            {
+                // OUT[B] = U IN[S]
+                //           S a successor of B
+                symbols_type outs((*block).outs());
+
+                std::set_union((*successor).ins().begin(),
+                               (*successor).ins().end(),
+                               outs.begin(),
+                               outs.end(),
+                               std::inserter((*block).outs(), (*block).outs().begin()));
+
+                // IN[B] = use[B] U (OUT[B] - def[B])
+                symbols_type diffs;
+
+                std::set_difference((*block).outs().begin(), // ... (OUT[B] - def[B])
+                                    (*block).outs().end(),
+                                    (*block).defs().begin(),
+                                    (*block).defs().end(),
+                                    std::inserter(diffs, diffs.begin()));
+
+                auto ins_count = (*block).ins().size();
+
+                std::set_union((*block).uses().begin(), // IN[B] = use[B] U ...
+                               (*block).uses().end(),
+                               diffs.begin(),
+                               diffs.end(),
+                               std::inserter((*block).ins(), (*block).ins().begin()));
+
+                if((*block).ins().size() == ins_count)
+                {
+                    goto _exit;
+                }
+            }
+        }
+    }
+
+_exit:
+    ;
 }
 
 END_NAMESPACE

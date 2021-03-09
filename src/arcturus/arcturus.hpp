@@ -68,11 +68,9 @@
 #include <ir/quadruple.hpp>
 #include <ir/code.hpp>
 #include <ir/basic_block.hpp>
-#include <ir/basic_block.inl>
 #include <ir/control_flow_graph.hpp>
 #include <ir/data_flow_analysis.hpp>
 #include <ir/ssa.hpp>
-#include <ir/ssa.inl>
 #include <ir/ir_visitor.hpp>
 #include <ir/ir.hpp>
 #include <ir/ir.inl>

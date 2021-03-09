@@ -27,8 +27,8 @@ class basic_block : public dominator_vertex
         symbols_type        my_ins;
         symbols_type        my_outs;
 
-        symbols_type        my_gens;
-        symbols_type        my_kills;
+        symbols_type        my_defs;
+        symbols_type        my_uses;
 
     public:
                             basic_block(const id_type& id, const string_type& name);
@@ -43,12 +43,23 @@ class basic_block : public dominator_vertex
         const symbols_type& outs() const;
         symbols_type&       outs();
 
-        const symbols_type& gens() const;
-        symbols_type&       gens();
+        const symbols_type& defs() const;
+        symbols_type&       defs();
 
-        const symbols_type& kills() const;
-        symbols_type&       kills();
+        const symbols_type& uses() const;
+        symbols_type&       uses();
 };
+
+template <typename Instruction>
+basic_block<Instruction>::basic_block(const typename basic_block<Instruction>::id_type& id, const string_type& label)
+                        : dominator_vertex(id, label)
+{
+}
+
+template <typename Instruction>
+basic_block<Instruction>::~basic_block()
+{
+}
 
 template <typename Instruction>
 inline const typename basic_block<Instruction>::code_type& basic_block<Instruction>::code() const
@@ -87,27 +98,27 @@ inline typename basic_block<Instruction>::symbols_type& basic_block<Instruction>
 }
 
 template <typename Instruction>
-inline const typename basic_block<Instruction>::symbols_type& basic_block<Instruction>::gens() const
+inline const typename basic_block<Instruction>::symbols_type& basic_block<Instruction>::defs() const
 {
-    return my_gens;
+    return my_defs;
 }
 
 template <typename Instruction>
-inline typename basic_block<Instruction>::symbols_type& basic_block<Instruction>::gens()
+inline typename basic_block<Instruction>::symbols_type& basic_block<Instruction>::defs()
 {
-    return my_gens;
+    return my_defs;
 }
 
 template <typename Instruction>
-inline const typename basic_block<Instruction>::symbols_type& basic_block<Instruction>::kills() const
+inline const typename basic_block<Instruction>::symbols_type& basic_block<Instruction>::uses() const
 {
-    return my_kills;
+    return my_uses;
 }
 
 template <typename Instruction>
-inline typename basic_block<Instruction>::symbols_type& basic_block<Instruction>::kills()
+inline typename basic_block<Instruction>::symbols_type& basic_block<Instruction>::uses()
 {
-    return my_kills;
+    return my_uses;
 }
 
 END_NAMESPACE

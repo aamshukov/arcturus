@@ -198,10 +198,8 @@
       <MakeAllSymbolsPublic Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</MakeAllSymbolsPublic>
     </MASM>
     <None Include="..\src\framework\frontend\type\type.inl" />
-    <None Include="..\src\framework\ir\basic_block.inl" />
     <None Include="..\src\framework\ir\ir.inl" />
     <None Include="..\src\framework\ir\ir_visualization.inl" />
-    <None Include="..\src\framework\ir\ssa.inl" />
     <None Include="..\src\tools\dsl\packrat.py" />
   </ItemGroup>
   <ItemGroup>
