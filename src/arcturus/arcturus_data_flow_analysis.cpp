@@ -157,9 +157,12 @@ void arcturus_data_flow_analysis::calculate_liveness_in_outs_sets(typename arctu
         (*block).outs().clear();
     }
 
+    std::size_t ins_count = 0;
+    std::size_t ins_curr_count = 0;
+
     for(;;)
     {
-        std::size_t ins_count = 0;
+        ins_curr_count = 0;
 
         for(auto& block : (*cfg).vertices())
         {
@@ -174,37 +177,49 @@ void arcturus_data_flow_analysis::calculate_liveness_in_outs_sets(typename arctu
             {
                 // OUT[B] = U IN[S]
                 //           S a successor of B
-                symbols_type outs((*block).outs());
-
-                std::set_union((*successor).ins().begin(),
-                               (*successor).ins().end(),
-                               outs.begin(),
-                               outs.end(),
-                               std::inserter((*block).outs(), (*block).outs().begin()));
+                (*block).outs().insert((*successor).ins().begin(), (*successor).ins().end());
             }
 
             // IN[B] = use[B] U (OUT[B] - def[B])
+            std::vector<symbol_type> outs;
+
+            std::for_each((*block).outs().begin(), (*block).outs().end(), [&outs](const auto& out) { outs.push_back(out); });
+            std::sort(outs.begin(), outs.end(), symtable::symbol::symbol_key_comparator());
+
+            std::vector<symbol_type> defs;
+
+            std::for_each((*block).defs().begin(), (*block).defs().end(), [&defs](const auto& def) { defs.push_back(def); });
+            std::sort(defs.begin(), defs.end(), symtable::symbol::symbol_key_comparator());
+
             symbols_type diffs;
 
-            std::set_difference((*block).outs().begin(), // ... (OUT[B] - def[B])
-                                (*block).outs().end(),
-                                (*block).defs().begin(),
-                                (*block).defs().end(),
-                                std::inserter(diffs, diffs.begin()));
+            std::set_difference(outs.begin(), // ... (OUT[B] - def[B])
+                                outs.end(),
+                                defs.begin(),
+                                defs.end(),
+                                std::inserter(diffs, diffs.begin()),
+                                symtable::symbol::symbol_key_comparator());
 
-            std::set_union((*block).uses().begin(), // IN[B] = use[B] U ...
-                            (*block).uses().end(),
-                            diffs.begin(),
-                            diffs.end(),
-                            std::inserter((*block).ins(), (*block).ins().begin()));
+            std::vector<symbol_type> uses;
 
-            ins_count += (*block).ins().size();
+            std::for_each((*block).uses().begin(), (*block).uses().end(), [&uses](const auto& use) { uses.push_back(use); });
+            std::sort(uses.begin(), uses.end(), symtable::symbol::symbol_key_comparator());
+            std::set_union(uses.begin(), // IN[B] = use[B] U diffs ...
+                           uses.end(),
+                           diffs.begin(), // already sorted
+                           diffs.end(),
+                           std::inserter((*block).ins(), (*block).ins().begin()),
+                           symtable::symbol::symbol_key_comparator());
+
+            ins_curr_count += (*block).ins().size();
         }
 
-        if(ins_count > 0)
+        if(ins_curr_count == ins_count)
         {
             break;
         }
+
+        ins_count = ins_curr_count;
     }
 }
 
