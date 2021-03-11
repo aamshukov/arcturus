@@ -13,6 +13,7 @@
 #include <cstddef>
 #include <cctype>
 #include <cassert>
+#include <cstdio>
 
 #include <iterator>
 #include <iostream>

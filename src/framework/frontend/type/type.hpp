@@ -9,7 +9,7 @@
 BEGIN_NAMESPACE(frontend)
 USINGNAMESPACE(core)
 
-class type
+class type : public visitable
 {
     public:
         using index_type = int32_t;
@@ -63,6 +63,8 @@ class type
 
         std::size_t         cardinality() const;
         std::size_t&        cardinality();
+
+        ACCEPT_METHOD;
 };
 
 template <typename Traits>

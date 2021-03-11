@@ -169,6 +169,7 @@ void arcturus_data_flow_analysis::calculate_liveness_in_outs_sets(typename arctu
             if((*block).label() == L"exit")
                 continue;
 
+            // ... clumsy C++ sets' routines
             std::set<basic_block_type, vertex_lt_key_comparator<basic_block<arcturus_quadruple>>> successors;
 
             (*cfg).collect_successors(block, successors);

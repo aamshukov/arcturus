@@ -106,6 +106,8 @@ void build_code(arcturus_code& code) //??
 
 int _tmain(int argc, _TCHAR *argv[])
 {
+    std::ios::sync_with_stdio(false);
+
     code<arcturus_instruction> code;
 
     //build_code(code);

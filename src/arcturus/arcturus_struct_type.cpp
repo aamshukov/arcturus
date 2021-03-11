@@ -3,6 +3,9 @@
 //..............................
 #include <core/pch.hpp>
 
+#include <core/visitable.hpp>
+#include <core/visitor.hpp>
+
 #include <frontend/type/type.hpp>
 #include <frontend/type/type.inl>
 
