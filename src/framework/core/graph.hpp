@@ -49,7 +49,7 @@ class graph : private noncopyable
 
     public:
                                             graph(bool digraph = true);
-                                           ~graph();
+        virtual                            ~graph();
 
         const vertex_type&                  root() const;
         vertex_type&                        root();

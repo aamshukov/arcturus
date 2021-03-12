@@ -28,7 +28,7 @@ class arcturus_control_flow_graph : public control_flow_graph<basic_block<arctur
 
     public:
                         arcturus_control_flow_graph();
-                       ~arcturus_control_flow_graph();
+        virtual        ~arcturus_control_flow_graph();
 
         virtual void    collect_basic_blocks(code_type& code) override;
         virtual void    flat_basic_blocks(code_type& code) override;

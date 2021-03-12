@@ -111,6 +111,8 @@
     <ClInclude Include="..\src\framework\ir\control_flow_graph.hpp" />
     <ClInclude Include="..\src\framework\ir\dag_tac_visitor.hpp" />
     <ClInclude Include="..\src\framework\ir\data_flow_analysis.hpp" />
+    <ClInclude Include="..\src\framework\ir\interference_graph.hpp" />
+    <ClInclude Include="..\src\framework\ir\interference_vertex.hpp" />
     <ClInclude Include="..\src\framework\ir\ir.hpp" />
     <ClInclude Include="..\src\framework\ir\ir_visitor.hpp" />
     <ClInclude Include="..\src\framework\ir\ir_visualization.hpp" />

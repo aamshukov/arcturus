@@ -378,6 +378,12 @@
     <ClInclude Include="..\src\arcturus\arcturus_data_flow_analysis.hpp">
       <Filter>arcturus</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\framework\ir\interference_vertex.hpp">
+      <Filter>framework\ir</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\ir\interference_graph.hpp">
+      <Filter>framework\ir</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\framework\core\logger.cpp">

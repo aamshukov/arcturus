@@ -30,7 +30,7 @@ class control_flow_graph : public graph<TBasicBlock>
 
     public:
                                 control_flow_graph();
-                               ~control_flow_graph();
+        virtual                ~control_flow_graph();
 
         const assignments_type& assignments() const;
         assignments_type&       assignments();

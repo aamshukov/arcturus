@@ -24,10 +24,11 @@ struct arcturus_operation_code_traits
         noop = 5,
 
         // HIR - high-level intermediate representation (IR), usually AST/CST forest
+        hir_size,
 
 
         // MIR - mid-level intermediate representation (IR)
-        declaration_mir = 100,
+        declaration_mir = hir_size + 128,
 
         assignment_mir,
 
@@ -66,9 +67,10 @@ struct arcturus_operation_code_traits
         function_argument_mir,
         function_call_mir,
 
-        // LIR - low-level intermediate representation (IR)
+        mir_size,
 
-        //address_of          = 1,
+        // LIR - low-level intermediate representation (IR)
+        address_of          = mir_size + 128,
 
         //load_integer        = 20,
         //store_integer       = 21, // assignment

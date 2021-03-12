@@ -17,7 +17,7 @@ class arcturus_array_type : public arcturus_type
         using base_type = std::shared_ptr<arcturus_type>;
 
     private:
-        base_type       my_base;
+        base_type       my_base;                // element type
 
         index_type      my_array_lower_bound;   //  [-10..10]
         index_type      my_array_upper_bound;   //
