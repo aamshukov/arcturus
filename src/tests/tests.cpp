@@ -44,40 +44,160 @@ namespace tests
                 logger::instance().initialize(log_path);
             }
 
-            TEST_METHOD(CreateGraph)
+            TEST_METHOD(CreateDiGraphRemoveVertex)
             {
                 std::shared_ptr<graph<vertex>> gr(factory::create<graph<vertex>>());
 
-                const auto& v1 = *(*gr).add_vertex(factory::create<vertex>(1)).first;
-                const auto& v2 = *(*gr).add_vertex(factory::create<vertex>(2)).first;
-                const auto& v3 = *(*gr).add_vertex(factory::create<vertex>(3)).first;
-                const auto& v4 = *(*gr).add_vertex(factory::create<vertex>(4)).first;
-                const auto& v5 = *(*gr).add_vertex(factory::create<vertex>(5)).first;
-                const auto& v6 = *(*gr).add_vertex(factory::create<vertex>(6)).first;
-                const auto& v7 = *(*gr).add_vertex(factory::create<vertex>(7)).first;
-                const auto& v8 = *(*gr).add_vertex(factory::create<vertex>(8)).first;
-                const auto& v9 = *(*gr).add_vertex(factory::create<vertex>(9)).first;
+                auto& a = *(*gr).add_vertex(factory::create<vertex>(1, L"A")).first;
+                auto& b = *(*gr).add_vertex(factory::create<vertex>(2, L"B")).first;
+                auto& c = *(*gr).add_vertex(factory::create<vertex>(3, L"C")).first;
+                auto& d = *(*gr).add_vertex(factory::create<vertex>(4, L"D")).first;
+                auto& e = *(*gr).add_vertex(factory::create<vertex>(5, L"E")).first;
 
-                (*gr).remove_vertex(v9);
+                (*gr).add_edge(a, b, 0.1);
+                (*gr).add_edge(a, d, 0.2);
+                (*gr).add_edge(a, c, 0.3);
 
-                auto& e1 = *(*gr).add_edge(v1, v2, 0.5).first;
-                (*gr).remove_edge(e1);
+                (*gr).add_edge(b, c, 0.4);
+                (*gr).add_edge(b, e, 0.5);
 
-                (*gr).add_edge(v1, v2, 0.1);
-                (*gr).add_edge(v1, v5, 0.2);
-                (*gr).add_edge(v1, v3, 0.3);
-                (*gr).add_edge(v1, v7, 0.3);
-                (*gr).add_edge(v2, v1, 0.4);
-                (*gr).add_edge(v3, v2, 0.5);
-                (*gr).add_edge(v7, v8, 0.3);
-                (*gr).add_edge(v8, v1, 0.3);
-                (*gr).add_edge(v8, v2, 0.3);
+                (*gr).add_edge(c, d, 0.6);
+                (*gr).add_edge(c, e, 0.7);
 
-                graph_algorithms<vertex>::generate_graphviz_file(gr, LR"(d:\tmp\CreateGraph0.dot)", false);
+                (*gr).add_edge(d, e, 0.8);
 
-                (*gr).remove_vertex(v1);
+                graph_algorithms<vertex>::generate_graphviz_file(gr, LR"(d:\tmp\CreateDiGraphRemoveVertex1.dot)", false);
 
-                graph_algorithms<vertex>::generate_graphviz_file(gr, LR"(d:\tmp\CreateGraph1.dot)", false);
+                (*gr).remove_vertex(c);
+                graph_algorithms<vertex>::generate_graphviz_file(gr, LR"(d:\tmp\CreateDiGraphRemoveVertex2.dot)", false);
+
+                (*gr).remove_vertex(a);
+                graph_algorithms<vertex>::generate_graphviz_file(gr, LR"(d:\tmp\CreateDiGraphRemoveVertex3.dot)", false);
+
+                (*gr).remove_vertex(b);
+                graph_algorithms<vertex>::generate_graphviz_file(gr, LR"(d:\tmp\CreateDiGraphRemoveVertex4.dot)", false);
+
+                (*gr).remove_vertex(e);
+                graph_algorithms<vertex>::generate_graphviz_file(gr, LR"(d:\tmp\CreateDiGraphRemoveVertex5.dot)", false);
+
+                (*gr).remove_vertex(d);
+                graph_algorithms<vertex>::generate_graphviz_file(gr, LR"(d:\tmp\CreateDiGraphRemoveVertex6.dot)", false);
+            }
+
+            TEST_METHOD(CreateDiGraphRemoveEdge)
+            {
+                std::shared_ptr<graph<vertex>> gr(factory::create<graph<vertex>>());
+
+                auto& a = *(*gr).add_vertex(factory::create<vertex>(1, L"A")).first;
+                auto& b = *(*gr).add_vertex(factory::create<vertex>(2, L"B")).first;
+                auto& c = *(*gr).add_vertex(factory::create<vertex>(3, L"C")).first;
+                auto& d = *(*gr).add_vertex(factory::create<vertex>(4, L"D")).first;
+                auto& e = *(*gr).add_vertex(factory::create<vertex>(5, L"E")).first;
+
+                (*gr).add_edge(a, b, 0.1);
+                (*gr).add_edge(a, d, 0.2);
+                (*gr).add_edge(a, c, 0.3);
+
+                (*gr).add_edge(b, c, 0.4);
+                (*gr).add_edge(b, e, 0.5);
+
+                (*gr).add_edge(c, d, 0.6);
+                (*gr).add_edge(c, e, 0.7);
+
+                (*gr).add_edge(d, e, 0.8);
+
+                graph_algorithms<vertex>::generate_graphviz_file(gr, LR"(d:\tmp\CreateDiGraphRemoveEdge1.dot)", false);
+
+                int k = 1;
+
+                for(auto& v : (*gr).vertices())
+                {
+                    auto edges = (*gr).get_edges(v);
+
+                    for(auto& edge : edges)
+                    {
+                        (*gr).remove_edge(edge);
+                        graph_algorithms<vertex>::generate_graphviz_file(gr, format(LR"(d:\tmp\CreateDiGraphRemoveEdge%d.dot)", ++k), false);
+                    }
+                }
+            }
+
+            TEST_METHOD(CreateGraphRemoveVertex)
+            {
+                std::shared_ptr<graph<vertex>> gr(factory::create<graph<vertex>>(false));
+
+                auto& a = *(*gr).add_vertex(factory::create<vertex>(1, L"A")).first;
+                auto& b = *(*gr).add_vertex(factory::create<vertex>(2, L"B")).first;
+                auto& c = *(*gr).add_vertex(factory::create<vertex>(3, L"C")).first;
+                auto& d = *(*gr).add_vertex(factory::create<vertex>(4, L"D")).first;
+                auto& e = *(*gr).add_vertex(factory::create<vertex>(5, L"E")).first;
+
+                (*gr).add_edge(a, b, 0.1);
+                (*gr).add_edge(a, d, 0.2);
+                (*gr).add_edge(a, c, 0.3);
+
+                (*gr).add_edge(b, c, 0.4);
+                (*gr).add_edge(b, e, 0.5);
+
+                (*gr).add_edge(c, d, 0.6);
+                (*gr).add_edge(c, e, 0.7);
+
+                (*gr).add_edge(d, e, 0.8);
+
+                graph_algorithms<vertex>::generate_graphviz_file(gr, LR"(d:\tmp\CreateGraphRemoveVertex1.dot)", false);
+
+                (*gr).remove_vertex(c);
+                graph_algorithms<vertex>::generate_graphviz_file(gr, LR"(d:\tmp\CreateGraphRemoveVertex2.dot)", false);
+
+                (*gr).remove_vertex(a);
+                graph_algorithms<vertex>::generate_graphviz_file(gr, LR"(d:\tmp\CreateGraphRemoveVertex3.dot)", false);
+
+                (*gr).remove_vertex(b);
+                graph_algorithms<vertex>::generate_graphviz_file(gr, LR"(d:\tmp\CreateGraphRemoveVertex4.dot)", false);
+
+                (*gr).remove_vertex(e);
+                graph_algorithms<vertex>::generate_graphviz_file(gr, LR"(d:\tmp\CreateGraphRemoveVertex5.dot)", false);
+
+                (*gr).remove_vertex(d);
+                graph_algorithms<vertex>::generate_graphviz_file(gr, LR"(d:\tmp\CreateGraphRemoveVertex6.dot)", false);
+            }
+
+            TEST_METHOD(CreateGraphRemoveEdge)
+            {
+                std::shared_ptr<graph<vertex>> gr(factory::create<graph<vertex>>(false));
+
+                auto& a = *(*gr).add_vertex(factory::create<vertex>(1, L"A")).first;
+                auto& b = *(*gr).add_vertex(factory::create<vertex>(2, L"B")).first;
+                auto& c = *(*gr).add_vertex(factory::create<vertex>(3, L"C")).first;
+                auto& d = *(*gr).add_vertex(factory::create<vertex>(4, L"D")).first;
+                auto& e = *(*gr).add_vertex(factory::create<vertex>(5, L"E")).first;
+
+                (*gr).add_edge(a, b, 0.1);
+                (*gr).add_edge(a, d, 0.2);
+                (*gr).add_edge(a, c, 0.3);
+
+                (*gr).add_edge(b, c, 0.4);
+                (*gr).add_edge(b, e, 0.5);
+
+                (*gr).add_edge(c, d, 0.6);
+                (*gr).add_edge(c, e, 0.7);
+
+                (*gr).add_edge(d, e, 0.8);
+
+                graph_algorithms<vertex>::generate_graphviz_file(gr, LR"(d:\tmp\CreateGraphRemoveEdge1.dot)", false);
+
+                int k = 1;
+
+                for(auto& v : (*gr).vertices())
+                {
+                    auto edges = (*gr).get_edges(v);
+
+                    for(auto& edge : edges)
+                    {
+                        (*gr).remove_edge(edge);
+                        graph_algorithms<vertex>::generate_graphviz_file(gr, format(LR"(d:\tmp\CreateGraphRemoveEdge%d.dot)", ++k), false);
+                    }
+                }
             }
 
             TEST_METHOD(VisualizeGraphGraphviz)

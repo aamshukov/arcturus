@@ -20,6 +20,7 @@ class interference_graph : public graph<interference_vertex>
 };
 
 inline interference_graph::interference_graph()
+                         : graph<interference_vertex>(false)
 {
 }
 

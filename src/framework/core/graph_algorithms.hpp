@@ -686,13 +686,29 @@ void graph_algorithms<TVertex, TEdgeValue, N>::generate_graphviz_file(const type
             stream << indent << ((*vertex).label().empty() ? std::to_wstring((*vertex).id()) : (*vertex).label()) << L" node [shape = circle];" << std::endl;
         }
 
+        std::set<string_type> labels;
+
         for(const auto& edge : (*graph).edges())
         {
             const auto& vertex_u((*edge).endpoints()[0]);
             const auto& vertex_v((*edge).endpoints()[1]);
 
-            stream << indent << ((*vertex_u).label().empty() ? std::to_wstring((*vertex_u).id()) : (*vertex_u).label()) << L" -> "
-                             << ((*vertex_v).label().empty() ? std::to_wstring((*vertex_v).id()) : (*vertex_v).label()) << L";" << std::endl;
+            auto label_u = std::to_wstring((*vertex_u).id());
+            auto label_v = std::to_wstring((*vertex_v).id());
+
+            auto label_uv = label_u + label_v;
+            auto label_vu = label_v + label_u;
+
+            if(!(*graph).digraph() && (labels.find(label_uv) != labels.end() || labels.find(label_vu) != labels.end()))
+                continue;
+
+            labels.emplace(label_uv);
+            labels.emplace(label_vu);
+
+            label_u = (*vertex_u).label().empty() ? std::to_wstring((*vertex_u).id()) : (*vertex_u).label();
+            label_v = (*vertex_v).label().empty() ? std::to_wstring((*vertex_v).id()) : (*vertex_v).label();
+
+            stream << indent << label_u << ((*graph).digraph() ? L" -> " : L" -- ") << label_v << L";" << std::endl;
 
             if(show_values)
             {
