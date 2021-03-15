@@ -192,10 +192,13 @@ namespace tests
                 {
                     auto edges = (*gr).get_edges(v);
 
-                    for(auto& edge : edges)
+                    for(auto& e : edges)
                     {
-                        (*gr).remove_edge(edge);
-                        graph_algorithms<vertex>::generate_graphviz_file(gr, format(LR"(d:\tmp\CreateGraphRemoveEdge%d.dot)", ++k), false);
+                        if(((*e).flags() & edge<vertex>::flag::synthetic) != edge<vertex>::flag::synthetic)
+                        {
+                            (*gr).remove_edge(e);
+                            graph_algorithms<vertex>::generate_graphviz_file(gr, format(LR"(d:\tmp\CreateGraphRemoveEdge%d.dot)", ++k), false);
+                        }
                     }
                 }
             }

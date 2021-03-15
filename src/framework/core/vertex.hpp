@@ -95,7 +95,7 @@ class vertex : public visitable
 };
 
 inline vertex::vertex(const typename vertex::id_type& id = 0, const string_type& label)
-             : my_id(id), my_label(label), my_flags(vertex::flags_type::clear), my_ref_count(0)
+             : my_id(id), my_label(label), my_flags(vertex::flag::clear), my_ref_count(0)
 {
 }
 

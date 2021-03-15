@@ -33,6 +33,10 @@ class graph : private noncopyable
                                                         edges_type,
                                                         vertex_hash<TVertex>,
                                                         vertex_eq_key_comparator<TVertex>>;
+        using edge_edge_map_type = std::unordered_map<edge_type,
+                                                      edge_type,
+                                                      edge_hash<TVertex, TEdgeValue, N>,
+                                                      edge_eq_key_comparator<TVertex, TEdgeValue, N>>;
         using id_type = std::size_t;
         using counter_type = counter;
 
@@ -45,13 +49,14 @@ class graph : private noncopyable
         counter_type                        my_edges_counter;
 
         vertex_edge_map_type                my_vertex_edge_map;
+        edge_edge_map_type                  my_edge_edge_map; // holds synthetic edges in undirected graphs
 
         bool                                my_digraph; // directed or not
 
     private:
         void                                adjust_vertex_id(const vertex_type& vertex);
 
-        void                                create_edge(const vertex_type& vertex_u, const vertex_type& vertex_v, const edge_value_type& value);
+        edge_type                           create_edge(const vertex_type& vertex_u, const vertex_type& vertex_v, const edge_value_type& value);
         void                                link_edge(const vertex_type& vertex_u, const vertex_type& vertex_v, const edge_type& edge);
     public:
                                             graph(bool digraph = true);
@@ -90,6 +95,7 @@ graph<TVertex, TEdgeValue, N>::~graph()
     my_vertices.clear();
     my_edges.clear();
     my_vertex_edge_map.clear();
+    my_edge_edge_map.clear();
 }
 
 template <typename TVertex, typename TEdgeValue, std::size_t N>
@@ -185,12 +191,16 @@ void graph<TVertex, TEdgeValue, N>::add_edge(const typename graph<TVertex, TEdge
     }
 
     // add new edge, U -> V
-    create_edge(vertex_u, vertex_v, value);
+    auto uv_edge = create_edge(vertex_u, vertex_v, value);
 
     if(!my_digraph)
     {
         // add new edge, V -> U
-        create_edge(vertex_v, vertex_u, value);
+        auto vu_edge = create_edge(vertex_v, vertex_u, value);
+
+        (*vu_edge).flags() |= edge<TVertex, TEdgeValue, N>::flag::synthetic;
+
+        my_edge_edge_map[uv_edge] = vu_edge;
     }
 
     // mark V as referenced by U
@@ -215,20 +225,22 @@ inline void graph<TVertex, TEdgeValue, N>::adjust_vertex_id(const vertex_type& v
 }
 
 template <typename TVertex, typename TEdgeValue, std::size_t N>
-inline void graph<TVertex, TEdgeValue, N>::create_edge(const typename graph<TVertex, TEdgeValue, N>::vertex_type& vertex_u,
-                                                       const typename graph<TVertex, TEdgeValue, N>::vertex_type& vertex_v,
-                                                       const typename graph<TVertex, TEdgeValue, N>::edge_value_type& value)
+inline typename graph<TVertex, TEdgeValue, N>::edge_type graph<TVertex, TEdgeValue, N>::create_edge(const typename graph<TVertex, TEdgeValue, N>::vertex_type& vertex_u,
+                                                                                                    const typename graph<TVertex, TEdgeValue, N>::vertex_type& vertex_v,
+                                                                                                    const typename graph<TVertex, TEdgeValue, N>::edge_value_type& value)
 {
-    auto edge(factory::create<edge<TVertex, TEdgeValue, N>>(my_edges_counter.number()));
+    auto result(factory::create<edge<TVertex, TEdgeValue, N>>(my_edges_counter.number()));
 
-    (*edge).value() = value;
+    (*result).value() = value;
 
-    (*edge).endpoints()[0] = vertex_u;
-    (*edge).endpoints()[1] = vertex_v;
+    (*result).endpoints()[0] = vertex_u;
+    (*result).endpoints()[1] = vertex_v;
 
-    my_edges.emplace(edge);
+    my_edges.emplace(result);
 
-    link_edge(vertex_u, vertex_v, edge);
+    link_edge(vertex_u, vertex_v, result);
+
+    return result;
 }
 
 template <typename TVertex, typename TEdgeValue, std::size_t N>
@@ -309,6 +321,24 @@ inline void graph<TVertex, TEdgeValue, N>::remove_edge(const typename graph<TVer
         }
     }
 
+    // cleanup edges synthetic map
+    if(!my_digraph)
+    {
+        auto s_edge_it(my_edge_edge_map.find(edge));
+
+        if(s_edge_it != my_edge_edge_map.end())
+        {
+            // remove synthetic edge
+            my_edges.erase((*s_edge_it).second);
+
+            // unlink synthetic edge
+            my_edge_edge_map.erase(s_edge_it);
+        }
+    }
+
+    // remove edge
+    my_edges.erase(edge);
+
     // decrement ref counter
     (*vertex_v).release();
 
@@ -316,9 +346,6 @@ inline void graph<TVertex, TEdgeValue, N>::remove_edge(const typename graph<TVer
     {
         (*vertex_u).release();
     }
-
-    // remove edge
-    my_edges.erase(edge);
 }
 
 template <typename TVertex, typename TEdgeValue, std::size_t N>

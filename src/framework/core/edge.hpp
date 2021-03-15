@@ -33,6 +33,18 @@ struct edge_eq_key_comparator
     }
 };
 
+template <typename TVertex, typename TValue = double, std::size_t N = GraphConnectivityRank>
+struct edge_hash
+{
+    using edge_type = std::shared_ptr<edge<TVertex, TValue, N>>;
+    std::size_t operator () (const edge_type& edge) const
+    {
+        std::size_t result = (*edge).id();
+        result ^= combine_hash(result);
+        return result;
+    }
+};
+
 template <typename TVertex, typename TValue, std::size_t N>
 class edge : private noncopyable
 {
@@ -44,9 +56,21 @@ class edge : private noncopyable
 
         using id_type = std::size_t;
 
+        enum class flag : uint64_t
+        {
+            clear     = 0x0000,
+            synthetic = 0x0001
+        };
+
+        DECLARE_ENUM_OPERATORS(flag)
+
+        using flags_type = flag;
+
     private:
         id_type                 my_id;
         value_type              my_value;
+
+        flags_type              my_flags;
 
         vertices_type           my_endpoints;
 
@@ -60,13 +84,16 @@ class edge : private noncopyable
         const value_type&       value() const;
         value_type&             value();
 
+        const flags_type&       flags() const;
+        flags_type&             flags();
+
         const vertices_type&    endpoints() const;
         vertices_type&          endpoints();
 };
 
 template <typename TVertex, typename TValue, std::size_t N>
 inline edge<TVertex, TValue, N>::edge(const typename edge::id_type& id)
-                               : my_id(id)
+                               : my_id(id), my_flags(edge::flag::clear)
 {
 }
 
@@ -97,6 +124,18 @@ template <typename TVertex, typename TValue, std::size_t N>
 typename edge<TVertex, TValue, N>::value_type& edge<TVertex, TValue, N>::value()
 {
     return my_value;
+}
+
+template <typename TVertex, typename TValue, std::size_t N>
+const typename edge<TVertex, TValue, N>::flags_type& edge<TVertex, TValue, N>::flags() const
+{
+    return my_flags;
+}
+
+template <typename TVertex, typename TValue, std::size_t N>
+typename edge<TVertex, TValue, N>::flags_type& edge<TVertex, TValue, N>::flags()
+{
+    return my_flags;
 }
 
 template <typename TVertex, typename TValue, std::size_t N>
