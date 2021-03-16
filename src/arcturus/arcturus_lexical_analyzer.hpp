@@ -36,7 +36,7 @@ class arcturus_lexical_analyzer : public lexical_analyzer
     //    //uint8_t                 my_tab_size;        // tab size, default is 4
 
     //                                                // off-side rule support, Peter Landin
-    //    std::int32_t            my_pending_indents; // > 0 indents, < 0 dedents, python
+    //    std::int32_t            my_indedents;       // > 0 indents, < 0 dedents, python
     //    indents_type            my_indents;         // stack of indents, theoretically unlimited
     //    bool                    my_boll;            // true if at the begining of a new logical line
     //    bool                    my_eoll;            // true if at the end of a new logical line, default implementation assumes each physical eol is logical eol

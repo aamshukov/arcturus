@@ -58,7 +58,7 @@ USINGNAMESPACE(frontend)
 //                       //my_cached_line(-1),
 //                       //my_cached_line_position(-1),
 //                       //my_tab_size(tab_size),
-//                       my_pending_indents(0),
+//                       my_indedents(0),
 //                       my_boll(true),
 //                       my_eoll(false)
 //{
@@ -752,7 +752,7 @@ USINGNAMESPACE(frontend)
 //            }
 //            else if(indent > my_indents.top())
 //            {
-//                my_pending_indents++;
+//                my_indedents++;
 //                my_indents.push(indent);
 //            }
 //            else // if(indent < my_indents[my_indent])
@@ -760,7 +760,7 @@ USINGNAMESPACE(frontend)
 //                while(!my_indents.empty() && indent < my_indents.top())
 //                {
 //                    my_indents.pop();
-//                    my_pending_indents--;
+//                    my_indedents--;
 //                }
 //            }
 //
@@ -768,7 +768,7 @@ USINGNAMESPACE(frontend)
 //            {
 //                //?? error indent/dedent
 //                my_ptr = ptr;
-//                my_pending_indents = 0;
+//                my_indedents = 0;
 //                my_token.type = token_type::traits::type::unknown;
 //            }
 //        }
@@ -777,7 +777,7 @@ USINGNAMESPACE(frontend)
 //        my_eoll = false;
 //    }
 //
-//    if(my_pending_indents != 0)
+//    if(my_indedents != 0)
 //    {
 //        // def
 //        //     line 1
@@ -789,14 +789,14 @@ USINGNAMESPACE(frontend)
 //        //     line6
 //        //     line7 <-- DEDENT
 //        // end
-//        if(my_pending_indents < 0)
+//        if(my_indedents < 0)
 //        {
-//            my_pending_indents++;
+//            my_indedents++;
 //            my_token.type = token_type::traits::type::dedent;
 //        }
 //        else
 //        {
-//            my_pending_indents--;
+//            my_indedents--;
 //            my_token.type = token_type::traits::type::indent;
 //        }
 //
