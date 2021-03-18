@@ -109,4 +109,6 @@
 #include <arcturus_controller.hpp>
 #include <arcturus_configurator.hpp>
 
+#include <core/vfs.hpp>
+
 #endif // __ARCTURUS_H__

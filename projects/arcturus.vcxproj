@@ -79,6 +79,7 @@
     <ClInclude Include="..\src\framework\core\tree.hpp" />
     <ClInclude Include="..\src\framework\core\unicode.hpp" />
     <ClInclude Include="..\src\framework\core\vertex.hpp" />
+    <ClInclude Include="..\src\framework\core\vfs.hpp" />
     <ClInclude Include="..\src\framework\core\visitable.hpp" />
     <ClInclude Include="..\src\framework\core\visitor.hpp" />
     <ClInclude Include="..\src\framework\frontend\fsa\fsa.hpp" />

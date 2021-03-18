@@ -384,6 +384,9 @@
     <ClInclude Include="..\src\framework\ir\interference_graph.hpp">
       <Filter>framework\ir</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\framework\core\vfs.hpp">
+      <Filter>framework\core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\framework\core\logger.cpp">

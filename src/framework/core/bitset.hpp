@@ -190,7 +190,7 @@ inline bitset<T>& bitset<T>::operator = (bitset<T>&& other)
 template <typename T>
 inline bool bitset<T>::operator [] (std::size_t position) const
 {
-    return (my_bits[position / chunk_size] & (data_type(1) << position % chunk_size)) != 0;
+    return (my_bits[position / chunk_size] & (data_type(1) << (position % chunk_size))) != 0;
 }
 
 template <typename T>
@@ -268,7 +268,7 @@ inline bitset<T>& bitset<T>::set(std::size_t position, bool value)
 {
     data_type& chunk(my_bits[position / chunk_size]);
 
-    data_type mask = data_type(1) << position % chunk_size;
+    data_type mask = data_type(1) << (position % chunk_size);
 
     if(value)
         chunk |= mask;
@@ -307,7 +307,7 @@ bitset<T>& bitset<T>::flip()
 template <typename T>
 inline bitset<T>& bitset<T>::flip(std::size_t position)
 {
-    my_bits[position / chunk_size] ^= data_type(1) << position % chunk_size;
+    my_bits[position / chunk_size] ^= data_type(1) << (position % chunk_size);
     return *this;
 }
 
@@ -316,7 +316,7 @@ inline void bitset<T>::adjust()
 {
     if(my_size == 0 || (my_size % chunk_size) != 0)
     {
-        // with aligned memory my_capacity might be large than capacity ...
+        // with aligned memory my_capacity might be larger than capacity ...
         auto capacity = (my_size == 0 ? 0 : my_size / chunk_size) + 1;
         auto delta = my_capacity - capacity;
 
@@ -429,7 +429,7 @@ inline typename bitset<T>::bit& bitset<T>::bit::operator = (const bitset<T>::bit
 template <typename T>
 inline bitset<T>::bit::operator bool () const
 {
-    return ((*my_bitset).my_bits[my_position / chunk_size] & (data_type(1) << my_position % chunk_size)) != 0;
+    return ((*my_bitset).my_bits[my_position / chunk_size] & (data_type(1) << (my_position % chunk_size))) != 0;
 }
 
 template <typename T>

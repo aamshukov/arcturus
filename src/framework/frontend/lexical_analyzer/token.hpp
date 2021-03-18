@@ -245,7 +245,7 @@ struct token
             return *this;
         }
 
-        token& operator = (token&& other)
+        token& operator = (token&& other) noexcept
         {
             type = other.type;
 
