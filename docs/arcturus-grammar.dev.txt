@@ -756,8 +756,8 @@ argument-name                       : identifier ':'
 
 
 //
-compilation composition
-    imports all deps into one compilation-unit and then processed
+compilation composition:
+    imports all deps into one compilation-unit and then process
 
                               program arcturus
 
@@ -768,13 +768,55 @@ compilation composition
         module2                       module2                          module2
         module3                       module3                          module3
 
-    package(physical) - spans compilation-units (might be files) - distribution unit
+    package(physical) - spans compilation-units (might be a set of files or different tables with code in db),
+                        distribution units (files or db entries/refs, etc.) can be placed in vfs
         modules
-            module1 - compilation-unit1 (file)
+            module1 - compilation-unit-1 (file or other persistent content)
             ...
-            moduleN - compilation-unitN (file)
+            moduleN - compilation-unit-N (file or other persistent content)
 
-    namespace(logical) - spans packages
+    namespace(logical) - spans modules
+
+
+comment:
+    //  single line comment
+    --- single line comment
+    #   single line comment
+    /*
+        /* miltiline
+          nested
+          comment */
+    */
+
+
+type:
+    scalar:
+        boolean
+        integer
+        real
+        string
+        enum
+        record<T>
+    array:
+        boolean
+        integer
+        real
+        string
+        enum's value
+        record<T>
+
+callable:
+        function<T>
+        procedure<T>
+        lambda<T>
+
+
+
+
+
+
+
+
 
 
 
@@ -796,18 +838,13 @@ namespace
 
 
 
-comment
-    #   single line comment
-    //  single line comment
-    --- single line comment
-    /* /* miltiline nested comment */ */
 
 
 
 declarations:
-    let a : integer | string  --- first assignement freezes type
+    let a : integer | string  --- first assignment freezes type
 
-    byte
+    type byte : integer [0 .. 256]
         flags: byte = 0xDA
         bits : byte = 0b1_0_00_10_1
         line : byte [0..256]

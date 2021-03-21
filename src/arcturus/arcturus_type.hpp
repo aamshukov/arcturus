@@ -38,6 +38,11 @@ struct arcturus_type_traits
         package_type     = 501,
         module_type      = 502,
 
+        // attributes
+        constant         = 1024, // const
+        readonly         = 1025, // let
+        variable         = 1026, // var
+
         // the following one (1) entry MUST be the last entry in the enum
         size
     )
