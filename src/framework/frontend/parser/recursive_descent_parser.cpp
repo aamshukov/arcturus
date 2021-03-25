@@ -60,7 +60,7 @@
 #include <frontend/parser/recursive_descent_parser.hpp>
 
 BEGIN_NAMESPACE(frontend)
-USINGNAMESPACE(core)
+USING_NAMESPACE(core)
 
 recursive_descent_parser::recursive_descent_parser(const typename recursive_descent_parser::lexical_analyzer_type& lexical_analyzer)
                         : parser(lexical_analyzer)

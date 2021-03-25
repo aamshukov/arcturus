@@ -5,12 +5,12 @@
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
-USINGNAMESPACE(core)
-USINGNAMESPACE(symtable)
-USINGNAMESPACE(frontend)
-USINGNAMESPACE(backend)
-USINGNAMESPACE(orchestration)
-USINGNAMESPACE(arcturus)
+USING_NAMESPACE(core)
+USING_NAMESPACE(symtable)
+USING_NAMESPACE(frontend)
+USING_NAMESPACE(backend)
+USING_NAMESPACE(orchestration)
+USING_NAMESPACE(arcturus)
 
 namespace tests
 {

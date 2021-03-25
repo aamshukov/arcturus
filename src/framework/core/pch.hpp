@@ -80,7 +80,7 @@
 #define BEGIN_NAMESPACE(__x__) namespace COMPANY { namespace PROJECT { ## namespace __x__ {
 #define END_NAMESPACE   }; }; };
 
-#define USINGNAMESPACE(__x__) using namespace COMPANY::PROJECT::##__x__;
+#define USING_NAMESPACE(__x__) using namespace COMPANY::PROJECT::##__x__;
 
 #ifdef interface
 #   undef interface

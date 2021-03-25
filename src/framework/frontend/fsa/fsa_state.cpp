@@ -7,7 +7,7 @@
 #include <frontend/fsa/fsa_state.hpp>
 
 BEGIN_NAMESPACE(frontend)
-USINGNAMESPACE(core)
+USING_NAMESPACE(core)
 
 fsa_state::fsa_state()
          : fsa_state(empty_string(), 0)

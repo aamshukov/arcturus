@@ -10,7 +10,7 @@
 #include <frontend/grammar/rule.hpp>
 
 BEGIN_NAMESPACE(frontend)
-USINGNAMESPACE(core)
+USING_NAMESPACE(core)
 
 rule::rule(std::size_t id, const string_type& name)
     : my_id(id),

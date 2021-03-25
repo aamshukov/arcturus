@@ -14,8 +14,8 @@
 
 BEGIN_NAMESPACE(arcturus)
 
-USINGNAMESPACE(core)
-USINGNAMESPACE(frontend)
+USING_NAMESPACE(core)
+USING_NAMESPACE(frontend)
 
 arcturus_array_type::arcturus_array_type(const typename arcturus_array_type::base_type& base_type)
                    : arcturus_type(abstract_type<traits_type>::kind_type::array_type),

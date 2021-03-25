@@ -8,11 +8,11 @@
 
 BEGIN_NAMESPACE(arcturus)
 
-USINGNAMESPACE(core)
-USINGNAMESPACE(symtable)
-USINGNAMESPACE(frontend)
-USINGNAMESPACE(backend)
-USINGNAMESPACE(orchestration)
+USING_NAMESPACE(core)
+USING_NAMESPACE(symtable)
+USING_NAMESPACE(frontend)
+USING_NAMESPACE(backend)
+USING_NAMESPACE(orchestration)
 
 class arcturus_controller : public controller<arcturus_operation_code_traits>
 {

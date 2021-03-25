@@ -8,8 +8,8 @@
 
 BEGIN_NAMESPACE(backend)
 
-USINGNAMESPACE(core)
-USINGNAMESPACE(frontend)
+USING_NAMESPACE(core)
+USING_NAMESPACE(frontend)
 
 template <typename Instruction>
 class basic_block : public dominator_vertex

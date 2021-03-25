@@ -12,7 +12,7 @@
 #define FSA_MAX_STATES (512)
 
 BEGIN_NAMESPACE(frontend)
-USINGNAMESPACE(core)
+USING_NAMESPACE(core)
 
 typename fsa_algorithm::state_set_type fsa_algorithm::calculate_state_eclosure(const typename fsa_algorithm::fsa_type& fsa0, const fsa_algorithm::state_type& state)
 {

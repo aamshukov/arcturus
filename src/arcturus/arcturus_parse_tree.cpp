@@ -41,9 +41,9 @@
 
 BEGIN_NAMESPACE(arcturus)
 
-USINGNAMESPACE(core)
-USINGNAMESPACE(symtable)
-USINGNAMESPACE(frontend)
+USING_NAMESPACE(core)
+USING_NAMESPACE(symtable)
+USING_NAMESPACE(frontend)
 
 arcturus_parse_tree::arcturus_parse_tree(const typename arcturus_parse_tree::tree_kind& kind)
                    : my_kind(kind)

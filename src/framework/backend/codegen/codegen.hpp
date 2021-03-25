@@ -8,9 +8,9 @@
 
 BEGIN_NAMESPACE(backend)
 
-USINGNAMESPACE(core)
-USINGNAMESPACE(symtable)
-USINGNAMESPACE(frontend)
+USING_NAMESPACE(core)
+USING_NAMESPACE(symtable)
+USING_NAMESPACE(frontend)
 
 class codegen : private noncopyable
 {

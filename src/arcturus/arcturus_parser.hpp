@@ -8,8 +8,8 @@
 
 BEGIN_NAMESPACE(arcturus)
 
-USINGNAMESPACE(core)
-USINGNAMESPACE(frontend)
+USING_NAMESPACE(core)
+USING_NAMESPACE(frontend)
 
 class arcturus_parser : public recursive_descent_parser
 {

@@ -73,6 +73,9 @@
     <Filter Include="tools\dsl">
       <UniqueIdentifier>{94aea5ae-292c-4c8f-b1b9-71cbb0615e55}</UniqueIdentifier>
     </Filter>
+    <Filter Include="framework\vfs">
+      <UniqueIdentifier>{a6a5e49f-8438-4be3-ab90-3517a56d1a79}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\framework\core\edge.hpp">
@@ -384,8 +387,14 @@
     <ClInclude Include="..\src\framework\ir\interference_graph.hpp">
       <Filter>framework\ir</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\framework\core\vfs.hpp">
-      <Filter>framework\core</Filter>
+    <ClInclude Include="..\src\framework\vfs\vfs_btree.hpp">
+      <Filter>framework\vfs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\vfs\vfs_page.hpp">
+      <Filter>framework\vfs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\vfs\vfs.hpp">
+      <Filter>framework\vfs</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

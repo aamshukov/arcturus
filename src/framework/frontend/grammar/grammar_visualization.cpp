@@ -13,7 +13,7 @@
 #include <frontend/grammar/grammar_visualization.hpp>
 
 BEGIN_NAMESPACE(frontend)
-USINGNAMESPACE(core)
+USING_NAMESPACE(core)
 
 string_type grammar_visualization::decorate_set(const typename grammar_visualization::set_type& set, bool add_brackets)
 {

@@ -8,8 +8,8 @@
 
 BEGIN_NAMESPACE(symtable)
 
-USINGNAMESPACE(core)
-USINGNAMESPACE(frontend)
+USING_NAMESPACE(core)
+USING_NAMESPACE(frontend)
 
 class symbol_table : public singleton<symbol_table>
 {

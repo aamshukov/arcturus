@@ -15,8 +15,8 @@
 
 BEGIN_NAMESPACE(arcturus)
 
-USINGNAMESPACE(core)
-USINGNAMESPACE(frontend)
+USING_NAMESPACE(core)
+USING_NAMESPACE(frontend)
 
 arcturus_struct_type::arcturus_struct_type()
                     : arcturus_scalar_type(abstract_type<traits_type>::kind_type::structure_type)

@@ -89,9 +89,9 @@
 
 BEGIN_NAMESPACE(arcturus)
 
-USINGNAMESPACE(core)
-USINGNAMESPACE(frontend)
-USINGNAMESPACE(symtable)
+USING_NAMESPACE(core)
+USING_NAMESPACE(frontend)
+USING_NAMESPACE(symtable)
 
 arcturus_symbol::arcturus_symbol()
 {

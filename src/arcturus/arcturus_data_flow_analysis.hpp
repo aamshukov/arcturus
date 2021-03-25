@@ -8,10 +8,10 @@
 
 BEGIN_NAMESPACE(arcturus)
 
-USINGNAMESPACE(core)
-USINGNAMESPACE(frontend)
-USINGNAMESPACE(symtable)
-USINGNAMESPACE(backend)
+USING_NAMESPACE(core)
+USING_NAMESPACE(frontend)
+USING_NAMESPACE(symtable)
+USING_NAMESPACE(backend)
 
 class arcturus_data_flow_analysis : public data_flow_analysis<basic_block<arcturus_quadruple>>
 {

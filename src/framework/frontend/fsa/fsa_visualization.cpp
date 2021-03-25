@@ -11,7 +11,7 @@
 #include <frontend/fsa/fsa_visualization.hpp>
 
 BEGIN_NAMESPACE(frontend)
-USINGNAMESPACE(core)
+USING_NAMESPACE(core)
 
 void fsa_visualization::generate_graphviz_file(const fsa_type& fsa, const string_type& file_name)
 {

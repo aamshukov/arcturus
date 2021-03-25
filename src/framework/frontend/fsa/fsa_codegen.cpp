@@ -17,7 +17,7 @@
 #include <frontend/fsa/fsa_codegen.hpp>
 
 BEGIN_NAMESPACE(frontend)
-USINGNAMESPACE(core)
+USING_NAMESPACE(core)
 
 string_type fsa_codegen::build_predicate(const string_type& predicate)
 {

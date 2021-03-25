@@ -6,7 +6,8 @@
 
 #pragma once
 
-BEGIN_NAMESPACE(core)
+BEGIN_NAMESPACE(vfs)
+USING_NAMESPACE(core)
 
 template <typename T>
 struct vfs_traits

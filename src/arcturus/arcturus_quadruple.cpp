@@ -34,9 +34,9 @@
 
 BEGIN_NAMESPACE(arcturus)
 
-USINGNAMESPACE(core)
-USINGNAMESPACE(frontend)
-USINGNAMESPACE(backend)
+USING_NAMESPACE(core)
+USING_NAMESPACE(frontend)
+USING_NAMESPACE(backend)
 
 typename arcturus_operation_code_traits::enum_map_type arcturus_operation_code_traits::mapping;
 

@@ -8,10 +8,10 @@
 
 BEGIN_NAMESPACE(orchestration)
 
-USINGNAMESPACE(core)
-USINGNAMESPACE(symtable)
-USINGNAMESPACE(frontend)
-USINGNAMESPACE(backend)
+USING_NAMESPACE(core)
+USING_NAMESPACE(symtable)
+USING_NAMESPACE(frontend)
+USING_NAMESPACE(backend)
 
 template <typename OpCodeTraits>
 class controller : private noncopyable

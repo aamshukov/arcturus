@@ -5,7 +5,7 @@
 #include <frontend/grammar/symbol.hpp>
 
 BEGIN_NAMESPACE(frontend)
-USINGNAMESPACE(core)
+USING_NAMESPACE(core)
 
 typename symbol::symbol_type symbol::epsilon(factory::create<symbol>(std::numeric_limits<int32_t>::max() - 1, L"e", symbol::kind::terminal));
 typename symbol::symbol_type symbol::eof(factory::create<symbol>(std::numeric_limits<int32_t>::max() - 2, L"$", symbol::kind::terminal));

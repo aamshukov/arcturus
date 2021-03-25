@@ -7,7 +7,7 @@
 #pragma once
 
 BEGIN_NAMESPACE(frontend)
-USINGNAMESPACE(core)
+USING_NAMESPACE(core)
 
 #define IDENTIFIER_START (L"S") // should not be a part of any set of chars - keywords or any special symbols in language
 #define IDENTIFIER_PART  (L"Q") // should not be a part of any set of chars - keywords or any special symbols in language

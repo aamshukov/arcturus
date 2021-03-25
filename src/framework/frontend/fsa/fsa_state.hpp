@@ -7,7 +7,7 @@
 #pragma once
 
 BEGIN_NAMESPACE(frontend)
-USINGNAMESPACE(core)
+USING_NAMESPACE(core)
 
 #define DUMMY_START_STATE_NAME  (L"START")
 #define DUMMY_END_STATE_NAME    (L"END")

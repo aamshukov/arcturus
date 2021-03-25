@@ -9,7 +9,7 @@
 #pragma once
 
 BEGIN_NAMESPACE(frontend)
-USINGNAMESPACE(core)
+USING_NAMESPACE(core)
 
 class recursive_descent_parser : public parser
 {

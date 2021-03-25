@@ -4,12 +4,12 @@
 #include <core/pch.hpp>
 #include <arcturus.hpp>
 
-USINGNAMESPACE(core)
-USINGNAMESPACE(symtable)
-USINGNAMESPACE(frontend)
-USINGNAMESPACE(backend)
-USINGNAMESPACE(orchestration)
-USINGNAMESPACE(arcturus)
+USING_NAMESPACE(core)
+USING_NAMESPACE(symtable)
+USING_NAMESPACE(frontend)
+USING_NAMESPACE(backend)
+USING_NAMESPACE(orchestration)
+USING_NAMESPACE(arcturus)
 
 using arcturus_instruction = arcturus_quadruple;
 using arcturus_code = code<arcturus_instruction>;

@@ -18,7 +18,7 @@
 #undef min // crappy legacy
 
 BEGIN_NAMESPACE(frontend)
-USINGNAMESPACE(core)
+USING_NAMESPACE(core)
 
 #define OPEN_PAREN_OP   (0x00005000)
 #define CLOSE_PAREN_OP  (0x00005002)

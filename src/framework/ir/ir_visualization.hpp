@@ -8,9 +8,9 @@
 
 BEGIN_NAMESPACE(backend)
 
-USINGNAMESPACE(core)
-USINGNAMESPACE(frontend)
-USINGNAMESPACE(symtable)
+USING_NAMESPACE(core)
+USING_NAMESPACE(frontend)
+USING_NAMESPACE(symtable)
 
 template <typename TreeTraits>
 class ir_visualization : private noncopyable

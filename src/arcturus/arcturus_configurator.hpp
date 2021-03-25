@@ -8,7 +8,7 @@
 
 BEGIN_NAMESPACE(arcturus)
 
-USINGNAMESPACE(core)
+USING_NAMESPACE(core)
 
 class arcturus_configurator : public singleton<arcturus_configurator>, public configurator
 {

@@ -7,7 +7,7 @@
 #pragma once
 
 BEGIN_NAMESPACE(frontend)
-USINGNAMESPACE(core)
+USING_NAMESPACE(core)
 
 class lexical_analyzer : private noncopyable
 {

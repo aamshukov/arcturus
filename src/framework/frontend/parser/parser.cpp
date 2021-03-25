@@ -62,7 +62,7 @@
 #include <frontend/semantics/semantics.hpp>
 
 BEGIN_NAMESPACE(frontend)
-USINGNAMESPACE(core)
+USING_NAMESPACE(core)
 
 parser::parser(const typename parser::lexical_analyzer_type& lexical_analyzer)
       : my_lexical_analyzer(lexical_analyzer)

@@ -9,7 +9,7 @@
 #define MAX_TRANSITION_RANK (5)
 
 BEGIN_NAMESPACE(frontend)
-USINGNAMESPACE(core)
+USING_NAMESPACE(core)
 
 class fsa_codegen : private noncopyable
 {

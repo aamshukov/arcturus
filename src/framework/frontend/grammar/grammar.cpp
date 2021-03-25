@@ -11,7 +11,7 @@
 #include <frontend/grammar/grammar.hpp>
 
 BEGIN_NAMESPACE(frontend)
-USINGNAMESPACE(core)
+USING_NAMESPACE(core)
 
 grammar::grammar()
 {

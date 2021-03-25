@@ -97,11 +97,11 @@
 
 BEGIN_NAMESPACE(arcturus)
 
-USINGNAMESPACE(core)
-USINGNAMESPACE(symtable)
-USINGNAMESPACE(frontend)
-USINGNAMESPACE(backend)
-USINGNAMESPACE(orchestration)
+USING_NAMESPACE(core)
+USING_NAMESPACE(symtable)
+USING_NAMESPACE(frontend)
+USING_NAMESPACE(backend)
+USING_NAMESPACE(orchestration)
 
 arcturus_controller::arcturus_controller(const typename arcturus_controller::parser_type& parser,
                                          const typename arcturus_controller::ir_type& ir,

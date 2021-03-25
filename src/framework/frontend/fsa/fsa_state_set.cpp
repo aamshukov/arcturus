@@ -8,7 +8,7 @@
 #include <frontend/fsa/fsa_state_set.hpp>
 
 BEGIN_NAMESPACE(frontend)
-USINGNAMESPACE(core)
+USING_NAMESPACE(core)
 
 fsa_state_set::fsa_state_set() : my_marked(false)
 {

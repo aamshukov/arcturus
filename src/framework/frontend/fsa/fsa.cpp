@@ -8,7 +8,7 @@
 #include <frontend/fsa/fsa.hpp>
 
 BEGIN_NAMESPACE(frontend)
-USINGNAMESPACE(core)
+USING_NAMESPACE(core)
 
 fsa::fsa()
 {

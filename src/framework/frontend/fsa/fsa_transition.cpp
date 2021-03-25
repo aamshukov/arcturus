@@ -5,7 +5,7 @@
 #include <frontend/fsa/fsa_transition.hpp>
 
 BEGIN_NAMESPACE(frontend)
-USINGNAMESPACE(core)
+USING_NAMESPACE(core)
 
 fsa_transition::fsa_transition()
               : fsa_transition(0, 0, empty_predicate())

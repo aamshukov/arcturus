@@ -97,10 +97,10 @@
 
 BEGIN_NAMESPACE(arcturus)
 
-USINGNAMESPACE(core)
-USINGNAMESPACE(frontend)
-USINGNAMESPACE(symtable)
-USINGNAMESPACE(backend)
+USING_NAMESPACE(core)
+USING_NAMESPACE(frontend)
+USING_NAMESPACE(symtable)
+USING_NAMESPACE(backend)
 
 arcturus_data_flow_analysis::arcturus_data_flow_analysis()
 {

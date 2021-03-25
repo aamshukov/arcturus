@@ -65,7 +65,7 @@
 #include <frontend/semantics/semantics.hpp>
 
 BEGIN_NAMESPACE(frontend)
-USINGNAMESPACE(core)
+USING_NAMESPACE(core)
 
 semantics::semantics()
 {

@@ -15,8 +15,8 @@
 
 BEGIN_NAMESPACE(arcturus)
 
-USINGNAMESPACE(core)
-USINGNAMESPACE(frontend)
+USING_NAMESPACE(core)
+USING_NAMESPACE(frontend)
 
 arcturus_func_type::arcturus_func_type(kind_type kind)
                   : arcturus_scalar_type(kind)

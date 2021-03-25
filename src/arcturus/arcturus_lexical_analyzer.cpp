@@ -46,8 +46,8 @@
 
 BEGIN_NAMESPACE(arcturus)
 
-USINGNAMESPACE(core)
-USINGNAMESPACE(frontend)
+USING_NAMESPACE(core)
+USING_NAMESPACE(frontend)
 
 //arcturus_lexical_analyzer::arcturus_lexical_analyzer(const content_type& content, uint8_t tab_size)
 //                     : lexical_analyzer(content),

@@ -11,7 +11,7 @@
 #include <frontend/lexical_analyzer/lexical_analyzer.hpp>
 
 BEGIN_NAMESPACE(frontend)
-USINGNAMESPACE(core)
+USING_NAMESPACE(core)
 
 lexical_analyzer::lexical_analyzer(const typename lexical_analyzer::content_type& content)
                 : my_id(0),

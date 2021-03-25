@@ -6,7 +6,7 @@
 
 BEGIN_NAMESPACE(arcturus)
 
-USINGNAMESPACE(core)
+USING_NAMESPACE(core)
 
 void arcturus_configurator::populate_options()
 {

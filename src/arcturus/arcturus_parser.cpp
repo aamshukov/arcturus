@@ -78,8 +78,8 @@
 
 BEGIN_NAMESPACE(arcturus)
 
-USINGNAMESPACE(core)
-USINGNAMESPACE(frontend)
+USING_NAMESPACE(core)
+USING_NAMESPACE(frontend)
 
 arcturus_parser::arcturus_parser(const lexical_analyzer_type& lexical_analyzer)
                : recursive_descent_parser(lexical_analyzer)

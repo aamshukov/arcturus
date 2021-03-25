@@ -13,8 +13,8 @@
 
 BEGIN_NAMESPACE(arcturus)
 
-USINGNAMESPACE(core)
-USINGNAMESPACE(frontend)
+USING_NAMESPACE(core)
+USING_NAMESPACE(frontend)
 
 typename arcturus_type_traits::enum_map_type arcturus_type_traits::mapping;
 

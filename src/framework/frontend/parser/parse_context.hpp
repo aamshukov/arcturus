@@ -8,8 +8,8 @@
 
 BEGIN_NAMESPACE(frontend)
 
-USINGNAMESPACE(core)
-USINGNAMESPACE(symtable)
+USING_NAMESPACE(core)
+USING_NAMESPACE(symtable)
 
 class parse_context : public context
 {

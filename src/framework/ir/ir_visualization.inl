@@ -8,8 +8,8 @@
 
 BEGIN_NAMESPACE(backend)
 
-USINGNAMESPACE(core)
-USINGNAMESPACE(frontend)
+USING_NAMESPACE(core)
+USING_NAMESPACE(frontend)
 
 template <typename TreeTraits>
 void ir_visualization<TreeTraits>::print_tree(const typename ir_visualization<TreeTraits>::parse_tree_type& tree, std::size_t level, std::wostream& stream)
