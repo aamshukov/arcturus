@@ -390,11 +390,11 @@
     <ClInclude Include="..\src\framework\vfs\vfs_btree.hpp">
       <Filter>framework\vfs</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\framework\vfs\vfs_page.hpp">
-      <Filter>framework\vfs</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\framework\vfs\vfs.hpp">
       <Filter>framework\vfs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\core\cache.hpp">
+      <Filter>framework\core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

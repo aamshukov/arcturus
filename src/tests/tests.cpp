@@ -2783,5 +2783,104 @@ namespace tests
                                (*dfs_reverse_postorder[4]).label() == L"B" && 
                                (*dfs_reverse_postorder[5]).label() == L"D");
             }
+
+            TEST_METHOD(LruCacheInteger)
+            {
+                cache<int, string_type> lru_cache(2);
+
+                Assert::IsTrue(lru_cache.put(1, L"odin"));
+                Assert::IsTrue(lru_cache.put(2, L"dva"));
+                Assert::IsTrue(lru_cache.put(3, L"three"));
+                Assert::IsFalse(lru_cache.put(3, L"three"));
+                Assert::IsTrue(lru_cache.put(5, L"five"));
+                Assert::IsTrue(lru_cache.put(6, L"six"));
+                Assert::IsTrue(lru_cache.put(7, L"seven"));
+
+                Assert::IsFalse(lru_cache.get(5) == L"five");
+
+                Assert::IsTrue(lru_cache.get(6) == L"six");
+                Assert::IsTrue(lru_cache.get(7) == L"seven");
+            }
+
+            TEST_METHOD(LruCacheIntegerLarge)
+            {
+                const int n = 10000;
+
+                std::vector<int> rands;
+
+                std::srand((unsigned int)std::time(nullptr));
+
+                for(auto k = 0; k < n; k++)
+                {
+                    rands.emplace_back(std::rand() % n);
+                }
+
+                cache<int, string_type> lru_cache(std::rand() % n);
+
+                Logger::WriteMessage(("LRU cache size:       " + std::to_string(lru_cache.size())).c_str());
+
+                for(auto e : rands)
+                {
+                    lru_cache.put(e, L"entry");
+                    Assert::IsTrue(lru_cache.get(e) == L"entry");
+                }
+            }
+
+            TEST_METHOD(LruCacheTypedLarge)
+            {
+                struct A
+                {
+                    std::size_t id;
+                    A(std::size_t i) : id(i) {}
+                };
+
+                struct A_hash
+                {
+                    std::size_t operator () (const std::shared_ptr<A>& a) const
+                    {
+                        std::size_t result = (*a).id;
+                        result ^= combine_hash(result);
+                        return result;
+                    }
+                };
+
+                struct A_eq_key_comparator
+                {
+                    bool operator() (const std::shared_ptr<A>& lhs, const std::shared_ptr<A>& rhs) const
+                    {
+                        return (*lhs).id == (*rhs).id;
+                    }
+                };
+
+                const int n = 10000;
+
+                std::this_thread::sleep_for(std::chrono::seconds(1));
+
+                std::vector<int> rands;
+
+                std::srand((unsigned int)std::time(nullptr));
+
+                for(auto k = 0; k < n; k++)
+                {
+                    rands.emplace_back(std::rand() % n);
+                }
+
+                cache<std::shared_ptr<A>, string_type> lru_cache(std::rand() % n);
+
+                Logger::WriteMessage(("LRU cache size:       " + std::to_string(lru_cache.size())).c_str());
+
+                for(auto e : rands)
+                {
+                    auto a = std::make_shared<A>(e);
+
+                    lru_cache.put(a, L"entry");
+                    Assert::IsTrue(lru_cache.get(a) == L"entry");
+                }
+            }
+
+            TEST_METHOD(VfsCreate)
+            {
+                vfs<> fs;
+            }
     };
 }

@@ -52,6 +52,7 @@
     <ClInclude Include="..\src\framework\content\string_data_provider.hpp" />
     <ClInclude Include="..\src\framework\controller\controller.hpp" />
     <ClInclude Include="..\src\framework\core\bitset.hpp" />
+    <ClInclude Include="..\src\framework\core\cache.hpp" />
     <ClInclude Include="..\src\framework\core\configurator.hpp" />
     <ClInclude Include="..\src\framework\core\context.hpp" />
     <ClInclude Include="..\src\framework\core\counter.hpp" />
@@ -124,7 +125,6 @@
     <ClInclude Include="..\src\framework\symtable\symbol_table.hpp" />
     <ClInclude Include="..\src\framework\vfs\vfs.hpp" />
     <ClInclude Include="..\src\framework\vfs\vfs_btree.hpp" />
-    <ClInclude Include="..\src\framework\vfs\vfs_page.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\arcturus\arcturus_array_type.cpp" />

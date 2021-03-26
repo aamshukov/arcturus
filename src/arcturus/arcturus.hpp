@@ -23,6 +23,8 @@
 #include <core/graph.hpp>
 #include <core/graph_algorithms.hpp>
 
+#include <core/cache.hpp>
+
 #include <core/timer.hpp>
 
 #include <content/data_provider.hpp>
@@ -109,7 +111,6 @@
 #include <arcturus_controller.hpp>
 #include <arcturus_configurator.hpp>
 
-#include <vfs/vfs_page.hpp>
 #include <vfs/vfs_btree.hpp>
 #include <vfs/vfs.hpp>
 
