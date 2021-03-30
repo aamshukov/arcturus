@@ -111,6 +111,7 @@
 #include <arcturus_controller.hpp>
 #include <arcturus_configurator.hpp>
 
+#include <vfs/vfs_paging.hpp>
 #include <vfs/vfs_btree.hpp>
 #include <vfs/vfs.hpp>
 

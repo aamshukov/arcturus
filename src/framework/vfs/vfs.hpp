@@ -30,11 +30,16 @@ struct vfs_traits<wchar_t>
 {
 };
 
-class time; //??
+class time
+{
+    std::size_t utc;
+    std::size_t time_zone;
+};
+
 using time_type = time;
-class btree; //??
 class guid; //??
 using guid_type = guid; //??
+
 
 
 
@@ -46,7 +51,7 @@ class vfs : private noncopyable
     //      /root/dir(s)/stream(s)
     public:
         using traits_type = Traits;
-        using tree_type = std::shared_ptr<btree>; //??
+        using tree_type = std::shared_ptr<btree<int, int>>; //??
 
     public:
         enum class disposition
@@ -135,31 +140,57 @@ class vfs : private noncopyable
 
         struct page_descriptor
         {
-            std::size_t id;           // unique number in storage
-            std::size_t next_page_id; // next page id if data spreads
-            std::size_t page_size;    // total page size - fixed size for all pages
-            std::size_t data_size;    // payload size - occupied data size
-            std::size_t data_capacity;// data capacity - total data page can hold
-            std::size_t offset;       // offset in storage where this page starts
-            std::size_t ref_count;    // hoe many times page has been referenced, for caching
+            std::size_t id;           // unique number
+            std::size_t next_page_id; // next page id if data spreaded
+            std::size_t data_offset;  // payload offset
+            std::size_t data_size;    // payload size
+            std::size_t data_capacity;// payload capacity
             flags_type  flags;
         };
 
         struct page
         {
+            //?? factory::create<page>()
             page_descriptor descriptor;
-            std::unique_ptr<byte> data;
+
+            byte* data;
+
+            page()
+            {
+                data = reinterpret_cast<byte*>(reinterpret_cast<void*>(this) + sizeof(descriptor));
+            }
         };
 
         using page_type = std::shared_ptr<page>;
-        using cache_type = cache<page_type, page>;
+        using cache_type = cache<std::size_t, page_type>;
+
+        struct paged_position
+        {
+            std::size_t offset;  // absolute offset
+            std::size_t page_id; // current page
+        };
+
+        struct fat // file allocation table
+        {
+            std::vector<std::size_t> pages;
+        };
 
     private:
-        tree_type           my_tree;
-        cache_type          my_cache;
+        tree_type           my_tree;            // b-tree hierarchy
+        cache_type          my_cache;           // pages cache
+        std::size_t         my_free_page;       // free page to start writing
+        paged_position      my_paged_position;  // current paged I/O operations pointer
 
     private:
         static std::size_t  get_page_size();
+
+        std::size_t         paged_read_data(std::size_t offset,     // absolute offset
+                                            byte* data,             // data
+                                            std::size_t data_size); // data size, might read from several pages
+
+        std::size_t         paged_write_data(std::size_t offset,     // absolute offset
+                                             const byte* data,       // data
+                                             std::size_t data_size); // data size, might spread several pages
 
     public:
                             vfs();

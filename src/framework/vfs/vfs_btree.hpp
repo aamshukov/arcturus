@@ -9,7 +9,32 @@
 BEGIN_NAMESPACE(backend)
 USING_NAMESPACE(core)
 
+template <typename TKey, typename TValue, typename TKeyCmp = std::less<TKey>, typename TKeyHash = std::hash<TKey>>
+class btree
+{
+    public:
+        using key_type = TKey;
+        using value_type = TValue;
 
+    public:
+        struct node
+        {
+            std::size_t keys_number;
+        };
+
+        struct index : public node
+        {
+        };
+
+        struct leaf : public node
+        {
+        };
+
+    public:
+                btree();
+               ~btree();
+
+};
 
 END_NAMESPACE
 

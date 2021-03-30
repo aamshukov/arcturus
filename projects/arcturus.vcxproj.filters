@@ -396,6 +396,9 @@
     <ClInclude Include="..\src\framework\core\cache.hpp">
       <Filter>framework\core</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\framework\vfs\vfs_paging.hpp">
+      <Filter>framework\vfs</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\framework\core\logger.cpp">
@@ -577,6 +580,9 @@
     </ClCompile>
     <ClCompile Include="..\src\arcturus\arcturus_data_flow_analysis.cpp">
       <Filter>arcturus</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\framework\vfs\vfs_paging.cpp">
+      <Filter>framework\vfs</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -125,6 +125,7 @@
     <ClInclude Include="..\src\framework\symtable\symbol_table.hpp" />
     <ClInclude Include="..\src\framework\vfs\vfs.hpp" />
     <ClInclude Include="..\src\framework\vfs\vfs_btree.hpp" />
+    <ClInclude Include="..\src\framework\vfs\vfs_paging.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\arcturus\arcturus_array_type.cpp" />
@@ -194,6 +195,7 @@
     <ClCompile Include="..\src\framework\frontend\parser\recursive_descent_parser.cpp" />
     <ClCompile Include="..\src\framework\frontend\semantics\semantics.cpp" />
     <ClCompile Include="..\src\framework\symtable\symbol_table.cpp" />
+    <ClCompile Include="..\src\framework\vfs\vfs_paging.cpp" />
   </ItemGroup>
   <ItemGroup>
     <MASM Include="..\src\framework\backend\codegen\amd64\masm.test.asm">
