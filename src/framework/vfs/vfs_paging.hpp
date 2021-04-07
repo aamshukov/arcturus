@@ -16,27 +16,37 @@ class vfs_paging : private noncopyable
 
         enum class flag : uint64_t
         {
-            clear = 0x0000,
-            dirty = 0x0002,
-            index = 0x0004,
-            leaf  = 0x0008,
-            error = 0x0010
+            clear     = 0x0000,
+            dirty     = 0x0001,
+            overflow  = 0x0002,
+            underflow = 0x0004,
+            resident  = 0x0008,
+            error     = 0x0100
         };
 
         DECLARE_ENUM_OPERATORS(flag)
 
         using flags_type = flag;
 
+        using id_type = uint64_t;
+        using size_type = uint64_t;
+        using magic_type = uint64_t;
+        using checksum_type = uint64_t;
+        using timestamp_type = uint64_t;
+
+        // magics
+        static const magic_type page_header_magic = 0x5646535047484452; // VFSPGHDR
+
         struct page_descriptor
         {
-            std::size_t id;         // page number
-            std::size_t next_id;    // overflow page(s)
-            std::size_t prev_id;    // overflow page(s)
-            std::size_t data_size;  // payload size
-            std::size_t checksum;
-            std::size_t timestamp;
-            std::size_t reserved;
-            flags_type  flags;
+            magic_type     magic = page_header_magic;
+            id_type        id;          // page number
+            id_type        next_id;     // overflow page(s)
+            id_type        prev_id;     // overflow page(s)
+            size_type      data_size;   // payload size
+            checksum_type  checksum;    // crc32c
+            timestamp_type timestamp;   // serialized timestamp
+            flags_type     flags;       // 
         };
 
         struct page
@@ -76,6 +86,9 @@ class vfs_paging : private noncopyable
     public:
                             vfs_paging(std::size_t start, std::size_t page_size, std::size_t cache_size);
                            ~vfs_paging();
+
+        bool                initialize(fd_type& fd); //?? read pagination header and the first page
+        bool                finalize(fd_type& fd); //?? save header and all dirty pages
 
         bool                read(fd_type& fd,
                                  std::size_t offset,        // absolute offset

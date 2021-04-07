@@ -5,7 +5,10 @@
 
 BEGIN_NAMESPACE(core)
 
-bool text::chars_to_codepoints(const char* chars, const std::size_t& chars_count, std::shared_ptr<datum_type[]>& codepoints, std::size_t& codepoints_count)
+bool text::chars_to_codepoints(const char* chars,
+                               const std::size_t& chars_count,
+                               std::shared_ptr<datum_type[]>& codepoints,
+                               std::size_t& codepoints_count)
 {
     codepoints_count = 0;
 
@@ -153,7 +156,10 @@ codepoints_type text::chars_to_codepoints(const char* chars, const std::size_t& 
     return codepoints;
 }
 
-bool text::codepoints_to_chars(const datum_type* codepoints, const std::size_t& codepoints_count, std::shared_ptr<char[]>& chars, std::size_t& chars_count)
+bool text::codepoints_to_chars(const datum_type* codepoints,
+                               const std::size_t& codepoints_count,
+                               std::shared_ptr<char[]>& chars,
+                               std::size_t& chars_count)
 {
     chars_count = 0;
 
@@ -232,7 +238,9 @@ bool text::codepoints_to_chars(const datum_type* codepoints, const std::size_t& 
     return result;
 }
 
-bool text::string_to_codepoints0(const string_type& text, std::shared_ptr<datum_type[]>& codepoints, std::size_t& count)
+bool text::string_to_codepoints0(const string_type& text,
+                                 std::shared_ptr<datum_type[]>& codepoints,
+                                 std::size_t& count)
 {
     count = 0;
 
@@ -310,7 +318,9 @@ bool text::string_to_codepoints0(const string_type& text, std::shared_ptr<datum_
     return result;
 }
 
-bool text::codepoints_to_string0(const datum_type* codepoints, std::size_t count, string_type& result_text)
+bool text::codepoints_to_string0(const datum_type* codepoints,
+                                 std::size_t count,
+                                 string_type& result_text)
 {
     bool result = false;
 
@@ -384,7 +394,9 @@ bool text::codepoints_to_string0(const datum_type* codepoints, std::size_t count
     return result;
 }
 
-bool text::string_to_codepoints(const string_type& text, std::shared_ptr<datum_type[]>& codepoints, std::size_t& count)
+bool text::string_to_codepoints(const string_type& text,
+                                std::shared_ptr<datum_type[]>& codepoints,
+                                std::size_t& count)
 {
     count = 0;
 
@@ -444,7 +456,9 @@ bool text::string_to_codepoints(const string_type& text, std::shared_ptr<datum_t
     return result;
 }
 
-bool text::codepoints_to_string(const datum_type* codepoints, std::size_t count, string_type& result_text)
+bool text::codepoints_to_string(const datum_type* codepoints,
+                                std::size_t count,
+                                string_type& result_text)
 {
     bool result = false;
 

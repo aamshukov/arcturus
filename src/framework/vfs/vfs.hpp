@@ -47,11 +47,20 @@ using guid_type = guid; //??
 template <typename Traits = vfs_traits<byte>>
 class vfs : private noncopyable
 {
+    // header | string pool | descriptors | data
+    // 512    | btree       | btree       | btree
+
+
+
     // syntax:
     //      /root/dir(s)/stream(s)
     public:
         using traits_type = Traits;
         using tree_type = std::shared_ptr<btree<int, int>>; //??
+
+        using id_type = uint64_t;   // absolute number
+        using loc_type = uint64_t;  // absolute location
+        using size_type = uint64_t; // absolute size
 
     public:
         enum class disposition
@@ -81,7 +90,14 @@ class vfs : private noncopyable
         {
             unknown       = 0,
             little_endian = 1,
-            big_endian    = 2
+            big_endian    = 2,
+            cpu_endian    = 3 // platform/cpu specific
+        };
+
+        enum class type : uint64_t
+        {
+            directory = 1,
+            stream    = 2
         };
 
         enum class access_mode : uint64_t
@@ -90,33 +106,68 @@ class vfs : private noncopyable
             write = 0x0002,
         };
 
-    public:
-        struct header
+
+
+        struct string_pool_entry
         {
-            char    magic[7];   // AA-vfs
-            char    version[8];
+            id_type   id;
+            size_type ref_count;
+            codepoints_type name;
         };
+
+        struct string_pool_entry_lt_key_comparator
+        {
+            bool operator() (const string_pool_entry& lhs, const string_pool_entry& rhs) const
+            {
+                return (*lhs).id < (*rhs).id;
+            }
+        };
+
+        using strings_type = std::set<string_pool_entry, string_pool_entry_lt_key_comparator>;
+        using id_string_map_type = std::unordered_map<id_type, string_pool_entry>;
+
+        struct string_pool
+        {
+            strings_type strings;
+            id_string_map_type mapping;
+        };
+
+    public:
+        struct vfs_header
+        {
+            char    signature[7]; // aa-vfs                        3   3    4      53
+            char    version[64];  // major.minor.patch [note] -> xxx.xxx.xxxxccc...cc
+
+            const id_type magic = 0x5505505512349851;
+        };
+
+        using descriptor_table_type = std::unordered_map<codepoints_type, std::size_t>;
 
         struct descriptor
         {
-            guid_type id;
+            std::size_t id;
 
             time_type create_time;
             time_type access_time;
             time_type modify_time;
 
             flags_type flags;
+
+            const id_type magic = 0x5505505512349852;
         };
 
-        struct stream_descriptor : public descriptor
+        struct stream_descriptor : public descriptor // file control block (fcb), inode
         {
             uint64_t size;
             uint64_t capacity;  // could be fixed
             bool     open;      // true if stream is open
+
+            const id_type magic = 0x5505505512349853;
         };
 
         struct directory_descriptor : public descriptor
         {
+            //stream_table_type stream_table;
         };
 
         struct security_descriptor
@@ -136,6 +187,7 @@ class vfs : private noncopyable
 
         class directory
         {
+            
         };
 
         struct page_descriptor
@@ -146,6 +198,8 @@ class vfs : private noncopyable
             std::size_t data_size;    // payload size
             std::size_t data_capacity;// payload capacity
             flags_type  flags;
+
+            const id_type magic = 0x5505505512349854;
         };
 
         struct page
@@ -174,6 +228,8 @@ class vfs : private noncopyable
         {
             std::vector<std::size_t> pages;
         };
+
+        using master_stream_table_type = std::unordered_map<codepoints_type, descriptor>;
 
     private:
         tree_type           my_tree;            // b-tree hierarchy

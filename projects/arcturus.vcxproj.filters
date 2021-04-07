@@ -76,6 +76,9 @@
     <Filter Include="framework\vfs">
       <UniqueIdentifier>{a6a5e49f-8438-4be3-ab90-3517a56d1a79}</UniqueIdentifier>
     </Filter>
+    <Filter Include="framework\core\crc32c">
+      <UniqueIdentifier>{87d11654-035a-407a-bd20-941f2889b21c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\framework\core\edge.hpp">
@@ -399,6 +402,9 @@
     <ClInclude Include="..\src\framework\vfs\vfs_paging.hpp">
       <Filter>framework\vfs</Filter>
     </ClInclude>
+    <ClInclude Include="..\libs\crc32c\crc32c\crc32c.h">
+      <Filter>framework\core\crc32c</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\framework\core\logger.cpp">
@@ -583,6 +589,9 @@
     </ClCompile>
     <ClCompile Include="..\src\framework\vfs\vfs_paging.cpp">
       <Filter>framework\vfs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libs\crc32c\crc32c\crc32c.c">
+      <Filter>framework\core\crc32c</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
