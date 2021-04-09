@@ -41,7 +41,14 @@ class guid; //??
 using guid_type = guid; //??
 
 
+template <typename TValue>
+class btree<string_type, typename TValue, std::less<string_type>, std::hash<string_type>> : public noncopyable
+{
+};
 
+struct data //??
+{
+};
 
 
 template <typename Traits = vfs_traits<byte>>
@@ -56,7 +63,7 @@ class vfs : private noncopyable
     //      /root/dir(s)/stream(s)
     public:
         using traits_type = Traits;
-        using tree_type = std::shared_ptr<btree<int, int>>; //??
+        using tree_type = std::shared_ptr<btree<string_type, data>>; //??
 
         using id_type = uint64_t;   // absolute number
         using loc_type = uint64_t;  // absolute location
