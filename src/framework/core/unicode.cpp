@@ -1,5 +1,4 @@
 #include <core/pch.hpp>
-#include <core/domain_helper.hpp>
 
 /*
  * Copyright 2001-2004 Unicode, Inc.
@@ -173,7 +172,7 @@ ConversionResult ConvertUTF16toUTF32(const UTF16** sourceStart, const UTF16* sou
 
         if(swap_bytes)
         {
-            ch = byte_swap_uint16((ch >> 16 & 0x0000FFFF)) | byte_swap_uint16((ch & 0x0000FFFF));
+            ch = swap_bytes_uint16((ch >> 16 & 0x0000FFFF)) | swap_bytes_uint16((ch & 0x0000FFFF));
         }
 
         *target++ = ch;

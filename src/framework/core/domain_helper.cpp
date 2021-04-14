@@ -6,27 +6,6 @@
 
 BEGIN_NAMESPACE(core)
 
-bool is_little_endian()
-{
-    static bool result;
-
-    bool set = false;
-
-    if(!set)
-    {
-        int32_t x = 1;
-        result = (*(char*)&x == 1);
-        set = true;
-    }
-
-    return result;
-}
-
-bool is_big_endian()
-{
-    return !is_little_endian();
-}
-
 string_type format(const char_type *format_template, ...)
 {
     string_type result;

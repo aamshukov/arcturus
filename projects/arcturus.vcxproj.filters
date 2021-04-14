@@ -405,6 +405,9 @@
     <ClInclude Include="..\libs\crc32c\crc32c\crc32c.h">
       <Filter>framework\core\crc32c</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\framework\core\endianness.hpp">
+      <Filter>framework\core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\framework\core\logger.cpp">

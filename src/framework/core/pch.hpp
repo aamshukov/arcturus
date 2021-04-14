@@ -121,6 +121,7 @@ END_NAMESPACE
 #include <core/text.hpp>
 #include <core/enum.hpp>
 #include <core/enumerate.hpp>
+#include <core/endianness.hpp>
 #include <core/counter.hpp>
 #include <core/diagnostics.hpp>
 #include <core/statistics.hpp>

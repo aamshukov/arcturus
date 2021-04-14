@@ -6,6 +6,8 @@
 
 #pragma once
 
+#include <core/endianness.hpp>
+
 #include <core/visitable.hpp>
 #include <core/visitor.hpp>
 

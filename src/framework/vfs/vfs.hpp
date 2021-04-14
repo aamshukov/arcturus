@@ -63,11 +63,21 @@ class vfs : private noncopyable
     //      /root/dir(s)/stream(s)
     public:
         using traits_type = Traits;
+
         using tree_type = std::shared_ptr<btree<string_type, data>>; //??
 
-        using id_type = uint64_t;   // absolute number
-        using loc_type = uint64_t;  // absolute location
-        using size_type = uint64_t; // absolute size
+        using id_type = uint64_t;
+        using size_type = uint64_t;
+        using magic_type = uint64_t;
+        using checksum_type = uint64_t;
+        using timestamp_type = uint64_t;
+        using uuid_type = byte[16];
+
+        using paddr_type = std::size_t; // persistent address
+        using paddrs_type = std::vector<paddr_type>;
+
+        using free_paddrs_type = std::queue<paddr_type>;
+
 
     public:
         enum class disposition
@@ -86,14 +96,16 @@ class vfs : private noncopyable
 
         using flags_type = flag;
 
-        enum class platform
+        enum class platform : uint8_t
         {
             unknown = 0,
             windows = 1,
             unix    = 2 // unixes, linux and others
         };
 
-        enum class endianness // target endianness
+        using platform_type = platform;
+
+        enum class endianness : uint8_t
         {
             unknown       = 0,
             little_endian = 1,
@@ -101,13 +113,23 @@ class vfs : private noncopyable
             cpu_endian    = 3 // platform/cpu specific
         };
 
-        enum class type : uint64_t
+        using endianness_type = endianness;
+
+        enum class compression : uint8_t
+        {
+            uncompressed = 0,
+            pf_algorithm = 1
+        };
+
+        using compression_type = compression;
+
+        enum class type : uint8_t
         {
             directory = 1,
             stream    = 2
         };
 
-        enum class access_mode : uint64_t
+        enum class access_mode : uint8_t
         {
             read  = 0x0001,
             write = 0x0002,
@@ -140,14 +162,6 @@ class vfs : private noncopyable
         };
 
     public:
-        struct vfs_header
-        {
-            char    signature[7]; // aa-vfs                        3   3    4      53
-            char    version[64];  // major.minor.patch [note] -> xxx.xxx.xxxxccc...cc
-
-            const id_type magic = 0x5505505512349851;
-        };
-
         using descriptor_table_type = std::unordered_map<codepoints_type, std::size_t>;
 
         struct descriptor
@@ -238,11 +252,44 @@ class vfs : private noncopyable
 
         using master_stream_table_type = std::unordered_map<codepoints_type, descriptor>;
 
+        static const magic_type master_header_magic = 0x5646534D53445343; // VFSMSDSC
+
+        struct master_header
+        {
+            char             signature[6];      // 'aavfs'                     3   3   4   53
+            char             version[64];       // major.minor.patch [note] -> xxx.xxx.xxxxccc...cc
+            platform_type    platform;          // on which platform was created
+            endianness_type  endianness;        // original endianness
+            checksum_type    checksum;          // checksum of the header
+            timestamp_type   create_time;       // create time
+            timestamp_type   access_time;       // access time
+            timestamp_type   modify_time;       // modify time
+            flags_type       system_flags;      // system flags
+            flags_type       custom_flags;      // custom flags
+            size_type        page_size;         // I/O page size
+            paddr_type       root_paddr;        // root node location
+            paddr_type       free_paddrs;       // start of free paddrs
+            id_type          next_id;           // next incremental sequence id
+            compression_type compression;       // compression algorithm
+            size_type        volume;            // volume number, usually 1
+            size_type        volumes;           // how many volumes
+            uuid_type        uuid;              // global unique identifier
+            byte             custom_data[64];   // custom specific data
+            byte             dsignature[256];   // digital signature
+            magic_type       magic = master_header_magic;
+        };
+
+        using master_header_type = master_header;
+
     private:
         tree_type           my_tree;            // b-tree hierarchy
         cache_type          my_cache;           // pages cache
+
         std::size_t         my_free_page;       // free page to start writing
-        paged_position      my_paged_position;  // current paged I/O operations pointer
+        free_paddrs_type    my_free_paddrs;     // the last entry on disk holds the next block with free paddrs,
+                                                // when reading in - populate the queue
+
+        paged_position      my_position;        // current I/O operations pointer
 
     private:
         static std::size_t  get_page_size();

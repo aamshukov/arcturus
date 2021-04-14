@@ -2,6 +2,7 @@
 // UI Lab Inc. Arthur Amshukov .
 //..............................
 #include <core/pch.hpp>
+#include <core/endianness.hpp>
 
 #include <content/data_provider.hpp>
 #include <content/file_data_provider.hpp>
@@ -294,7 +295,7 @@ bool file_data_provider::read_utf16_data(std::shared_ptr<byte[]> raw_data,
                                                        (UTF32**)target_start,
                                                        (UTF32*)target_end,
                                                        conversion_flags::strict_conversion, count,
-                                                       (is_little_endian() && big_endian) || (is_big_endian() && !big_endian));
+                                                       (endianness::little_endian() && big_endian) || (endianness::big_endian() && !big_endian));
             if(cr == conversion_ok)
             {
                 buffer[count] = 0;
@@ -381,9 +382,9 @@ bool file_data_provider::read_utf32_data(std::shared_ptr<byte[]> raw_data,
                          v |= (raw_data[k + 2] <<  8) & 0x0000FF00;
                          v |= (raw_data[k + 3] <<  0) & 0x000000FF;
 
-                if((is_little_endian() && big_endian) || (is_big_endian() && !big_endian))
+                if((endianness::little_endian() && big_endian) || (endianness::big_endian() && !big_endian))
                 {
-                    v = byte_swap_uint32(v);
+                    v = swap_bytes_uint32(v);
                 }
 
                 buffer[i++] = v;

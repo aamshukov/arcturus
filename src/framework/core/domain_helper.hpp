@@ -13,27 +13,6 @@
 
 BEGIN_NAMESPACE(core)
 
-#ifdef _WINDOWS_
-#   define byte_swap_uint16(x) (static_cast<unsigned short>(_byteswap_ushort(x)))
-#else
-#   define byte_swap_uint16(x) ((((uint16_t)(x) & 0xFF00) >> 8) | (((uint16_t)(x) & 0x00FF) << 8))
-#endif
-
-#ifdef _WINDOWS_
-#   define byte_swap_uint32(x) (static_cast<unsigned long>(_byteswap_ulong(x)))
-#else
-#   define byte_swap_uint32(x) ((((uint32_t)(x) & 0xFF000000) >> 24) | (((uint32_t)(x) & 0x00FF0000) >> 8) | (((uint32_t)(x) & 0x0000FF00) << 8) | (((uint32_t)(x) & 0x000000FF) << 24))
-#endif
-
-#ifdef _WINDOWS_
-#   define byte_swap_uint64(x) (static_cast<__int64>(_byteswap_uint64(x)))
-#else
-#   define byte_swap_uint64(x) ((((uint64_t)(x) & 0xFF00000000000000ULL) >> 56) | (((uint64_t)(x) & 0x00FF000000000000ULL) >> 40) | (((uint64_t)(x) & 0x0000FF0000000000ULL) >> 24) | (((uint64_t)(x) & 0x000000FF00000000ULL) >> 8) | (((uint64_t)(x) & 0x00000000FF000000ULL) << 8) | (((uint64_t)(x) & 0x0000000000FF0000ULL) << 24) | (((uint64_t)(x) & 0x000000000000FF00ULL) << 40) | (((uint64_t)(x) & 0x00000000000000FFULL) << 56))
-#endif
-
-#define byte_swap_float(x)  (arrange_type<float>(x))
-#define byte_swap_double(x) (arrange_type<double>(x))
-
 #define DUMMY_EXCEPTION_TEXT (L"Error occurred.")
 
 
@@ -41,22 +20,6 @@ template <typename T, std::size_t N>
 inline constexpr std::size_t array_size(T const (&)[N])
 {
     return N;
-}
-
-template <typename T>
-static T arrange_type(T value)
-{
-    T result;
-
-    byte *pval((byte*)&value);
-    byte *pres((byte*)&result);
-
-    for(std::size_t i = 0, j = sizeof(T) - 1; j >= 0;)
-    {
-        pres[i++] = pval[j--];
-    }
-
-    return result;
 }
 
 template <typename T = std::size_t>
@@ -195,8 +158,11 @@ inline std::size_t combine_hash(std::size_t number)
     return std::hash<std::size_t>{}(number + 0x9E3779B9 + (number << 6) + (number >> 2)); // aka boost hash_combine
 }
 
-bool is_little_endian();
-bool is_big_endian();
+template <typename T>
+inline bool real_number_equal(T n1, T n2)
+{
+    return std::abs(n1 - n2) < std::numeric_limits<T>::epsilon();
+}
 
 string_type format(const char_type* format_template, ...);
 std::wstring string_to_wstring(const std::string& str, const std::locale& locale = std::locale(""));

@@ -27,6 +27,11 @@ class btree : public noncopyable
         using kvp_type = std::pair<key_type, value_type>;
         using kvps_type = std::vector<kvp_type>;
 
+        using paddr_type = std::size_t; // physical address
+        using paddrs_type = std::vector<paddr_type>;
+
+        using free_paddrs_type = std::queue<paddr_type>;
+
     public:
         enum class flag : uint64_t
         {
@@ -41,19 +46,26 @@ class btree : public noncopyable
         using flags_type = flag;
 
     private:
+        using paging_type = std::shared_ptr<vfs_paging>;
+
+    private:
         static const std::size_t INVALID_PAGE = std::numeric_limits<std::size_t>::min();
 
     public:
         // in-memory node
-        struct node
+        struct node : public tree
         {
             using node_type = std::shared_ptr<node>;
 
-            std::size_t level;  // level == 0 is leaf??
-            std::size_t paddr;  // physical address, might be a start page number of the node
+            std::size_t level;  // level == 0 is leaf
 
-            node(std::size_t levl) : level(levl), paddr(INVALID_PAGE)
+            paddr_type  paddr;  // persistent address, might be a start page number of the node
+            paddrs_type paddrs; // persistent addresses of kids, size should be in sync with tree::kids
+
+            node(std::size_t levl, std::size_t capacity) : level(levl), paddr(INVALID_PAGE)
             {
+                kids.reserve(capacity);
+                paddrs.reserve(capacity);
             }
 
             bool leaf_node() const
@@ -67,18 +79,16 @@ class btree : public noncopyable
         static const int BINARY_SEARCH_THRESHOLD = 16; // either linear or binary search in leaf nodes
 
         // in-memory index node (branch, internal)
-        struct index_node : public node, public tree
+        struct index_node : public node
         {
             using node_type = std::shared_ptr<index_node>;
 
             keys_type keys; // index node payload - keys
 
-            index_node(std::size_t levl, std::size_t capacity) : node(levl)
+            index_node(std::size_t level, std::size_t capacity) : node(level, capacity)
             {
                 static_assert(capacity > 0, L"Invalid B+ tree order (branching factor).");
-
                 keys.reserve(capacity - 1);
-                kids.reserve(capacity);
             }
 
             const key_type& key(std::size_t k) const
@@ -112,11 +122,10 @@ class btree : public noncopyable
 
             kvps_type kvps; // leaf node payload - key/value pairs
 
-            leaf_node(size_t levl, std::size_t capacity)
-                : node(levl), next_node(nullptr), prev_node(nullptr)
+            leaf_node(size_t level, std::size_t capacity)
+                : node(level, capacity), next_node(nullptr), prev_node(nullptr)
             {
                 static_assert(capacity > 0, L"Invalid B+ tree order (branching factor).");
-
                 kvps.reserve(capacity);
             }
 
@@ -170,6 +179,8 @@ class btree : public noncopyable
         std::size_t             my_height;  // current height of the tree
         nodes_type              my_nodes;   // cached in-memory nodes, usually populated while reading in a branch
 
+        paging_type             my_paging;
+
         statistics_type         my_statistics;
 
     private:
@@ -180,7 +191,8 @@ class btree : public noncopyable
                                 SearchLeafNode(const key_type& key, value_type& value); // search a leaf node
 
     public:
-                                btree(std::size_t order); // 'order' is branching factor, maximum number of descendants
+                                btree(std::size_t order,    // 'order' is branching factor, maximum number of descendants
+                                      paging_type& paging); // paging infrustructure with caching
                                ~btree();
 
         const statistics_type&  statistics() const;
@@ -188,12 +200,14 @@ class btree : public noncopyable
 };
 
 template <typename TKey, typename TValue, typename TKeyCmp, typename TKeyHash>
-btree<TKey, TValue, TKeyCmp, TKeyHash>::btree(std::size_t order)
+btree<TKey, TValue, TKeyCmp, TKeyHash>::btree(std::size_t order,
+                                              typename btree<TKey, TValue, TKeyCmp, TKeyHash>::paging_type& paging)
                                       : my_leaf_node_min_count((order + 2 - 1) / 2), // ⌈b/2⌉
                                         my_leaf_node_max_count(order),
                                         my_index_node_min_count((order + 2 - 1) / 2), // ⌈b/2⌉
                                         my_index_node_max_count(order),
-                                        my_height(0)
+                                        my_height(0),
+                                        my_paging(paging)
 {
 }
 
@@ -205,3 +219,8 @@ btree<TKey, TValue, TKeyCmp, TKeyHash>::~btree()
 END_NAMESPACE
 
 #endif // __VIRTUAL_FILE_SYSTEM_BTREE_H__
+
+
+
+//?? fopen(filename, "w+b");
+

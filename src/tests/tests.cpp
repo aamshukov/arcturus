@@ -20,6 +20,37 @@ namespace tests
             using duration_type = std::chrono::milliseconds;
 
         public:
+            TEST_METHOD(Endianness)
+            {
+                endianness e;
+
+                auto r0 = e.le64_to_host(5);
+                auto r1 = e.host_to_le64(r0);
+                Assert::IsTrue(r0 == r1);
+
+                auto r2 = e.leflt_to_host(5.7f);
+                auto r3 = e.host_to_leflt(r2);
+                Assert::IsTrue(real_number_equal<float>(r2, 5.7f));
+
+                auto r4 = e.ledbl_to_host(5.7);
+                auto r5 = e.host_to_ledbl(r4);
+                Assert::IsTrue(real_number_equal<double>(r5, 5.7));
+
+                auto r6 = e.be64_to_host(5);
+                auto r7 = e.host_to_be64(r6);
+                Assert::IsTrue(r7 == 5);
+
+                auto r8 = e.beflt_to_host(5.7f);
+                auto r9 = e.host_to_beflt(r8);
+                Assert::IsTrue(real_number_equal<float>(r9, 5.7f));
+
+                auto r10 = e.bedbl_to_host(5.7);
+                auto r11 = e.host_to_bedbl(r10);
+                Assert::IsTrue(real_number_equal<double>(r11, 5.7));
+
+                Logger::WriteMessage("Endianness...");
+            }
+
             TEST_METHOD(InitLogger)
             {
                 int argc = 10;
