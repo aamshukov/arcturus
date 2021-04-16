@@ -32,20 +32,8 @@ class btree : public noncopyable
 
         using free_paddrs_type = std::queue<paddr_type>;
 
-    public:
-        enum class flag : uint64_t
-        {
-            clear = 0x0000,
-            index = 0x0002,
-            leaf  = 0x0004,
-            error = 0x0008
-        };
+        using flags_type = typename vfs_types::flags_type;
 
-        DECLARE_ENUM_OPERATORS(flag)
-
-        using flags_type = flag;
-
-    private:
         using paging_type = std::shared_ptr<vfs_paging>;
 
     private:

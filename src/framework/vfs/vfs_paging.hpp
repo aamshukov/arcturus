@@ -12,27 +12,21 @@ USING_NAMESPACE(core)
 class vfs_paging : private noncopyable
 {
     public:
-        using fd_type = FILE*;
+        using id_type = typename vfs_types::id_type;
+        using size_type = typename vfs_types::size_type;
+        using magic_type = typename vfs_types::magic_type;
+        using checksum_type = typename vfs_types::checksum_type;
+        using timestamp_type = typename vfs_types::timestamp_type;
+        using uuid_type = typename vfs_types::uuid_type;
 
-        enum class flag : uint64_t
-        {
-            clear     = 0x0000,
-            dirty     = 0x0001,
-            overflow  = 0x0002,
-            underflow = 0x0004,
-            resident  = 0x0008,
-            error     = 0x0100
-        };
+        using endianness_type = typename vfs_types::endianness_type;
 
-        DECLARE_ENUM_OPERATORS(flag)
+        using fd_type = typename vfs_types::fd_type;
 
-        using flags_type = flag;
+        using paddr_type = typename vfs_types::paddr_type;
+        using paddrs_type = typename vfs_types::paddrs_type;
 
-        using id_type = uint64_t;
-        using size_type = uint64_t;
-        using magic_type = uint64_t;
-        using checksum_type = uint64_t;
-        using timestamp_type = uint64_t;
+        using flags_type = typename vfs_types::flags_type;
 
         // magics
         static const magic_type page_header_magic = 0x5646535047484452; // VFSPGHDR

@@ -414,9 +414,6 @@
     <ClInclude Include="..\src\framework\vfs\vfs_btree_pnode.hpp">
       <Filter>framework\vfs</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\framework\vfs\vfs_btree_types.hpp">
-      <Filter>framework\vfs</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\framework\vfs\vfs_btree_index_node.hpp">
       <Filter>framework\vfs</Filter>
     </ClInclude>
@@ -430,6 +427,12 @@
       <Filter>framework\vfs</Filter>
     </ClInclude>
     <ClInclude Include="..\src\framework\vfs\vfs_page.hpp">
+      <Filter>framework\vfs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\vfs\vfs_string_pool.hpp">
+      <Filter>framework\vfs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\vfs\vfs_types.hpp">
       <Filter>framework\vfs</Filter>
     </ClInclude>
   </ItemGroup>
@@ -619,6 +622,9 @@
     </ClCompile>
     <ClCompile Include="..\libs\crc32c\crc32c\crc32c.c">
       <Filter>framework\core\crc32c</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\framework\vfs\vfs_string_pool.cpp">
+      <Filter>framework\vfs</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -113,6 +113,10 @@
 #include <arcturus_controller.hpp>
 #include <arcturus_configurator.hpp>
 
+#include <../../libs/crc32c/crc32c/crc32c.h>
+
+#include <vfs/vfs_types.hpp>
+#include <vfs/vfs_string_pool.hpp>
 #include <vfs/vfs_paging.hpp>
 #include <vfs/vfs_btree.hpp>
 #include <vfs/vfs.hpp>

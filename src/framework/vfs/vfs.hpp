@@ -66,19 +66,25 @@ class vfs : private noncopyable
 
         using tree_type = std::shared_ptr<btree<string_type, data>>; //??
 
-        using id_type = uint64_t;
-        using size_type = uint64_t;
-        using magic_type = uint64_t;
-        using checksum_type = uint64_t;
-        using timestamp_type = uint64_t;
-        using uuid_type = byte[16]; // GUID/UUID
+        using id_type = typename vfs_types::id_type;
+        using size_type = typename vfs_types::size_type;
+        using magic_type = typename vfs_types::magic_type;
+        using checksum_type = typename vfs_types::checksum_type;
+        using timestamp_type = typename vfs_types::timestamp_type;
+        using uuid_type = typename vfs_types::uuid_type;
 
-        using endianness_type = endianness;
+        using endianness_type = typename vfs_types::endianness_type;
 
-        using paddr_type = std::size_t; // persistent address
-        using paddrs_type = std::vector<paddr_type>;
+        using paddr_type = typename vfs_types::paddr_type;
+        using paddrs_type = typename vfs_types::paddrs_type;
 
         using free_paddrs_type = std::queue<paddr_type>;
+
+        using file_type = typename vfs_types::file_type;
+        using platform_type = typename vfs_types::platform_type;
+        using compression_type = typename vfs_types::compression_type;
+
+        using flags_type = typename vfs_types::flags_type;
 
     public:
         enum class consts : uint32_t
@@ -103,49 +109,12 @@ class vfs : private noncopyable
         {
         };
 
-        enum class flag : uint64_t
-        {
-            clear = 0x0000,
-            open  = 0x0001,
-            eos   = 0x0002,
-            error = 0x0004
-        };
-
-        DECLARE_ENUM_OPERATORS(flag)
-
-        using flags_type = flag;
-
-        enum class platform : uint8_t
-        {
-            unknown = 0,
-            windows = 1,
-            unix    = 2 // unixes, linux and others
-        };
-
-        using platform_type = platform;
-
-        enum class compression : uint8_t
-        {
-            uncompressed = 0,
-            pf_algorithm = 1
-        };
-
-        using compression_type = compression;
-
-        enum class file_type : uint8_t
-        {
-            directory = 1,
-            file = 2
-        };
-
-        enum class access_mode : uint8_t
-        {
-            read  = 0x0001,
-            write = 0x0002,
-        };
 
 
 
+
+
+        using string_pool_type = vfs_string_pool;
         //struct string_pool_entry
         //{
         //    id_type   id;
@@ -307,6 +276,8 @@ class vfs : private noncopyable
     private:
         tree_type           my_tree;            // b-tree hierarchy
         cache_type          my_cache;           // pages cache
+
+        string_pool_type    my_names;           // string pool of names
 
         std::size_t         my_free_page;       // free page to start writing
         free_paddrs_type    my_free_paddrs;     // the last entry on disk holds the next block with free paddrs,

@@ -5,6 +5,7 @@
 #include <core/noncopyable.hpp>
 #include <core/cache.hpp>
 
+#include <vfs/vfs_types.hpp>
 #include <vfs/vfs_paging.hpp>
 
 BEGIN_NAMESPACE(backend)
