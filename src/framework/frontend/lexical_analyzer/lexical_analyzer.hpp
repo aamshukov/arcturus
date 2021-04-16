@@ -17,7 +17,7 @@ class lexical_analyzer : private noncopyable
         using token_type = token<token_traits>;
         using tokens_type = std::queue<token_type>;
 
-        using snapshots_type = std::stack<const datum_type*>;
+        using snapshots_type = std::stack<const cp_type*>;
 
         using id_type = std::size_t;
 
@@ -26,16 +26,16 @@ class lexical_analyzer : private noncopyable
 
         content_type                my_content;         // loaded content
 
-        const datum_type*           my_start_content;   // begining of content
-        const datum_type*           my_end_content;     // end of content
+        const cp_type*              my_start_content;   // begining of content
+        const cp_type*              my_end_content;     // end of content
 
         token_type                  my_token;           // current lexeme
         tokens_type                 my_tokens;          // current and lookahead lexemes
 
         token_type                  my_prev_token;      // previous lexeme
 
-        const datum_type*           my_ptr;             // current position in content
-        const datum_type*           my_ptr_lexeme;      // begining position of lexeme in content
+        const cp_type*              my_ptr;             // current position in content
+        const cp_type*              my_ptr_lexeme;      // begining position of lexeme in content
 
         snapshots_type              my_snapshots;       // backtracking's snapshots
 
@@ -59,7 +59,7 @@ class lexical_analyzer : private noncopyable
         const content_type&         content() const;
         content_type&               content();
 
-        datum_type                  current() const;
+        cp_type                     current() const;
 
         const token_type&           token();
 
@@ -69,8 +69,8 @@ class lexical_analyzer : private noncopyable
         void                        next_lexeme();
         const token_type&           lookahead_lexeme();
 
-        codepoints_type             lexeme_to_codepoints() const;
-        codepoints_type             lexeme_to_codepoints(const token_type& token) const;
+        cps_type                    lexeme_to_codepoints() const;
+        cps_type                    lexeme_to_codepoints(const token_type& token) const;
 
         string_type                 lexeme_to_string() const;
         string_type                 lexeme_to_string(const token_type& token) const;
@@ -99,7 +99,7 @@ inline typename lexical_analyzer::content_type& lexical_analyzer::content()
     return const_cast<content_type&>(static_cast<const lexical_analyzer&>(*this).content());
 }
 
-inline datum_type typename lexical_analyzer::current() const
+inline cp_type typename lexical_analyzer::current() const
 {
     return *my_ptr;
 }
@@ -119,12 +119,12 @@ inline bool lexical_analyzer::is_eos() const
     return my_token.type == token_type::traits::type::eos;
 }
 
-inline typename codepoints_type lexical_analyzer::lexeme_to_codepoints() const
+inline typename cps_type lexical_analyzer::lexeme_to_codepoints() const
 {
     return my_token.codepoints(my_start_content);
 }
 
-inline typename codepoints_type lexical_analyzer::lexeme_to_codepoints(const typename lexical_analyzer::token_type& token) const
+inline typename cps_type lexical_analyzer::lexeme_to_codepoints(const typename lexical_analyzer::token_type& token) const
 {
     return token.codepoints(my_start_content);
 }

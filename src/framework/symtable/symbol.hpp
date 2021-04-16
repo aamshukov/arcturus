@@ -40,8 +40,8 @@ class symbol
                                         float,
                                         double,
                                         void*,
-                                        datum_type,
-                                        codepoints_type>;
+                                        cp_type,
+                                        cps_type>;
 
         using type_type = std::shared_ptr<type>;
 
@@ -65,7 +65,7 @@ class symbol
 
     protected:
         id_type                 my_id;
-        codepoints_type         my_name;
+        cps_type                my_name;
 
         token_type              my_token;               // link with content
         value_type              my_value;               // inffered value if any, might be integer value, real value or
@@ -100,8 +100,8 @@ class symbol
         const id_type&          id() const;
         id_type&                id();
 
-        const codepoints_type&  name() const;
-        codepoints_type&        name();
+        const cps_type&         name() const;
+        cps_type&               name();
 
         const token_type&       token() const;
         token_type&             token();
@@ -267,12 +267,12 @@ inline typename symbol::id_type& symbol::id()
     return my_id;
 }
 
-inline const typename codepoints_type& symbol::name() const
+inline const typename cps_type& symbol::name() const
 {
     return my_name;
 }
 
-inline typename codepoints_type& symbol::name()
+inline typename cps_type& symbol::name()
 {
     return my_name;
 }
@@ -355,7 +355,7 @@ inline typename symbol::symbol_type symbol::get_new_temporary()
 
     if(num < 999999)
     {
-        datum_type t [] = { '0', '0', '0', '0', '0', '0', '~', '$', '_', 'T', 'M', 'P', '_', '$', '~', 0 }; // 15 + 0 = 16
+        cp_type t [] = { '0', '0', '0', '0', '0', '0', '~', '$', '_', 'T', 'M', 'P', '_', '$', '~', 0 }; // 15 + 0 = 16
 
         char b [] = { '0', '0', '0', '0', '0', '0' };
 

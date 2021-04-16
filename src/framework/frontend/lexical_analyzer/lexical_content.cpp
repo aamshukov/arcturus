@@ -27,9 +27,9 @@ lexical_content::~lexical_content()
 // OpenJDK 9+ for more details ...
 void lexical_content::build_line_map()
 {
-    const datum_type* ptr(my_data.get());
-    const datum_type* start_content(ptr);
-    const datum_type* end_content(start_content + my_count);
+    const cp_type* ptr(my_data.get());
+    const cp_type* start_content(ptr);
+    const cp_type* end_content(start_content + my_count);
 
     my_tab_map.resize(my_count);
 

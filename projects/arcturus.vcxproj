@@ -127,6 +127,14 @@
     <ClInclude Include="..\src\framework\symtable\symbol_table.hpp" />
     <ClInclude Include="..\src\framework\vfs\vfs.hpp" />
     <ClInclude Include="..\src\framework\vfs\vfs_btree.hpp" />
+    <ClInclude Include="..\src\framework\vfs\vfs_btree_index_node.hpp" />
+    <ClInclude Include="..\src\framework\vfs\vfs_btree_index_pnode.hpp" />
+    <ClInclude Include="..\src\framework\vfs\vfs_btree_leaf_node.hpp" />
+    <ClInclude Include="..\src\framework\vfs\vfs_btree_leaf_pnode.hpp" />
+    <ClInclude Include="..\src\framework\vfs\vfs_btree_node.hpp" />
+    <ClInclude Include="..\src\framework\vfs\vfs_btree_pnode.hpp" />
+    <ClInclude Include="..\src\framework\vfs\vfs_btree_types.hpp" />
+    <ClInclude Include="..\src\framework\vfs\vfs_page.hpp" />
     <ClInclude Include="..\src\framework\vfs\vfs_paging.hpp" />
   </ItemGroup>
   <ItemGroup>

@@ -175,7 +175,7 @@ bool file_data_provider::read_raw_data(const string_type& file_name,
 
 bool file_data_provider::read_utf8_data(std::shared_ptr<byte[]> raw_data,
                                         std::size_t raw_count,
-                                        std::shared_ptr<datum_type[]>& data,
+                                        std::shared_ptr<cp_type[]>& data,
                                         std::size_t& count)
 {
     log_info(L"Reading UTF-8 content ...");
@@ -190,12 +190,12 @@ bool file_data_provider::read_utf8_data(std::shared_ptr<byte[]> raw_data,
         const byte **source_start(&source_start_aux);
         const byte  *source_end(source_start_aux + raw_count);
 
-        std::shared_ptr<datum_type[]> buffer(new datum_type[raw_count + 1]);
+        std::shared_ptr<cp_type[]> buffer(new cp_type[raw_count + 1]);
 
-        const datum_type  *target_start_org(buffer.get());
-        const datum_type  *target_start_aux(buffer.get());
-        const datum_type **target_start(&target_start_aux);
-        const datum_type  *target_end(target_start_aux + raw_count);
+        const cp_type  *target_start_org(buffer.get());
+        const cp_type  *target_start_aux(buffer.get());
+        const cp_type **target_start(&target_start_aux);
+        const cp_type  *target_end(target_start_aux + raw_count);
             
         convert_result cr = convert_utf8_to_utf32(source_start,
                                                   source_end,
@@ -256,7 +256,7 @@ bool file_data_provider::read_utf8_data(std::shared_ptr<byte[]> raw_data,
 
 bool file_data_provider::read_utf16_data(std::shared_ptr<byte[]> raw_data,
                                          std::size_t raw_count,
-                                         std::shared_ptr<datum_type[]>& data,
+                                         std::shared_ptr<cp_type[]>& data,
                                          std::size_t& count,
                                          bool big_endian)
 {
@@ -284,11 +284,11 @@ bool file_data_provider::read_utf16_data(std::shared_ptr<byte[]> raw_data,
             const uint16_t **source_start(&source_start_aux);
             const uint16_t  *source_end(source_start_aux + raw_count);
 
-            std::shared_ptr<datum_type[]> buffer(new datum_type[raw_count + 1]);
+            std::shared_ptr<cp_type[]> buffer(new cp_type[raw_count + 1]);
 
-            const datum_type  *target_start_aux(buffer.get());
-            const datum_type **target_start(&target_start_aux);
-            const datum_type  *target_end(target_start_aux + raw_count);
+            const cp_type  *target_start_aux(buffer.get());
+            const cp_type **target_start(&target_start_aux);
+            const cp_type  *target_end(target_start_aux + raw_count);
 
             convert_result cr = convert_utf16_to_utf32(source_start,
                                                        source_end,
@@ -349,7 +349,7 @@ bool file_data_provider::read_utf16_data(std::shared_ptr<byte[]> raw_data,
 
 bool file_data_provider::read_utf32_data(std::shared_ptr<byte[]> raw_data,
                                          std::size_t raw_count,
-                                         std::shared_ptr<datum_type[]>& data,
+                                         std::shared_ptr<cp_type[]>& data,
                                          std::size_t& count,
                                          bool big_endian)
 {
@@ -373,7 +373,7 @@ bool file_data_provider::read_utf32_data(std::shared_ptr<byte[]> raw_data,
         {
             count = raw_count / 4;
 
-            std::shared_ptr<datum_type[]> buffer(new datum_type[count + 1]);
+            std::shared_ptr<cp_type[]> buffer(new cp_type[count + 1]);
 
             for(std::size_t i = 0, k = 0; k < raw_count; k += sizeof(uint32_t))
             {
@@ -411,7 +411,7 @@ bool file_data_provider::read_utf32_data(std::shared_ptr<byte[]> raw_data,
     return result;
 }
 
-bool file_data_provider::load(std::shared_ptr<datum_type[]>& data, std::size_t& count)
+bool file_data_provider::load(std::shared_ptr<cp_type[]>& data, std::size_t& count)
 {
     log_info(L"Loading content ...");
 
@@ -469,11 +469,11 @@ bool file_data_provider::load(std::shared_ptr<datum_type[]>& data, std::size_t& 
 
         if(ufile != nullptr)
         {
-            std::shared_ptr<datum_type[]> buffer(new datum_type[file_size + 1]);
+            std::shared_ptr<cp_type[]> buffer(new cp_type[file_size + 1]);
 
             memset(buffer.get(), 0, file_size + 1);
 
-            datum_type ch = u_fgetcx(ufile);
+            cp_type ch = u_fgetcx(ufile);
 
             std::size_t k = 0;
 

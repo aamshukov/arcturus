@@ -17,7 +17,7 @@ class string_data_provider : public data_provider, private noncopyable
                         string_data_provider(const string_type& data_content);
         virtual        ~string_data_provider();
 
-        virtual bool    load(std::shared_ptr<datum_type[]>& data, std::size_t& count) override;
+        virtual bool    load(std::shared_ptr<cp_type[]>& data, std::size_t& count) override;
 };
 
 END_NAMESPACE

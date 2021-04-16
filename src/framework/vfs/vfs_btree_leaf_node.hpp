@@ -64,7 +64,7 @@ class btree : public noncopyable
 
             node(std::size_t levl, std::size_t capacity) : level(levl), paddr(INVALID_PAGE)
             {
-                //kids.reserve(capacity);
+                kids.reserve(capacity);
                 paddrs.reserve(capacity);
             }
 

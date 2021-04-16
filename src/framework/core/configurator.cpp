@@ -22,11 +22,11 @@ bool configurator::configure(int argc, char_type *argv[])
     {
         std::size_t count = 0;
 
-        std::shared_ptr<datum_type[]> codepoints;
+        std::shared_ptr<cp_type[]> codepoints;
 
         text::string_to_codepoints(argv[0], codepoints, count);
 
-        std::basic_string<datum_type> application(codepoints.get());
+        std::basic_string<cp_type> application(codepoints.get());
 
         my_application.swap(application);
 

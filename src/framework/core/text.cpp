@@ -7,7 +7,7 @@ BEGIN_NAMESPACE(core)
 
 bool text::chars_to_codepoints(const char* chars,
                                const std::size_t& chars_count,
-                               std::shared_ptr<datum_type[]>& codepoints,
+                               std::shared_ptr<cp_type[]>& codepoints,
                                std::size_t& codepoints_count)
 {
     codepoints_count = 0;
@@ -20,12 +20,12 @@ bool text::chars_to_codepoints(const char* chars,
         const UTF8** source_start(&source_start_aux);
         const UTF8*  source_end(source_start_aux + chars_count);
 
-        std::shared_ptr<datum_type[]> buffer(new datum_type[chars_count + 1]);
+        std::shared_ptr<cp_type[]> buffer(new cp_type[chars_count + 1]);
 
-        const datum_type*  target_start_org(buffer.get());
-        const datum_type*  target_start_aux(buffer.get());
-        const datum_type** target_start(&target_start_aux);
-        const datum_type*  target_end(target_start_aux + chars_count);
+        const cp_type*  target_start_org(buffer.get());
+        const cp_type*  target_start_aux(buffer.get());
+        const cp_type** target_start(&target_start_aux);
+        const cp_type*  target_end(target_start_aux + chars_count);
 
         convert_result cr = convert_utf8_to_utf32(source_start,
                                                   source_end,
@@ -82,9 +82,9 @@ bool text::chars_to_codepoints(const char* chars,
     return result;
 }
 
-codepoints_type text::chars_to_codepoints(const char* chars, const std::size_t& chars_count)
+cps_type text::chars_to_codepoints(const char* chars, const std::size_t& chars_count)
 {
-    codepoints_type codepoints;
+    cps_type codepoints;
 
     try
     {
@@ -92,12 +92,12 @@ codepoints_type text::chars_to_codepoints(const char* chars, const std::size_t& 
         const UTF8** source_start(&source_start_aux);
         const UTF8*  source_end(source_start_aux + chars_count);
 
-        std::shared_ptr<datum_type[]> buffer(new datum_type[chars_count + 1]);
+        std::shared_ptr<cp_type[]> buffer(new cp_type[chars_count + 1]);
 
-        const datum_type*  target_start_org(buffer.get());
-        const datum_type*  target_start_aux(buffer.get());
-        const datum_type** target_start(&target_start_aux);
-        const datum_type*  target_end(target_start_aux + chars_count);
+        const cp_type*  target_start_org(buffer.get());
+        const cp_type*  target_start_aux(buffer.get());
+        const cp_type** target_start(&target_start_aux);
+        const cp_type*  target_end(target_start_aux + chars_count);
 
         convert_result cr = convert_utf8_to_utf32(source_start,
                                                   source_end,
@@ -156,7 +156,7 @@ codepoints_type text::chars_to_codepoints(const char* chars, const std::size_t& 
     return codepoints;
 }
 
-bool text::codepoints_to_chars(const datum_type* codepoints,
+bool text::codepoints_to_chars(const cp_type* codepoints,
                                const std::size_t& codepoints_count,
                                std::shared_ptr<char[]>& chars,
                                std::size_t& chars_count)
@@ -175,7 +175,6 @@ bool text::codepoints_to_chars(const datum_type* codepoints,
                                                         // An encoded character takes between 1 and 4 bytes.
                                                         // UTF-8 encoding supports longer byte sequences, up to 6 bytes,
                                                         // but the biggest code point of Unicode 6.0 (U+10FFFF) only takes 4 bytes.
-
         std::shared_ptr<char[]> buffer(new char[count]);
 
         const char*  target_start_org(buffer.get());
@@ -239,7 +238,7 @@ bool text::codepoints_to_chars(const datum_type* codepoints,
 }
 
 bool text::string_to_codepoints0(const string_type& text,
-                                 std::shared_ptr<datum_type[]>& codepoints,
+                                 std::shared_ptr<cp_type[]>& codepoints,
                                  std::size_t& count)
 {
     count = 0;
@@ -254,12 +253,12 @@ bool text::string_to_codepoints0(const string_type& text,
         const uint16_t** source_start(&source_start_aux);
         const uint16_t*  source_end(source_start_aux + text_count);
 
-        std::shared_ptr<datum_type[]> buffer(new datum_type[text_count + 1]);
+        std::shared_ptr<cp_type[]> buffer(new cp_type[text_count + 1]);
 
-        const datum_type*  target_start_org(buffer.get());
-        const datum_type*  target_start_aux(buffer.get());
-        const datum_type** target_start(&target_start_aux);
-        const datum_type*  target_end(target_start_aux + text_count);
+        const cp_type*  target_start_org(buffer.get());
+        const cp_type*  target_start_aux(buffer.get());
+        const cp_type** target_start(&target_start_aux);
+        const cp_type*  target_end(target_start_aux + text_count);
 
         convert_result cr = convert_utf16_to_utf32(source_start,
                                                    source_end,
@@ -318,7 +317,7 @@ bool text::string_to_codepoints0(const string_type& text,
     return result;
 }
 
-bool text::codepoints_to_string0(const datum_type* codepoints,
+bool text::codepoints_to_string0(const cp_type* codepoints,
                                  std::size_t count,
                                  string_type& result_text)
 {
@@ -395,7 +394,7 @@ bool text::codepoints_to_string0(const datum_type* codepoints,
 }
 
 bool text::string_to_codepoints(const string_type& text,
-                                std::shared_ptr<datum_type[]>& codepoints,
+                                std::shared_ptr<cp_type[]>& codepoints,
                                 std::size_t& count)
 {
     count = 0;
@@ -410,7 +409,7 @@ bool text::string_to_codepoints(const string_type& text,
         {
             int32_t size = ustr.length() + 1;
 
-            std::shared_ptr<datum_type[]> buffer(new datum_type[size]);
+            std::shared_ptr<cp_type[]> buffer(new cp_type[size]);
 
             UErrorCode error = U_ZERO_ERROR;
 
@@ -456,7 +455,7 @@ bool text::string_to_codepoints(const string_type& text,
     return result;
 }
 
-bool text::codepoints_to_string(const datum_type* codepoints,
+bool text::codepoints_to_string(const cp_type* codepoints,
                                 std::size_t count,
                                 string_type& result_text)
 {
@@ -501,7 +500,7 @@ bool text::codepoints_to_string(const datum_type* codepoints,
     return result;
 }
 
-string_type text::codepoints_to_string(const datum_type* codepoints, std::size_t count)
+string_type text::codepoints_to_string(const cp_type* codepoints, std::size_t count)
 {
     string_type result;
 
@@ -510,13 +509,13 @@ string_type text::codepoints_to_string(const datum_type* codepoints, std::size_t
     return result;
 }
 
-string_type text::codepoint_to_string(datum_type codepoint)
+string_type text::codepoint_to_string(cp_type codepoint)
 {
     string_type result;
 
     if(codepoint != text::invalid_codepoint)
     {
-        std::unique_ptr<datum_type[]> codepoints(new datum_type[1 + 1]);
+        std::unique_ptr<cp_type[]> codepoints(new cp_type[1 + 1]);
 
         codepoints[0] = codepoint;
 
@@ -530,13 +529,13 @@ string_type text::codepoint_to_string(datum_type codepoint)
     return result;
 }
 
-bool text::codepoint_to_string(datum_type codepoint, string_type& result_text)
+bool text::codepoint_to_string(cp_type codepoint, string_type& result_text)
 {
     bool result = false;
 
     if(codepoint != text::invalid_codepoint)
     {
-        std::unique_ptr<datum_type[]> codepoints(new datum_type[1 + 1]);
+        std::unique_ptr<cp_type[]> codepoints(new cp_type[1 + 1]);
 
         codepoints[0] = codepoint;
 

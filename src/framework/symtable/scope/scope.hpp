@@ -16,7 +16,7 @@ class scope : public tree
     public:
         using symbol_type = std::shared_ptr<symbol>;
 
-        using key_type = codepoints_type;
+        using key_type = cps_type;
         using value_type = symbol_type;
         using symbols_type = std::unordered_map<key_type, value_type>;
         using scope_type = std::shared_ptr<scope>;

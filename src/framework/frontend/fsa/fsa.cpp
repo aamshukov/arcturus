@@ -197,7 +197,7 @@ bool fsa::add_transition(const typename fsa::state_type& start_state,
     return result;
 }
 
-bool fsa::add_transition(const state_type& start_state, const state_type& end_state, typename datum_type predicate)
+bool fsa::add_transition(const state_type& start_state, const state_type& end_state, typename cp_type predicate)
 {
     log_info(L"Adding FSA transition ...");
 

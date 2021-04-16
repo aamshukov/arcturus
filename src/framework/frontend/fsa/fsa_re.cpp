@@ -30,7 +30,7 @@ USING_NAMESPACE(core)
 
 #define ERROR_DATUM     (text::bad_codepoint())
 
-bool fsa_re::re_to_fsa(const std::shared_ptr<datum_type[]>& re,
+bool fsa_re::re_to_fsa(const std::shared_ptr<cp_type[]>& re,
                        std::size_t count,
                        typename fsa_re::token_type token,
                        typename fsa_re::token_type escape_token,
@@ -43,11 +43,11 @@ bool fsa_re::re_to_fsa(const std::shared_ptr<datum_type[]>& re,
 
     try
     {
-        std::shared_ptr<datum_type[]> processed_re;
+        std::shared_ptr<cp_type[]> processed_re;
 
         std::size_t new_count = preprocess(re, count, processed_re);
 
-        std::shared_ptr<datum_type[]> postfix_re;
+        std::shared_ptr<cp_type[]> postfix_re;
 
         if(infix_to_postfix(processed_re, new_count, postfix_re))
         {
@@ -55,7 +55,7 @@ bool fsa_re::re_to_fsa(const std::shared_ptr<datum_type[]>& re,
 
             std::stack<fsa::fsa_type> fragments;
 
-            const datum_type* p_src(postfix_re.get());
+            const cp_type* p_src(postfix_re.get());
 
             result = true;
 
@@ -140,7 +140,7 @@ bool fsa_re::re_to_dfa(const string_type& re,
     // Ахо,Лам,Сети,Ульман - Компиляторы. Принципы, технологии, инструменты.2ed.2008, pp.229
     log_info(L"Generating DFA from RE, direct method ...");
 
-    std::shared_ptr<datum_type[]> re_data;
+    std::shared_ptr<cp_type[]> re_data;
 
     std::size_t count = 0;
 
@@ -161,11 +161,11 @@ bool fsa_re::re_to_dfa(const string_type& re,
     {
         try
         {
-            std::shared_ptr<datum_type[]> processed_re;
+            std::shared_ptr<cp_type[]> processed_re;
 
             std::size_t new_count = preprocess(re_data, count, processed_re);
 
-            std::shared_ptr<datum_type[]> postfix_re;
+            std::shared_ptr<cp_type[]> postfix_re;
 
             if(infix_to_postfix(processed_re, new_count, postfix_re))
             {
@@ -208,7 +208,7 @@ bool fsa_re::re_to_dfa(const string_type& re,
                 (*fsa).add_state(start_state);
 
                 // transitions
-                std::set<std::tuple<std::size_t, std::size_t, datum_type>> transitions;
+                std::set<std::tuple<std::size_t, std::size_t, cp_type>> transitions;
 
                 // initialize Dstates to contain only the unmarked state firstpos(n0) ...
                 dstates.emplace_back(std::make_pair((*tree).firstpos, start_state));
@@ -313,9 +313,9 @@ bool fsa_re::re_to_dfa(const string_type& re,
     return result;
 }
 
-datum_type fsa_re::get_codepoint(const datum_type*& p_src)
+cp_type fsa_re::get_codepoint(const cp_type*& p_src)
 {
-    datum_type result = ERROR_DATUM;
+    cp_type result = ERROR_DATUM;
 
     switch(*p_src)
     {
@@ -370,9 +370,9 @@ datum_type fsa_re::get_codepoint(const datum_type*& p_src)
     return result;
 }
 
-int8_t fsa_re::get_operator_precedence(datum_type op)
+int8_t fsa_re::get_operator_precedence(cp_type op)
 {
-    static std::map<datum_type, int8_t> precendences
+    static std::map<cp_type, int8_t> precendences
     {
         { OPEN_PAREN_OP,   static_cast<int8_t>(1) }, // '('
         { ALTERNATE_OP,    static_cast<int8_t>(2) }, // '|'
@@ -398,7 +398,7 @@ int8_t fsa_re::get_operator_precedence(datum_type op)
     return result;
 }
 
-bool fsa_re::is_literal(datum_type ch)
+bool fsa_re::is_literal(cp_type ch)
 {
     return ch != OPEN_PAREN_OP &&
            ch != CLOSE_PAREN_OP &&
@@ -409,18 +409,18 @@ bool fsa_re::is_literal(datum_type ch)
            ch != ZERO_OR_ONE_OP;
 }
 
-std::size_t fsa_re::preprocess(const std::shared_ptr<datum_type[]>& infix_re,
+std::size_t fsa_re::preprocess(const std::shared_ptr<cp_type[]>& infix_re,
                                std::size_t count,
-                               std::shared_ptr<datum_type[]>& processed_re)
+                               std::shared_ptr<cp_type[]>& processed_re)
 {
-    std::shared_ptr<datum_type[]> buffer(new datum_type[count * 2 + 1]);
-    datum_type* p_dst(buffer.get());
+    std::shared_ptr<cp_type[]> buffer(new cp_type[count * 2 + 1]);
+    cp_type* p_dst(buffer.get());
 
-    const datum_type* p_src(infix_re.get());
+    const cp_type* p_src(infix_re.get());
 
     std::size_t k = 0;
 
-    datum_type ch = get_codepoint(p_src);
+    cp_type ch = get_codepoint(p_src);
 
     while(ch)
     {
@@ -442,9 +442,9 @@ std::size_t fsa_re::preprocess(const std::shared_ptr<datum_type[]>& infix_re,
     return k + 1;
 }
 
-bool fsa_re::infix_to_postfix(const std::shared_ptr<datum_type[]>& infix_re,
+bool fsa_re::infix_to_postfix(const std::shared_ptr<cp_type[]>& infix_re,
                               std::size_t count,
-                              std::shared_ptr<datum_type[]>& postfix_re)
+                              std::shared_ptr<cp_type[]>& postfix_re)
 {
     // a(bb)+a ==> abb.+.a.
     //
@@ -467,12 +467,12 @@ bool fsa_re::infix_to_postfix(const std::shared_ptr<datum_type[]>& infix_re,
 
     bool result = false;
 
-    std::stack<datum_type> operators;           // stack
+    std::stack<cp_type> operators;           // stack
 
-    std::shared_ptr<datum_type[]> buffer(new datum_type[count + 1]);
-    datum_type* p_dst(buffer.get());            // queue
+    std::shared_ptr<cp_type[]> buffer(new cp_type[count + 1]);
+    cp_type* p_dst(buffer.get());            // queue
 
-    const datum_type* p_src(infix_re.get());    // tokens
+    const cp_type* p_src(infix_re.get());    // tokens
 
     std::size_t k = 0;
 
@@ -569,7 +569,7 @@ error: ;
     return result;
 }
 
-typename fsa_re::tree_type fsa_re::postfix_to_tree(const std::shared_ptr<datum_type[]>& postfix_re,
+typename fsa_re::tree_type fsa_re::postfix_to_tree(const std::shared_ptr<cp_type[]>& postfix_re,
                                                    typename fsa_re::leaves_type& leaves,
                                                    std::size_t& finalpos,
                                                    std::size_t& terminals)
@@ -583,7 +583,7 @@ typename fsa_re::tree_type fsa_re::postfix_to_tree(const std::shared_ptr<datum_t
 
     std::stack<tree_type> nodes;
 
-    const datum_type* p_src(postfix_re.get());
+    const cp_type* p_src(postfix_re.get());
 
     std::size_t index = 0;
 
@@ -700,7 +700,7 @@ typename fsa_re::tree_type fsa_re::postfix_to_tree(const std::shared_ptr<datum_t
     return result;
 }
 
-string_type fsa_re::postfix_re_to_string(const std::shared_ptr<datum_type[]>& postfix_re, std::size_t count)
+string_type fsa_re::postfix_re_to_string(const std::shared_ptr<cp_type[]>& postfix_re, std::size_t count)
 {
     string_type result;
 
@@ -1108,7 +1108,7 @@ bool fsa_re::process_zero_or_one(std::stack<fsa::fsa_type>& fragments)
     return result;
 }
 
-bool fsa_re::process_literal(const datum_type*& p_src, std::stack<fsa::fsa_type>& fragments)
+bool fsa_re::process_literal(const cp_type*& p_src, std::stack<fsa::fsa_type>& fragments)
 {
     log_info(L"Processing RE literal ...");
 
@@ -1607,7 +1607,7 @@ void fsa_re::print_fsa_followpos(const typename fsa_re::followpos_type& followpo
     }
 }
 
-bool fsa_re::fsa_to_re_kleene(const fsa_type& fsa, std::basic_string<datum_type>& re)
+bool fsa_re::fsa_to_re_kleene(const fsa_type& fsa, std::basic_string<cp_type>& re)
 {
     //??
     fsa;
@@ -1619,7 +1619,7 @@ bool fsa_re::fsa_to_re_kleene(const fsa_type& fsa, std::basic_string<datum_type>
     return result;
 }
 
-bool fsa_re::fsa_to_re_state_elimination(const fsa_type& fsa, std::basic_string<datum_type>& re)
+bool fsa_re::fsa_to_re_state_elimination(const fsa_type& fsa, std::basic_string<cp_type>& re)
 {
     //??
     fsa;
@@ -1630,7 +1630,7 @@ bool fsa_re::fsa_to_re_state_elimination(const fsa_type& fsa, std::basic_string<
     return result;
 }
 
-bool fsa_re::fsa_to_re_arden(const fsa_type& fsa, std::basic_string<datum_type>& re)
+bool fsa_re::fsa_to_re_arden(const fsa_type& fsa, std::basic_string<cp_type>& re)
 {
     //??
     fsa;

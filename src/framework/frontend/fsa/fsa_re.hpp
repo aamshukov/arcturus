@@ -23,7 +23,7 @@ class fsa_re : private noncopyable
     public:
         struct fsa_tree : public tree
         {
-            datum_type symbol;
+            cp_type symbol;
 
             std::size_t index;
 
@@ -52,31 +52,31 @@ class fsa_re : private noncopyable
         using leaves_type = std::multimap<tree_type, std::size_t, tree_key_comparator>;
 
     private:
-        static datum_type   get_codepoint(const datum_type*& p_src);
-        static int8_t       get_operator_precedence(datum_type op);
+        static cp_type      get_codepoint(const cp_type*& p_src);
+        static int8_t       get_operator_precedence(cp_type op);
 
-        static bool         is_literal(datum_type ch);
+        static bool         is_literal(cp_type ch);
 
-        static std::size_t  preprocess(const std::shared_ptr<datum_type[]>& infix_re,
+        static std::size_t  preprocess(const std::shared_ptr<cp_type[]>& infix_re,
                                        std::size_t count,
-                                       std::shared_ptr<datum_type[]>& processed_re);
+                                       std::shared_ptr<cp_type[]>& processed_re);
 
-        static bool         infix_to_postfix(const std::shared_ptr<datum_type[]>& infix_re,
+        static bool         infix_to_postfix(const std::shared_ptr<cp_type[]>& infix_re,
                                              std::size_t count,
-                                             std::shared_ptr<datum_type[]>& postfix_refsa);
-        static tree_type    postfix_to_tree(const std::shared_ptr<datum_type[]>& postfix_re,
+                                             std::shared_ptr<cp_type[]>& postfix_refsa);
+        static tree_type    postfix_to_tree(const std::shared_ptr<cp_type[]>& postfix_re,
                                             leaves_type& leaves,
                                             std::size_t& finalpos,
                                             std::size_t& terminals);
 
-        static string_type  postfix_re_to_string(const std::shared_ptr<datum_type[]>& postfix_re, std::size_t count);
+        static string_type  postfix_re_to_string(const std::shared_ptr<cp_type[]>& postfix_re, std::size_t count);
 
         static bool         process_combine(std::stack<fsa::fsa_type>& fragments);
         static bool         process_concatenate(std::stack<fsa::fsa_type>& fragments);
         static bool         process_zero_or_more(std::stack<fsa::fsa_type>& fragments);
         static bool         process_one_or_more(std::stack<fsa::fsa_type>& fragments);
         static bool         process_zero_or_one(std::stack<fsa::fsa_type>& fragments);
-        static bool         process_literal(const datum_type*& p_src, std::stack<fsa::fsa_type>& fragments);
+        static bool         process_literal(const cp_type*& p_src, std::stack<fsa::fsa_type>& fragments);
 
         static void         adjust_predicates(fsa_type& fsa0);
         static void         add_escape_state(fsa_type& fsa0, token_type escape_token, const string_type& escape_predicate);
@@ -100,7 +100,7 @@ class fsa_re : private noncopyable
         static void         print_fsa_followpos(const followpos_type& followpos, std::wostream& stream);
 
     public:
-        static bool         re_to_fsa(const std::shared_ptr<datum_type[]>& re,
+        static bool         re_to_fsa(const std::shared_ptr<cp_type[]>& re,
                                       std::size_t count,
                                       token_type token,
                                       token_type escape_token,
@@ -112,9 +112,9 @@ class fsa_re : private noncopyable
                                       const string_type& escape_predicate,
                                       fsa_type& result_fsa);
 
-        static bool         fsa_to_re_kleene(const fsa_type& fsa, std::basic_string<datum_type>& re);
-        static bool         fsa_to_re_state_elimination(const fsa_type& fsa, std::basic_string<datum_type>& re);
-        static bool         fsa_to_re_arden(const fsa_type& fsa, std::basic_string<datum_type>& re);
+        static bool         fsa_to_re_kleene(const fsa_type& fsa, std::basic_string<cp_type>& re);
+        static bool         fsa_to_re_state_elimination(const fsa_type& fsa, std::basic_string<cp_type>& re);
+        static bool         fsa_to_re_arden(const fsa_type& fsa, std::basic_string<cp_type>& re);
 };
 
 END_NAMESPACE

@@ -60,7 +60,7 @@ const typename lexical_analyzer::token_type& lexical_analyzer::lookahead_lexeme(
     else
     {
         // push state
-        const datum_type* aux_ptr(my_ptr);
+        const cp_type* aux_ptr(my_ptr);
 
         auto number_of_lexems = statistics::instance().number_of_lexems();
 

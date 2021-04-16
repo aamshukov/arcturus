@@ -11,7 +11,7 @@ BEGIN_NAMESPACE(core)
 class content : private noncopyable
 {
     public:
-        using data_type = std::shared_ptr<datum_type[]>;
+        using data_type = std::shared_ptr<cp_type[]>;
 
         using id_type = std::size_t;
         using source_type = string_type;
@@ -33,7 +33,7 @@ class content : private noncopyable
         const source_type&  source() const;
         source_type&        source();
 
-        const datum_type*   data() const;
+        const cp_type*      data() const;
         std::size_t         count() const;
 
         virtual bool        load(data_provider& provider);
@@ -59,9 +59,9 @@ inline content::source_type& content::source()
     return my_source;
 }
 
-inline const datum_type* content::data() const
+inline const cp_type* content::data() const
 {
-    const datum_type *result(nullptr);
+    const cp_type *result(nullptr);
 
     if(my_data)
     {

@@ -190,7 +190,7 @@ struct token
     loc_type        offset;  // offset in context (absolute address)
     std::size_t     length;  // length of lexeme
 
-    codepoints_type literal; // string or char literal (if unicode - always decoded), numeric value
+    cps_type        literal; // string or char literal (if unicode - always decoded), numeric value
 
     flags_type      flags;
 
@@ -284,14 +284,14 @@ struct token
             source = 0;
         }
 
-        codepoints_type codepoints(const datum_type* content) const
+        cps_type codepoints(const cp_type* content) const
         {
-            codepoints_type result;
+            cps_type result;
             result.assign(content + offset, length);
             return result;
         }
 
-        string_type to_string(const datum_type* content) const
+        string_type to_string(const cp_type* content) const
         {
             string_type result;
             

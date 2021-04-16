@@ -13,7 +13,7 @@ BEGIN_NAMESPACE(core)
 class text : private noncopyable
 {
     public:
-        static constexpr datum_type ascii_numbers[128] =
+        static constexpr cp_type ascii_numbers[128] =
         {
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 0, 0, 0, 0, 0,
@@ -22,57 +22,56 @@ class text : private noncopyable
         };
 
     public:
-        static const datum_type invalid_codepoint = 0x0000FFFD;
+        static const cp_type invalid_codepoint = 0x0000FFFD;
 
         // http://www.unicode.org/glossary/#supplementary_code_point
-        static const datum_type kSupplementaryCodePointStart = 0x010000;
-        static const datum_type kSupplementaryCodePointEnd = 0x10FFFF;
+        static const cp_type kSupplementaryCodePointStart = 0x010000;
+        static const cp_type kSupplementaryCodePointEnd = 0x10FFFF;
 
         // http://www.unicode.org/glossary/#high_surrogate_code_unit
-        static const datum_type kHighSurrogateStart = 0x0000D800;
-        static const datum_type kHighSurrogateEnd = 0x0000DBFF;
+        static const cp_type kHighSurrogateStart = 0x0000D800;
+        static const cp_type kHighSurrogateEnd = 0x0000DBFF;
 
         // http://www.unicode.org/glossary/#low_surrogate_code_unit
-        static const datum_type kLowSurrogateStart = 0x0000DC00;
-        static const datum_type kLowSurrogateEnd = 0x0000DFFF;
+        static const cp_type kLowSurrogateStart = 0x0000DC00;
+        static const cp_type kLowSurrogateEnd = 0x0000DFFF;
 
-        static const datum_type kSurrogateStart = kHighSurrogateStart;
-        static const datum_type kSurrogateEnd = kLowSurrogateEnd;
+        static const cp_type kSurrogateStart = kHighSurrogateStart;
+        static const cp_type kSurrogateEnd = kLowSurrogateEnd;
 
     public:
         static bool         chars_to_codepoints(const char* chars,
                                                 const std::size_t& chars_count,
-                                                std::shared_ptr<datum_type[]>& codepoints,
+                                                std::shared_ptr<cp_type[]>& codepoints,
                                                 std::size_t& codepoints_count);
-        static codepoints_type
-                            chars_to_codepoints(const char* chars, const std::size_t& chars_count);
+        static cps_type     chars_to_codepoints(const char* chars, const std::size_t& chars_count);
 
-        static bool         codepoints_to_chars(const datum_type* codepoints,
+        static bool         codepoints_to_chars(const cp_type* codepoints,
                                                 const std::size_t& codepoints_count,
                                                 std::shared_ptr<char[]>& chars,
                                                 std::size_t& chars_count);
 
-        static bool         string_to_codepoints0(const string_type& text, std::shared_ptr<datum_type[]>& codepoints, std::size_t& count);
-        static bool         codepoints_to_string0(const datum_type* codepoints, std::size_t count, string_type& result_text);
+        static bool         string_to_codepoints0(const string_type& text, std::shared_ptr<cp_type[]>& codepoints, std::size_t& count);
+        static bool         codepoints_to_string0(const cp_type* codepoints, std::size_t count, string_type& result_text);
 
-        static bool         string_to_codepoints(const string_type& text, std::shared_ptr<datum_type[]>& codepoints, std::size_t& count);
-        static bool         codepoints_to_string(const datum_type* codepoints, std::size_t count, string_type& result_text);
-        static string_type  codepoints_to_string(const datum_type* codepoints, std::size_t count);
+        static bool         string_to_codepoints(const string_type& text, std::shared_ptr<cp_type[]>& codepoints, std::size_t& count);
+        static bool         codepoints_to_string(const cp_type* codepoints, std::size_t count, string_type& result_text);
+        static string_type  codepoints_to_string(const cp_type* codepoints, std::size_t count);
 
-        static string_type  codepoint_to_string(datum_type codepoint);
-        static bool         codepoint_to_string(datum_type codepoint, string_type& result_text);
+        static string_type  codepoint_to_string(cp_type codepoint);
+        static bool         codepoint_to_string(cp_type codepoint, string_type& result_text);
 
-        static datum_type   epsilon_codepoint();
-        static datum_type   bad_codepoint();
+        static cp_type      epsilon_codepoint();
+        static cp_type      bad_codepoint();
 
-        static datum_type   make_codepoint(datum_type high_surrogate_codeunit, datum_type low_surrogate_codeunit);
+        static cp_type      make_codepoint(cp_type high_surrogate_codeunit, cp_type low_surrogate_codeunit);
 
-        static bool         is_high_surrogate(datum_type codeunit);
-        static bool         is_low_surrogate(datum_type codeunit);
-        static bool         is_surrogate(datum_type codeunit);
-        static bool         is_surrogate_pair(datum_type high_surrogate_codeunit, datum_type low_surrogate_codeunit);
+        static bool         is_high_surrogate(cp_type codeunit);
+        static bool         is_low_surrogate(cp_type codeunit);
+        static bool         is_surrogate(cp_type codeunit);
+        static bool         is_surrogate_pair(cp_type high_surrogate_codeunit, cp_type low_surrogate_codeunit);
 
-        static bool         in_range(datum_type codepoint, datum_type r0, datum_type r1);
+        static bool         in_range(cp_type codepoint, cp_type r0, cp_type r1);
 
         static string_type  trim(const string_type& text, const string_type& delimiters);
         static void         trim(const string_type& text, const string_type& delimiters, string_type& result_text);
@@ -82,111 +81,111 @@ class text : private noncopyable
         static bool         starts_with(const string_type& text, const char_type* prefix);
         static bool         starts_with(const string_type& text, const string_type& prefix);
 
-        static bool         is_digit(datum_type codepoint);
+        static bool         is_digit(cp_type codepoint);
 
-        static bool         is_identifier_start(datum_type codepoint);
-        static bool         is_identifier_part(datum_type codepoint);
+        static bool         is_identifier_start(cp_type codepoint);
+        static bool         is_identifier_part(cp_type codepoint);
 
-        static bool         is_java_identifier_start(datum_type codepoint);
-        static bool         is_java_identifier_part(datum_type codepoint);
+        static bool         is_java_identifier_start(cp_type codepoint);
+        static bool         is_java_identifier_part(cp_type codepoint);
 
-        static bool         is_identifier_ignorable(datum_type codepoint);
+        static bool         is_identifier_ignorable(cp_type codepoint);
 
-        static bool         unicode_category_cf(datum_type codepoint);
-        static bool         unicode_category_ll(datum_type codepoint);
-        static bool         unicode_category_lm(datum_type codepoint);
-        static bool         unicode_category_lo(datum_type codepoint);
-        static bool         unicode_category_lt(datum_type codepoint);
-        static bool         unicode_category_lu(datum_type codepoint);
-        static bool         unicode_category_mc(datum_type codepoint);
-        static bool         unicode_category_mn(datum_type codepoint);
-        static bool         unicode_category_nd(datum_type codepoint);
-        static bool         unicode_category_nl(datum_type codepoint);
-        static bool         unicode_category_pc(datum_type codepoint);
-        static bool         unicode_category_zs(datum_type codepoint);
+        static bool         unicode_category_cf(cp_type codepoint);
+        static bool         unicode_category_ll(cp_type codepoint);
+        static bool         unicode_category_lm(cp_type codepoint);
+        static bool         unicode_category_lo(cp_type codepoint);
+        static bool         unicode_category_lt(cp_type codepoint);
+        static bool         unicode_category_lu(cp_type codepoint);
+        static bool         unicode_category_mc(cp_type codepoint);
+        static bool         unicode_category_mn(cp_type codepoint);
+        static bool         unicode_category_nd(cp_type codepoint);
+        static bool         unicode_category_nl(cp_type codepoint);
+        static bool         unicode_category_pc(cp_type codepoint);
+        static bool         unicode_category_zs(cp_type codepoint);
 
     public:
         #pragma warning(push) // due to C++20
         #pragma warning(disable : 4499)
         template <typename T>
-        static T parse(const datum_type* lexeme, uint32_t length, int base);
+        static T parse(const cp_type* lexeme, uint32_t length, int base);
 
         template <>
-        static int8_t parse<int8_t>(const datum_type* lexeme, uint32_t  length, int base);
+        static int8_t parse<int8_t>(const cp_type* lexeme, uint32_t  length, int base);
 
         template <>
-        static uint8_t parse<uint8_t>(const datum_type* lexeme, uint32_t length, int base);
+        static uint8_t parse<uint8_t>(const cp_type* lexeme, uint32_t length, int base);
 
         template <>
-        static int16_t parse<int16_t>(const datum_type* lexeme, uint32_t length, int base);
+        static int16_t parse<int16_t>(const cp_type* lexeme, uint32_t length, int base);
 
         template <>
-        static uint16_t parse<uint16_t>(const datum_type* lexeme, uint32_t length, int base);
+        static uint16_t parse<uint16_t>(const cp_type* lexeme, uint32_t length, int base);
 
         template <>
-        static int32_t parse<int32_t>(const datum_type* lexeme, uint32_t length, int base);
+        static int32_t parse<int32_t>(const cp_type* lexeme, uint32_t length, int base);
 
         template <>
-        static uint32_t parse<uint32_t>(const datum_type* lexeme, uint32_t length, int base);
+        static uint32_t parse<uint32_t>(const cp_type* lexeme, uint32_t length, int base);
 
         template <>
-        static int64_t parse<int64_t>(const datum_type* lexeme, uint32_t length, int base);
+        static int64_t parse<int64_t>(const cp_type* lexeme, uint32_t length, int base);
 
         template <>
-        static uint64_t parse<uint64_t>(const datum_type* lexeme, uint32_t length, int base);
+        static uint64_t parse<uint64_t>(const cp_type* lexeme, uint32_t length, int base);
 
         template <>
-        static float parse<float>(const datum_type* lexeme, uint32_t length, int);
+        static float parse<float>(const cp_type* lexeme, uint32_t length, int);
 
         template <>
-        static double parse<double>(const datum_type* lexeme, uint32_t length, int);
+        static double parse<double>(const cp_type* lexeme, uint32_t length, int);
         #pragma warning(pop)
 };
 
-inline typename datum_type text::epsilon_codepoint()
+inline typename cp_type text::epsilon_codepoint()
 {
-    static datum_type result(0x000003B5);
+    static cp_type result(0x000003B5);
     return result;
 }
 
-inline typename datum_type text::bad_codepoint()
+inline typename cp_type text::bad_codepoint()
 {
-    static datum_type result(0x0F000002);
+    static cp_type result(0x0F000002);
     return result;
 }
 
-inline typename datum_type text::make_codepoint(typename datum_type high_surrogate_codeunit, typename datum_type low_surrogate_codeunit)
+inline typename cp_type text::make_codepoint(typename cp_type high_surrogate_codeunit, typename cp_type low_surrogate_codeunit)
 {
     return ((high_surrogate_codeunit - kHighSurrogateStart) << 10/* divide by 0x400*/) +
             (low_surrogate_codeunit - kLowSurrogateStart) + kSupplementaryCodePointStart;
 }
 
-inline bool text::is_high_surrogate(typename datum_type codeunit)
+inline bool text::is_high_surrogate(typename cp_type codeunit)
 {
     return codeunit >= kHighSurrogateStart && codeunit <= kHighSurrogateEnd;
 }
 
-inline bool text::is_low_surrogate(typename datum_type codeunit)
+inline bool text::is_low_surrogate(typename cp_type codeunit)
 {
     return codeunit >= kLowSurrogateStart && codeunit <= kLowSurrogateEnd;
 }
 
-inline bool text::is_surrogate(typename datum_type codeunit)
+inline bool text::is_surrogate(typename cp_type codeunit)
 {
     return codeunit >= kSurrogateStart && codeunit <= kSurrogateEnd;
 }
 
-inline bool text::is_surrogate_pair(typename datum_type high_surrogate_codeunit, typename datum_type low_surrogate_codeunit)
+inline bool text::is_surrogate_pair(typename cp_type high_surrogate_codeunit, typename cp_type low_surrogate_codeunit)
 {
     return is_high_surrogate(high_surrogate_codeunit) && is_low_surrogate(low_surrogate_codeunit);
 }
 
-inline bool text::in_range(datum_type codepoint, datum_type r0, datum_type r1)
+inline bool text::in_range(cp_type codepoint, cp_type r0, cp_type r1)
 {
     return codepoint >= r0 && codepoint <= r1;
 }
 
-inline bool text::is_digit(typename datum_type codepoint)
+inline bool text::is_digit(typename cp_type codepoint)
 {
     bool result = false;
 
@@ -201,7 +200,7 @@ inline bool text::is_digit(typename datum_type codepoint)
     return result;
 }
 
-inline bool text::is_identifier_start(typename datum_type codepoint)
+inline bool text::is_identifier_start(typename cp_type codepoint)
 {
     bool result = false;
 
@@ -228,7 +227,7 @@ inline bool text::is_identifier_start(typename datum_type codepoint)
     return result;
 }
 
-inline bool text::is_identifier_part(typename datum_type codepoint)
+inline bool text::is_identifier_part(typename cp_type codepoint)
 {
     bool result = false;
 
@@ -256,7 +255,7 @@ inline bool text::is_identifier_part(typename datum_type codepoint)
     return result;
 }
 
-inline bool text::is_java_identifier_start(typename datum_type codepoint)
+inline bool text::is_java_identifier_start(typename cp_type codepoint)
 {
     bool result = false;
 
@@ -283,7 +282,7 @@ inline bool text::is_java_identifier_start(typename datum_type codepoint)
     return result;
 }
 
-inline bool text::is_java_identifier_part(typename datum_type codepoint)
+inline bool text::is_java_identifier_part(typename cp_type codepoint)
 {
     bool result = false;
 
@@ -311,12 +310,12 @@ inline bool text::is_java_identifier_part(typename datum_type codepoint)
     return result;
 }
 
-inline bool text::is_identifier_ignorable(datum_type codepoint)
+inline bool text::is_identifier_ignorable(cp_type codepoint)
 {
     return u_isIDIgnorable(codepoint);
 }
 
-inline bool text::unicode_category_cf(datum_type codepoint)
+inline bool text::unicode_category_cf(cp_type codepoint)
 {
     return in_range(codepoint, 0x00AD, 0x00AD) ||
            in_range(codepoint, 0x0600, 0x0605) ||
@@ -340,7 +339,7 @@ inline bool text::unicode_category_cf(datum_type codepoint)
            in_range(codepoint, 0xE0020, 0xE007F);
 }
 
-inline bool text::unicode_category_ll(datum_type codepoint)
+inline bool text::unicode_category_ll(cp_type codepoint)
 {
     return in_range(codepoint, 0x0061, 0x007A) ||
            in_range(codepoint, 0x00B5, 0x00B5) ||
@@ -989,7 +988,7 @@ inline bool text::unicode_category_ll(datum_type codepoint)
            in_range(codepoint, 0x1E922, 0x1E943);
 }
 
-inline bool text::unicode_category_lm(datum_type codepoint)
+inline bool text::unicode_category_lm(cp_type codepoint)
 {
     return in_range(codepoint, 0x02B0, 0x02C1) ||
            in_range(codepoint, 0x02C6, 0x02D1) ||
@@ -1054,7 +1053,7 @@ inline bool text::unicode_category_lm(datum_type codepoint)
            in_range(codepoint, 0x1E94B, 0x1E94B);
 }
 
-inline bool text::unicode_category_lo(datum_type codepoint)
+inline bool text::unicode_category_lo(cp_type codepoint)
 {
     return in_range(codepoint, 0x00AA, 0x00AA) ||
            in_range(codepoint, 0x00BA, 0x00BA) ||
@@ -1558,7 +1557,7 @@ inline bool text::unicode_category_lo(datum_type codepoint)
            in_range(codepoint, 0x3134A, 0x3134A);
 }
 
-inline bool text::unicode_category_lt(datum_type codepoint)
+inline bool text::unicode_category_lt(cp_type codepoint)
 {
     return in_range(codepoint, 0x01C5, 0x01C5) ||
            in_range(codepoint, 0x01C8, 0x01C8) ||
@@ -1572,7 +1571,7 @@ inline bool text::unicode_category_lt(datum_type codepoint)
            in_range(codepoint, 0x1FFC, 0x1FFC);
 }
 
-inline bool text::unicode_category_lu(datum_type codepoint)
+inline bool text::unicode_category_lu(cp_type codepoint)
 {
     return in_range(codepoint, 0x0041, 0x005A) ||
            in_range(codepoint, 0x00C0, 0x00D6) ||
@@ -2214,7 +2213,7 @@ inline bool text::unicode_category_lu(datum_type codepoint)
            in_range(codepoint, 0x1E900, 0x1E921);
 }
 
-inline bool text::unicode_category_mc(datum_type codepoint)
+inline bool text::unicode_category_mc(cp_type codepoint)
 {
     return in_range(codepoint, 0x0903, 0x0903) ||
            in_range(codepoint, 0x093B, 0x093B) ||
@@ -2393,7 +2392,7 @@ inline bool text::unicode_category_mc(datum_type codepoint)
            in_range(codepoint, 0x1D16D, 0x1D172);
 }
 
-inline bool text::unicode_category_mn(datum_type codepoint)
+inline bool text::unicode_category_mn(cp_type codepoint)
 {
     return in_range(codepoint, 0x0300, 0x036F) ||
            in_range(codepoint, 0x0483, 0x0487) ||
@@ -2724,7 +2723,7 @@ inline bool text::unicode_category_mn(datum_type codepoint)
            in_range(codepoint, 0xE0100, 0xE01EF);
 }
 
-inline bool text::unicode_category_nd(datum_type codepoint)
+inline bool text::unicode_category_nd(cp_type codepoint)
 {
     return in_range(codepoint, 0x0030, 0x0039) ||
            in_range(codepoint, 0x0660, 0x0669) ||
@@ -2789,7 +2788,7 @@ inline bool text::unicode_category_nd(datum_type codepoint)
            in_range(codepoint, 0x1FBF0, 0x1FBF9);
 }
 
-inline bool text::unicode_category_nl(datum_type codepoint)
+inline bool text::unicode_category_nl(cp_type codepoint)
 {
     return in_range(codepoint, 0x16EE, 0x16F0) ||
            in_range(codepoint, 0x2160, 0x2182) ||
@@ -2805,7 +2804,7 @@ inline bool text::unicode_category_nl(datum_type codepoint)
            in_range(codepoint, 0x12400, 0x1246E);
 }
 
-inline bool text::unicode_category_pc(datum_type codepoint)
+inline bool text::unicode_category_pc(cp_type codepoint)
 {
     return in_range(codepoint, 0x005F, 0x005F) ||
            in_range(codepoint, 0x203F, 0x2040) ||
@@ -2815,7 +2814,7 @@ inline bool text::unicode_category_pc(datum_type codepoint)
            in_range(codepoint, 0xFF3F, 0xFF3F);
 }
 
-inline bool text::unicode_category_zs(datum_type codepoint)
+inline bool text::unicode_category_zs(cp_type codepoint)
 {
     return in_range(codepoint, 0x0020, 0x0020) ||
            in_range(codepoint, 0x00A0, 0x00A0) ||
@@ -2830,7 +2829,9 @@ inline bool text::unicode_category_zs(datum_type codepoint)
 #define PARSE_PROLOG                                                    \
     char_type buffer[NUMERIC_BUFFER_PARSE_SIZE];                        \
                                                                         \
-    const datum_type* ptr(lexeme);                                      \
+    buffer[0] = 0;                                                      \
+                                                                        \
+    const cp_type* ptr(lexeme);                                         \
                                                                         \
     uint32_t k = 0;                                                     \
     uint32_t n = std::min<uint32_t>(length, NUMERIC_BUFFER_PARSE_SIZE); \
@@ -2849,13 +2850,13 @@ inline bool text::unicode_category_zs(datum_type codepoint)
 
 
 template <typename T>
-inline T text::parse(const datum_type* lexeme, uint32_t length, int base)
+inline T text::parse(const cp_type* lexeme, uint32_t length, int base)
 {
     return T {};
 }
 
 template <>
-inline int8_t text::parse<int8_t>(const datum_type* lexeme, uint32_t length, int base)
+inline int8_t text::parse<int8_t>(const cp_type* lexeme, uint32_t length, int base)
 {
     PARSE_PROLOG
 
@@ -2865,7 +2866,7 @@ inline int8_t text::parse<int8_t>(const datum_type* lexeme, uint32_t length, int
 }
 
 template <>
-inline uint8_t text::parse<uint8_t>(const datum_type* lexeme, uint32_t length, int base)
+inline uint8_t text::parse<uint8_t>(const cp_type* lexeme, uint32_t length, int base)
 {
     PARSE_PROLOG
 
@@ -2875,7 +2876,7 @@ inline uint8_t text::parse<uint8_t>(const datum_type* lexeme, uint32_t length, i
 }
 
 template <>
-inline int16_t text::parse<int16_t>(const datum_type* lexeme, uint32_t length, int base)
+inline int16_t text::parse<int16_t>(const cp_type* lexeme, uint32_t length, int base)
 {
     PARSE_PROLOG
 
@@ -2885,7 +2886,7 @@ inline int16_t text::parse<int16_t>(const datum_type* lexeme, uint32_t length, i
 }
 
 template <>
-inline uint16_t text::parse<uint16_t>(const datum_type* lexeme, uint32_t length, int base)
+inline uint16_t text::parse<uint16_t>(const cp_type* lexeme, uint32_t length, int base)
 {
     PARSE_PROLOG
 
@@ -2895,7 +2896,7 @@ inline uint16_t text::parse<uint16_t>(const datum_type* lexeme, uint32_t length,
 }
 
 template <>
-inline int32_t text::parse<int32_t>(const datum_type* lexeme, uint32_t length, int base)
+inline int32_t text::parse<int32_t>(const cp_type* lexeme, uint32_t length, int base)
 {
     PARSE_PROLOG
 
@@ -2905,7 +2906,7 @@ inline int32_t text::parse<int32_t>(const datum_type* lexeme, uint32_t length, i
 }
 
 template <>
-inline uint32_t text::parse<uint32_t>(const datum_type* lexeme, uint32_t length, int base)
+inline uint32_t text::parse<uint32_t>(const cp_type* lexeme, uint32_t length, int base)
 {
     PARSE_PROLOG
 
@@ -2915,7 +2916,7 @@ inline uint32_t text::parse<uint32_t>(const datum_type* lexeme, uint32_t length,
 }
 
 template <>
-inline int64_t text::parse<int64_t>(const datum_type* lexeme, uint32_t length, int base)
+inline int64_t text::parse<int64_t>(const cp_type* lexeme, uint32_t length, int base)
 {
     PARSE_PROLOG
 
@@ -2925,7 +2926,7 @@ inline int64_t text::parse<int64_t>(const datum_type* lexeme, uint32_t length, i
 }
 
 template <>
-inline uint64_t text::parse<uint64_t>(const datum_type* lexeme, uint32_t length, int base)
+inline uint64_t text::parse<uint64_t>(const cp_type* lexeme, uint32_t length, int base)
 {
     PARSE_PROLOG
 
@@ -2935,7 +2936,7 @@ inline uint64_t text::parse<uint64_t>(const datum_type* lexeme, uint32_t length,
 }
 
 template <>
-inline float text::parse<float>(const datum_type* lexeme, uint32_t length, int)
+inline float text::parse<float>(const cp_type* lexeme, uint32_t length, int)
 {
     PARSE_PROLOG
 
@@ -2945,7 +2946,7 @@ inline float text::parse<float>(const datum_type* lexeme, uint32_t length, int)
 }
 
 template <>
-inline double text::parse<double>(const datum_type* lexeme, uint32_t length, int)
+inline double text::parse<double>(const cp_type* lexeme, uint32_t length, int)
 {
     PARSE_PROLOG
 

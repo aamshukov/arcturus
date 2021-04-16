@@ -17,7 +17,7 @@ fsa_transition::fsa_transition(std::size_t start_state, std::size_t end_state, c
 {
 }
 
-fsa_transition::fsa_transition(std::size_t start_state, std::size_t end_state, datum_type switch_predicate)
+fsa_transition::fsa_transition(std::size_t start_state, std::size_t end_state, cp_type switch_predicate)
               : my_id(0), my_start_state(start_state), my_end_state(end_state), my_switch_predicate(switch_predicate), my_rank(0)
 {
 }

@@ -22,7 +22,7 @@ class fsa_transition
         std::size_t                     my_end_state;
 
         predicate_type                  my_predicate;
-        datum_type                      my_switch_predicate; // short text predicate, indicates if predicate has simple form, and can be used in switched code generation
+        cp_type                         my_switch_predicate; // short text predicate, indicates if predicate has simple form, and can be used in switched code generation
 
         int16_t                         my_rank; // rank is a special attribute of a transition and it is used only during generation
                                                  // of code when "goto"-driven lexical analyzer is produced, allowing to shift
@@ -33,7 +33,7 @@ class fsa_transition
     public:
                                         fsa_transition();
                                         fsa_transition(std::size_t start_state, std::size_t end_state, const predicate_type& predicate);
-                                        fsa_transition(std::size_t start_state, std::size_t end_state, datum_type switch_predicate);
+                                        fsa_transition(std::size_t start_state, std::size_t end_state, cp_type switch_predicate);
 
                                         fsa_transition(const fsa_transition& other);
                                         fsa_transition(fsa_transition&& other);
@@ -53,8 +53,8 @@ class fsa_transition
         const predicate_type&           predicate() const;
         predicate_type&                 predicate();
 
-        datum_type                      switch_char() const;
-        datum_type&                     switch_char();
+        cp_type                         switch_char() const;
+        cp_type&                        switch_char();
 
         int16_t                         rank() const;
         int16_t&                        rank();
@@ -105,12 +105,12 @@ inline typename fsa_transition::predicate_type& fsa_transition::predicate()
     return const_cast<typename fsa_transition::predicate_type&>(static_cast<const fsa_transition&>(*this).predicate());
 }
 
-inline datum_type fsa_transition::switch_char() const
+inline cp_type fsa_transition::switch_char() const
 {
     return my_switch_predicate;
 }
 
-inline datum_type& fsa_transition::switch_char()
+inline cp_type& fsa_transition::switch_char()
 {
     return my_switch_predicate;
 }

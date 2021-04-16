@@ -70,7 +70,7 @@ class fsa : private noncopyable
         bool                    add_final_state(const state_type& state);
 
         bool                    add_transition(const state_type& start_state, const state_type& end_state, const predicate_type& predicate);
-        bool                    add_transition(const state_type& start_state, const state_type& end_state, datum_type predicate);
+        bool                    add_transition(const state_type& start_state, const state_type& end_state, cp_type predicate);
 
         static bool             combine(const fsa_type& fsa1, const fsa_type& fsa2, fsa_type& result_fsa);
         static bool             combine(const std::vector<fsa_type>& fsas, fsa_type& result_fsa);

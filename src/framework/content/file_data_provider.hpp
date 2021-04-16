@@ -24,7 +24,7 @@ BEGIN_NAMESPACE(core)
 class file_data_provider : public data_provider, private noncopyable
 {
     public:
-        using callback_type = std::function<bool(std::shared_ptr<datum_type[]>, void*, std::size_t&)>;
+        using callback_type = std::function<bool(std::shared_ptr<cp_type[]>, void*, std::size_t&)>;
 
     private:
         string_type         my_file_name;
@@ -38,25 +38,25 @@ class file_data_provider : public data_provider, private noncopyable
 
         static bool         read_utf8_data(std::shared_ptr<byte[]> raw_data,
                                            std::size_t raw_count,
-                                           std::shared_ptr<datum_type[]>& data,
+                                           std::shared_ptr<cp_type[]>& data,
                                            std::size_t& count);
 
         static bool         read_utf16_data(std::shared_ptr<byte[]> raw_data,
                                             std::size_t raw_count,
-                                            std::shared_ptr<datum_type[]>& data,
+                                            std::shared_ptr<cp_type[]>& data,
                                             std::size_t& count,
                                             bool big_endian);
 
         static bool         read_utf32_data(std::shared_ptr<byte[]> raw_data,
                                             std::size_t raw_count,
-                                            std::shared_ptr<datum_type[]>& data,
+                                            std::shared_ptr<cp_type[]>& data,
                                             std::size_t& count,
                                             bool big_endian);
     public:
                             file_data_provider(const string_type& file_name, callback_type callback = nullptr);
         virtual            ~file_data_provider();
 
-        virtual bool        load(std::shared_ptr<datum_type[]>& data, std::size_t& count) override;
+        virtual bool        load(std::shared_ptr<cp_type[]>& data, std::size_t& count) override;
 };
 
 END_NAMESPACE

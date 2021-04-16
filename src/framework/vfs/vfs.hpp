@@ -71,13 +71,32 @@ class vfs : private noncopyable
         using magic_type = uint64_t;
         using checksum_type = uint64_t;
         using timestamp_type = uint64_t;
-        using uuid_type = byte[16];
+        using uuid_type = byte[16]; // GUID/UUID
+
+        using endianness_type = endianness;
 
         using paddr_type = std::size_t; // persistent address
         using paddrs_type = std::vector<paddr_type>;
 
         using free_paddrs_type = std::queue<paddr_type>;
 
+    public:
+        enum class consts : uint32_t
+        {
+            name_length     = 255, // persistent - UTF8, in-memory UTF32
+            resident_blocks = 16,
+            root_page_id    = 0,
+            invalid_page_id = std::numeric_limits<std::size_t>::min()
+        };
+
+        enum class magics : magic_type
+        {
+            master_header = 0x5646534D53484452ULL,  // VFSMSHDR
+            index_page    = 0x564653494E445047ULL,  // VFSINDPG
+            leaf_page     = 0x5646534C45465047ULL,  // VFSLEFPG
+            file_magic    = 0x564653464C445343ULL,  // VFSFLDSC
+            dir_magic     = 0x5646534452445343ULL,  // VFSDRDSC
+        };
 
     public:
         enum class disposition
@@ -105,16 +124,6 @@ class vfs : private noncopyable
 
         using platform_type = platform;
 
-        enum class endianness : uint8_t
-        {
-            unknown       = 0,
-            little_endian = 1,
-            big_endian    = 2,
-            cpu_endian    = 3 // platform/cpu specific
-        };
-
-        using endianness_type = endianness;
-
         enum class compression : uint8_t
         {
             uncompressed = 0,
@@ -123,10 +132,10 @@ class vfs : private noncopyable
 
         using compression_type = compression;
 
-        enum class type : uint8_t
+        enum class file_type : uint8_t
         {
             directory = 1,
-            stream    = 2
+            file = 2
         };
 
         enum class access_mode : uint8_t
@@ -137,36 +146,40 @@ class vfs : private noncopyable
 
 
 
-        struct string_pool_entry
-        {
-            id_type   id;
-            size_type ref_count;
-            codepoints_type name;
-        };
+        //struct string_pool_entry
+        //{
+        //    id_type   id;
+        //    size_type ref_count;
+        //    codepoints_type name;
+        //};
 
-        struct string_pool_entry_lt_key_comparator
-        {
-            bool operator() (const string_pool_entry& lhs, const string_pool_entry& rhs) const
-            {
-                return (*lhs).id < (*rhs).id;
-            }
-        };
+        //struct string_pool_entry_lt_key_comparator
+        //{
+        //    bool operator() (const string_pool_entry& lhs, const string_pool_entry& rhs) const
+        //    {
+        //        return (*lhs).id < (*rhs).id;
+        //    }
+        //};
 
-        using strings_type = std::set<string_pool_entry, string_pool_entry_lt_key_comparator>;
-        using id_string_map_type = std::unordered_map<id_type, string_pool_entry>;
+        //using strings_type = std::set<string_pool_entry, string_pool_entry_lt_key_comparator>;
+        //using id_string_map_type = std::unordered_map<id_type, string_pool_entry>;
 
-        struct string_pool
-        {
-            strings_type strings;
-            id_string_map_type mapping;
-        };
+        //struct string_pool
+        //{
+        //    strings_type strings;
+        //    id_string_map_type mapping;
+        //};
 
     public:
-        using descriptor_table_type = std::unordered_map<codepoints_type, std::size_t>;
+        using descriptor_table_type = std::unordered_map<cps_type, std::size_t>;
 
         struct descriptor
         {
-            std::size_t id;
+            id_type id;
+
+            file_type type;
+
+            paddr_type paddr;
 
             time_type create_time;
             time_type access_time;
@@ -174,26 +187,36 @@ class vfs : private noncopyable
 
             flags_type flags;
 
-            const id_type magic = 0x5505505512349852;
+            magic_type magic;
         };
 
-        struct stream_descriptor : public descriptor // file control block (fcb), inode
+        struct file_descriptor : public descriptor // file control block (fcb), inode
         {
-            uint64_t size;
-            uint64_t capacity;  // could be fixed
-            bool     open;      // true if stream is open
+            size_type size;
+            size_type capacity; // could be fixed, quote
 
-            const id_type magic = 0x5505505512349853;
+            bool open; // true if stream is open
+        };
+
+        struct pdirectory_entry // persistent
+        {
+            id_type id; // reference id - file or sub-directory
+            uint8_t length;
+            byte    name[consts::name_length]; // persistent, UTF8
+        };
+
+        struct directory_entry // in-memory
+        {
+            id_type id; // reference id - file or sub-directory
+            cps_type name; // in-memory, UTF32
         };
 
         struct directory_descriptor : public descriptor
         {
-            //stream_table_type stream_table;
         };
 
         struct security_descriptor
         {
-            
         };
 
         struct snapshot
@@ -202,13 +225,13 @@ class vfs : private noncopyable
                             // metadata only
         };
 
-        class stream
+        class file
         {
+            // list of data blocks
         };
 
         class directory
         {
-            
         };
 
         struct page_descriptor
@@ -250,7 +273,7 @@ class vfs : private noncopyable
             std::vector<std::size_t> pages;
         };
 
-        using master_stream_table_type = std::unordered_map<codepoints_type, descriptor>;
+        using master_stream_table_type = std::unordered_map<cps_type, descriptor>;
 
         static const magic_type master_header_magic = 0x5646534D53445343; // VFSMSDSC
 
@@ -309,7 +332,7 @@ class vfs : private noncopyable
                             vfs(const cp_type*);
                             vfs(const std::string&);
                             vfs(const std::wstring&);
-                            vfs(const codepoints_type&);
+                            vfs(const cps_type&);
                            ~vfs();
 
         void                create();
@@ -337,23 +360,23 @@ class vfs : private noncopyable
         void                create_stream(const cp_type*);
         void                create_stream(const std::string&);
         void                create_stream(const std::wstring&);
-        void                create_stream(const codepoints_type&);
+        void                create_stream(const cps_type&);
 
         status              open_stream(const char*);
         status              open_stream(const wchar_t*);
         status              open_stream(const cp_type*);
         status              open_stream(const std::string&);
         status              open_stream(const std::wstring&);
-        status              open_stream(const codepoints_type&);
+        status              open_stream(const cps_type&);
 
-        void                lock_stream(stream&, std::size_t, std::size_t);
-        void                unlock_stream(stream&, std::size_t, std::size_t);
+        //void                lock_stream(stream&, std::size_t, std::size_t);
+        //void                unlock_stream(stream&, std::size_t, std::size_t);
 
-        void                rename_stream(stream&);
-        void                delete_stream(stream&);
+        //void                rename_stream(stream&);
+        //void                delete_stream(stream&);
 
-        void                read_stream(stream&);
-        void                write_stream(stream&, byte*);
+        //void                read_stream(stream&);
+        //void                write_stream(stream&, byte*);
 
         void                stream_flush();
 

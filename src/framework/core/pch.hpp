@@ -94,17 +94,16 @@ BEGIN_NAMESPACE(core)
 
 using byte = uint8_t;
 
-using offset_type = long;   // fseek, etc.
-using loc_type = int64_t;   // position, locus, location ...
+using offset_type = long; // fseek, etc.
+using loc_type = int64_t; // position, locus, location ...
 
 using hash_type = uint64_t;
 
 using char_type = wchar_t;
 using string_type = std::basic_string<char_type>;
 
-using cp_type = uint32_t;   // code point
-using datum_type = cp_type; 
-using codepoints_type = std::basic_string<datum_type>;
+using cp_type = uint32_t;                    // code point
+using cps_type = std::basic_string<cp_type>; // code points
 
 const int bits_in_byte = CHAR_BIT;
 

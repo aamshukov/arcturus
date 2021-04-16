@@ -408,6 +408,30 @@
     <ClInclude Include="..\src\framework\core\endianness.hpp">
       <Filter>framework\core</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\framework\vfs\vfs_btree_node.hpp">
+      <Filter>framework\vfs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\vfs\vfs_btree_pnode.hpp">
+      <Filter>framework\vfs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\vfs\vfs_btree_types.hpp">
+      <Filter>framework\vfs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\vfs\vfs_btree_index_node.hpp">
+      <Filter>framework\vfs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\vfs\vfs_btree_index_pnode.hpp">
+      <Filter>framework\vfs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\vfs\vfs_btree_leaf_node.hpp">
+      <Filter>framework\vfs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\vfs\vfs_btree_leaf_pnode.hpp">
+      <Filter>framework\vfs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\vfs\vfs_page.hpp">
+      <Filter>framework\vfs</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\framework\core\logger.cpp">
