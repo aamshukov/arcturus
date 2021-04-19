@@ -47,18 +47,49 @@ class vfs_string_pool : private noncopyable
 
         using strings_type = std::unordered_map<key_type, value_type, hash_key, eq_key_comparator>;
 
+        using ptr_value_type = value_type*;
+
+        struct hash_value
+        {
+            std::size_t operator () (const ptr_value_type& value) const
+            {
+                std::size_t result = (*value).size;
+                result ^= combine_hash(crc32c_append(static_cast<uint32_t>(result), (*value).data.get(), (*value).size));
+                result ^= combine_hash(result);
+                return result;
+            }
+        };
+
+        struct eq_value_comparator
+        {
+            bool operator() (const ptr_value_type& lhs, const ptr_value_type& rhs) const
+            {
+                return lhs == rhs;
+            }
+        };
+
+        using rl_strings_type = std::unordered_map<ptr_value_type, key_type, hash_value, eq_value_comparator>; // reverse lokkup
+
     private:
-        strings_type    my_strings;
+        strings_type        my_strings;
+        rl_strings_type     my_rl_strings;
+
+    private:
+        static key_type     dummy_key;
+        static value_type   dummy_value;
 
     public:
-                        vfs_string_pool();
-                       ~vfs_string_pool();
+                            vfs_string_pool();
+                           ~vfs_string_pool();
 
-        bool            add(const key_type& key, value_type& value);
-        bool            remove(const key_type& key);
+        const key_type&     key(value_type& value) const;
+        const value_type&   value(key_type& key) const;
 
-        void            load();
-        void            save();
+        bool                add(const key_type& key, value_type& value);
+        bool                remove(const key_type& key);
+
+        void                load();
+        void                save();
 };
 
 END_NAMESPACE

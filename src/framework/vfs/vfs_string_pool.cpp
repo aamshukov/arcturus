@@ -5,11 +5,16 @@
 #include <core/noncopyable.hpp>
 #include <core/cache.hpp>
 
+#include <../../libs/crc32c/crc32c/crc32c.h>
+
 #include <vfs/vfs_types.hpp>
 #include <vfs/vfs_string_pool.hpp>
 
 BEGIN_NAMESPACE(backend)
 USING_NAMESPACE(core)
+
+typename vfs_string_pool::key_type vfs_string_pool::dummy_key = 0;
+typename vfs_string_pool::value_type vfs_string_pool::dummy_value = { 0, nullptr, 0 };
 
 vfs_string_pool::vfs_string_pool()
 {
@@ -18,6 +23,34 @@ vfs_string_pool::vfs_string_pool()
 vfs_string_pool::~vfs_string_pool()
 {
     my_strings.clear();
+}
+
+const typename vfs_string_pool::key_type& vfs_string_pool::key(typename vfs_string_pool::value_type& value) const
+{
+    const key_type *result(&dummy_key);
+
+    const auto it(my_rl_strings.find(&value));
+
+    if(it != my_rl_strings.end())
+    {
+        result = (key_type*)(&(*it).second);
+    }
+
+    return *result;
+}
+
+const typename vfs_string_pool::value_type& vfs_string_pool::value(key_type& key) const
+{
+    value_type *result(&dummy_value);
+
+    const auto it(my_strings.find(key));
+
+    if(it != my_strings.end())
+    {
+        result = (value_type*)(&(*it).second);
+    }
+
+    return *result;
 }
 
 bool vfs_string_pool::add(const typename vfs_string_pool::key_type& key,
