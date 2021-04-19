@@ -12,9 +12,24 @@ USING_NAMESPACE(core)
 class vfs_string_pool : private noncopyable
 {
     public:
-        using size_type = typename vfs_types::size_type;
+        using type_traits = vfs_type_traits;
+
+        using id_type = typename type_traits::id_type;
+        using size_type = typename type_traits::size_type;
+        using magic_type = typename type_traits::magic_type;
+        using checksum_type = typename type_traits::checksum_type;
+
         using length_type = uint16_t;
         using data_type = std::unique_ptr<byte>;
+
+        struct descriptor
+        {
+            magic_type magic;
+            size_type  page_size;
+            size_type  pool_size;   // how many entries
+        };
+
+        using descriptor_type = descriptor;
 
         // count : data, aka pascal string
         struct entry
@@ -70,6 +85,8 @@ class vfs_string_pool : private noncopyable
 
         using rl_strings_type = std::unordered_map<ptr_value_type, key_type, hash_value, eq_value_comparator>; // reverse lokkup
 
+        using io_type = std::shared_ptr<vfs_paging>;
+
     private:
         strings_type        my_strings;
         rl_strings_type     my_rl_strings;
@@ -88,8 +105,8 @@ class vfs_string_pool : private noncopyable
         bool                add(const key_type& key, value_type& value);
         bool                remove(const key_type& key);
 
-        void                load();
-        void                save();
+        void                load(io_type& io);
+        void                save(io_type& io);
 };
 
 END_NAMESPACE

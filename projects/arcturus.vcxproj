@@ -136,7 +136,7 @@
     <ClInclude Include="..\src\framework\vfs\vfs_page.hpp" />
     <ClInclude Include="..\src\framework\vfs\vfs_paging.hpp" />
     <ClInclude Include="..\src\framework\vfs\vfs_string_pool.hpp" />
-    <ClInclude Include="..\src\framework\vfs\vfs_types.hpp" />
+    <ClInclude Include="..\src\framework\vfs\vfs_type_traits.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\libs\crc32c\crc32c\crc32c.c">

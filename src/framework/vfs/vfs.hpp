@@ -62,29 +62,29 @@ class vfs : private noncopyable
     // syntax:
     //      /root/dir(s)/stream(s)
     public:
-        using traits_type = Traits;
+        using type_traits = vfs_type_traits;
 
         using tree_type = std::shared_ptr<btree<string_type, data>>; //??
 
-        using id_type = typename vfs_types::id_type;
-        using size_type = typename vfs_types::size_type;
-        using magic_type = typename vfs_types::magic_type;
-        using checksum_type = typename vfs_types::checksum_type;
-        using timestamp_type = typename vfs_types::timestamp_type;
-        using uuid_type = typename vfs_types::uuid_type;
+        using id_type = typename type_traits::id_type;
+        using size_type = typename type_traits::size_type;
+        using magic_type = typename type_traits::magic_type;
+        using checksum_type = typename type_traits::checksum_type;
+        using timestamp_type = typename type_traits::timestamp_type;
+        using uuid_type = typename type_traits::uuid_type;
 
-        using endianness_type = typename vfs_types::endianness_type;
+        using endianness_type = typename type_traits::endianness_type;
 
-        using paddr_type = typename vfs_types::paddr_type;
-        using paddrs_type = typename vfs_types::paddrs_type;
+        using paddr_type = typename type_traits::paddr_type;
+        using paddrs_type = typename type_traits::paddrs_type;
 
         using free_paddrs_type = std::queue<paddr_type>;
 
-        using file_type = typename vfs_types::file_type;
-        using platform_type = typename vfs_types::platform_type;
-        using compression_type = typename vfs_types::compression_type;
+        using file_type = typename type_traits::file_type;
+        using platform_type = typename type_traits::platform_type;
+        using compression_type = typename type_traits::compression_type;
 
-        using flags_type = typename vfs_types::flags_type;
+        using flags_type = typename type_traits::flags_type;
 
     public:
         enum class consts : uint32_t
@@ -95,14 +95,14 @@ class vfs : private noncopyable
             invalid_page_id = std::numeric_limits<std::size_t>::min()
         };
 
-        enum class magics : magic_type
-        {
-            master_header = 0x5646534D53484452ULL,  // VFSMSHDR
-            index_page    = 0x564653494E445047ULL,  // VFSINDPG
-            leaf_page     = 0x5646534C45465047ULL,  // VFSLEFPG
-            file_magic    = 0x564653464C445343ULL,  // VFSFLDSC
-            dir_magic     = 0x5646534452445343ULL,  // VFSDRDSC
-        };
+        //enum class magics : magic_type
+        //{
+        //    master_header = 0x5646534D53484452ULL,  // VFSMSHDR
+        //    index_page    = 0x564653494E445047ULL,  // VFSINDPG
+        //    leaf_page     = 0x5646534C45465047ULL,  // VFSLEFPG
+        //    file_magic    = 0x564653464C445343ULL,  // VFSFLDSC
+        //    dir_magic     = 0x5646534452445343ULL,  // VFSDRDSC
+        //};
 
     public:
         enum class disposition

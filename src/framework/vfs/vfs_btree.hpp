@@ -18,6 +18,8 @@ class btree : public noncopyable
     //  internal nodes so that ⌈b/2⌉ <= m <= b, for order = 7: inner node 4 - 7, leaf 1 - 6,
     //  root 2 - 7 or 1 - 6 if root is the only one node in the tree (leaf)
     public:
+        using type_traits = vfs_type_traits;
+
         using key_type = TKey;
         using key_cmp = TKeyCmp;
         using keys_type = std::vector<key_type>;
@@ -32,7 +34,7 @@ class btree : public noncopyable
 
         using free_paddrs_type = std::queue<paddr_type>;
 
-        using flags_type = typename vfs_types::flags_type;
+        using flags_type = typename type_traits::flags_type;
 
         using paging_type = std::shared_ptr<vfs_paging>;
 

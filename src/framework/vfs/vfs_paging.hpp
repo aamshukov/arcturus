@@ -12,21 +12,23 @@ USING_NAMESPACE(core)
 class vfs_paging : private noncopyable
 {
     public:
-        using id_type = typename vfs_types::id_type;
-        using size_type = typename vfs_types::size_type;
-        using magic_type = typename vfs_types::magic_type;
-        using checksum_type = typename vfs_types::checksum_type;
-        using timestamp_type = typename vfs_types::timestamp_type;
-        using uuid_type = typename vfs_types::uuid_type;
+        using type_traits = vfs_type_traits;
 
-        using endianness_type = typename vfs_types::endianness_type;
+        using id_type = typename type_traits::id_type;
+        using size_type = typename type_traits::size_type;
+        using magic_type = typename type_traits::magic_type;
+        using checksum_type = typename type_traits::checksum_type;
+        using timestamp_type = typename type_traits::timestamp_type;
+        using uuid_type = typename type_traits::uuid_type;
 
-        using fd_type = typename vfs_types::fd_type;
+        using endianness_type = typename type_traits::endianness_type;
 
-        using paddr_type = typename vfs_types::paddr_type;
-        using paddrs_type = typename vfs_types::paddrs_type;
+        using fd_type = typename type_traits::fd_type;
 
-        using flags_type = typename vfs_types::flags_type;
+        using paddr_type = typename type_traits::paddr_type;
+        using paddrs_type = typename type_traits::paddrs_type;
+
+        using flags_type = typename type_traits::flags_type;
 
         // magics
         static const magic_type page_header_magic = 0x5646535047484452; // VFSPGHDR
@@ -71,15 +73,17 @@ class vfs_paging : private noncopyable
         using position_type = position;
 
     private:
-        std::size_t         my_start;       // offset from start
-        std::size_t         my_page_size;   // I/O operations' block size
-        std::size_t         my_start_page;  // start page to initiate I/O operations, if none - allocate
+        size_type           my_start;       // offset from start
+        size_type           my_page_size;   // I/O operations' block size
+        size_type           my_start_page;  // start page to initiate I/O operations, if none - allocate
         position_type       my_position;    // current I/O operations pointer
         cache_type          my_cache;       // pages cache
 
     public:
                             vfs_paging(std::size_t start, std::size_t page_size, std::size_t cache_size);
                            ~vfs_paging();
+
+        size_type           page_size() const;
 
         bool                initialize(fd_type& fd); //?? read pagination header and the first page
         bool                finalize(fd_type& fd); //?? save header and all dirty pages

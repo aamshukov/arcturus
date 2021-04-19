@@ -7,7 +7,8 @@
 
 #include <../../libs/crc32c/crc32c/crc32c.h>
 
-#include <vfs/vfs_types.hpp>
+#include <vfs/vfs_type_traits.hpp>
+#include <vfs/vfs_paging.hpp>
 #include <vfs/vfs_string_pool.hpp>
 
 BEGIN_NAMESPACE(backend)
@@ -86,12 +87,20 @@ bool vfs_string_pool::remove(const typename vfs_string_pool::key_type& key)
     return result;
 }
 
-void vfs_string_pool::load()
+void vfs_string_pool::load(typename vfs_string_pool::io_type& io)
 {
+    io; //??
+    
+    //auto page_size = (*io).page_size();
+    //page_size;//??
 }
 
-void vfs_string_pool::save()
+void vfs_string_pool::save(typename vfs_string_pool::io_type& io)
 {
+    io; //??
+
+    //auto page_size = (*io).page_size();
+    //page_size;//??
 }
 
 END_NAMESPACE

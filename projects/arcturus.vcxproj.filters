@@ -432,7 +432,7 @@
     <ClInclude Include="..\src\framework\vfs\vfs_string_pool.hpp">
       <Filter>framework\vfs</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\framework\vfs\vfs_types.hpp">
+    <ClInclude Include="..\src\framework\vfs\vfs_type_traits.hpp">
       <Filter>framework\vfs</Filter>
     </ClInclude>
   </ItemGroup>

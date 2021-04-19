@@ -1,15 +1,15 @@
 ﻿//..............................
 // UI Lab Inc. Arthur Amshukov .
 //..............................
-#ifndef __VIRTUAL_FILE_SYSTEM_TYPES_H__
-#define __VIRTUAL_FILE_SYSTEM_TYPES_H__
+#ifndef __VIRTUAL_FILE_SYSTEM_TYPE_TRAITS_H__
+#define __VIRTUAL_FILE_SYSTEM_TYPE_TRAITS_H__
 
 #pragma once
 
 BEGIN_NAMESPACE(backend)
 USING_NAMESPACE(core)
 
-class vfs_types : public noncopyable
+class vfs_type_traits : public noncopyable
 {
     public:
         using id_type = uint64_t;
@@ -27,6 +27,17 @@ class vfs_types : public noncopyable
         using fd_type = FILE*;
 
     public:
+        enum class magics : magic_type
+        {
+            master_header = 0x5646534D53484452ULL,  // VFSMSHDR
+            index_page    = 0x564653494E445047ULL,  // VFSINDPG
+            leaf_page     = 0x5646534C45465047ULL,  // VFSLEFPG
+            file_magic    = 0x564653464C445343ULL,  // VFSFLDSC
+            dir_magic     = 0x5646534452445343ULL,  // VFSDRDSC
+
+            string_pool_header = 0x5646535350484452ULL,  // VFSSPHDR
+        };
+
         enum class flags : uint64_t
         {
             clear       = 0x0000000000000000,
@@ -81,4 +92,4 @@ class vfs_types : public noncopyable
 
 END_NAMESPACE
 
-#endif // __VIRTUAL_FILE_SYSTEM_TYPES_H__
+#endif // __VIRTUAL_FILE_SYSTEM_TYPE_TRAITS_H__
