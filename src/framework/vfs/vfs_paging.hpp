@@ -73,6 +73,7 @@ class vfs_paging : private noncopyable
         using position_type = position;
 
     private:
+        fd_type             my_fd;          // open file descriptor, ready to read/write
         size_type           my_start;       // offset from start
         size_type           my_page_size;   // I/O operations' block size
         size_type           my_start_page;  // start page to initiate I/O operations, if none - allocate
@@ -80,13 +81,16 @@ class vfs_paging : private noncopyable
         cache_type          my_cache;       // pages cache
 
     public:
-                            vfs_paging(std::size_t start, std::size_t page_size, std::size_t cache_size);
+                            vfs_paging(fd_type& fd, std::size_t start, std::size_t page_size, std::size_t cache_size);
                            ~vfs_paging();
 
         size_type           page_size() const;
+        size_type           position() const; // current position
 
         bool                initialize(fd_type& fd); //?? read pagination header and the first page
         bool                finalize(fd_type& fd); //?? save header and all dirty pages
+
+        bool                get_space(id_type& page_id, byte*& buffer, size_type& size);
 
         bool                read(fd_type& fd,
                                  std::size_t offset,        // absolute offset

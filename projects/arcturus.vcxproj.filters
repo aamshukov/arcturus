@@ -4,9 +4,6 @@
     <Filter Include="framework">
       <UniqueIdentifier>{3b555e92-e58e-4b36-be36-981cf984818f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="tools">
-      <UniqueIdentifier>{98ec8fb5-7726-49c1-a42e-72641b1fb519}</UniqueIdentifier>
-    </Filter>
     <Filter Include="tests">
       <UniqueIdentifier>{c55b4cad-26ea-4129-990b-49e62fb7a149}</UniqueIdentifier>
     </Filter>
@@ -69,9 +66,6 @@
     </Filter>
     <Filter Include="arcturus\type">
       <UniqueIdentifier>{d4861b9b-eea3-4939-a6db-b858dcfd0387}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="tools\dsl">
-      <UniqueIdentifier>{94aea5ae-292c-4c8f-b1b9-71cbb0615e55}</UniqueIdentifier>
     </Filter>
     <Filter Include="framework\vfs">
       <UniqueIdentifier>{a6a5e49f-8438-4be3-ab90-3517a56d1a79}</UniqueIdentifier>
@@ -429,7 +423,7 @@
     <ClInclude Include="..\src\framework\vfs\vfs_page.hpp">
       <Filter>framework\vfs</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\framework\vfs\vfs_string_pool.hpp">
+    <ClInclude Include="..\src\framework\vfs\vfs_name_pool.hpp">
       <Filter>framework\vfs</Filter>
     </ClInclude>
     <ClInclude Include="..\src\framework\vfs\vfs_type_traits.hpp">
@@ -623,7 +617,7 @@
     <ClCompile Include="..\libs\crc32c\crc32c\crc32c.c">
       <Filter>framework\core\crc32c</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\framework\vfs\vfs_string_pool.cpp">
+    <ClCompile Include="..\src\framework\vfs\vfs_name_pool.cpp">
       <Filter>framework\vfs</Filter>
     </ClCompile>
   </ItemGroup>
@@ -636,9 +630,6 @@
     </None>
     <None Include="..\src\framework\ir\ir_visualization.inl">
       <Filter>framework\ir</Filter>
-    </None>
-    <None Include="..\src\tools\dsl\packrat.py">
-      <Filter>tools\dsl</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

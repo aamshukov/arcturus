@@ -135,7 +135,7 @@
     <ClInclude Include="..\src\framework\vfs\vfs_btree_pnode.hpp" />
     <ClInclude Include="..\src\framework\vfs\vfs_page.hpp" />
     <ClInclude Include="..\src\framework\vfs\vfs_paging.hpp" />
-    <ClInclude Include="..\src\framework\vfs\vfs_string_pool.hpp" />
+    <ClInclude Include="..\src\framework\vfs\vfs_name_pool.hpp" />
     <ClInclude Include="..\src\framework\vfs\vfs_type_traits.hpp" />
   </ItemGroup>
   <ItemGroup>
@@ -217,7 +217,7 @@
     <ClCompile Include="..\src\framework\frontend\semantics\semantics.cpp" />
     <ClCompile Include="..\src\framework\symtable\symbol_table.cpp" />
     <ClCompile Include="..\src\framework\vfs\vfs_paging.cpp" />
-    <ClCompile Include="..\src\framework\vfs\vfs_string_pool.cpp" />
+    <ClCompile Include="..\src\framework\vfs\vfs_name_pool.cpp" />
   </ItemGroup>
   <ItemGroup>
     <MASM Include="..\src\framework\backend\codegen\amd64\masm.test.asm">
@@ -229,7 +229,6 @@
     <None Include="..\src\framework\frontend\type\type.inl" />
     <None Include="..\src\framework\ir\ir.inl" />
     <None Include="..\src\framework\ir\ir_visualization.inl" />
-    <None Include="..\src\tools\dsl\packrat.py" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\docs\arcturus-grammar.dev.txt" />
@@ -321,10 +320,10 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);CRC32C_STATIC</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);CRC32C_STATIC;U_STATIC_IMPLEMENTATION</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>core/pch.hpp</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\src\arcturus;$(SolutionDir)..\src\framework;$(SolutionDir)..\libs\ICU\icu4c-60_2\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\src\arcturus;$(SolutionDir)..\src\framework;$(SolutionDir)..\libs\ICU\icu4c-69_1\include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <CompileAsManaged>false</CompileAsManaged>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -340,7 +339,7 @@
     </Link>
     <PostBuildEvent>
       <Command>xcopy $(TargetPath) $(SolutionDir)..\build\$(PlatformTarget)\$(Configuration)\ /F /Y
-xcopy $(SolutionDir)..\libs\ICU\icu4c-60_2\bin64\*.dll $(SolutionDir)..\build\$(PlatformTarget)\$(Configuration)\ /F /Y
+xcopy $(SolutionDir)..\libs\ICU\icu4c-69_1\bin64\*.dll $(SolutionDir)..\build\$(PlatformTarget)\$(Configuration)\ /F /Y
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -371,10 +370,10 @@ xcopy $(SolutionDir)..\libs\ICU\icu4c-60_2\bin64\*.dll $(SolutionDir)..\build\$(
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);CRC32C_STATIC</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);CRC32C_STATIC;U_STATIC_IMPLEMENTATION</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>core/pch.hpp</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\src\arcturus;$(SolutionDir)..\src\framework;$(SolutionDir)..\libs\ICU\icu4c-60_2\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\src\arcturus;$(SolutionDir)..\src\framework;$(SolutionDir)..\libs\ICU\icu4c-69_1\include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <CompileAsManaged>false</CompileAsManaged>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -393,7 +392,7 @@ xcopy $(SolutionDir)..\libs\ICU\icu4c-60_2\bin64\*.dll $(SolutionDir)..\build\$(
     </Link>
     <PostBuildEvent>
       <Command>xcopy $(TargetPath) $(SolutionDir)..\build\$(PlatformTarget)\$(Configuration)\ /F /Y
-xcopy $(SolutionDir)..\libs\ICU\icu4c-60_2\bin64\*.dll $(SolutionDir)..\build\$(PlatformTarget)\$(Configuration)\ /F /Y
+xcopy $(SolutionDir)..\libs\ICU\icu4c-69_1\bin64\*.dll $(SolutionDir)..\build\$(PlatformTarget)\$(Configuration)\ /F /Y
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>

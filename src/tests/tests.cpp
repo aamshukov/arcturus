@@ -2913,5 +2913,9 @@ namespace tests
             {
                 vfs<> fs;
             }
+
+            TEST_METHOD(VfsStringPool)
+            {
+            }
     };
 }

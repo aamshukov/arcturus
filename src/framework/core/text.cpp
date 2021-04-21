@@ -403,7 +403,7 @@ bool text::string_to_codepoints(const string_type& text,
 
     try
     {
-        UnicodeString ustr(text.c_str());
+        icu::UnicodeString ustr(text.c_str());
 
         if(!ustr.isBogus())
         {
@@ -463,8 +463,8 @@ bool text::codepoints_to_string(const cp_type* codepoints,
 
     try
     {
-        UnicodeString ustr(UnicodeString::fromUTF32(reinterpret_cast<const UChar32*>(codepoints), static_cast<int32_t>(count)));
-
+        icu::UnicodeString ustr(icu::UnicodeString::fromUTF32(reinterpret_cast<const UChar32*>(codepoints),
+                                                              static_cast<int32_t>(count)));
         if(!ustr.isBogus())
         {
             int32_t size = ustr.length();

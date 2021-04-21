@@ -7,4 +7,17 @@
   <ItemGroup>
     <ClInclude Include="..\src\framework\core\pch.hpp" />
   </ItemGroup>
+  <ItemGroup>
+    <Filter Include="tools">
+      <UniqueIdentifier>{7486693e-6a3e-431a-b467-a8a03a439cde}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="tools\dsl">
+      <UniqueIdentifier>{ea5cebaa-f455-42fd-a3a0-fb57d06c026d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\src\tools\dsl\packrat.py">
+      <Filter>tools\dsl</Filter>
+    </None>
+  </ItemGroup>
 </Project>

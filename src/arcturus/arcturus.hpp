@@ -117,7 +117,7 @@
 
 #include <vfs/vfs_type_traits.hpp>
 #include <vfs/vfs_paging.hpp>
-#include <vfs/vfs_string_pool.hpp>
+#include <vfs/vfs_name_pool.hpp>
 #include <vfs/vfs_btree.hpp>
 #include <vfs/vfs.hpp>
 
