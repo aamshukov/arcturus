@@ -42,7 +42,8 @@ class status
             lir       = 6,
             mir       = 7,
             hir       = 8,
-            generator = 9
+            generator = 9,
+            vfs       = 10
         };
 
         using custom_code_type = custom_code;

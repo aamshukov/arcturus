@@ -188,7 +188,7 @@ inline string_type diagnostics::format(uint64_t code, ...)
 }
 
 #define OPERATION_FAILED_EX(__ex, __custom_code, __contributer, __template, ...)            \
-    OPERATION_FAILED(__custom_code, 0, __contributer, __template, , ##__VA_ARGS__)
+    OPERATION_FAILED(__custom_code, 0, __contributer, __template, ##__VA_ARGS__)
 
 END_NAMESPACE
 

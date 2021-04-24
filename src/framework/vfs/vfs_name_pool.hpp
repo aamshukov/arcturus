@@ -59,7 +59,7 @@ class vfs_string_pool : private noncopyable
         {
             bool operator() (const name_type& lhs, const name_type& rhs) const
             {
-                return lhs.size == rhs.size && memcmp(lhs.data.get(), rhs.data.get(), lhs.size);
+                return lhs.size == rhs.size && memcmp(lhs.data.get(), rhs.data.get(), lhs.size) == 0;
             }
         };
 
@@ -91,28 +91,33 @@ class vfs_string_pool : private noncopyable
         names_rl_type       my_names_rl; // id -> name*
 
     private:
-        static id_type      dummy_id;
-        static name_type    dummy_name;
+        static id_type      invalid_id;
+        static name_type    invalid_name;
+
+    private:
+        static string_type  name_to_string(const name_type& name);
+        static bool         chars_to_name(const char_type* wchars, name_type& name);
+        static bool         codepoints_to_name(const cps_type& codepoints, name_type& name);
 
     public:
                             vfs_string_pool();
                            ~vfs_string_pool();
 
-        const id_type&      id(const string_type& name) const;
-        const id_type&      id(const cps_type& name) const;
-        const id_type&      id(const name_type& name) const;
+        bool                id(const string_type& string, id_type& result_id) const;
+        bool                id(const cps_type& codepoints, id_type& result_id) const;
+        bool                id(const name_type& name, id_type& result_id) const;
 
-        const name_type&    name(const id_type& id) const;
-        const name_type&    name(const string_type& name) const;
-        const name_type&    name(const cps_type& name) const;
+        bool                name(const id_type& id, name_type& result_name) const;
 
-        bool                add(const string_type& name);
-        bool                add(const cps_type& name);
-        bool                add(const name_type& name);
+        bool                add(const char_type* chars, id_type& result_id);
+        bool                add(const string_type& string, id_type& result_id);
+        bool                add(const cps_type& codepoints, id_type& result_id);
+        bool                add(name_type& name, id_type& result_id);
 
         bool                remove(const id_type& id);
-        bool                remove(const string_type& name);
-        bool                remove(const cps_type& name);
+        bool                remove(const char_type* wchars);
+        bool                remove(const string_type& string);
+        bool                remove(const cps_type& codepoints);
         bool                remove(const name_type& name);
 
         void                load(io_type& io);

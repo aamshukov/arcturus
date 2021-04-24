@@ -51,10 +51,17 @@ class text : private noncopyable
                                                 std::shared_ptr<char[]>& chars,
                                                 std::size_t& chars_count);
 
+        static bool         wchars_to_chars(const wchar_t* wchars,
+                                            const std::size_t& wchars_count,
+                                            std::shared_ptr<char[]>& chars,
+                                            std::size_t& chars_count);
+
         static bool         string_to_codepoints0(const string_type& text, std::shared_ptr<cp_type[]>& codepoints, std::size_t& count);
         static bool         codepoints_to_string0(const cp_type* codepoints, std::size_t count, string_type& result_text);
 
         static bool         string_to_codepoints(const string_type& text, std::shared_ptr<cp_type[]>& codepoints, std::size_t& count);
+
+        static bool         codepoints_to_string(const cps_type& codepoints, string_type& result_text);
         static bool         codepoints_to_string(const cp_type* codepoints, std::size_t count, string_type& result_text);
         static string_type  codepoints_to_string(const cp_type* codepoints, std::size_t count);
 

@@ -237,6 +237,87 @@ bool text::codepoints_to_chars(const cp_type* codepoints,
     return result;
 }
 
+bool text::wchars_to_chars(const wchar_t* wchars,
+                           const std::size_t& wchars_count,
+                           std::shared_ptr<char[]>& chars,
+                           std::size_t& chars_count)
+{
+    chars_count = 0;
+
+    bool result = false;
+
+    try
+    {
+        const uint16_t*  source_start_aux(reinterpret_cast<const uint16_t*>(wchars));
+        const uint16_t** source_start(&source_start_aux);
+        const uint16_t*  source_end(source_start_aux + wchars_count);
+
+        std::size_t count = (wchars_count + 1) * 6; // UTF-8 is a multibyte encoding able to encode the whole Unicode charset.
+                                                    // An encoded character takes between 1 and 4 bytes.
+                                                    // UTF-8 encoding supports longer byte sequences, up to 6 bytes,
+                                                    // but the biggest code point of Unicode 6.0 (U+10FFFF) only takes 4 bytes.
+        std::shared_ptr<char[]> buffer(new char[count]);
+
+        const char*  target_start_org(buffer.get());
+        const char*  target_start_aux(buffer.get());
+        const char** target_start(&target_start_aux);
+        const char*  target_end(target_start_aux + count);
+
+        convert_result cr = convert_utf16_to_utf8(source_start,
+                                                  source_end,
+                                                  (UTF8**)target_start,
+                                                  (UTF8*)target_end,
+                                                  conversion_flags::strict_conversion);
+        if(cr == conversion_ok)
+        {
+            chars_count = std::ptrdiff_t(*target_start - target_start_org);
+
+            buffer[chars_count] = 0;
+
+            chars.swap(buffer);
+
+            result = true;
+        }
+        else
+        {
+            if(cr == source_exhausted)
+            {
+                OPERATION_FAILED(status::custom_code::error,
+                                 source_exhausted,
+                                 status::contributor::core,
+                                 L"Converting wchars to chars (utf8): partial character in source, but hit end.")
+                log_error(diagnostics::instance().last_status().text().c_str());
+            }
+            else if(cr == target_exhausted)
+            {
+                OPERATION_FAILED(status::custom_code::error,
+                                 target_exhausted,
+                                 status::contributor::core,
+                                 L"Converting wchars to chars (utf8): insufficient room in target for conversion.")
+                log_error(diagnostics::instance().last_status().text().c_str());
+            }
+            else if(cr == source_illegal)
+            {
+                OPERATION_FAILED(status::custom_code::error,
+                                 source_illegal,
+                                 status::contributor::core,
+                                 L"Converting wchars to chars (utf8): source sequence is illegal/malformed.")
+                log_error(diagnostics::instance().last_status().text().c_str());
+            }
+        }
+    }
+    catch(const std::exception& ex)
+    {
+        OPERATION_FAILED_EX(ex,
+                            status::custom_code::error,
+                            status::contributor::core,
+                            L"Converting wchars to chars (utf8): error occurred.")
+        log_exception(ex, diagnostics::instance().last_status().text().c_str());
+    }
+
+    return result;
+}
+
 bool text::string_to_codepoints0(const string_type& text,
                                  std::shared_ptr<cp_type[]>& codepoints,
                                  std::size_t& count)
@@ -453,6 +534,11 @@ bool text::string_to_codepoints(const string_type& text,
     }
 
     return result;
+}
+
+bool text::codepoints_to_string(const cps_type& codepoints, string_type& result_text)
+{
+    return codepoints_to_string(codepoints.c_str(), codepoints.size(), result_text);
 }
 
 bool text::codepoints_to_string(const cp_type* codepoints,
