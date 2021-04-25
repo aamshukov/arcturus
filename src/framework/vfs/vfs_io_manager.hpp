@@ -1,15 +1,15 @@
 ﻿//..............................
 // UI Lab Inc. Arthur Amshukov .
 //..............................
-#ifndef __VIRTUAL_FILE_SYSTEM_PAGING_H__
-#define __VIRTUAL_FILE_SYSTEM_PAGING_H__
+#ifndef __VIRTUAL_FILE_SYSTEM_IO_MANAGER_H__
+#define __VIRTUAL_FILE_SYSTEM_IO_MANAGER_H__
 
 #pragma once
 
 BEGIN_NAMESPACE(backend)
 USING_NAMESPACE(core)
 
-class vfs_paging : private noncopyable
+class vfs_io_manager : private noncopyable
 {
     public:
         using type_traits = vfs_type_traits;
@@ -81,8 +81,8 @@ class vfs_paging : private noncopyable
         cache_type          my_cache;       // pages cache
 
     public:
-                            vfs_paging(fd_type& fd, std::size_t start, std::size_t page_size, std::size_t cache_size);
-                           ~vfs_paging();
+                            vfs_io_manager(fd_type& fd, std::size_t start, std::size_t page_size, std::size_t cache_size);
+                           ~vfs_io_manager();
 
         size_type           page_size() const;
         size_type           position() const; // current position
@@ -90,7 +90,8 @@ class vfs_paging : private noncopyable
         bool                initialize(fd_type& fd); //?? read pagination header and the first page
         bool                finalize(fd_type& fd); //?? save header and all dirty pages
 
-        bool                get_space(id_type& page_id, byte*& buffer, size_type& size);
+        bool                allocate_page(id_type& page_id, byte*& buffer, size_type& buffer_size);
+        bool                save_page(const id_type& page_id);
 
         bool                read(fd_type& fd,
                                  std::size_t offset,        // absolute offset
@@ -109,4 +110,4 @@ class vfs_paging : private noncopyable
 
 END_NAMESPACE
 
-#endif // __VIRTUAL_FILE_SYSTEM_PAGING_H__
+#endif // __VIRTUAL_FILE_SYSTEM_IO_MANAGER_H__

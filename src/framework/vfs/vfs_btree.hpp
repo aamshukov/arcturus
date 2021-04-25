@@ -36,7 +36,7 @@ class btree : public noncopyable
 
         using flags_type = typename type_traits::flags_type;
 
-        using paging_type = std::shared_ptr<vfs_paging>;
+        using paging_type = std::shared_ptr<vfs_io_manager>;
 
     private:
         static const std::size_t INVALID_PAGE = std::numeric_limits<std::size_t>::min();

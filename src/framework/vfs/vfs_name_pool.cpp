@@ -8,13 +8,12 @@
 #include <../../libs/crc32c/crc32c/crc32c.h>
 
 #include <vfs/vfs_type_traits.hpp>
-#include <vfs/vfs_paging.hpp>
+#include <vfs/vfs_io_manager.hpp>
 #include <vfs/vfs_name_pool.hpp>
 
 BEGIN_NAMESPACE(backend)
 USING_NAMESPACE(core)
 
-typename vfs_string_pool::id_type vfs_string_pool::invalid_id = 0;
 typename vfs_string_pool::name_type vfs_string_pool::invalid_name = { 0, nullptr, 0 };
 
 vfs_string_pool::vfs_string_pool()
@@ -31,7 +30,7 @@ bool vfs_string_pool::id(const string_type& string, typename vfs_string_pool::id
 {
     bool result = false;
 
-    result_id = invalid_id;
+    result_id = type_traits::invalid_id;
 
     try
     {
@@ -65,7 +64,7 @@ bool vfs_string_pool::id(const cps_type& codepoints, typename vfs_string_pool::i
 {
     bool result = false;
 
-    result_id = invalid_id;
+    result_id = type_traits::invalid_id;
 
     try
     {
@@ -99,7 +98,7 @@ bool vfs_string_pool::id(const typename vfs_string_pool::name_type& name, typena
 {
     bool result = false;
 
-    result_id = invalid_id;
+    result_id = type_traits::invalid_id;
 
     try
     {
@@ -402,35 +401,74 @@ bool vfs_string_pool::remove(const typename name_type& name)
     return result;
 }
 
-void vfs_string_pool::load(typename vfs_string_pool::io_type& io)
+bool vfs_string_pool::load(typename vfs_string_pool::io_manager_type& io_manager)
 {
-    io; //??
+    bool result = false;
+
+    io_manager; //??
     
     //auto page_size = (*io).page_size();
     //page_size;//??
+
+    return result;
 }
 
-void vfs_string_pool::save(typename vfs_string_pool::io_type& io)
+bool vfs_string_pool::save(typename vfs_string_pool::io_manager_type& io_manager)
 {
-    //id_type page_id = 0;
-    //id_type prev_page_id = 0;
+    bool result = false;
 
-    //byte* buffer = nullptr;
-    //size_type size = 0;
+    try
+    {
+        id_type page_id = 0;
+        id_type prev_page_id = 0;
 
-    io;
+        byte* buffer = nullptr;
+        size_type buffer_size = 0;
 
-    //for(const auto& kvp : my_names)
-    //{
-    //    kvp;
-    //    prev_page_id = page_id;
-    //    //io.get_space(page_id, buffer, size);
-    //}
+        size_type offset = 0;
 
-    //auto page(io.get_page());
+        for(const auto& kvp : my_names)
+        {
+            const auto& name(kvp.first);
+            const auto& id(kvp.second);
 
-    //auto page_size = (*io).page_size();
-    //page_size;//??
+            //if()
+            {
+                if(io_manager.allocate_page(page_id, buffer, buffer_size))
+                {
+                    //io_manager.mark_page_as_dirty(page_id);
+                }
+                else
+                {
+                    OPERATION_FAILED(status::custom_code::error,
+                                     0,
+                                     status::contributor::vfs,
+                                     L"VFS: names pool save operation has failed, unable allocate a page.")
+                    log_error(diagnostics::instance().last_status().text().c_str());
+                    break;
+                }
+
+                prev_page_id = page_id;
+            }
+
+            WRITE16_LE(endianness::instance().host_to_le16(name.size), buffer, offset);
+            WRITE64_LE(endianness::instance().host_to_le64(name.ref_count), buffer, offset);
+            WRITE64_LE(endianness::instance().host_to_le64(id), buffer, offset);
+            WRITE_BYTES(name.data.get(), buffer, name.size, offset);
+        }
+
+        io_manager.save_page(page_id);
+    }
+    catch(const std::exception& ex)
+    {
+        OPERATION_FAILED_EX(ex,
+                            status::custom_code::error,
+                            status::contributor::vfs,
+                            L"VFS: names pool save operation has failed.")
+        log_exception(ex, diagnostics::instance().last_status().text().c_str());
+    }
+
+    return result;
 }
 
 string_type vfs_string_pool::name_to_string(const name_type& name)

@@ -219,7 +219,7 @@ bool file_data_provider::read_utf8_data(std::shared_ptr<byte[]> raw_data,
                 OPERATION_FAILED(status::custom_code::error,
                                  source_exhausted,
                                  status::contributor::core,
-                                     L"Read UTF16 data: partial character in source, but hit end.")
+                                 L"Read UTF16 data: partial character in source, but hit end.")
                 log_error(diagnostics::instance().last_status().text().c_str());
             }
             else if(cr == target_exhausted)

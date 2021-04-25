@@ -84,14 +84,13 @@ class vfs_string_pool : private noncopyable
         using names_type = std::unordered_map<name_type, id_type, hash_name, eq_name_comparator>; // name -> id
         using names_rl_type = std::unordered_map<id_type, ptr_name_type, hash_id, eq_id_comparator>; // id -> name*, reverse lookup
 
-        using io_type = vfs_paging;
+        using io_manager_type = vfs_io_manager;
 
     private:
         names_type          my_names;    // name -> id
         names_rl_type       my_names_rl; // id -> name*
 
     private:
-        static id_type      invalid_id;
         static name_type    invalid_name;
 
     private:
@@ -120,8 +119,8 @@ class vfs_string_pool : private noncopyable
         bool                remove(const cps_type& codepoints);
         bool                remove(const name_type& name);
 
-        void                load(io_type& io);
-        void                save(io_type& io);
+        bool                load(io_manager_type& io_manager);
+        bool                save(io_manager_type& io_manager);
 };
 
 END_NAMESPACE

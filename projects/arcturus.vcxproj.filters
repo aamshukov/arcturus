@@ -393,7 +393,7 @@
     <ClInclude Include="..\src\framework\core\cache.hpp">
       <Filter>framework\core</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\framework\vfs\vfs_paging.hpp">
+    <ClInclude Include="..\src\framework\vfs\vfs_io_manager.hpp">
       <Filter>framework\vfs</Filter>
     </ClInclude>
     <ClInclude Include="..\libs\crc32c\crc32c\crc32c.h">
@@ -611,7 +611,7 @@
     <ClCompile Include="..\src\arcturus\arcturus_data_flow_analysis.cpp">
       <Filter>arcturus</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\framework\vfs\vfs_paging.cpp">
+    <ClCompile Include="..\src\framework\vfs\vfs_io_manager.cpp">
       <Filter>framework\vfs</Filter>
     </ClCompile>
     <ClCompile Include="..\libs\crc32c\crc32c\crc32c.c">

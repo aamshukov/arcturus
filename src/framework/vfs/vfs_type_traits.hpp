@@ -88,6 +88,8 @@ class vfs_type_traits : public noncopyable
         };
 
         using access_mode_type = access_mode;
+
+        static const id_type invalid_id = static_cast<id_type>(-1);
 };
 
 END_NAMESPACE
