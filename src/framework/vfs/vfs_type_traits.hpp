@@ -75,7 +75,7 @@ class vfs_type_traits : public noncopyable
 
         using compression_type = compression;
 
-        enum class file_type : uint8_t
+        enum class object_type : uint8_t
         {
             directory = 1,
             file = 2

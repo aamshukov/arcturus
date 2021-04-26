@@ -80,7 +80,7 @@ class vfs : private noncopyable
 
         using free_paddrs_type = std::queue<paddr_type>;
 
-        using file_type = typename type_traits::file_type;
+        using object_type = typename type_traits::object_type;
         using platform_type = typename type_traits::platform_type;
         using compression_type = typename type_traits::compression_type;
 
@@ -144,9 +144,9 @@ class vfs : private noncopyable
 
         struct descriptor
         {
-            id_type id;
+            id_type id; // object id, unique for VFS
 
-            file_type type;
+            object_type type;
 
             paddr_type paddr;
 
@@ -167,21 +167,22 @@ class vfs : private noncopyable
             bool open; // true if stream is open
         };
 
-        struct pdirectory_entry // persistent
+        struct directory_entry // in-memory or persistent
         {
-            id_type id; // reference id - file or sub-directory
-            uint8_t length;
-            byte    name[consts::name_length]; // persistent, UTF8
-        };
-
-        struct directory_entry // in-memory
-        {
-            id_type id; // reference id - file or sub-directory
-            cps_type name; // in-memory, UTF32
+            id_type object_id;  // object id
+            id_type name_id;    // name id from names pool
         };
 
         struct directory_descriptor : public descriptor
         {
+            // list of directory entries
+        };
+
+        struct btree_record
+        {
+            id_type   object_id; // object id
+            size_type offset;    // offset to object descriptor
+            size_type size;      // size of object
         };
 
         struct security_descriptor

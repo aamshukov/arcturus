@@ -432,11 +432,12 @@ bool vfs_string_pool::save(typename vfs_string_pool::io_manager_type& io_manager
             const auto& name(kvp.first);
             const auto& id(kvp.second);
 
-            //if()
+            if(offset >= buffer_size)
             {
                 if(io_manager.allocate_page(page_id, buffer, buffer_size))
                 {
                     //io_manager.mark_page_as_dirty(page_id);
+                    offset = 0;
                 }
                 else
                 {

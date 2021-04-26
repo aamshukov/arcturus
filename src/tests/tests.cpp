@@ -2914,11 +2914,11 @@ namespace tests
                 vfs<> fs;
             }
 
+            using id_t = vfs_string_pool::id_type;
+            using nm_t = vfs_string_pool::name_type;
+
             TEST_METHOD(VfsStringPoolInMemory)
             {
-                using id_t = vfs_string_pool::id_type;
-                using nm_t = vfs_string_pool::name_type;
-
                 vfs_string_pool sp;
 
                 id_t id1;
@@ -2980,6 +2980,29 @@ namespace tests
 
                 sp.remove(id1);
                 sp.remove(id1_0);
+            }
+
+            TEST_METHOD(VfsStringPoolReadInNames)
+            {
+                vfs_string_pool sp;
+
+                std::wstring line;
+
+                std::wifstream input(LR"(..\..\..\..\src\tests\names.txt)");
+
+                for(;;)
+                {
+                    if(input.eof() || input.fail() || input.bad())
+                        break;
+
+                    getline(input, line);
+
+                    if(!line.empty())
+                    {
+                        id_t id;
+                        bool rc = sp.add(line, id);
+                    }
+                }
             }
     };
 }
