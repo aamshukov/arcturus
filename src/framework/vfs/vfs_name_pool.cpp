@@ -22,8 +22,7 @@ vfs_string_pool::vfs_string_pool()
 
 vfs_string_pool::~vfs_string_pool()
 {
-    my_names_rl.clear();
-    my_names.clear();
+    reset();
 }
 
 bool vfs_string_pool::id(const string_type& string, typename vfs_string_pool::id_type& result_id) const
@@ -399,6 +398,12 @@ bool vfs_string_pool::remove(const typename name_type& name)
     }
 
     return result;
+}
+
+void vfs_string_pool::reset()
+{
+    my_names_rl.clear();
+    my_names.clear();
 }
 
 bool vfs_string_pool::load(typename vfs_string_pool::io_manager_type& io_manager)

@@ -119,6 +119,8 @@ class vfs_string_pool : private noncopyable
         bool                remove(const cps_type& codepoints);
         bool                remove(const name_type& name);
 
+        void                reset();
+
         bool                load(io_manager_type& io_manager);
         bool                save(io_manager_type& io_manager);
 };

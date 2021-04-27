@@ -3004,5 +3004,77 @@ namespace tests
                     }
                 }
             }
+
+            TEST_METHOD(VfsStringPoolSaveLoad)
+            {
+                using type_traits = vfs_type_traits;
+                using fd_type = typename type_traits::fd_type;
+
+                fd_type fd;
+
+                auto rc = fopen_s(&fd, R"(d:\tmp\sp.dat)", "wb+, ccs=**UTF-8**");
+
+                vfs_io_manager io_mgr(fd, 0, 4096, 16);
+
+                vfs_string_pool sp;
+
+                id_t id1;
+                sp.add(L"Entry1", id1);
+                sp.add(L"Entry1", id1);
+
+                id_t id2;
+                sp.add(L"Entry2", id2);
+
+                id_t id3;
+                sp.add(L"Entry3", id3);
+
+                id_t id4;
+                sp.add(L"Entry4", id4);
+
+                id_t id5;
+                sp.add(L"Entry5", id5);
+
+                sp.save(io_mgr);
+
+                sp.reset();
+
+                sp.load(io_mgr);
+
+                id_t id1_0;
+                auto res = sp.id(L"Entry1", id1_0);
+                Assert::IsTrue(res && id1_0 == id1);
+
+                id_t id2_0;
+                res = sp.id(L"Entry2", id2_0);
+                Assert::IsTrue(res && id2_0 == id2);
+
+                id_t id3_0;
+                res = sp.id(L"Entry3", id3_0);
+                Assert::IsTrue(res && id3_0 == id3);
+
+                id_t id4_0;
+                res = sp.id(L"Entry4", id4_0);
+                Assert::IsTrue(res && id4_0 == id4);
+
+                id_t id5_0;
+                res = sp.id(L"Entry5", id5_0);
+                Assert::IsTrue(res && id5_0 == id5);
+
+                nm_t name3;                
+                res = sp.name(id3, name3);
+                Assert::IsTrue(res && name3.size == wcslen(L"Entry3"));
+
+                id_t id3_1;
+                res = sp.id(name3, id3_1);
+                Assert::IsTrue(res && id3_1 == id3_0);
+
+                std::shared_ptr<cp_type[]> codepoints;
+                std::size_t count;
+                text::string_to_codepoints(string_type(L"Entry5"), codepoints, count);
+                cps_type cps(codepoints.get(), count);
+                id_t id5_1;
+                res = sp.id(cps, id5_1);
+                Assert::IsTrue(res && id5_1 == id5);
+            }
     };
 }

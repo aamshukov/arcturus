@@ -30,12 +30,9 @@ class vfs_io_manager : private noncopyable
 
         using flags_type = typename type_traits::flags_type;
 
-        // magics
-        static const magic_type page_header_magic = 0x5646535047484452; // VFSPGHDR
-
         struct page_descriptor
         {
-            magic_type     magic = page_header_magic;
+            magic_type     magic;
             id_type        id;          // page number
             id_type        next_id;     // overflow page(s)
             id_type        prev_id;     // overflow page(s)
@@ -47,17 +44,22 @@ class vfs_io_manager : private noncopyable
 
         struct page
         {
-            //?? factory::create<page>()
             page_descriptor descriptor;
 
             byte* data;
 
-            page()
+            page(size_type page_size) : descriptor({})
             {
-                descriptor.id = 0;
-                //??
+                auto data_size = page_size - sizeof(page::descriptor) - sizeof(page::data);
 
-                data = reinterpret_cast<byte*>(reinterpret_cast<void*>(this + sizeof(descriptor)));
+                data = new byte[data_size];
+
+                memset(data, 0, data_size);
+            }
+
+           ~page()
+            {
+                delete [] data;
             }
         };
 
@@ -66,8 +68,8 @@ class vfs_io_manager : private noncopyable
 
         struct position
         {
-            std::size_t offset;  // absolute offset
-            std::size_t page_id; // current page
+            size_type offset;  // absolute offset
+            size_type page_id; // current page
         };
 
         using position_type = position;
@@ -80,6 +82,10 @@ class vfs_io_manager : private noncopyable
         position_type       my_position;    // current I/O operations pointer
         cache_type          my_cache;       // pages cache
 
+    private:
+        page_type           create_page(const id_type& page_id);
+        void                goto_page(const id_type& page_id);
+
     public:
                             vfs_io_manager(fd_type& fd, std::size_t start, std::size_t page_size, std::size_t cache_size);
                            ~vfs_io_manager();
@@ -91,6 +97,8 @@ class vfs_io_manager : private noncopyable
         bool                finalize(fd_type& fd); //?? save header and all dirty pages
 
         bool                allocate_page(id_type& page_id, byte*& buffer, size_type& buffer_size);
+
+        bool                read_page(const id_type& page_id, byte*& buffer, size_type& buffer_size);
         bool                save_page(const id_type& page_id);
 
         bool                read(fd_type& fd,

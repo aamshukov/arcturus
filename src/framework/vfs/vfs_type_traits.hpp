@@ -27,13 +27,22 @@ class vfs_type_traits : public noncopyable
         using fd_type = FILE*;
 
     public:
+        enum class consts : uint64_t
+        {
+            page_size = 4096
+        };
+
+        static const id_type invalid_id = std::numeric_limits<uint64_t>::min();
+
         enum class magics : magic_type
         {
             master_header = 0x5646534D53484452ULL,  // VFSMSHDR
             index_page    = 0x564653494E445047ULL,  // VFSINDPG
             leaf_page     = 0x5646534C45465047ULL,  // VFSLEFPG
-            file_magic    = 0x564653464C445343ULL,  // VFSFLDSC
-            dir_magic     = 0x5646534452445343ULL,  // VFSDRDSC
+            file_object   = 0x564653464C445343ULL,  // VFSFLDSC
+            dir_object    = 0x5646534452445343ULL,  // VFSDRDSC
+
+            io_page_header = 0x5646535047484452ULL,  // VFSPGHDR
 
             string_pool_header = 0x5646535350484452ULL,  // VFSSPHDR
         };
@@ -88,8 +97,6 @@ class vfs_type_traits : public noncopyable
         };
 
         using access_mode_type = access_mode;
-
-        static const id_type invalid_id = static_cast<id_type>(-1);
 };
 
 END_NAMESPACE
