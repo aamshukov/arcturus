@@ -236,170 +236,170 @@ inline double endianness::host_to_bedbl(double value) const
 
 #define READ_BYTE(__n, __buffer, __offset)          \
 {                                                   \
-    byte n = __n;                                   \
-    byte* p = (byte*)(&(n));                        \
-    *(p + 0) = __buffer[0 + __offset];              \
-    __offset += sizeof(byte);                       \
+    byte n = (__n);                                 \
+    byte* p = (byte*)(&n);                          \
+    *(p + 0) = (__buffer)[0 + (__offset)];          \
+    (__offset) += sizeof(byte);                     \
 }
 
 #define WRITE_BYTE(__n, __buffer, __offset)         \
 {                                                   \
-    byte n = __n;                                   \
-    byte* p = (byte*)(&(n));                        \
-    __buffer[0 + __offset] = *(p + 0);              \
-    __offset += sizeof(int8);                       \
+    byte n = (__n);                                 \
+    byte* p = (byte*)(&n);                          \
+    (__buffer)[0 + (__offset)] = *(p + 0);          \
+    (__offset) += sizeof(int8);                     \
 }
 
 #define READ_BYTES(__b, __buffer, __sz, __offset)   \
 {                                                   \
-    memcpy(__b, __buffer + __offset, __sz);         \
-    __offset += __sz;                               \
+    memcpy((__b), (__buffer) + (__offset), (__sz)); \
+    (__offset) += (__sz);                           \
 }
 
 #define WRITE_BYTES(__b, __buffer, __sz, __offset)  \
 {                                                   \
-    memcpy(__buffer + __offset, __b, __sz);         \
-    __offset += __sz;                               \
+    memcpy((__buffer) + (__offset), (__b), (__sz)); \
+    (__offset) += (__sz);                           \
 }
 
 #define READ16_LE(__n, __buffer, __offset)          \
 {                                                   \
-    uint16_t n = __n;                               \
-    byte* p = (byte*)(&(n));                        \
-    *(p + 1) = __buffer[0 + __offset];              \
-    *(p + 0) = __buffer[1 + __offset];              \
-    __offset += sizeof(uint16_t);                   \
+    uint16_t n = (__n);                             \
+    byte* p = (byte*)(&n);                          \
+    *(p + 1) = (__buffer)[0 + (__offset)];          \
+    *(p + 0) = (__buffer)[1 + (__offset)];          \
+    (__offset) += sizeof(uint16_t);                 \
 }
 
 #define READ16_BE(__n, __buffer, __offset)          \
 {                                                   \
-    uint16_t n = __n;                               \
-    byte* p = (byte*)(&(n));                        \
-    *(p + 0) = __buffer[0 + __offset];              \
-    *(p + 1) = __buffer[1 + __offset];              \
-    __offset += sizeof(uint16_t);                   \
+    uint16_t n = (__n);                             \
+    byte* p = (byte*)(&n);                          \
+    *(p + 0) = (__buffer)[0 + (__offset)];          \
+    *(p + 1) = (__buffer)[1 + (__offset)];          \
+    (__offset) += sizeof(uint16_t);                 \
 }
 
 #define WRITE16_LE(__n, __buffer, __offset)         \
 {                                                   \
-    uint16_t n = __n;                               \
-    byte* p = (byte*)(&(n));                        \
-    __buffer[0 + __offset] = *(p + 1);              \
-    __buffer[1 + __offset] = *(p + 0);              \
-    __offset += sizeof(uint16_t);                   \
+    uint16_t n = (__n);                             \
+    byte* p = (byte*)(&n);                          \
+    (__buffer)[0 + (__offset)] = *(p + 1);          \
+    (__buffer)[1 + (__offset)] = *(p + 0);          \
+    (__offset) += sizeof(uint16_t);                 \
 }
 
 #define WRITE16_BE(__n, __buffer, __offset)         \
 {                                                   \
-    uint16_t n = __n;                               \
-    byte* p = (byte*)(&(n));                        \
-    __buffer[0 + __offset] = *(p + 0);              \
-    __buffer[1 + __offset] = *(p + 1);              \
-    __offset += sizeof(uint16_t);                   \
+    uint16_t n = (__n);                             \
+    byte* p = (byte*)(&n);                          \
+    (__buffer)[0 + (__offset)] = *(p + 0);          \
+    (__buffer)[1 + (__offset)] = *(p + 1);          \
+    (__offset) += sizeof(uint16_t);                 \
 }
 
 #define READ32_LE(__n, __buffer, __offset)          \
 {                                                   \
-    uint32_t n = __n;                               \
-    byte* p = (byte*)(&(n));                        \
-    *(p + 3) = __buffer[0 + __offset];              \
-    *(p + 2) = __buffer[1 + __offset];              \
-    *(p + 1) = __buffer[2 + __offset];              \
-    *(p + 0) = __buffer[3 + __offset];              \
-    __offset += sizeof(uint32_t);                   \
+    uint32_t n = (__n);                             \
+    byte* p = (byte*)(&n);                          \
+    *(p + 3) = (__buffer)[0 + (__offset)];          \
+    *(p + 2) = (__buffer)[1 + (__offset)];          \
+    *(p + 1) = (__buffer)[2 + (__offset)];          \
+    *(p + 0) = (__buffer)[3 + (__offset)];          \
+    (__offset) += sizeof(uint32_t);                 \
 }
 
 #define READ32_BE(__n, __buffer, __offset)          \
 {                                                   \
-    uint32_t n = __n;                               \
-    byte* p = (byte*)(&(n));                        \
-    *(p + 0) = __buffer[0 + __offset];              \
-    *(p + 1) = __buffer[1 + __offset];              \
-    *(p + 2) = __buffer[2 + __offset];              \
-    *(p + 3) = __buffer[3 + __offset];              \
-    __offset += sizeof(uint32_t);                   \
+    uint32_t n = (__n);                             \
+    byte* p = (byte*)(&n);                          \
+    *(p + 0) = (__buffer)[0 + (__offset)];          \
+    *(p + 1) = (__buffer)[1 + (__offset)];          \
+    *(p + 2) = (__buffer)[2 + (__offset)];          \
+    *(p + 3) = (__buffer)[3 + (__offset)];          \
+    (__offset) += sizeof(uint32_t);                 \
 }
 
 #define WRITE32_LE(__n, __buffer, __offset)         \
 {                                                   \
-    uint32_t n = __n;                               \
-    byte* p = (byte*)(&(n));                        \
-    __buffer[0 + __offset] = *(p + 3);              \
-    __buffer[1 + __offset] = *(p + 2);              \
-    __buffer[2 + __offset] = *(p + 1);              \
-    __buffer[3 + __offset] = *(p + 0);              \
-    __offset += sizeof(uint32_t);                   \
+    uint32_t n = (__n);                             \
+    byte* p = (byte*)(&n);                          \
+    (__buffer)[0 + (__offset)] = *(p + 3);          \
+    (__buffer)[1 + (__offset)] = *(p + 2);          \
+    (__buffer)[2 + (__offset)] = *(p + 1);          \
+    (__buffer)[3 + (__offset)] = *(p + 0);          \
+    (__offset) += sizeof(uint32_t);                 \
 }
 
 #define WRITE32_BE(__n, __buffer, __offset)         \
 {                                                   \
-    uint32_t n = __n;                               \
-    byte* p = (byte*)(&(n));                        \
-    __buffer[0 + __offset] = *(p + 0);              \
-    __buffer[1 + __offset] = *(p + 1);              \
-    __buffer[2 + __offset] = *(p + 2);              \
-    __buffer[3 + __offset] = *(p + 3);              \
-    __offset += sizeof(uint32_t);                   \
+    uint32_t n = (__n);                             \
+    byte* p = (byte*)(&n);                          \
+    (__buffer)[0 + (__offset)] = *(p + 0);          \
+    (__buffer)[1 + (__offset)] = *(p + 1);          \
+    (__buffer)[2 + (__offset)] = *(p + 2);          \
+    (__buffer)[3 + (__offset)] = *(p + 3);          \
+    (__offset) += sizeof(uint32_t);                 \
 }
 
 #define READ64_LE(__n, __buffer, __offset)          \
 {                                                   \
-    uint64_t n = __n;                               \
-    byte* p = (byte*)(&(n));                        \
-    *(p + 7) = __buffer[0 + __offset];              \
-    *(p + 6) = __buffer[1 + __offset];              \
-    *(p + 5) = __buffer[2 + __offset];              \
-    *(p + 4) = __buffer[3 + __offset];              \
-    *(p + 3) = __buffer[4 + __offset];              \
-    *(p + 2) = __buffer[5 + __offset];              \
-    *(p + 1) = __buffer[6 + __offset];              \
-    *(p + 0) = __buffer[7 + __offset];              \
-    __offset += sizeof(uint64_t);                   \
+    uint64_t n = (__n);                             \
+    byte* p = (byte*)(&n);                          \
+    *(p + 7) = (__buffer)[0 + (__offset)];          \
+    *(p + 6) = (__buffer)[1 + (__offset)];          \
+    *(p + 5) = (__buffer)[2 + (__offset)];          \
+    *(p + 4) = (__buffer)[3 + (__offset)];          \
+    *(p + 3) = (__buffer)[4 + (__offset)];          \
+    *(p + 2) = (__buffer)[5 + (__offset)];          \
+    *(p + 1) = (__buffer)[6 + (__offset)];          \
+    *(p + 0) = (__buffer)[7 + (__offset)];          \
+    (__offset) += sizeof(uint64_t);                 \
 }
 
 #define READ64_BE(__n, __buffer, __offset)          \
 {                                                   \
-    uint64_t n = __n;                               \
-    byte* p = (byte*)(&(n));                        \
-    *(p + 0) = __buffer[0 + __offset];              \
-    *(p + 1) = __buffer[1 + __offset];              \
-    *(p + 2) = __buffer[2 + __offset];              \
-    *(p + 3) = __buffer[3 + __offset];              \
-    *(p + 4) = __buffer[4 + __offset];              \
-    *(p + 5) = __buffer[5 + __offset];              \
-    *(p + 6) = __buffer[6 + __offset];              \
-    *(p + 7) = __buffer[7 + __offset];              \
-    __offset += sizeof(uint64_t);                   \
+    uint64_t n = (__n);                             \
+    byte* p = (byte*)(&n);                          \
+    *(p + 0) = (__buffer)[0 + (__offset)];          \
+    *(p + 1) = (__buffer)[1 + (__offset)];          \
+    *(p + 2) = (__buffer)[2 + (__offset)];          \
+    *(p + 3) = (__buffer)[3 + (__offset)];          \
+    *(p + 4) = (__buffer)[4 + (__offset)];          \
+    *(p + 5) = (__buffer)[5 + (__offset)];          \
+    *(p + 6) = (__buffer)[6 + (__offset)];          \
+    *(p + 7) = (__buffer)[7 + (__offset)];          \
+    (__offset) += sizeof(uint64_t);                 \
 }
 
 #define WRITE64_LE(__n, __buffer, __offset)         \
 {                                                   \
-    uint64_t n = __n;                               \
-    byte* p = (byte*)(&(n));                        \
-    __buffer[0 + __offset] = *(p + 7);              \
-    __buffer[1 + __offset] = *(p + 6);              \
-    __buffer[2 + __offset] = *(p + 5);              \
-    __buffer[3 + __offset] = *(p + 4);              \
-    __buffer[4 + __offset] = *(p + 3);              \
-    __buffer[5 + __offset] = *(p + 2);              \
-    __buffer[6 + __offset] = *(p + 1);              \
-    __buffer[7 + __offset] = *(p + 0);              \
-    __offset += sizeof(uint64_t);                   \
+    uint64_t n = (__n);                             \
+    byte* p = (byte*)(&n)  ;                        \
+    (__buffer)[0 + (__offset)] = *(p + 7);          \
+    (__buffer)[1 + (__offset)] = *(p + 6);          \
+    (__buffer)[2 + (__offset)] = *(p + 5);          \
+    (__buffer)[3 + (__offset)] = *(p + 4);          \
+    (__buffer)[4 + (__offset)] = *(p + 3);          \
+    (__buffer)[5 + (__offset)] = *(p + 2);          \
+    (__buffer)[6 + (__offset)] = *(p + 1);          \
+    (__buffer)[7 + (__offset)] = *(p + 0);          \
+    (__offset) += sizeof(uint64_t);                 \
 }
 
 #define WRITE64_BE(__n, __buffer, __offset)         \
 {                                                   \
-    uint64_t n = __n;                               \
-    byte* p = (byte*)(&(n));                        \
-    __buffer[0 + __offset] = *(p + 0);              \
-    __buffer[1 + __offset] = *(p + 1);              \
-    __buffer[2 + __offset] = *(p + 2);              \
-    __buffer[3 + __offset] = *(p + 3);              \
-    __buffer[4 + __offset] = *(p + 4);              \
-    __buffer[5 + __offset] = *(p + 5);              \
-    __buffer[6 + __offset] = *(p + 6);              \
-    __buffer[7 + __offset] = *(p + 7);              \
-    __offset += sizeof(uint64_t);                   \
+    uint64_t n = (__n);                             \
+    byte* p = (byte*)(&n);                          \
+    (__buffer)[0 + (__offset)] = *(p + 0);          \
+    (__buffer)[1 + (__offset)] = *(p + 1);          \
+    (__buffer)[2 + (__offset)] = *(p + 2);          \
+    (__buffer)[3 + (__offset)] = *(p + 3);          \
+    (__buffer)[4 + (__offset)] = *(p + 4);          \
+    (__buffer)[5 + (__offset)] = *(p + 5);          \
+    (__buffer)[6 + (__offset)] = *(p + 6);          \
+    (__buffer)[7 + (__offset)] = *(p + 7);          \
+    (__offset) += sizeof(uint64_t);                 \
 }
 
 END_NAMESPACE

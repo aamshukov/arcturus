@@ -420,50 +420,122 @@ bool vfs_string_pool::load(typename vfs_string_pool::io_manager_type& io_manager
 
 bool vfs_string_pool::save(typename vfs_string_pool::io_manager_type& io_manager)
 {
-    bool result = false;
+    bool result = true;
 
     try
     {
-        id_type page_id = 0;
-        id_type prev_page_id = 0;
+        id_type page_id = type_traits::invalid_id;
 
         byte* buffer = nullptr;
         size_type buffer_size = 0;
 
-        size_type offset = 0;
+        size_type offset = 0; // current offset in buffer
 
-        for(const auto& kvp : my_names)
+        int index = 0; // which part of name has been serialized
+
+        if(io_manager.allocate_page(page_id, buffer, buffer_size))
         {
-            const auto& name(kvp.first);
-            const auto& id(kvp.second);
+            WRITE64_LE(endianness::instance().host_to_le64(type_traits::invalid_id), buffer, offset); // beginning of buffer - next page
 
-            if(offset >= buffer_size)
+            io_manager.mark_page_as_dirty(page_id);
+
+            for(const auto& kvp : my_names)
             {
-                if(io_manager.allocate_page(page_id, buffer, buffer_size))
+                const auto& name(kvp.first);
+                const auto& id(kvp.second);
+
+                index = 0;
+
+                if(offset == buffer_size)
                 {
-                    //io_manager.mark_page_as_dirty(page_id);
+__allocate:
+                    id_type prev_page_id = page_id;
+
+                    byte* new_buffer = nullptr;
+                    size_type new_buffer_size = 0;
+
+                    if(io_manager.allocate_page(page_id, new_buffer, new_buffer_size))
+                    {
+                        goto __bad_page_allocation;
+                    }
+
                     offset = 0;
-                }
-                else
-                {
-                    OPERATION_FAILED(status::custom_code::error,
-                                     0,
-                                     status::contributor::vfs,
-                                     L"VFS: names pool save operation has failed, unable allocate a page.")
-                    log_error(diagnostics::instance().last_status().text().c_str());
-                    break;
+
+                    WRITE64_LE(endianness::instance().host_to_le64(page_id), buffer, offset); // beginning of buffer - next page
+
+                    io_manager.save_page(prev_page_id);
+                    io_manager.mark_page_as_dirty(page_id);
+
+                    buffer = new_buffer;
+                    buffer_size = new_buffer_size;
                 }
 
-                prev_page_id = page_id;
+                if(index == 0)
+                {
+                    if(offset <= (buffer_size - sizeof(length_type))) // name length
+                    {
+                        WRITE16_LE(endianness::instance().host_to_le16(name.size), buffer, offset);
+                        index++;
+                    }
+                    else
+                        goto __allocate;
+                }
+
+                if(index == 1)
+                {
+                    if(offset <= (buffer_size - sizeof(size_type))) // name ref count
+                    {
+                        WRITE64_LE(endianness::instance().host_to_le64(name.ref_count), buffer, offset);
+                        index++;
+                    }
+                    else
+                        goto __allocate;
+                }
+
+                if(index == 2)
+                {
+                    if(offset <= (buffer_size - sizeof(size_type))) // name id
+                    {
+                        WRITE64_LE(endianness::instance().host_to_le64(id), buffer, offset);
+                        index++;
+                    }
+                    else
+                        goto __allocate;
+                }
+
+                if(index == 3)
+                {
+                    if(offset <= (buffer_size - name.size)) // name
+                    {
+                        WRITE_BYTES(name.data.get(), buffer, name.size, offset);
+                    }
+                    else
+                    {
+                        // this case might happen for large names which overflow page
+                        for(length_type k = 0, n = name.size; k < n; k++, offset++)
+                        {
+                            if(!(offset <= buffer_size))
+                            {
+                                break;
+                            }
+
+                            *(buffer + offset) = *(name.data.get() + k);
+                        }
+                    }
+                }
             }
 
-            WRITE16_LE(endianness::instance().host_to_le16(name.size), buffer, offset);
-            WRITE64_LE(endianness::instance().host_to_le64(name.ref_count), buffer, offset);
-            WRITE64_LE(endianness::instance().host_to_le64(id), buffer, offset);
-            WRITE_BYTES(name.data.get(), buffer, name.size, offset);
+            io_manager.save_page(page_id);
         }
-
-        io_manager.save_page(page_id);
+        else
+        {
+__bad_page_allocation:
+            OPERATION_FAILED(status::custom_code::error,
+                             0,
+                             status::contributor::vfs,
+                             L"VFS: names pool save operation has failed, unable allocate a page.")
+            log_error(diagnostics::instance().last_status().text().c_str());
+        }
     }
     catch(const std::exception& ex)
     {

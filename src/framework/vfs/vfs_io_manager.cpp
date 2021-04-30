@@ -32,9 +32,9 @@ bool vfs_io_manager::allocate_page(typename vfs_io_manager::id_type& page_id,
 
     page_type page(create_page(page_id));
 
-    my_cache.put(page_id, page);
-
     save_page(page_id);
+
+    my_cache.put(page_id, page);
 
     buffer = (*page).data;
     buffer_size = (*page).descriptor.data_size;
@@ -53,20 +53,26 @@ bool vfs_io_manager::read_page(const typename vfs_io_manager::id_type& page_id,
 
     bool result = false;
 
-    auto page = my_cache.get(page_id);
+    auto cached_page = my_cache.get(page_id);
 
-    if(!page.has_value())
+    page_type page;
+
+    if(cached_page.has_value())
+    {
+        page = cached_page.value();
+    }
+    else
     {
         page = create_page(page_id);
     }
 
     goto_page(page_id);
 
-    fread(&(*page.value()).descriptor, sizeof(byte), sizeof((*page.value()).descriptor), my_fd);
-    fread(&(*page.value()).data, sizeof(byte), sizeof((*page.value()).descriptor.data_size), my_fd);
+    fread(&(*page).descriptor, sizeof(byte), sizeof((*page).descriptor), my_fd);
+    fread(&(*page).data, sizeof(byte), sizeof((*page).descriptor.data_size), my_fd);
 
-    buffer = (*page.value()).data;
-    buffer_size = (*page.value()).descriptor.data_size;
+    buffer = (*page).data;
+    buffer_size = (*page).descriptor.data_size;
 
     result = true;
 
@@ -122,6 +128,12 @@ void vfs_io_manager::goto_page(const typename vfs_io_manager::id_type& page_id)
         my_position.offset = offset;
         my_position.page_id = page_id;
     }
+}
+
+bool vfs_io_manager::mark_page_as_dirty(const id_type& page_id)
+{
+    page_id;
+    return true;
 }
 
 END_NAMESPACE

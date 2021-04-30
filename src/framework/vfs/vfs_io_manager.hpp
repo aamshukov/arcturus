@@ -101,6 +101,8 @@ class vfs_io_manager : private noncopyable
         bool                read_page(const id_type& page_id, byte*& buffer, size_type& buffer_size);
         bool                save_page(const id_type& page_id);
 
+        bool                mark_page_as_dirty(const id_type& page_id);
+
         bool                read(fd_type& fd,
                                  std::size_t offset,        // absolute offset
                                  byte* data,                // payload

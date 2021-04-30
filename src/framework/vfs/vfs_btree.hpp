@@ -29,7 +29,9 @@ class btree : public noncopyable
         using kvp_type = std::pair<key_type, value_type>;
         using kvps_type = std::vector<kvp_type>;
 
-        using paddr_type = std::size_t; // persistent address, LE
+        using size_type = typename type_traits::size_type;
+
+        using paddr_type = size_type; // persistent address, LE
         using paddrs_type = std::vector<paddr_type>;
 
         using free_paddrs_type = std::queue<paddr_type>;
@@ -39,20 +41,18 @@ class btree : public noncopyable
         using paging_type = std::shared_ptr<vfs_io_manager>;
 
     private:
-        static const std::size_t INVALID_PAGE = std::numeric_limits<std::size_t>::min();
+        static const size_type INVALID_PAGE = std::numeric_limits<size_type>::min();
 
     public:
         // in-memory node
         struct node //: public tree
         {
-            using node_type = std::shared_ptr<node>;
-
-            std::size_t level;  // level == 0 is leaf
+            size_type level;  // level == 0 is leaf
 
             paddr_type  paddr;  // persistent address
             paddrs_type paddrs; // persistent addresses of kids
 
-            node(std::size_t levl, std::size_t capacity) : level(levl), paddr(INVALID_PAGE)
+            node(size_type levl, size_type capacity) : level(levl), paddr(INVALID_PAGE)
             {
                 //kids.reserve(capacity);
                 paddrs.reserve(capacity);
@@ -64,86 +64,87 @@ class btree : public noncopyable
             }
         };
 
-        using nodes_type = std::vector<typename node::node_type>;
+        using node_type = std::shared_ptr<node>;
+        using nodes_type = std::vector<node_type>;
 
         static const int BINARY_SEARCH_THRESHOLD = 16; // either linear or binary search in leaf nodes
 
         // in-memory index node (branch, internal)
         struct index_node : public node
         {
-            using node_type = std::shared_ptr<index_node>;
-
             keys_type keys; // index node payload - keys
 
-            index_node(std::size_t level, std::size_t capacity) : node(level, capacity)
+            index_node(size_type level, size_type capacity) : node(level, capacity)
             {
                 static_assert(capacity > 0, L"Invalid B+ tree order (branching factor).");
                 keys.reserve(capacity - 1);
             }
 
-            const key_type& key(std::size_t k) const
+            const key_type& key(size_type k) const
             {
                 return keys[k];
             }
 
-            bool full(std::size_t capacity) const
+            bool full(size_type capacity) const
             {
                 return keys.size() == capacity;
             }
 
-            bool notfull(std::size_t capacity) const // less than or equal to my_index_node_min_count
+            bool notfull(size_type capacity) const // less than or equal to my_index_node_min_count
             {
                 return keys.size() <= capacity;
             }
 
-            bool underflow(std::size_t capacity) const // less than my_index_node_min_count
+            bool underflow(size_type capacity) const // less than my_index_node_min_count
             {
                 return keys.size() < capacity;
             }
         };
 
+        using index_node_type = std::shared_ptr<index_node>;
+
         // in-memory leaf node
         struct leaf_node : public node, public list
         {
-            using node_type = std::shared_ptr<leaf_node>;
-
-            node_type next_node; // next sibling (at the same level)
-            node_type prev_node; // prev sibling (at the same level)
+            leaf_node* next_node; // next sibling (at the same level)
+            leaf_node* prev_node; // prev sibling (at the same level)
 
             kvps_type kvps; // leaf node payload - key/value pairs
 
-            leaf_node(size_t level, std::size_t capacity)
+            leaf_node(uint16_t level, size_type capacity)
                 : node(level, capacity), next_node(nullptr), prev_node(nullptr)
             {
                 static_assert(capacity > 0, L"Invalid B+ tree order (branching factor).");
                 kvps.reserve(capacity);
             }
 
-            const key_type& key(std::size_t k) const
+            const key_type& key(size_type k) const
             {
                 return kvps[k].first;
             }
 
-            const value_type& value(std::size_t k) const
+            const value_type& value(size_type k) const
             {
                 return kvps[k].second;
             }
 
-            bool full(std::size_t capacity) const
+            bool full(size_type capacity) const
             {
                 return kvps.size() == capacity;
             }
 
-            bool notfull(std::size_t capacity) const // less than or equal to my_leaf_node_min_count
+            bool notfull(size_type capacity) const // less than or equal to my_leaf_node_min_count
             {
                 return kvps.size() <= capacity;
             }
 
-            bool underflow(std::size_t capacity) const // less than my_leaf_node_min_count
+            bool underflow(size_type capacity) const // less than my_leaf_node_min_count
             {
                 return kvps.size() < capacity;
             }
         };
+
+        using leaf_node_type = std::shared_ptr<leaf_node>;
 
     public:
         struct statistics
@@ -153,20 +154,17 @@ class btree : public noncopyable
         using statistics_type = statistics;
 
     private:
-        std::size_t             my_leaf_node_max_count;
-        std::size_t             my_leaf_node_min_count;
-        std::size_t             my_index_node_max_count;
-        std::size_t             my_index_node_min_count;
+        size_type               my_leaf_node_max_count;
+        size_type               my_leaf_node_min_count;
+        size_type               my_index_node_max_count;
+        size_type               my_index_node_min_count;
 
-        typename node::node_type
-                                my_root;
+        node_type               my_root;
 
-        typename leaf_node::node_type
-                                my_head_leaf;
-        typename leaf_node::node_type
-                                my_tail_leaf;
+        leaf_node_type          my_head_leaf;
+        leaf_node_type          my_tail_leaf;
 
-        std::size_t             my_height;  // current height of the tree
+        size_type               my_height;  // current height of the tree
         nodes_type              my_nodes;   // cached in-memory nodes, usually populated while reading in a branch
 
         paging_type             my_paging;
@@ -174,23 +172,19 @@ class btree : public noncopyable
         statistics_type         my_statistics;
 
     private:
-        typename leaf_node::node_type
-                                LocateLeafNode(const key_type& key); // search entire tree
-
-        typename leaf_node::node_type
-                                SearchLeafNode(const key_type& key, value_type& value); // search a leaf node
+        leaf_node_type          locate_leaf_node(const key_type& key); // search entire tree
+        leaf_node_type          search_leaf_node(const key_type& key, value_type& value); // search in leaf node
 
     public:
-                                btree(std::size_t order,    // 'order' is branching factor, maximum number of descendants
+                                btree(size_type order,      // 'order' is branching factor, maximum number of descendants
                                       paging_type& paging); // paging infrustructure with caching
                                ~btree();
 
         const statistics_type&  statistics() const;
-
 };
 
 template <typename TKey, typename TValue, typename TKeyCmp, typename TKeyHash>
-btree<TKey, TValue, TKeyCmp, TKeyHash>::btree(std::size_t order,
+btree<TKey, TValue, TKeyCmp, TKeyHash>::btree(size_type order,
                                               typename btree<TKey, TValue, TKeyCmp, TKeyHash>::paging_type& paging)
                                       : my_leaf_node_min_count((order + 2 - 1) / 2), // ⌈b/2⌉
                                         my_leaf_node_max_count(order),
@@ -213,4 +207,3 @@ END_NAMESPACE
 
 
 //?? fopen(filename, "w+b");
-
