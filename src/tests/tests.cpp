@@ -29,7 +29,6 @@ namespace tests
                 Assert::IsTrue(r0 == r1);
 
                 auto r2 = e.leflt_to_host(5.7f);
-                auto r3 = e.host_to_leflt(r2);
                 Assert::IsTrue(real_number_equal<float>(r2, 5.7f));
 
                 auto r4 = e.ledbl_to_host(5.7);
@@ -223,11 +222,11 @@ namespace tests
                 {
                     auto edges = (*gr).get_edges(v);
 
-                    for(auto& e : edges)
+                    for(auto& ed : edges)
                     {
-                        if(((*e).flags() & edge<vertex>::flag::synthetic) != edge<vertex>::flag::synthetic)
+                        if(((*ed).flags() & edge<vertex>::flag::synthetic) != edge<vertex>::flag::synthetic)
                         {
-                            (*gr).remove_edge(e);
+                            (*gr).remove_edge(ed);
                             graph_algorithms<vertex>::generate_graphviz_file(gr, format(LR"(d:\tmp\CreateGraphRemoveEdge%d.dot)", ++k), false);
                         }
                     }
@@ -1852,8 +1851,8 @@ namespace tests
                 for(auto& vertex : (*graph).vertices())
                 {
                     std::vector<string_type> dom;
-                    for(auto& d : (*vertex).dominators())
-                        dom.push_back((*d).label());
+                    for(auto& dm : (*vertex).dominators())
+                        dom.push_back((*dm).label());
                     doms[(*vertex).label()] = dom;
                     if((*vertex).idominator() != nullptr)
                         idoms[(*vertex).label()] = (*(*vertex).idominator()).label();
@@ -2568,18 +2567,20 @@ namespace tests
 
             TEST_METHOD(BuildDefUseCytron)
             {
-                auto cfg(factory::create<arcturus_control_flow_graph>());
+                auto acfg(factory::create<arcturus_control_flow_graph>());
 
                 auto code(build_cytron_code());
 
-                (*cfg).collect_basic_blocks(code);
+                (*acfg).collect_basic_blocks(code);
 
                 auto start = std::chrono::high_resolution_clock::now();
 
                 arcturus_data_flow_analysis dfa;
 
-                dfa.collect_liveness_def_use_sets(std::static_pointer_cast<control_flow_graph<basic_block<arcturus_quadruple>>>(cfg));
-                dfa.calculate_liveness_in_outs_sets(std::static_pointer_cast<control_flow_graph<basic_block<arcturus_quadruple>>>(cfg));
+                auto cfg = std::static_pointer_cast<control_flow_graph<basic_block<arcturus_quadruple>>>(acfg);
+
+                dfa.collect_liveness_def_use_sets(cfg);
+                dfa.calculate_liveness_in_outs_sets(cfg);
 
                 auto finish = std::chrono::high_resolution_clock::now();
                 auto elapsed = std::chrono::duration_cast<duration_type>(finish - start).count();
@@ -2595,8 +2596,6 @@ namespace tests
                 const auto& b2 = *(*gr).add_vertex(factory::create<dominator_vertex>(12, L"B2")).first;
                 const auto& b3 = *(*gr).add_vertex(factory::create<dominator_vertex>(13, L"B3")).first;
                 const auto& b4 = *(*gr).add_vertex(factory::create<dominator_vertex>(14, L"B4")).first;
-                const auto& b5 = *(*gr).add_vertex(factory::create<dominator_vertex>(15, L"B5")).first;
-                const auto& b6 = *(*gr).add_vertex(factory::create<dominator_vertex>(16, L"B6")).first;
 
                 using vertex_type = std::shared_ptr<dominator_vertex>;
                 using vertices_type = std::set<vertex_type, vertex_lt_key_comparator<dominator_vertex>>;
@@ -3001,6 +3000,7 @@ namespace tests
                     {
                         id_t id;
                         bool rc = sp.add(line, id);
+                        rc;
                     }
                 }
             }
@@ -3013,6 +3013,7 @@ namespace tests
                 fd_type fd;
 
                 auto rc = fopen_s(&fd, R"(d:\tmp\sp.dat)", "wb+, ccs=**UTF-8**");
+                rc;
 
                 vfs_io_manager io_mgr(fd, 0, 4096, 16);
 

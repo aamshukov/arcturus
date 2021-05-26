@@ -15,6 +15,8 @@
 #include <cassert>
 #include <cstdio>
 
+#include <format>
+
 #include <iterator>
 #include <iostream>
 #include <fstream>

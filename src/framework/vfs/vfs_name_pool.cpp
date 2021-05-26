@@ -433,10 +433,12 @@ bool vfs_string_pool::save(typename vfs_string_pool::io_manager_type& io_manager
 
         int index = 0; // which part of name has been serialized
 
-        if(io_manager.allocate_page(page_id, buffer, buffer_size))
+        if(io_manager.allocate_page(page_id, buffer, buffer_size) &&
+           buffer_size > sizeof(name_type)) // > because at least one byte of data should be stored
         {
-            WRITE64_LE(endianness::instance().host_to_le64(type_traits::invalid_id), buffer, offset); // beginning of buffer - next page
-
+            WRITE64_LE(endianness::instance().host_to_le64(type_traits::invalid_id),
+                                                           buffer,
+                                                           offset); // beginning of buffer - next page
             io_manager.mark_page_as_dirty(page_id);
 
             for(const auto& kvp : my_names)
@@ -454,7 +456,7 @@ __allocate:
                     byte* new_buffer = nullptr;
                     size_type new_buffer_size = 0;
 
-                    if(io_manager.allocate_page(page_id, new_buffer, new_buffer_size))
+                    if(io_manager.allocate_page(page_id, new_buffer, new_buffer_size) && buffer_size > sizeof(name_type))
                     {
                         goto __bad_page_allocation;
                     }
@@ -552,7 +554,9 @@ __bad_page_allocation:
 string_type vfs_string_pool::name_to_string(const name_type& name)
 {
     cps_type codepoints = text::chars_to_codepoints((char*)name.data.get(), static_cast<size_type>(name.size));
+
     string_type result = text::codepoints_to_string(codepoints.c_str(), codepoints.size());
+
     return result;
 }
 
