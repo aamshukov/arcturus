@@ -235,9 +235,9 @@ bool vfs_string_pool::add(typename name_type& name, id_type& result_id)
     {
         id_type id = my_names.size() + 1;
 
-        auto kvp = my_names.emplace(std::make_pair(name, id));
+        auto kvp(my_names.emplace(std::make_pair(name, id)));
 
-        name_type& nm = const_cast<name_type&>((*kvp.first).first);
+        name_type& nm(const_cast<name_type&>((*kvp.first).first));
 
         result_id = (*kvp.first).second;
 
@@ -480,7 +480,9 @@ __allocate:
                         index++;
                     }
                     else
+                    {
                         goto __allocate;
+                    }
                 }
 
                 if(index == 1)
@@ -491,7 +493,9 @@ __allocate:
                         index++;
                     }
                     else
+                    {
                         goto __allocate;
+                    }
                 }
 
                 if(index == 2)
@@ -502,7 +506,9 @@ __allocate:
                         index++;
                     }
                     else
+                    {
                         goto __allocate;
+                    }
                 }
 
                 if(index == 3)
