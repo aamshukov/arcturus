@@ -129,9 +129,9 @@ void graph_algorithms<TVertex, TEdgeValue, N>::dfs_preorder_to_vector(const type
             }
             else
             {
-                if(((*vertex).flags() & vertex::flag::visited) != vertex::flag::visited)
+                if(((*vertex).flags() & vertex_type::element_type::flag::visited) != vertex_type::element_type::flag::visited)
                 {
-                    (*vertex).flags() |= vertex::flag::visited;
+                    (*vertex).flags() |= vertex_type::element_type::flag::visited;
 
                     for(auto it = (*vertex).adjacencies().rbegin(); it != (*vertex).adjacencies().rend(); ++it) // 3 ... add elements to the stack in reverse order
                     {
@@ -188,9 +188,9 @@ void graph_algorithms<TVertex, TEdgeValue, N>::dfs_postorder_to_vector(const typ
             }
             else
             {
-                if(((*vertex).flags() & vertex::flag::visited) != vertex::flag::visited)
+                if(((*vertex).flags() & vertex_type::element_type::flag::visited) != vertex_type::element_type::flag::visited)
                 {
-                    (*vertex).flags() |= vertex::flag::visited;
+                    (*vertex).flags() |= vertex_type::element_type::flag::visited;
 
                     stack.push(std::make_pair(vertex, true)); // 3 ... add elements to the stack in reverse order
 

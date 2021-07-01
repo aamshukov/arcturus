@@ -12,7 +12,7 @@ USING_NAMESPACE(core)
 USING_NAMESPACE(frontend)
 USING_NAMESPACE(symtable)
 
-class interference_vertex : public vertex
+class interference_vertex : public vertex<std::size_t>
 {
     public:
         using symbol_type = std::shared_ptr<symtable::symbol>;

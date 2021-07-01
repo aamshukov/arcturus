@@ -8,7 +8,7 @@
 
 BEGIN_NAMESPACE(core)
 
-class dominator_vertex : public vertex
+class dominator_vertex : public vertex<std::size_t>
 {
     public:
         using vertex_type = std::shared_ptr<dominator_vertex>;

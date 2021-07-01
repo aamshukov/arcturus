@@ -76,13 +76,13 @@ namespace tests
 
             TEST_METHOD(CreateDiGraphRemoveVertex)
             {
-                std::shared_ptr<graph<vertex>> gr(factory::create<graph<vertex>>());
+                std::shared_ptr<graph<vertex<>>> gr(factory::create<graph<vertex<>>>());
 
-                auto& a = *(*gr).add_vertex(factory::create<vertex>(1, L"A")).first;
-                auto& b = *(*gr).add_vertex(factory::create<vertex>(2, L"B")).first;
-                auto& c = *(*gr).add_vertex(factory::create<vertex>(3, L"C")).first;
-                auto& d = *(*gr).add_vertex(factory::create<vertex>(4, L"D")).first;
-                auto& e = *(*gr).add_vertex(factory::create<vertex>(5, L"E")).first;
+                auto& a = *(*gr).add_vertex(factory::create<vertex<>>(1, L"A")).first;
+                auto& b = *(*gr).add_vertex(factory::create<vertex<>>(2, L"B")).first;
+                auto& c = *(*gr).add_vertex(factory::create<vertex<>>(3, L"C")).first;
+                auto& d = *(*gr).add_vertex(factory::create<vertex<>>(4, L"D")).first;
+                auto& e = *(*gr).add_vertex(factory::create<vertex<>>(5, L"E")).first;
 
                 (*gr).add_edge(a, b, 0.1);
                 (*gr).add_edge(a, d, 0.2);
@@ -94,35 +94,35 @@ namespace tests
                 (*gr).add_edge(c, d, 0.6);
                 (*gr).add_edge(c, e, 0.7);
 
-                (*gr).add_edge(d, e, 0.8);
+                (*gr).add_edge(d, e, 0.8);                                     
 
-                graph_algorithms<vertex>::generate_graphviz_file(gr, LR"(d:\tmp\CreateDiGraphRemoveVertex1.dot)", false);
+                graph_algorithms<vertex<>>::generate_graphviz_file(gr, LR"(d:\tmp\CreateDiGraphRemoveVertex1.dot)", false);
 
                 (*gr).remove_vertex(c);
-                graph_algorithms<vertex>::generate_graphviz_file(gr, LR"(d:\tmp\CreateDiGraphRemoveVertex2.dot)", false);
+                graph_algorithms<vertex<>>::generate_graphviz_file(gr, LR"(d:\tmp\CreateDiGraphRemoveVertex2.dot)", false);
 
                 (*gr).remove_vertex(a);
-                graph_algorithms<vertex>::generate_graphviz_file(gr, LR"(d:\tmp\CreateDiGraphRemoveVertex3.dot)", false);
+                graph_algorithms<vertex<>>::generate_graphviz_file(gr, LR"(d:\tmp\CreateDiGraphRemoveVertex3.dot)", false);
 
                 (*gr).remove_vertex(b);
-                graph_algorithms<vertex>::generate_graphviz_file(gr, LR"(d:\tmp\CreateDiGraphRemoveVertex4.dot)", false);
+                graph_algorithms<vertex<>>::generate_graphviz_file(gr, LR"(d:\tmp\CreateDiGraphRemoveVertex4.dot)", false);
 
                 (*gr).remove_vertex(e);
-                graph_algorithms<vertex>::generate_graphviz_file(gr, LR"(d:\tmp\CreateDiGraphRemoveVertex5.dot)", false);
+                graph_algorithms<vertex<>>::generate_graphviz_file(gr, LR"(d:\tmp\CreateDiGraphRemoveVertex5.dot)", false);
 
                 (*gr).remove_vertex(d);
-                graph_algorithms<vertex>::generate_graphviz_file(gr, LR"(d:\tmp\CreateDiGraphRemoveVertex6.dot)", false);
+                graph_algorithms<vertex<>>::generate_graphviz_file(gr, LR"(d:\tmp\CreateDiGraphRemoveVertex6.dot)", false);
             }
 
             TEST_METHOD(CreateDiGraphRemoveEdge)
             {
-                std::shared_ptr<graph<vertex>> gr(factory::create<graph<vertex>>());
+                std::shared_ptr<graph<vertex<>>> gr(factory::create<graph<vertex<>>>());
 
-                auto& a = *(*gr).add_vertex(factory::create<vertex>(1, L"A")).first;
-                auto& b = *(*gr).add_vertex(factory::create<vertex>(2, L"B")).first;
-                auto& c = *(*gr).add_vertex(factory::create<vertex>(3, L"C")).first;
-                auto& d = *(*gr).add_vertex(factory::create<vertex>(4, L"D")).first;
-                auto& e = *(*gr).add_vertex(factory::create<vertex>(5, L"E")).first;
+                auto& a = *(*gr).add_vertex(factory::create<vertex<>>(1, L"A")).first;
+                auto& b = *(*gr).add_vertex(factory::create<vertex<>>(2, L"B")).first;
+                auto& c = *(*gr).add_vertex(factory::create<vertex<>>(3, L"C")).first;
+                auto& d = *(*gr).add_vertex(factory::create<vertex<>>(4, L"D")).first;
+                auto& e = *(*gr).add_vertex(factory::create<vertex<>>(5, L"E")).first;
 
                 (*gr).add_edge(a, b, 0.1);
                 (*gr).add_edge(a, d, 0.2);
@@ -136,7 +136,7 @@ namespace tests
 
                 (*gr).add_edge(d, e, 0.8);
 
-                graph_algorithms<vertex>::generate_graphviz_file(gr, LR"(d:\tmp\CreateDiGraphRemoveEdge1.dot)", false);
+                graph_algorithms<vertex<>>::generate_graphviz_file(gr, LR"(d:\tmp\CreateDiGraphRemoveEdge1.dot)", false);
 
                 int k = 1;
 
@@ -147,20 +147,20 @@ namespace tests
                     for(auto& edge : edges)
                     {
                         (*gr).remove_edge(edge);
-                        graph_algorithms<vertex>::generate_graphviz_file(gr, format(LR"(d:\tmp\CreateDiGraphRemoveEdge%d.dot)", ++k), false);
+                        graph_algorithms<vertex<>>::generate_graphviz_file(gr, format(LR"(d:\tmp\CreateDiGraphRemoveEdge%d.dot)", ++k), false);
                     }
                 }
             }
 
             TEST_METHOD(CreateGraphRemoveVertex)
             {
-                std::shared_ptr<graph<vertex>> gr(factory::create<graph<vertex>>(false));
+                std::shared_ptr<graph<vertex<>>> gr(factory::create<graph<vertex<>>>(false));
 
-                auto& a = *(*gr).add_vertex(factory::create<vertex>(1, L"A")).first;
-                auto& b = *(*gr).add_vertex(factory::create<vertex>(2, L"B")).first;
-                auto& c = *(*gr).add_vertex(factory::create<vertex>(3, L"C")).first;
-                auto& d = *(*gr).add_vertex(factory::create<vertex>(4, L"D")).first;
-                auto& e = *(*gr).add_vertex(factory::create<vertex>(5, L"E")).first;
+                auto& a = *(*gr).add_vertex(factory::create<vertex<>>(1, L"A")).first;
+                auto& b = *(*gr).add_vertex(factory::create<vertex<>>(2, L"B")).first;
+                auto& c = *(*gr).add_vertex(factory::create<vertex<>>(3, L"C")).first;
+                auto& d = *(*gr).add_vertex(factory::create<vertex<>>(4, L"D")).first;
+                auto& e = *(*gr).add_vertex(factory::create<vertex<>>(5, L"E")).first;
 
                 (*gr).add_edge(a, b, 0.1);
                 (*gr).add_edge(a, d, 0.2);
@@ -174,33 +174,33 @@ namespace tests
 
                 (*gr).add_edge(d, e, 0.8);
 
-                graph_algorithms<vertex>::generate_graphviz_file(gr, LR"(d:\tmp\CreateGraphRemoveVertex1.dot)", false);
+                graph_algorithms<vertex<>>::generate_graphviz_file(gr, LR"(d:\tmp\CreateGraphRemoveVertex1.dot)", false);
 
                 (*gr).remove_vertex(c);
-                graph_algorithms<vertex>::generate_graphviz_file(gr, LR"(d:\tmp\CreateGraphRemoveVertex2.dot)", false);
+                graph_algorithms<vertex<>>::generate_graphviz_file(gr, LR"(d:\tmp\CreateGraphRemoveVertex2.dot)", false);
 
                 (*gr).remove_vertex(a);
-                graph_algorithms<vertex>::generate_graphviz_file(gr, LR"(d:\tmp\CreateGraphRemoveVertex3.dot)", false);
+                graph_algorithms<vertex<>>::generate_graphviz_file(gr, LR"(d:\tmp\CreateGraphRemoveVertex3.dot)", false);
 
                 (*gr).remove_vertex(b);
-                graph_algorithms<vertex>::generate_graphviz_file(gr, LR"(d:\tmp\CreateGraphRemoveVertex4.dot)", false);
+                graph_algorithms<vertex<>>::generate_graphviz_file(gr, LR"(d:\tmp\CreateGraphRemoveVertex4.dot)", false);
 
                 (*gr).remove_vertex(e);
-                graph_algorithms<vertex>::generate_graphviz_file(gr, LR"(d:\tmp\CreateGraphRemoveVertex5.dot)", false);
+                graph_algorithms<vertex<>>::generate_graphviz_file(gr, LR"(d:\tmp\CreateGraphRemoveVertex5.dot)", false);
 
                 (*gr).remove_vertex(d);
-                graph_algorithms<vertex>::generate_graphviz_file(gr, LR"(d:\tmp\CreateGraphRemoveVertex6.dot)", false);
+                graph_algorithms<vertex<>>::generate_graphviz_file(gr, LR"(d:\tmp\CreateGraphRemoveVertex6.dot)", false);
             }
 
             TEST_METHOD(CreateGraphRemoveEdge)
             {
-                std::shared_ptr<graph<vertex>> gr(factory::create<graph<vertex>>(false));
+                std::shared_ptr<graph<vertex<>>> gr(factory::create<graph<vertex<>>>(false));
 
-                auto& a = *(*gr).add_vertex(factory::create<vertex>(1, L"A")).first;
-                auto& b = *(*gr).add_vertex(factory::create<vertex>(2, L"B")).first;
-                auto& c = *(*gr).add_vertex(factory::create<vertex>(3, L"C")).first;
-                auto& d = *(*gr).add_vertex(factory::create<vertex>(4, L"D")).first;
-                auto& e = *(*gr).add_vertex(factory::create<vertex>(5, L"E")).first;
+                auto& a = *(*gr).add_vertex(factory::create<vertex<>>(1, L"A")).first;
+                auto& b = *(*gr).add_vertex(factory::create<vertex<>>(2, L"B")).first;
+                auto& c = *(*gr).add_vertex(factory::create<vertex<>>(3, L"C")).first;
+                auto& d = *(*gr).add_vertex(factory::create<vertex<>>(4, L"D")).first;
+                auto& e = *(*gr).add_vertex(factory::create<vertex<>>(5, L"E")).first;
 
                 (*gr).add_edge(a, b, 0.1);
                 (*gr).add_edge(a, d, 0.2);
@@ -214,7 +214,7 @@ namespace tests
 
                 (*gr).add_edge(d, e, 0.8);
 
-                graph_algorithms<vertex>::generate_graphviz_file(gr, LR"(d:\tmp\CreateGraphRemoveEdge1.dot)", false);
+                graph_algorithms<vertex<>>::generate_graphviz_file(gr, LR"(d:\tmp\CreateGraphRemoveEdge1.dot)", false);
 
                 int k = 1;
 
@@ -224,10 +224,10 @@ namespace tests
 
                     for(auto& ed : edges)
                     {
-                        if(((*ed).flags() & edge<vertex>::flag::synthetic) != edge<vertex>::flag::synthetic)
+                        if(((*ed).flags() & edge<vertex<>>::flag::synthetic) != edge<vertex<>>::flag::synthetic)
                         {
                             (*gr).remove_edge(ed);
-                            graph_algorithms<vertex>::generate_graphviz_file(gr, format(LR"(d:\tmp\CreateGraphRemoveEdge%d.dot)", ++k), false);
+                            graph_algorithms<vertex<>>::generate_graphviz_file(gr, format(LR"(d:\tmp\CreateGraphRemoveEdge%d.dot)", ++k), false);
                         }
                     }
                 }
@@ -235,14 +235,14 @@ namespace tests
 
             TEST_METHOD(VisualizeGraphGraphviz)
             {
-                std::shared_ptr<graph<vertex>> gr(factory::create<graph<vertex>>());
+                std::shared_ptr<graph<vertex<>>> gr(factory::create<graph<vertex<>>>());
 
-                const auto& v1 = *(*gr).add_vertex(factory::create<vertex>(1)).first;
-                const auto& v2 = *(*gr).add_vertex(factory::create<vertex>(2)).first;
-                const auto& v3 = *(*gr).add_vertex(factory::create<vertex>(3)).first;
-                const auto& v4 = *(*gr).add_vertex(factory::create<vertex>(4)).first;
-                const auto& v5 = *(*gr).add_vertex(factory::create<vertex>(5)).first;
-                const auto& v6 = *(*gr).add_vertex(factory::create<vertex>(6)).first;
+                const auto& v1 = *(*gr).add_vertex(factory::create<vertex<>>(1)).first;
+                const auto& v2 = *(*gr).add_vertex(factory::create<vertex<>>(2)).first;
+                const auto& v3 = *(*gr).add_vertex(factory::create<vertex<>>(3)).first;
+                const auto& v4 = *(*gr).add_vertex(factory::create<vertex<>>(4)).first;
+                const auto& v5 = *(*gr).add_vertex(factory::create<vertex<>>(5)).first;
+                const auto& v6 = *(*gr).add_vertex(factory::create<vertex<>>(6)).first;
 
                 (*gr).add_edge(v1, v2, 0.5);
                 (*gr).add_edge(v2, v3, 0.5);
@@ -252,13 +252,13 @@ namespace tests
                 (*gr).add_edge(v4, v5, 0.5);
                 (*gr).add_edge(v5, v2, 0.5);
 
-                graph<vertex>::vertices_type predecessors;
+                graph<vertex<>>::vertices_type predecessors;
                 (*gr).collect_predecessors(v2, predecessors);
 
-                graph<vertex>::vertices_type successors;
+                graph<vertex<>>::vertices_type successors;
                 (*gr).collect_successors(v2, successors);
 
-                graph_algorithms<vertex>::generate_graphviz_file(gr, LR"(d:\tmp\GraphGraphviz.dot)", false);
+                graph_algorithms<vertex<>>::generate_graphviz_file(gr, LR"(d:\tmp\GraphGraphviz.dot)", false);
 
                 // D:\Soft\graphviz\2.38\release\bin\dot -Tpng d:\tmp\GraphGraphviz.dot -o d:\tmp\GraphGraphviz.png
                 // for %i in (d:\tmp\*.dot) do D:\Soft\graphviz\2.38\release\bin\dot -Tpng %i -o %i.png
@@ -2757,7 +2757,7 @@ namespace tests
 
             TEST_METHOD(GraphDfsTraversals)
             {
-                std::shared_ptr<graph<vertex>> graph(factory::create<graph<vertex>>());
+                std::shared_ptr<graph<vertex<>>> graph(factory::create<graph<vertex<>>>());
 
                 const auto& a = *(*graph).add_vertex(factory::create<dominator_vertex>(1, L"A")).first;
                 const auto& x = *(*graph).add_vertex(factory::create<dominator_vertex>(2, L"X")).first;
@@ -2781,11 +2781,11 @@ namespace tests
 
                 (*graph).root() = a;
 
-                graph_algorithms<vertex>::generate_graphviz_file(graph, LR"(d:\tmp\GraphDfsTraversals.dot)", false);
+                graph_algorithms<vertex<>>::generate_graphviz_file(graph, LR"(d:\tmp\GraphDfsTraversals.dot)", false);
 
-                std::for_each((*graph).vertices().begin(), (*graph).vertices().end(), [](auto& vertex){ (*vertex).flags() = vertex::flag::clear; });
-                std::vector<typename graph_algorithms<vertex>::vertex_type> dfs_preorder;
-                graph_algorithms<vertex>::dfs_preorder_to_vector(graph, dfs_preorder);
+                std::for_each((*graph).vertices().begin(), (*graph).vertices().end(), [](auto& v){ (*v).flags() = vertex<>::flag::clear; });
+                std::vector<typename graph_algorithms<vertex<>>::vertex_type> dfs_preorder;
+                graph_algorithms<vertex<>>::dfs_preorder_to_vector(graph, dfs_preorder);
                 Assert::IsTrue((*dfs_preorder[0]).label() == L"A" &&
                                (*dfs_preorder[1]).label() == L"X" && 
                                (*dfs_preorder[2]).label() == L"B" && 
@@ -2793,9 +2793,9 @@ namespace tests
                                (*dfs_preorder[4]).label() == L"C" && 
                                (*dfs_preorder[5]).label() == L"E");
 
-                std::for_each((*graph).vertices().begin(), (*graph).vertices().end(), [](auto& vertex){ (*vertex).flags() = vertex::flag::clear; });
-                std::vector<typename graph_algorithms<vertex>::vertex_type> dfs_postorder;
-                graph_algorithms<vertex>::dfs_postorder_to_vector(graph, dfs_postorder);
+                std::for_each((*graph).vertices().begin(), (*graph).vertices().end(), [](auto& v){ (*v).flags() = vertex<>::flag::clear; });
+                std::vector<typename graph_algorithms<vertex<>>::vertex_type> dfs_postorder;
+                graph_algorithms<vertex<>>::dfs_postorder_to_vector(graph, dfs_postorder);
                 Assert::IsTrue((*dfs_postorder[0]).label() == L"D" &&
                                (*dfs_postorder[1]).label() == L"B" && 
                                (*dfs_postorder[2]).label() == L"X" && 
@@ -2803,9 +2803,9 @@ namespace tests
                                (*dfs_postorder[4]).label() == L"C" && 
                                (*dfs_postorder[5]).label() == L"A");
 
-                std::for_each((*graph).vertices().begin(), (*graph).vertices().end(), [](auto& vertex){ (*vertex).flags() = vertex::flag::clear; });
-                std::vector<typename graph_algorithms<vertex>::vertex_type> dfs_reverse_postorder;
-                graph_algorithms<vertex>::dfs_reverse_postorder_to_vector(graph, dfs_reverse_postorder);
+                std::for_each((*graph).vertices().begin(), (*graph).vertices().end(), [](auto& v){ (*v).flags() = vertex<>::flag::clear; });
+                std::vector<typename graph_algorithms<vertex<>>::vertex_type> dfs_reverse_postorder;
+                graph_algorithms<vertex<>>::dfs_reverse_postorder_to_vector(graph, dfs_reverse_postorder);
                 Assert::IsTrue((*dfs_reverse_postorder[0]).label() == L"A" &&
                                (*dfs_reverse_postorder[1]).label() == L"C" && 
                                (*dfs_reverse_postorder[2]).label() == L"E" && 
@@ -3012,7 +3012,7 @@ namespace tests
 
                 fd_type fd;
 
-                auto rc = fopen_s(&fd, R"(d:\tmp\sp.dat)", "wb+, ccs=**UTF-8**");
+                auto rc = fopen_s(&fd, R"(d:\tmp\sp.dat)", "wb+, ccs=UTF-8");
                 rc;
 
                 vfs_io_manager io_mgr(fd, 0, 4096, 16);
@@ -3035,11 +3035,11 @@ namespace tests
                 id_t id5;
                 sp.add(L"Entry5", id5);
 
-                sp.save(io_mgr);
+                //sp.save(io_mgr);
 
-                sp.reset();
+                //sp.reset();
 
-                sp.load(io_mgr);
+                //sp.load(io_mgr);
 
                 id_t id1_0;
                 auto res = sp.id(L"Entry1", id1_0);

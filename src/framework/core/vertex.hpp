@@ -40,12 +40,15 @@ struct vertex_hash
     }
 };
 
+template <typename TValue = std::size_t>
 class vertex : public visitable
 {
     public:
         using vertex_type = std::shared_ptr<vertex>;
         using vertices_type = std::set<vertex_type, vertex_lt_key_comparator<vertex>>;
         using vertices_iterator_type = typename vertices_type::iterator;
+
+        using value_type = TValue; // vertex value, might be counter
 
         enum class flag : uint64_t
         {
@@ -65,6 +68,8 @@ class vertex : public visitable
         id_type                 my_id;
         string_type             my_label;
 
+        value_type              my_value;
+
         vertices_type           my_adjacencies;
 
         flags_type              my_flags;
@@ -72,7 +77,7 @@ class vertex : public visitable
         std::size_t             my_ref_count; // if the vertex is referenced by another vertices
 
     public:
-                                vertex(const id_type& id, const string_type& label = empty_string());
+                                vertex(const id_type& id = 0, const string_type& label = empty_string());
         virtual                ~vertex();
 
         const id_type&          id() const;
@@ -80,6 +85,9 @@ class vertex : public visitable
 
         const string_type&      label() const;
         string_type&            label();
+
+        const value_type&       value() const;
+        value_type&             value();
 
         const vertices_type&    adjacencies() const;
         vertices_type&          adjacencies();
@@ -94,67 +102,92 @@ class vertex : public visitable
         ACCEPT_METHOD;
 };
 
-inline vertex::vertex(const typename vertex::id_type& id = 0, const string_type& label)
-             : my_id(id), my_label(label), my_flags(vertex::flag::clear), my_ref_count(0)
+template <typename TValue>
+inline vertex<TValue>::vertex(const typename vertex<TValue>::id_type& id, const string_type& label)
+                     : my_id(id), my_label(label), my_flags(vertex<TValue>::flag::clear), my_ref_count(0)
 {
 }
 
-inline vertex::~vertex()
+template <typename TValue>
+inline vertex<TValue>::~vertex()
 {
 }
 
-inline const typename vertex::id_type& vertex::id() const
-{
-    return my_id;
-}
-
-inline typename vertex::id_type& vertex::id()
+template <typename TValue>
+inline const typename vertex<TValue>::id_type& vertex<TValue>::id() const
 {
     return my_id;
 }
 
-inline const string_type& vertex::label() const
+template <typename TValue>
+inline typename vertex<TValue>::id_type& vertex<TValue>::id()
+{
+    return my_id;
+}
+
+template <typename TValue>
+inline const string_type& vertex<TValue>::label() const
 {
     return my_label;
 }
 
-inline string_type& vertex::label()
+template <typename TValue>
+inline string_type& vertex<TValue>::label()
 {
     return my_label;
 }
 
-inline const typename vertex::vertices_type& vertex::adjacencies() const
+template <typename TValue>
+inline const typename vertex<TValue>::value_type& vertex<TValue>::value() const
+{
+    return my_value;
+}
+
+template <typename TValue>
+inline typename vertex<TValue>::value_type& vertex<TValue>::value()
+{
+    return my_value;
+}
+
+template <typename TValue>
+inline const typename vertex<TValue>::vertices_type& vertex<TValue>::adjacencies() const
 {
     return my_adjacencies;
 }
 
-inline typename vertex::vertices_type& vertex::adjacencies()
+template <typename TValue>
+inline typename vertex<TValue>::vertices_type& vertex<TValue>::adjacencies()
 {
     return my_adjacencies;
 }
 
-inline const typename vertex::flags_type& vertex::flags() const
+template <typename TValue>
+inline const typename vertex<TValue>::flags_type& vertex<TValue>::flags() const
 {
     return my_flags;
 }
 
-inline typename vertex::flags_type& vertex::flags()
+template <typename TValue>
+inline typename vertex<TValue>::flags_type& vertex<TValue>::flags()
 
 {
     return my_flags;
 }
 
-inline std::size_t vertex::ref_count() const
+template <typename TValue>
+inline std::size_t vertex<TValue>::ref_count() const
 {
     return my_ref_count;
 }
 
-inline std::size_t vertex::add_ref()
+template <typename TValue>
+inline std::size_t vertex<TValue>::add_ref()
 {
     return ++my_ref_count;
 }
 
-inline std::size_t vertex::release()
+template <typename TValue>
+inline std::size_t vertex<TValue>::release()
 {
     if(my_ref_count > 0)
     {

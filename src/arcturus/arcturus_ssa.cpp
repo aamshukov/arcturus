@@ -142,14 +142,14 @@ void arcturus_ssa::place_phi_functions(const typename arcturus_ssa::symbol_type&
     // 'An Efficient Method of Computing Static Single Assignment Form' by Ron Cytron, etc.
     for(auto& vertex : (*cfg).vertices())
     {
-        (*vertex).flags() = vertex::flag::clear;
+        (*vertex).flags() = basic_block_type::element_type::flag::clear;
     }
 
     std::queue<basic_block_type> worklist;
 
     for(auto& assignment : (*cfg).assignments()[v]) // assignements = defs, assignment = def
     {
-        (*assignment).flags() |= vertex::flag::processed;
+        (*assignment).flags() |= basic_block_type::element_type::flag::processed;
 
         worklist.emplace(assignment);
     }
@@ -161,9 +161,9 @@ void arcturus_ssa::place_phi_functions(const typename arcturus_ssa::symbol_type&
 
         for(auto& y : (*x).frontiers())
         {
-            if(((*y).flags() & vertex::flag::hasphi) != vertex::flag::hasphi)
+            if(((*y).flags() & basic_block_type::element_type::flag::hasphi) != basic_block_type::element_type::flag::hasphi)
             {
-                (*y).flags() |= vertex::flag::hasphi;
+                (*y).flags() |= basic_block_type::element_type::flag::hasphi;
 
                 std::set<basic_block_type, vertex_lt_key_comparator<basic_block<arcturus_quadruple>>> predecessors;
 
@@ -174,7 +174,7 @@ void arcturus_ssa::place_phi_functions(const typename arcturus_ssa::symbol_type&
 
                 (*dynamic_cast<basic_block<arcturus_quadruple>*>(y.get())).code().insert_instruction(phi);
 
-                if(((*y).flags() & vertex::flag::processed) != vertex::flag::processed)
+                if(((*y).flags() & basic_block_type::element_type::flag::processed) != basic_block_type::element_type::flag::processed)
                 {
                     worklist.emplace(std::dynamic_pointer_cast<basic_block<arcturus_quadruple>>(y));
                 }

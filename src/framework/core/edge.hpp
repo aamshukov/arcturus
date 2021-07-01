@@ -115,37 +115,37 @@ inline typename edge<TVertex, TValue, N>::id_type& edge<TVertex, TValue, N>::id(
 }
 
 template <typename TVertex, typename TValue, std::size_t N>
-const typename edge<TVertex, TValue, N>::value_type& edge<TVertex, TValue, N>::value() const
+inline const typename edge<TVertex, TValue, N>::value_type& edge<TVertex, TValue, N>::value() const
 {
     return my_value;
 }
 
 template <typename TVertex, typename TValue, std::size_t N>
-typename edge<TVertex, TValue, N>::value_type& edge<TVertex, TValue, N>::value()
+inline typename edge<TVertex, TValue, N>::value_type& edge<TVertex, TValue, N>::value()
 {
     return my_value;
 }
 
 template <typename TVertex, typename TValue, std::size_t N>
-const typename edge<TVertex, TValue, N>::flags_type& edge<TVertex, TValue, N>::flags() const
+inline const typename edge<TVertex, TValue, N>::flags_type& edge<TVertex, TValue, N>::flags() const
 {
     return my_flags;
 }
 
 template <typename TVertex, typename TValue, std::size_t N>
-typename edge<TVertex, TValue, N>::flags_type& edge<TVertex, TValue, N>::flags()
+inline typename edge<TVertex, TValue, N>::flags_type& edge<TVertex, TValue, N>::flags()
 {
     return my_flags;
 }
 
 template <typename TVertex, typename TValue, std::size_t N>
-const typename edge<TVertex, TValue, N>::vertices_type& edge<TVertex, TValue, N>::endpoints() const
+inline const typename edge<TVertex, TValue, N>::vertices_type& edge<TVertex, TValue, N>::endpoints() const
 {
     return my_endpoints;
 }
 
 template <typename TVertex, typename TValue, std::size_t N>
-typename edge<TVertex, TValue, N>::vertices_type& edge<TVertex, TValue, N>::endpoints()
+inline typename edge<TVertex, TValue, N>::vertices_type& edge<TVertex, TValue, N>::endpoints()
 {
     return my_endpoints;
 }
