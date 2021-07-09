@@ -39,6 +39,7 @@
 #include <utility>
 #include <limits>
 #include <locale>
+#include <ranges>
 
 #include <string>
 #include <charconv>
