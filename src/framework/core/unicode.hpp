@@ -156,6 +156,7 @@ Boolean isLegalUTF8Sequence(const UTF8 *source, const UTF8 *sourceEnd);
 /* --------------------------------------------------------------------- */
 
 #define convert_utf8_to_utf32   ConvertUTF8toUTF32
+#define convert_utf8_to_utf16   ConvertUTF8toUTF16
 #define convert_utf16_to_utf32  ConvertUTF16toUTF32
 #define convert_utf32_to_utf16  ConvertUTF32toUTF16
 #define convert_utf32_to_utf8   ConvertUTF32toUTF8

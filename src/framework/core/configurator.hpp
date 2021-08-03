@@ -16,6 +16,7 @@ class configurator : private noncopyable
 
         using master_options_type = std::unordered_multimap<string_type, std::tuple<string_type, bool, bool>>; // bool -> multi-value, validate argument
         using options_type = std::unordered_multimap<string_type, string_type>;
+        using envars_type = options_type;
 
         using flags_type = std::unordered_multimap<string_type, bool>;
 
@@ -23,12 +24,16 @@ class configurator : private noncopyable
     protected:                                      //                                      |
         options_type            my_options;         // option with argument: -c red  --color=red  --color red
         flags_type              my_flags;           // option (switch) without argument (boolean): --debug  -d 
+        envars_type             my_envars;          // manually populated env vars
 
         text_type               my_application;
 
         master_options_type     my_master_options;  // compare against
         flags_type              my_master_flags;    // compare against
 
+    private:
+        static const std::size_t
+                                kEnvVarMaxLength = 1024 * 64;
     private:
         void                    populate();
 
@@ -45,6 +50,8 @@ class configurator : private noncopyable
         flags_type&             flags();
 
         bool                    configure(int argc, char_type *argv[]);
+
+        bool                    add_envvar(const char_type* envar_name);
 };
 
 inline const typename configurator::options_type& configurator::options() const

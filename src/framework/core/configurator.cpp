@@ -148,4 +148,27 @@ __found_arg:
     return result;
 }
 
+bool configurator::add_envvar(const char_type* envar_name)
+{
+    bool result = false;
+
+    size_t envar_name_len = 0;
+
+    auto envar_value = std::make_unique<char_type[]>(configurator::kEnvVarMaxLength);
+
+    _wgetenv_s(&envar_name_len, const_cast<wchar_t*>(envar_name), configurator::kEnvVarMaxLength, envar_value.get());
+
+    if(envar_value != nullptr)
+    {
+        string_type option(envar_name);
+        string_type argument(envar_value.get());
+
+        my_envars.insert(std::pair(option, argument));
+
+        result = true;
+    }
+
+    return result;
+}
+
 END_NAMESPACE

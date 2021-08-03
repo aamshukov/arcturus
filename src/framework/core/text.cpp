@@ -318,6 +318,83 @@ bool text::wchars_to_chars(const wchar_t* wchars,
     return result;
 }
 
+bool text::chars_to_wchars(const char* chars,
+                           const std::size_t& chars_count,
+                           std::shared_ptr<wchar_t[]>& wchars,
+                           std::size_t& wchars_count)
+{
+    wchars_count = 0;
+
+    bool result = false;
+
+    try
+    {
+        const UTF8*  source_start_aux(reinterpret_cast<const UTF8*>(chars));
+        const UTF8** source_start(&source_start_aux);
+        const UTF8*  source_end(source_start_aux + chars_count);
+
+        std::shared_ptr<wchar_t[]> buffer(new wchar_t[chars_count + 1]);
+
+        const wchar_t*  target_start_org(buffer.get());
+        const wchar_t*  target_start_aux(buffer.get());
+        const wchar_t** target_start(&target_start_aux);
+        const wchar_t*  target_end(target_start_aux + chars_count);
+
+        convert_result cr = convert_utf8_to_utf16(source_start,
+                                                  source_end,
+                                                  (UTF16**)target_start,
+                                                  (UTF16*)target_end,
+                                                  conversion_flags::strict_conversion);
+        if(cr == conversion_ok)
+        {
+            wchars_count = std::ptrdiff_t(*target_start - target_start_org);
+
+            buffer[wchars_count] = 0;
+
+            wchars.swap(buffer);
+
+            result = true;
+        }
+        else
+        {
+            if(cr == source_exhausted)
+            {
+                OPERATION_FAILED(status::custom_code::error,
+                                 source_exhausted,
+                                 status::contributor::core,
+                                 L"Converting chars (utf8) to wchars: partial character in source, but hit end.")
+                log_error(diagnostics::instance().last_status().text().c_str());
+            }
+            else if(cr == target_exhausted)
+            {
+                OPERATION_FAILED(status::custom_code::error,
+                                 target_exhausted,
+                                 status::contributor::core,
+                                 L"Converting chars (utf8) to wchars: insufficient room in target for conversion.")
+                log_error(diagnostics::instance().last_status().text().c_str());
+            }
+            else if(cr == source_illegal)
+            {
+                OPERATION_FAILED(status::custom_code::error,
+                                 source_illegal,
+                                 status::contributor::core,
+                                 L"Converting chars (utf8) to wchars: source sequence is illegal/malformed.")
+                log_error(diagnostics::instance().last_status().text().c_str());
+            }
+        }
+    }
+    catch(const std::exception& ex)
+    {
+        OPERATION_FAILED_EX(ex,
+                            status::custom_code::error,
+                            status::contributor::core,
+                            L"Converting chars (utf8) to wchars: error occurred.")
+        log_exception(ex, diagnostics::instance().last_status().text().c_str());
+    }
+
+    return result;
+}
+
 bool text::string_to_codepoints0(const string_type& text,
                                  std::shared_ptr<cp_type[]>& codepoints,
                                  std::size_t& count)
