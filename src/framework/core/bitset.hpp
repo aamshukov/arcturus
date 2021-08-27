@@ -100,6 +100,7 @@ inline bitset<T>::bitset()
 
 template <typename T>
 inline bitset<T>::bitset(std::size_t size)
+                : my_size(0), my_capacity(0)
 {
     create(size);
     reset();
