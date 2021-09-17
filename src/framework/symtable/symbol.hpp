@@ -61,7 +61,7 @@ class symbol
 
         using metadata_type = std::unordered_map<string_type, value_type>;
 
-        using counter_type = counter;
+        using counter_type = counter<>;
 
     protected:
         id_type                 my_id;
@@ -86,7 +86,7 @@ class symbol
 
         metadata_type           my_metadata;            // custom attributes
 
-        static counter_type     my_counter;
+        static counter_type     our_counter;
 
     public:
                                 symbol();
@@ -132,7 +132,7 @@ class symbol
         string_type             to_string() const;
 };
 
-inline typename symbol::counter_type symbol::my_counter;
+inline typename symbol::counter_type symbol::our_counter;
 
 struct symbol_lt_key_comparator
 {
@@ -164,7 +164,7 @@ struct symbol_hash
 };
 
 inline symbol::symbol()
-             : my_id(my_counter.number()),
+             : my_id(our_counter.number()),
                my_offset(0),
                my_size(0),
                my_bitsize(0),
@@ -351,7 +351,7 @@ inline typename symbol::symbol_type symbol::get_new_temporary()
 {
     symbol_type result;
 
-    auto num = my_counter.value();
+    auto num = our_counter.value();
 
     if(num < 999999)
     {

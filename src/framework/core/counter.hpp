@@ -8,42 +8,51 @@
 
 BEGIN_NAMESPACE(core)
 
+template <typename T = std::size_t>
 class counter : private noncopyable
 {
+    public:
+        using integer_type = T;
+
     private:
-        std::atomic<std::size_t>
+        std::atomic<integer_type>
                     my_count;
     public:
-        explicit    counter(std::size_t count = 0);
+        explicit    counter(T count = 0);
 
-        std::size_t number();
-        std::size_t value();
+        T           number();
+        T           value();
 
         void        rewind();
-        void        reset(std::size_t count = 0);
+        void        reset(T count = 0);
 };
 
-inline counter::counter(std::size_t count)
-              : my_count(count)
+template <typename T>
+inline counter<T>::counter(T count)
+                 : my_count(count)
 {
 }
 
-inline std::size_t counter::number()
+template <typename T>
+inline T counter<T>::number()
 {
     return my_count++;
 }
 
-inline std::size_t counter::value()
+template <typename T>
+inline T counter<T>::value()
 {
     return my_count;
 }
 
-inline void counter::rewind()
+template <typename T>
+inline void counter<T>::rewind()
 {
     my_count--;
 }
 
-inline void counter::reset(std::size_t count)
+template <typename T>
+inline void counter<T>::reset(T count)
 {
     my_count = count;
 }

@@ -38,7 +38,7 @@ class graph : private noncopyable
                                                       edge_hash<TVertex, TEdgeValue, N>,
                                                       edge_eq_key_comparator<TVertex, TEdgeValue, N>>;
         using id_type = std::size_t;
-        using counter_type = counter;
+        using counter_type = counter<>;
 
     protected:
         vertex_type                         my_root; // optional, used in some digraph algorithms

@@ -28,7 +28,7 @@ class fsa : private noncopyable
         using fsa_type = std::shared_ptr<fsa>;
 
     private:
-        using counter_type = counter;
+        using counter_type = counter<>;
         
         friend class fsa_algorithm;
 

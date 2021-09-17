@@ -117,6 +117,7 @@ END_NAMESPACE
 #include <core/domain_helper.hpp>
 #include <core/factory.hpp>
 #include <core/singleton.hpp>
+#include <core/counter.hpp>
 #include <core/status.hpp>
 #include <core/logger.hpp>
 #include <core/unicode.hpp>
@@ -124,7 +125,6 @@ END_NAMESPACE
 #include <core/enum.hpp>
 #include <core/enumerate.hpp>
 #include <core/endianness.hpp>
-#include <core/counter.hpp>
 #include <core/diagnostics.hpp>
 #include <core/statistics.hpp>
 #include <core/configurator.hpp>

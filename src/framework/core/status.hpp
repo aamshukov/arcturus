@@ -46,13 +46,18 @@ class status
             vfs       = 10
         };
 
+        using correlation_type = uint64_t;
         using custom_code_type = custom_code;
         using system_code_type = std::size_t;
         using library_code_type = std::size_t;
 
         using contributor_type = contributor;
 
+        using counter_type = counter<correlation_type>;
+
     private:
+        correlation_type    my_correlation_id; // must be used in threaded environment
+
         custom_code_type    my_custom_code;
         system_code_type    my_system_code;
         library_code_type   my_library_code;
@@ -60,6 +65,8 @@ class status
         contributor_type    my_contributor;
 
         string_type         my_text;
+
+        static counter_type our_counter;
 
     public:
                             status();
@@ -70,6 +77,9 @@ class status
 
         status&             operator = (const status& other);
         status&             operator = (status&& other);
+
+        correlation_type    correlation_id() const;
+        correlation_type&   correlation_id();
 
         custom_code_type    custom_code() const;
         custom_code_type&   custom_code();
@@ -89,6 +99,16 @@ class status
     public:
         static string_type  get_system_error_message();
 };
+
+inline status::correlation_type status::correlation_id() const
+{
+    return my_correlation_id;
+}
+
+inline status::correlation_type& status::correlation_id()
+{
+    return my_correlation_id;
+}
 
 inline status::custom_code_type status::custom_code() const
 {

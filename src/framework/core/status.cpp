@@ -6,8 +6,11 @@
 
 BEGIN_NAMESPACE(core)
 
+status::counter_type status::our_counter(5);
+
 status::status()
-      : my_custom_code(status::custom_code::success),
+      : my_correlation_id(our_counter.number()),
+        my_custom_code(status::custom_code::success),
         my_system_code(SYSTEM_SUCCESS_CODE),
         my_library_code(0),
         my_contributor(contributor::core)
@@ -22,6 +25,8 @@ status::status(const status& other)
 {
     if(this != &other)
     {
+        my_correlation_id = other.my_correlation_id;
+
         my_custom_code = other.my_custom_code;
         my_system_code = other.my_system_code;
         my_library_code = other.my_library_code;
@@ -36,6 +41,8 @@ status::status(status&& other)
 {
     if(this != &other)
     {
+        my_correlation_id = other.my_correlation_id;
+
         my_custom_code = other.my_custom_code;
         my_system_code = other.my_system_code;
         my_library_code = other.my_library_code;
@@ -50,6 +57,8 @@ status& status::operator = (const status& other)
 {
     if(this != &other)
     {
+        my_correlation_id = other.my_correlation_id;
+
         my_custom_code = other.my_custom_code;
         my_system_code = other.my_system_code;
         my_library_code = other.my_library_code;
@@ -66,6 +75,8 @@ status& status::operator = (status&& other)
 {
     if(this != &other)
     {
+        my_correlation_id = other.my_correlation_id;
+
         my_custom_code = other.my_custom_code;
         my_system_code = other.my_system_code;
         my_library_code = other.my_library_code;
