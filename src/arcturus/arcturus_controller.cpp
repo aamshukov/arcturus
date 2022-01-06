@@ -124,7 +124,7 @@ void arcturus_controller::initialize(const typename arcturus_controller::context
 void arcturus_controller::parse(const typename arcturus_controller::context_type& context)
 {
     context;//??
-    // lexing and buuld cst
+    // lexing and build cst
     // populates tree in context
 }
 
