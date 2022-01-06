@@ -631,6 +631,9 @@
     <None Include="..\src\framework\ir\ir_visualization.inl">
       <Filter>framework\ir</Filter>
     </None>
+    <None Include="..\src\arcturus\token_traits.defs">
+      <Filter>arcturus</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\docs\arcturus-grammar.dev.txt">
