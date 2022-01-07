@@ -91,16 +91,19 @@ struct token
         
         token(token&& other)
         {
-            type = other.type;
+            if(this != &other)
+            {
+                type = other.type;
 
-            offset = other.offset;
-            length = other.length;
+                offset = other.offset;
+                length = other.length;
 
-            literal = std::move(other.literal);
+                literal = std::move(other.literal);
 
-            flags = other.flags;
+                flags = other.flags;
 
-            source = other.source;
+                source = other.source;
+            }
         }
 
         token& operator = (const token& other)
@@ -111,16 +114,19 @@ struct token
 
         token& operator = (token&& other) noexcept
         {
-            type = other.type;
+            if(this != &other)
+            {
+                type = other.type;
 
-            offset = other.offset;
-            length = other.length;
+                offset = other.offset;
+                length = other.length;
 
-            literal = std::move(other.literal);
+                literal = std::move(other.literal);
 
-            flags = other.flags;
+                flags = other.flags;
 
-            source = other.source;
+                source = other.source;
+            }
 
             return *this;
         }

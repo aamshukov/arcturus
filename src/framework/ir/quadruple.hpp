@@ -74,11 +74,11 @@ USING_NAMESPACE(symtable)
 //  𝛗                   y                               params                  y - symbol
 //                                                                              N - how many params (predecessors)
 //
-template <typename TSymbol, typename OpCodeTraits>
+template <typename TSymbol, typename TOpCodeTraits>
 struct quadruple : public list
 {
     using token_type = token<token_traits>;
-    using traits_type = OpCodeTraits;
+    using traits_type = TOpCodeTraits;
     using operation_code = typename traits_type::operation_code;
 
     using id_type = std::size_t;
