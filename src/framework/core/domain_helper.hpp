@@ -141,11 +141,17 @@ void multiply(bool a[N][N], bool b[N][N], bool c[N][N])
 }
 
 template <typename T = std::size_t>
-constexpr auto calculate_alignment(T value, std::size_t alignment) noexcept
+constexpr auto calculate_alignment_up(T value, std::size_t alignment) noexcept
 {
     // align value 'value' to boundary 'alignment' which should be power of 2
     return T((value + (T(alignment) - 1)) & ~T(alignment - 1)); // up
-    //return T(value & ~T(alignment - 1)); // down
+}
+
+template <typename T = std::size_t>
+constexpr auto calculate_alignment_down(T value, std::size_t alignment) noexcept
+{
+    // align value 'value' to boundary 'alignment' which should be power of 2
+    return T(value & ~T(alignment - 1)); // down
 }
 
 template <typename T>

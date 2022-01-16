@@ -59,7 +59,7 @@ letter-character                    : unicode character of classes Lu, Ll, Lt, L
                                     | universal-character-name representing a character of classes Lu, Ll, Lt, Lm, Lo, or Nl
                                     ;
 
-decimal-digit_character             : unicode character of class Nd
+decimal-digit-character             : unicode character of class Nd
                                     | universal-character-name representing a character of class Nd
                                     ;
 
@@ -71,7 +71,7 @@ combining-character                 : unicode character of classes Mn or Mc
                                     | universal-character-name representing a character of classes Mn or Mc
                                     ;
 
-formatting_character                : unicode character of class Cf
+formatting-character                : unicode character of class Cf
                                     | universal-character-name representing a character of class Cf
                                     ;
 
@@ -784,8 +784,8 @@ comment:
     #   single line comment
     /*
         /* miltiline
-          nested
-          comment */
+           nested
+           comment */
     */
 
 
@@ -796,14 +796,14 @@ type:
         real
         string
         enum
-        record<T>
+        record<T, U>
     array:
         boolean
         integer
         real
         string
         enum's value
-        record<T>
+        record<T, U>
 
 callable:
         function<T>
@@ -888,7 +888,7 @@ declarations:
             c  - column based suffix
             a, b, c: integer [1..5]              =  3,4                 ----- checked array, row based
             a, b, c: integer (1..5)              =  3,4                 ----- unchecked array, row based
-            a, b, c: integer [1..5; -1..8; 0..4] =  3,4; 2,3,3; 5,6,6   ---- 3D
+            a, b, c: integer [1..5; -1..8; 0..4] =  3,4; -1,3,3; 5,6,6  ---- 3D
             a, b, c: integer [1..5; -1..8; 0..4] =  ( 3,4; 2,3,3;
                                                         5,6,6 )
             a, b, c: integer [1..5; -1..8; 0..4] =  ( 3,4; 2,3,3; 5,6,6 )
@@ -1012,7 +1012,7 @@ declarations:
             kids : tree
             flags : byte = 0x00
 
-        status<T, P, R, TSize integer = 64, TWeight real = 1.4, TText string = "message"> struct
+        status: record<T, P, R, TSize integer = 64, TWeight real = 1.4, TText string = "message">
             code : T,
             param : P,
             return : R,
@@ -1069,6 +1069,25 @@ declarations:
             func/proc
                 name[<T>] func/proc ([params]) [lazy] [ -> (returns) | returns]
                 name func/proc[<T>] ([params]) [lazy] [ [->] (returns) | returns]
+
+                calculate: (k: integer, r: real = π, s: string = "", p: lazy node<point<real>> = { 1.0, 2.3, 3.2 }) -> (integer, integer, integer, real)
+                    statements or { statements }
+                    ...
+                    statements or { statements }
+
+                    innner: (k: integer, r: real)       --- nested local function
+                        statements or { statements }
+                        return k, r
+
+                    inner(232, 2.52)                    --- call nested local function
+
+                    return inner                        --- return nested local function
+
+
+                i, j, k, r = calculate(5, π, "dd", { 1.1, 3.2, 3.5 })
+
+
+
 
                 foo func(i : integer, r : real = π, s : string = "", n1 : node<integer> = ( 5, pp4 )) lazy returns i, j, k: integer, pp2 : point<real>
                 foo func(i : integer, r : real = π, s : string = "", n1 : node<integer> = ( 5, pp4 )) lazy -> ( i, j, k: integer,
