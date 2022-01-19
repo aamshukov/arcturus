@@ -242,7 +242,7 @@ identifiers                         : identifier
                                     | identifiers ',' identifier
                                     ;
 
-identifier                          : identifier-start-character identifier-part-characters-opt                         --- $ is internal character (tmp), cannot be used in public
+identifier                          : identifier-start-character identifier-part-characters-opt     --- $ is internal character (tmp), cannot be used in public naming
                                     ;
 
 identifier-start-character          : letter-character
@@ -266,24 +266,29 @@ fully-qualified-identifier          : identifier
                                     ;
 
 
-keyword                             : 'byte' 'integer' 'real' 'string' 'boolean'
-                                    | 'c'
+keyword                             : 'integer' 'int'                               --- native largest, now 64 bits
+                                    | 'real'                                        --- native largest, now 64 bits double
+                                    | 'boolean' 'bool'                              --- might have only 'true' or 'false'
+                                    | 'string'                                      --- implemented as Pascal/C type [n]text\0, always represented in memory as UTF-32
+                                    | 'default'                                     --- default initializer for types
+                                    | 'c'                                           --- column major in arrays
                                     | 'true' 'false'
                                     | 'enum'
-                                    | 'struct'
+                                    | 'struct'                                      --- collection of related data, mutable
+                                    | 'record'                                      --- collection of related data, immutable
                                     | 'extends'
-                                    | 'const' 'readonly'
-                                    | 'partial'
-                                    | 'if' 'else' 'for' 'while'
+                                    | 'const'                                       --- readonly semantics is only for structs' members
+                                    | 'partial'                                     --- natively supporting generated files
+                                    | 'if' 'else'
+                                    | 'for' 'while'
                                     | 'switch' 'case' 'when' ????
-                                    | 'continue' 'break' 'return' 'goto'
-                                    | 'import'
+                                    | 'continue' 'break' 'leave' 'goto' 'return'    --- 'leave' exits any nested loops (very common pattern to break two or more loops), aka 'goto' shortcut
+                                    | 'import'                                      --- brings another module in scope
                                     | 'namespace'
-                                    | 'block' 'leave'                                                                   --- leave my_block - exits the current block from any statement, including nested loops
                                     | 'is'
-                                    | 'and' 'or' 'not'
-                                    | 'lazy'
-                                    | 'pass' 'noop'
+                                    | 'and' 'or' 'not'                              --- logical synonyms of &&, ||, !
+                                    | 'lazy'                                        --- mark parameters to defer evaluation till necessity in functions
+                                    | 'pass' 'noop'                                 --- no-operation usefull in empty blocks
                                     | 'fn'
                                     | 'returns'
                                     | 'unchecked' 'checked'
@@ -302,6 +307,9 @@ assignment-operator                 : '=' '+=' '-=' '*=' '/=' '>>=' '<<=' '&=' '
 
 
 // syntax
+// ------
+
+// TYPES
 // ------
 
 type-opt                            : type
@@ -525,6 +533,10 @@ enum-member                         : identifier
                                     ;
 
 
+// CALLABLES
+// ---------
+
+
 function-declarations               : function-declaration
                                     | function-declarations function-declaration
                                     ;
@@ -571,6 +583,9 @@ lambda-body                         : '(' statements-opt ')'                    
                                     ;
 
 
+// STATEMENTS
+// ----------
+
 statements-opt                      : statements
                                     | e(psilon)
                                     ;
@@ -605,7 +620,7 @@ declaration-statement               : variable-declaration
                                     ;
 
 variable-declaration                : identifiers ':' type type-modifiers-opt                                           --- θ, φ, π : real
-                                    | identifiers ':' type-opt type-modifiers-opt lazy-opt '=' initializer              --- θ, φ, π : real const = 0.1
+                                    | identifiers ':' type-opt type-modifiers-opt '=' initializer                       --- θ, φ, π : real const = 0.1  OR  π : const = 0.1
                                     | identifiers ':' initializer                                                       --- θ, φ, π : 0.1
                                     ;
 
@@ -615,11 +630,11 @@ with-statement                      : 'with' expressions statements             
 expression-statement                : assignment-expression
                                     ;
 
-if-statement                        : 'if' expression statements                                                        --- expression evaluates to boolean
+if-statement                        : 'if' expression statements                                                        --- expression must evaluate to boolean
                                     | 'if' expression statements 'else' statements
                                     ;
 
-while-statement                     : 'while' expression statements                                                     --- expression evaluates to boolean
+while-statement                     : 'while' expression statements                                                     --- expression must evaluate to boolean
                                     ;
 
 for-statement                       : 'for' variable-declaration ':' expression statements                              --- expression acts as generator
@@ -644,6 +659,8 @@ label-statement                     : identifier ':'                            
 finally-statement                   : 'finally' statements
                                     ;
 
+// EXPRESSIONS
+// -----------
 
 expressions                         : expression
                                     | expressions ',' expression
@@ -768,7 +785,7 @@ compilation composition:
         module2                       module2                          module2
         module3                       module3                          module3
 
-    package(physical) - spans compilation-units (might be a set of files or different tables with code in db),
+    package(physical) - spans compilation-units (might be a set of files or different entities with code in db),
                         distribution units (files or db entries/refs, etc.) can be placed in vfs
         modules
             module1 - compilation-unit-1 (file or other persistent content)
@@ -790,20 +807,14 @@ comment:
 
 
 type:
-    scalar:
-        boolean
-        integer
+    scalar or array of:
+        boolean/bool
+        integer/int
         real
         string
         enum
-        record<T, U>
-    array:
-        boolean
-        integer
-        real
-        string
-        enum's value
-        record<T, U>
+        struct/record <T>
+        struct/record <T>
 
 callable:
         function<T>
@@ -817,6 +828,7 @@ statements:
     expression
     if
     while
+    do while
     for
     pattern matching
     finally
@@ -850,64 +862,62 @@ namespace
 
 
 
-
 declarations:
     let a : integer | string  --- first assignment freezes type
 
-    type byte : integer [0 .. 256]
-        flags: byte = 0xDA
-        bits : byte = 0b1_0_00_10_1
-        line : byte [0..256]
+    type byte int 0..256            ---  range
+    flags : byte = 0xDA
+    bits  : byte = 0b1_0_00_10_1   OR   0b1'0'00'10'1
+
+    type char integer 0..32635      --- range
+    line : char [0 .. 256]          --- array of chars
+
+    type range int -10..100
 
     boolean
-        flag: boolean                               default = false
-        flag: boolean = true
+        flag : boolean              --- default = false
+        flag : boolean = true
+        flag : const bool = true
+        flag : bool readonly = true
 
     number
-        integer
-            i, j, k : integer                        uninitialized, all have the same value which is default - 0
-            i, j, k : integer = 1_2_345_678_90       initialization, all have the same value
-            i, j, k : integer = 1'2'34'5'67'890      initialization, all have the same value
-            i, j, k : integer const = 100            initialization of constants, all have the same value, must be assigned
-            i, j, k : const integer = 100
-            i, j, k : 0                              initialization, all have the same value, type integer is inferred
-            i, j, k : const = 100                    initialization of constants, all have the same value, type integer is inferred
-            i, j, k : integer readonly               uninitialized variables of read-only constants, might be called later after declaration, all have the same value
-            i, j, k : integer readonly = 100         initialization of read-only constants, might be called later after declaration, all have the same value
-            i, j, k : readonly integer = 100
-            i, j, k : integer -10 .. 100             uninitialized, all have the same range [-10:100], range's bounddary must be const expression
-            i, j, k : integer -10 .. 100 = 5         initialized range, initialized with 5, all have the same vaue in the range
+        integer, default = 0
 
-            i, j, k = foo()                          deconstruction, types are inferred from foo() return values
-            i, j, k = 10
+            bin     oct   dec  hex
+            0b0101, 0123, 123, 0xBAD
 
-            row/column access (default)
-            column/row access
-            [] - checked(default)
-            () - unchecked
-            c  - column based suffix
-            a, b, c: integer [1..5]              =  3,4                 ----- checked array, row based
-            a, b, c: integer (1..5)              =  3,4                 ----- unchecked array, row based
-            a, b, c: integer [1..5; -1..8; 0..4] =  3,4; -1,3,3; 5,6,6  ---- 3D
-            a, b, c: integer [1..5; -1..8; 0..4] =  ( 3,4; 2,3,3;
-                                                        5,6,6 )
-            a, b, c: integer [1..5; -1..8; 0..4] =  ( 3,4; 2,3,3; 5,6,6 )
-            a, b, c: integer [1..5, -1..8, 0..4] =  ( 3 4, 2 3 3, 5 6 6 )
-            a, b, c: integer [1..5, -1..8, 0..4] =  ( (3,4), (2,3,3), (5,6,6) )
-            a, b, c: integer [1..5] c            =  3,4                 ----- checked array, column based
-            a, b, c: integer (1..5) c            =  3,4                 ----- unchecked array, column based
+            i, j, k : integer                        --- uninitialized, all have the same value which is default - 0
+            i, j, k : integer = 1_2_345_678_90       --- initialization, all have the same value
+            i, j, k : integer = 1'2'34'5'67'890      --- initialization, all have the same value
+            i, j, k : integer const = 100            --- initialization of constants, all have the same value, must be assigned
+            i, j, k : const integer = 100            --- 
+            i, j, k : 10                             --- initialization, all have the same value, type integer is inferred
+            i, j, k : const = 100                    --- initialization of constants, all have the same value, type integer is inferred
+            i, j, k : integer readonly               --- uninitialized variables of read-only constants, might be called later after declaration, all have the same value
+            i, j, k : integer readonly = 100         --- initialization of read-only constants, might be called later after declaration, all have the same value
+            i, j, k : readonly integer = 100         --- 
+            i, j, k : range                          --- uninitialized, all values in the range -10..100
+            i, j, k : range = 5                      --- initialized with 5, i = j = k = 5
+                                                     --- 
+            i, j, k = foo()                          --- deconstruction, types are inferred from foo() return values
+
+            a, b, c : integer [1..5]                 --- arrays, row major (default)
+            a, b, c : integer (1..5)                 --- arrays, column major
+            a, b, c : int     [1..5, -1..8, 0..4]    --- 3D arrays, row major (default)
+            a, b, c : int     (1..5, -1..8, 0..4)    --- 3D arrays, column major
+                    
+            a, b, c : integer const [1..5, -1..8; 0..4] = { {3,4}, {2,3,3}, {5,6,6} }
+            a, b, c : integer readonly [1..5, -1..8, 0..4] = { {3,4}, {2,3,3}, {5,6,6} }
 
             a[2, -1, 0] = 5
-            a[2, -1, 0] = 5
+            a(2, -1, 0) = 5
 
-            a : integer [0..2; 0..3; 0..4] = ( ( ( 3, 4, 2, 3 ), (0, -3, 9, 11), (23, 12, 23, 2) ), ( ( 13, 4, 56, 3 ), ( 5, 9, 3, 5 ), ( 3, 1, 4, 9 ) ) )
-
-            slices, APL?? and python
+            slices, APL?? python J
             slice = a[-1:1; -5:45;]
             slice = a[-1:1, -5:45]
             slice = a[-1..1, -5..45]
 
-        real
+        real, default = 0.0
             θ, φ, π : real
             θ, φ, π : 0.1                           inferred as real
             θ, φ, π : real = 0.1
@@ -922,13 +932,15 @@ declarations:
             θ, φ    : real const -π .. +π = π/2     might be initialized with expression
 
 
-    string (always represented as unicode codepoints - 32 bits), " '' " or ' "" '
+    string (always represented as unicode codepoints - 32 bits),  " '' " or ' "" '
         name, nickname : string
         name, nickname : string = "Art"
         name, nickname : string const = "Art"       must be initialized
         name, nickname : const string = "Art"       must be initialized
-        name, nickname : string readonly = "Art"
-        name, nickname : readonly string = "Art"
+        name, nickname : string readonly = "A'rt"
+        name, nickname : readonly string = "A'rt"
+        name, nickname : string readonly = 'A"rt'
+        name, nickname : readonly string = 'A"rt'
 
         "path 'c:\\tmp\\arktur\\file.txt' exists"  'path "c:\\tmp\\arktur\\file.txt" exists'
         r"path 'c:\tmp\arktur\file.txt' exists"    r'path "c:\tmp\arktur\file.txt" exists'
@@ -938,31 +950,29 @@ declarations:
         "balance {0:.2f} is as {1:YYMMDD}"              positional
         "balance {amount:.2f} is as {today:YYMMDD}"     keyword
         "balance {0:.2f} is as {1:YYMMDD} for {user}"   positional keyword mixture
-        DOES NOT support f-strings (python) or interpolated $"" (c#) strings on purpose (hard to debug)
+
+        supports f-strings (python) or interpolated $"" (c#) strings
 
 
     enum
-        direction enum [integer]
-            north,
+        direction : enum [integer]/real/string/boolean
+            north = 10,
             east,
             south,
-            west
+            west = 123
 
-        numbers enum ( one, two, three,
-                       forty = 40, fortyone )
+        numbers : enum { one, two, three,
+                         forty = 40, fortyone }
 
-        numbers enum string
-            ( odin = "1", dva = "2" )           ------------ when non-integer - all must be initialized
-        numbers enum real
-            ( r1 = 0.23, r2 = 3.45 )            ------------ when non-integer - all must be initialized
-        days enum integer ( monday, tuesday, wednesday,
-                            thursday, friday, saturday, sunday )
-        workdays enum days
+        numbers : enum string { odin = "1", dva = "2" }   --- when non-integer - all must be initialized
+        numbers : enum real { r1 = 0.23, r2 = 3.45 }      --- when non-integer - all must be initialized
+
+        days : enum integer { monday, tuesday, wednesday, thursday, friday, saturday, sunday }
+        workdays : days
             monday .. friday
-        weekend enum days
+        weekend : days
             saturday .. sunday
-        weekend enum days ( saturday .. sunday )
-        odddays enum days
+        odddays : days
             monday,
             tuesday .. wednesday,
             friday,
@@ -970,34 +980,80 @@ declarations:
 
 
     struct [<Ts>][partial] [readonly|const]
-            [readonly ------- values can be assigned only once]
-            [const ------- values must be assigned in declaration]
-            each struct defines one default instance of this struct - static sentinel = default
+            [readonly   --- values can be assigned only once]
+            [const      --- values must be assigned in declaration]
 
-        point struct
-            x : real = 0.0,
-            y : real = 0.0,
-            z : real = 0.0,
-            w : real = 1.0
+            each struct internally defines one default const instance of this struct - static sentinel = default
+            nested structs have access to the enclosing scope via a hidden field (for example if declared in function)
 
-        point<T> struct
-            x : T,
-            y : T,
-            z : T,
-            w : real = 1.0
+
+            point2D<T, U> struct/record                                     type point2D <T, U>
+            {                                                               {                                                       
+                x : T, y : U                                                    x : T, y : U                                        
+            }                                                               }                                                       
+                                                                                                                                    
+            point2D<T, U> struct/record                                     type point2D <T, U>
+                x : T,                                                          x : T,                                              
+                y : U                                                           y : U                                               
+                                                                                                                                    
+            point3D<T, U, V> struct/record extends point2D<T, U>            type point3D <T, U, V> extends point2D<T, U>    
+            {                                                               {                                                       
+                z : T,                                                          z : T,                                              
+                w : real = 1.0                                                  w : real = 1.0                                      
+            }                                                               }                                                       
+                                                                                                                                    
+            point3D<T, U, V> struct/record point2D<T, U>                    type point3D <T, U, V> point2D<T, U>
+                z : V,                                                          z : V,                                              
+                w : real = 1.0                                                  w : real = 1.0                                      
+
+
+        point<int>$default { x = default, y = default, z = default, w = default } --- internally created, one instance for lifetime of program, placed in 'type$instance' scope
+
+        point : point<int> = default
+        point : point<int> = { x = 1 }
+        point : point<int> = { x = 1, y = 2 }
+        point : point<int> = { x = 1, y = 2, z = 3 }
+        point : point<int> readonly = { x = 1, y = 2, z = 3, w = 5.2 }
+        point : const point<int> = { w = 5.2, x = 1, y = 2, z = 3 }
+
+        point : get_point()   --- deconstruction
+        p1, p2 : get_points() --- deconstruction
+
+        point = point<int>
+            x = 1,
+            y = 2,
+            z = 3
+            w = 5.0
+
 
         point<T> struct
             x, y, z : T
             w : real = 1.0
 
-        point<T> struct ( x : T, y : T,
-                          z : T, w : real = 1.0 )
+        point<T> struct { x : T, y : T,
+                          z : T, w : real = 1.0 }
 
-        node<T> struct
-            value : T,
-            point : point<T>,
-            next : node,          ---- when parse mark as ref field, by default it set to the 'default' sentinel
-            prev : node
+        type node<T>
+            value T,
+            point point<T>,
+            next node,          ---- when parse mark as ref field, by default it set to the 'default' sentinel
+            prev node
+
+        type node <T, U>
+        {
+            point point<T>,
+            val0 T, val1 U,
+            next, prev node
+        }
+
+        type node <T, U>
+        {
+            point point<T>,
+            val0 T, val1 U,
+            next, prev node
+        }
+
+
 
         node<T> struct
             value : T,

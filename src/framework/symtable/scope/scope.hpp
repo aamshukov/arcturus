@@ -18,7 +18,10 @@ class scope : public tree
 
         using key_type = cps_type;
         using value_type = symbol_type;
+
         using symbols_type = std::unordered_map<key_type, value_type>;
+        using types_type = int; //??
+
         using scope_type = std::shared_ptr<scope>;
 
     public:
@@ -39,6 +42,7 @@ class scope : public tree
         string_type     my_name;    // x:level
 
         symbols_type    my_symbols; // content
+        types_type      mt_types;   // introduced types
 
     public:
                        // scope();
