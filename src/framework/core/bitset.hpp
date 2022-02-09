@@ -142,8 +142,8 @@ inline void bitset<T>::create(std::size_t size)
 {
     my_size = size;
     my_capacity = (size == 0 ? 0 : size / chunk_size) + 1;
-    my_capacity = calculate_alignment(my_capacity * sizeof(data_type), 8) / sizeof(data_type);
-    my_bits = std::make_unique<data_type[]>(my_capacity);           // bytes
+    my_capacity = calculate_alignment_up(my_capacity * sizeof(data_type), 8) / sizeof(data_type);
+    my_bits = std::make_unique<data_type[]>(my_capacity); // bytes
 }
 
 template <typename T>

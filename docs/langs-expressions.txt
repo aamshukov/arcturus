@@ -1,0 +1,174 @@
+C
+
+
+C++
+
+
+C#
+
+
+F#
+--
+https://fsharp.org/specs/language-spec/4.1/FSharpSpec-4.1-latest.pdf
+
+
+D
+
+
+Java
+
+
+Kotlin:
+-------
+https://kotlinlang.org/docs/reference/grammar.html#syntax-grammar
+
+expression                  : disjunction
+                            ;
+
+disjunction                 : conjunction ('||' conjunction)*
+                            ;
+
+conjunction                 : equality ('&&' equality)*
+                            ;
+
+equality                    : comparison (equalityOperator comparison)*
+                            ;
+
+comparison                  : genericCallLikeComparison (comparisonOperator genericCallLikeComparison)*
+                            ;
+
+genericCallLikeComparison   : infixOperation callSuffix*
+                            ;
+
+infixOperation              : elvisExpression ((inOperator elvisExpression) | (isOperator type))*
+                            ;
+
+elvisExpression             : infixFunctionCall (elvis infixFunctionCall)*
+                            ;
+
+elvis                       : '?' ':'
+                            ;
+
+infixFunctionCall           : rangeExpression (simpleIdentifier rangeExpression)*
+                            ;
+
+rangeExpression             : additiveExpression ('..' additiveExpression)*
+                            ;
+
+additiveExpression          : multiplicativeExpression (additiveOperator multiplicativeExpression)*
+                            ;
+
+multiplicativeExpression    : asExpression (multiplicativeOperator asExpression)*
+                            ;
+
+asExpression                : prefixUnaryExpression (asOperator type)*
+                            ;
+
+prefixUnaryExpression       : unaryPrefix* postfixUnaryExpression
+                            ;
+
+unaryPrefix                 : annotation
+                            | label
+                            | prefixUnaryOperator
+                            ;
+
+postfixUnaryExpression      : primaryExpression postfixUnarySuffix*
+                            ;
+
+postfixUnarySuffix          : postfixUnaryOperator
+                            | typeArguments
+                            | callSuffix
+                            | indexingSuffix
+                            | navigationSuffix
+                            ;
+
+directlyAssignableExpression: postfixUnaryExpression assignableSuffix
+                            | simpleIdentifier
+                            | parenthesizedDirectlyAssignableExpression
+                            ;
+
+parenthesizedDirectlyAssignableExpression : '(' directlyAssignableExpression ')'
+                                          ;
+
+assignableExpression        : prefixUnaryExpression
+                            | parenthesizedAssignableExpression
+                            ;
+
+parenthesizedAssignableExpression : '(' assignableExpression ')'
+                                  ;
+
+primaryExpression           : parenthesizedExpression
+                            | simpleIdentifier
+                            | literalConstant
+                            | stringLiteral
+                            | callableReference
+                            | functionLiteral
+                            | objectLiteral
+                            | collectionLiteral
+                            | thisExpression
+                            | superExpression
+                            | ifExpression
+                            | whenExpression
+                            | tryExpression
+                            | jumpExpression
+                            ;
+
+parenthesizedExpression     : '(' expression ')'
+                            ;
+
+
+
+
+Pascal
+------
+https://github.com/antlr/grammars-v4/blob/master/pascal/pascal.g4
+
+expression
+   : simpleExpression (relationaloperator expression)?
+   ;
+
+relationaloperator
+   : EQUAL
+   | NOT_EQUAL
+   | LT
+   | LE
+   | GE
+   | GT
+   | IN
+   ;
+
+simpleExpression
+   : term (additiveoperator simpleExpression)?
+   ;
+
+additiveoperator
+   : PLUS
+   | MINUS
+   | OR
+   ;
+
+term
+   : signedFactor (multiplicativeoperator term)?
+   ;
+
+multiplicativeoperator
+   : STAR
+   | SLASH
+   | DIV
+   | MOD
+   | AND
+   ;
+
+signedFactor
+   : (PLUS | MINUS)? factor
+   ;
+
+factor
+   : variable
+   | LPAREN expression RPAREN
+   | functionDesignator
+   | unsignedConstant
+   | set_
+   | NOT factor
+   | bool_
+   ;

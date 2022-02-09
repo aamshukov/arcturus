@@ -271,27 +271,25 @@ keyword                             : 'integer' 'int'                           
                                     | 'boolean' 'bool'                              --- might have only 'true' or 'false'
                                     | 'string'                                      --- implemented as Pascal/C type [n]text\0, always represented in memory as UTF-32
                                     | 'default'                                     --- default initializer for types
-                                    | 'c'                                           --- column major in arrays
                                     | 'true' 'false'
                                     | 'enum'
                                     | 'struct'                                      --- collection of related data, mutable
                                     | 'record'                                      --- collection of related data, immutable
-                                    | 'extends'
+                                    | 'extends'                                     --- struct/record hierarchy -  watch for names collisions
                                     | 'const'                                       --- readonly semantics is only for structs' members
-                                    | 'partial'                                     --- natively supporting generated files
+                                    | 'partial'                                     --- natively support generated files
                                     | 'if' 'else'
-                                    | 'for' 'while'
-                                    | 'switch' 'case' 'when' ????
+                                    | 'for' 'while' 'dp while'
+                                    | 'switch' 'case' 'when' 'match' ????
                                     | 'continue' 'break' 'leave' 'goto' 'return'    --- 'leave' exits any nested loops (very common pattern to break two or more loops), aka 'goto' shortcut
                                     | 'import'                                      --- brings another module in scope
                                     | 'namespace'
                                     | 'is'
                                     | 'and' 'or' 'not'                              --- logical synonyms of &&, ||, !
                                     | 'lazy'                                        --- mark parameters to defer evaluation till necessity in functions
-                                    | 'pass' 'noop'                                 --- no-operation usefull in empty blocks
-                                    | 'fn'
-                                    | 'returns'
-                                    | 'unchecked' 'checked'
+                                    | 'noop'                                 --- no-operation usefull in empty blocks
+                                    | 'fn' ???
+                                    | 'unchecked' 'checked' ???
                                     ;
 
 punctuator                          : ':' '..' '...' ',' '[' ']' '(' ')'
@@ -403,9 +401,8 @@ expression-initializer              : expression
 array-initializer                   : array-member-initializations
                                     ;
 
-array-member-initializations        : array-member-initialization                                                       --- array-member-initialization (',' | ';' array-member-initialization)*
+array-member-initializations        : array-member-initialization                                                       --- array-member-initialization {',' array-member-initialization}*
                                     | array-member-initializations ',' array-member-initialization
-                                    | array-member-initializations ';' array-member-initialization
                                     ;
 
 array-member-initialization         : array-dimension-initialization                                                    --- array-dimension-initialization (' ' | ',' array-dimension-initialization)*
@@ -535,7 +532,6 @@ enum-member                         : identifier
 
 // CALLABLES
 // ---------
-
 
 function-declarations               : function-declaration
                                     | function-declarations function-declaration
@@ -797,7 +793,6 @@ compilation composition:
 
 comment:
     //  single line comment
-    --- single line comment
     #   single line comment
     /*
         /* miltiline
@@ -837,11 +832,6 @@ statements:
 
 
 
-
-
-
-
-
 namespace
     namespace sample
         namespace nested
@@ -872,7 +862,8 @@ declarations:
     type char integer 0..32635      --- range
     line : char [0 .. 256]          --- array of chars
 
-    type range int -10..100
+    type range int -10 .. 100
+    type range real -π .. +π
 
     boolean
         flag : boolean              --- default = false
@@ -906,30 +897,30 @@ declarations:
             a, b, c : int     [1..5, -1..8, 0..4]    --- 3D arrays, row major (default)
             a, b, c : int     (1..5, -1..8, 0..4)    --- 3D arrays, column major
                     
-            a, b, c : integer const [1..5, -1..8; 0..4] = { {3,4}, {2,3,3}, {5,6,6} }
-            a, b, c : integer readonly [1..5, -1..8, 0..4] = { {3,4}, {2,3,3}, {5,6,6} }
+            a, b, c : int const [1..5, -1..8; 0..4] = [ [3,4], [2,3,3], [5,6,6] ]       --- initialized arrays, row major (default)
+            a, b, c : int readonly (1..5, -1..8, 0..4) = ( (3,4), (2,3,3), (5,6,6) )    --- initialized arrays, column major
 
             a[2, -1, 0] = 5
             a(2, -1, 0) = 5
 
-            slices, APL?? python J
+            slices ?????, APL python J
             slice = a[-1:1; -5:45;]
             slice = a[-1:1, -5:45]
             slice = a[-1..1, -5..45]
 
         real, default = 0.0
             θ, φ, π : real
-            θ, φ, π : 0.1                           inferred as real
+            θ, φ, π : 0.1                           --- inferred as real
             θ, φ, π : real = 0.1
             θ, φ, π : real const = 0.1
             θ, φ, π : const real = 0.1
             θ, φ, π : real readonly = 0.1
             θ, φ, π : readonly real = 0.1
             π       : real const = 3.14159
-            θ, φ    : real -π .. +π                 π must be const expression
-            θ, φ    : real -π .. +π = π/2           might be initialized with expression
-            θ, φ    : const real -π .. +π = π/2     might be initialized with expression
-            θ, φ    : real const -π .. +π = π/2     might be initialized with expression
+            θ, φ    : real -π .. +π                 --- π must be const expression
+            θ, φ    : real -π .. +π = π/2           --- might be initialized with expression
+            θ, φ    : const real -π .. +π = π/2     --- might be initialized with expression
+            θ, φ    : real const -π .. +π = π/2     --- might be initialized with expression
 
 
     string (always represented as unicode codepoints - 32 bits),  " '' " or ' "" '
@@ -1007,7 +998,22 @@ declarations:
                 w : real = 1.0                                                  w : real = 1.0                                      
 
 
+            zoo <T, U, V> struct
+                θ, φ, π : real = 0.1, -51.2, 3.14159
+                i, j, k : integer = 100
+                a, b, c : int [1..5, -1..8, 0..4]
+                a, b, c : int (1..5, -1..8, 0..4)
+                x : T
+                y : U
+                z : T
+                w : -1.0E+3 * θ + φ / π      --- inferred as real
+
+
         point<int>$default { x = default, y = default, z = default, w = default } --- internally created, one instance for lifetime of program, placed in 'type$instance' scope
+
+        scope:
+            types
+            varaibles
 
         point : point<int> = default
         point : point<int> = { x = 1 }
@@ -1302,4 +1308,14 @@ array-initialization-expression             [-1..2]
 default-argument-expression                 x : 2.3
 assignment-expression                       x = 2.3
 return-expression
+
+
+
+
+&&  --– conjunction (logical AND)
+||  --– disjunction (logical OR)
+!   --- negation (logical NOT)
+
+
+
 
