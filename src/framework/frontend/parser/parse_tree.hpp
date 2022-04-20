@@ -16,7 +16,7 @@ class parse_tree : public parse_tree_base, public tree, public visitable
     public:
         using token_type = typename parse_tree_base::token_type;
 
-        using gr_symbol_type = typename parse_tree_base::gr_symbol_type;
+        using grammar_symbol_type = typename parse_tree_base::grammar_symbol_type;
 
         using ir_symbol_type = typename parse_tree_base::ir_symbol_type;
         using ir_symbols_type = typename parse_tree_base::ir_symbols_type;

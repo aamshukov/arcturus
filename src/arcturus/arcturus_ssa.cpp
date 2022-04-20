@@ -109,9 +109,13 @@ void arcturus_ssa::build_ssa_form(typename arcturus_ssa::control_flow_graph_type
 
     // phase I (compute dominators)
     if((*cfg).vertices().size() > 128)
+    {
         graph_algorithms<basic_block<arcturus_quadruple>>::compute_dominators_lengauer_tarjan(g);
+    }
     else
+    {
         graph_algorithms<basic_block<arcturus_quadruple>>::compute_dominators(g);
+    }
 
     // phase II (build dominance tree)
     dominance_tree_type dt;

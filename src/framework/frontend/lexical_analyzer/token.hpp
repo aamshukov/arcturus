@@ -39,7 +39,7 @@ struct token
         clear     = 0x00,
         genuine   = 0x01,
         contextual= 0x02, // contextual, recognized in specific contexts, similar to C# get/set, async/await ...
-        synthetic = 0x04  // additional (artificial) tokens which are inserted into the token stream ...
+        synthetic = 0x04  // additional (artificial) tokens which are inserted into the token stream, syntactic sugar - desugaring ...
     };
 
     DECLARE_ENUM_OPERATORS(flag)
@@ -78,6 +78,23 @@ struct token
             }
         }
 
+        void accept(token&& other)
+        {
+            if(this != &other)
+            {
+                type = other.type;
+
+                offset = other.offset;
+                length = other.length;
+
+                literal = std::move(other.literal);
+
+                flags = other.flags;
+
+                source = other.source;
+            }
+        }
+
     public:
         token()
         {
@@ -91,19 +108,7 @@ struct token
         
         token(token&& other)
         {
-            if(this != &other)
-            {
-                type = other.type;
-
-                offset = other.offset;
-                length = other.length;
-
-                literal = std::move(other.literal);
-
-                flags = other.flags;
-
-                source = other.source;
-            }
+            accept(other);
         }
 
         token& operator = (const token& other)
@@ -114,20 +119,7 @@ struct token
 
         token& operator = (token&& other) noexcept
         {
-            if(this != &other)
-            {
-                type = other.type;
-
-                offset = other.offset;
-                length = other.length;
-
-                literal = std::move(other.literal);
-
-                flags = other.flags;
-
-                source = other.source;
-            }
-
+            accept(other);
             return *this;
         }
 

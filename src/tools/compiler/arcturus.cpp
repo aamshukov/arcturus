@@ -104,8 +104,13 @@ void build_code(arcturus_code& code) //??
     }
 }
 
+#include <fcntl.h>
+#include <io.h>
+
 int _tmain(int argc, _TCHAR *argv[])
 {
+    _setmode(_fileno(stdout), _O_U16TEXT);
+
     std::ios::sync_with_stdio(false);
 
     code<arcturus_instruction> code;

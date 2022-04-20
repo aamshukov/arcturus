@@ -8,6 +8,8 @@ USING_NAMESPACE(core)
 
 inline type::type()
            : my_size(0),
+             my_platform_size(0),
+             my_alignment(0),
              my_flags(type::flags_type::clear),
              my_cardinality(0)
 {
