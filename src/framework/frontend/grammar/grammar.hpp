@@ -12,19 +12,19 @@ USING_NAMESPACE(core)
 class grammar : private noncopyable
 {
     public:
-        using symbol_type = typename rule::symbol_type;
-        using symbols_type = typename rule::symbols_type;
+        using symbol_type = typename grammar_rule::symbol_type;
+        using symbols_type = typename grammar_rule::symbols_type;
 
         using pool_type = std::map<string_type, symbol_type>;
         using pool_index_type = std::map<std::size_t, symbol_type>;
 
-        using rule_type = std::shared_ptr<rule>;
+        using rule_type = std::shared_ptr<grammar_rule>;
         using rules_type = std::vector<rule_type>;
 
         using nts_rules_type = std::map<string_type, rules_type>; // mapping nonterminal to rules
 
-        using set_type = typename symbol::set_type;
-        using sets_type = typename symbol::sets_type;
+        using set_type = typename grammar_symbol::set_type;
+        using sets_type = typename grammar_symbol::sets_type;
 
     private:
         rules_type              my_rules;

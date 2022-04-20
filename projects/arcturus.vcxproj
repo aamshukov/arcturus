@@ -95,8 +95,8 @@
     <ClInclude Include="..\src\framework\frontend\grammar\grammar.hpp" />
     <ClInclude Include="..\src\framework\frontend\grammar\grammar_algorithm.hpp" />
     <ClInclude Include="..\src\framework\frontend\grammar\grammar_visualization.hpp" />
-    <ClInclude Include="..\src\framework\frontend\grammar\rule.hpp" />
-    <ClInclude Include="..\src\framework\frontend\grammar\symbol.hpp" />
+    <ClInclude Include="..\src\framework\frontend\grammar\grammar_rule.hpp" />
+    <ClInclude Include="..\src\framework\frontend\grammar\grammar_symbol.hpp" />
     <ClInclude Include="..\src\framework\frontend\lexical_analyzer\lexical_analyzer.hpp" />
     <ClInclude Include="..\src\framework\frontend\lexical_analyzer\lexical_content.hpp" />
     <ClInclude Include="..\src\framework\frontend\lexical_analyzer\token.hpp" />
@@ -206,8 +206,8 @@
     <ClCompile Include="..\src\framework\frontend\grammar\grammar.cpp" />
     <ClCompile Include="..\src\framework\frontend\grammar\grammar_algorithm.cpp" />
     <ClCompile Include="..\src\framework\frontend\grammar\grammar_visualization.cpp" />
-    <ClCompile Include="..\src\framework\frontend\grammar\rule.cpp" />
-    <ClCompile Include="..\src\framework\frontend\grammar\symbol.cpp" />
+    <ClCompile Include="..\src\framework\frontend\grammar\grammar_rule.cpp" />
+    <ClCompile Include="..\src\framework\frontend\grammar\grammar_symbol.cpp" />
     <ClCompile Include="..\src\framework\frontend\lexical_analyzer\lexical_analyzer.cpp" />
     <ClCompile Include="..\src\framework\frontend\lexical_analyzer\lexical_content.cpp" />
     <ClCompile Include="..\src\framework\frontend\lexical_analyzer\token.cpp" />

@@ -6,26 +6,26 @@
 #include <core/visitor.hpp>
 #include <core/tree.hpp>
 
-#include <frontend/grammar/symbol.hpp>
-#include <frontend/grammar/rule.hpp>
+#include <frontend/grammar/grammar_symbol.hpp>
+#include <frontend/grammar/grammar_rule.hpp>
 
 BEGIN_NAMESPACE(frontend)
 USING_NAMESPACE(core)
 
-rule::rule(std::size_t id, const string_type& name)
-    : my_id(id),
-      my_name(name),
-      my_lhs_terminal_count(0),
-      my_lhs_nonterminal_count(0),
-      my_rhs_terminal_count(0),
-      my_rhs_nonterminal_count(0),
-      my_precedence(0),
-      my_precedences(0),
-      my_flags(flags_type::clear)
+grammar_rule::grammar_rule(std::size_t id, const string_type& name)
+            : my_id(id),
+              my_name(name),
+              my_lhs_terminal_count(0),
+              my_lhs_nonterminal_count(0),
+              my_rhs_terminal_count(0),
+              my_rhs_nonterminal_count(0),
+              my_precedence(0),
+              my_precedences(0),
+              my_flags(flags_type::clear)
 {
 }
 
-rule::rule(const rule& other)
+grammar_rule::grammar_rule(const grammar_rule& other)
 {
     if(this != &other)
     {
@@ -48,7 +48,7 @@ rule::rule(const rule& other)
     }
 }
 
-rule::rule(rule&& other)
+grammar_rule::grammar_rule(grammar_rule&& other)
 {
     if(this != &other)
     {
@@ -71,11 +71,11 @@ rule::rule(rule&& other)
     }
 }
 
-rule::~rule()
+grammar_rule::~grammar_rule()
 {
 }
 
-rule& rule::operator = (const rule& other)
+grammar_rule& grammar_rule::operator = (const grammar_rule& other)
 {
     if(this != &other)
     {
@@ -100,7 +100,7 @@ rule& rule::operator = (const rule& other)
     return *this;
 }
 
-rule& rule::operator = (rule&& other)
+grammar_rule& grammar_rule::operator = (grammar_rule&& other)
 {
     if(this != &other)
     {
@@ -125,22 +125,22 @@ rule& rule::operator = (rule&& other)
     return *this;
 }
 
-bool rule::empty() const
+bool grammar_rule::empty() const
 {
     bool result = !lhs().empty() && !rhs().empty();
 
     if(result)
     {
-        const symbol& lhs_symbol(*lhs().front());
-        const symbol& rhs_symbol(*rhs().front());
+        const grammar_symbol& lhs_symbol(*lhs().front());
+        const grammar_symbol& rhs_symbol(*rhs().front());
 
-        result = lhs_symbol.nonterminal() && rhs_symbol.id() == (*symbol::epsilon).id();
+        result = lhs_symbol.nonterminal() && rhs_symbol.id() == (*grammar_symbol::epsilon).id();
     }
 
     return result;
 }
 
-void rule::add_lhs_symbol(const typename rule::symbol_type& sym)
+void grammar_rule::add_lhs_symbol(const typename grammar_rule::symbol_type& sym)
 {
     my_lhs.emplace_back(sym);
 
@@ -154,7 +154,7 @@ void rule::add_lhs_symbol(const typename rule::symbol_type& sym)
     }
 }
 
-void rule::add_rhs_symbol(const typename rule::symbol_type& sym)
+void grammar_rule::add_rhs_symbol(const typename grammar_rule::symbol_type& sym)
 {
     my_rhs.emplace_back(sym);
 
@@ -168,7 +168,7 @@ void rule::add_rhs_symbol(const typename rule::symbol_type& sym)
     }
 }
 
-bool operator == (const rule& rule1, const rule& rule2)
+bool operator == (const grammar_rule& rule1, const grammar_rule& rule2)
 {
     bool result = rule1.lhs().size() == rule2.lhs().size() && rule1.rhs().size() == rule2.rhs().size();
 

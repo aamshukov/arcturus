@@ -6,8 +6,8 @@
 #include <core/visitor.hpp>
 #include <core/tree.hpp>
 
-#include <frontend/grammar/symbol.hpp>
-#include <frontend/grammar/rule.hpp>
+#include <frontend/grammar/grammar_symbol.hpp>
+#include <frontend/grammar/grammar_rule.hpp>
 #include <frontend/grammar/grammar.hpp>
 #include <frontend/grammar/grammar_algorithm.hpp>
 #include <frontend/grammar/grammar_visualization.hpp>
@@ -174,7 +174,7 @@ string_type grammar_visualization::decorate_rule(const typename grammar_visualiz
 
             result += buffer;
 
-            if((*sym).terminal() && (*sym).id() != (*symbol::epsilon).id() && (*sym).id() != (*symbol::op_mark).id())
+            if((*sym).terminal() && (*sym).id() != (*grammar_symbol::epsilon).id() && (*sym).id() != (*grammar_symbol::op_mark).id())
             {
                 result += L"'";
             }
@@ -184,7 +184,7 @@ string_type grammar_visualization::decorate_rule(const typename grammar_visualiz
 
         if(decorate)
         {
-            if((*sym).terminal() && (*sym).id() != (*symbol::epsilon).id() && (*sym).id() != (*symbol::op_mark).id())
+            if((*sym).terminal() && (*sym).id() != (*grammar_symbol::epsilon).id() && (*sym).id() != (*grammar_symbol::op_mark).id())
             {
                 result += L"'";
             }
@@ -199,7 +199,7 @@ string_type grammar_visualization::decorate_rule(const typename grammar_visualiz
     {
         if(decorate)
         {
-            if((*sym).terminal() && (*sym).id() != (*symbol::epsilon).id() && (*sym).id() != (*symbol::op_mark).id())
+            if((*sym).terminal() && (*sym).id() != (*grammar_symbol::epsilon).id() && (*sym).id() != (*grammar_symbol::op_mark).id())
             {
                 result += L"'";
             }
@@ -209,7 +209,7 @@ string_type grammar_visualization::decorate_rule(const typename grammar_visualiz
 
         if(decorate)
         {
-            if((*sym).terminal() && (*sym).id() != (*symbol::epsilon).id() && (*sym).id() != (*symbol::op_mark).id())
+            if((*sym).terminal() && (*sym).id() != (*grammar_symbol::epsilon).id() && (*sym).id() != (*grammar_symbol::op_mark).id())
             {
                 result += L"'";
             }
@@ -243,9 +243,9 @@ string_type grammar_visualization::decorate_symbols(const grammar& grammar)
         result += decorate_symbol(sym);
     }
 
-    result += decorate_symbol(symbol::epsilon);
-    result += decorate_symbol(symbol::eof);
-    result += decorate_symbol(symbol::op_mark);
+    result += decorate_symbol(grammar_symbol::epsilon);
+    result += decorate_symbol(grammar_symbol::eof);
+    result += decorate_symbol(grammar_symbol::op_mark);
 
     return result;
 }

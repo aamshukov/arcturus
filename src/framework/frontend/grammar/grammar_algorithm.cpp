@@ -6,8 +6,8 @@
 #include <core/visitor.hpp>
 #include <core/tree.hpp>
 
-#include <frontend/grammar/symbol.hpp>
-#include <frontend/grammar/rule.hpp>
+#include <frontend/grammar/grammar_symbol.hpp>
+#include <frontend/grammar/grammar_rule.hpp>
 #include <frontend/grammar/grammar.hpp>
 
 #include <frontend/grammar/grammar_visualization.hpp>
@@ -170,8 +170,8 @@ void grammar_algorithm::calculate_productive_nonterminals(grammar& gr)
     // Sudkamp, 3rd edition, p.117
     log_info(L"Calculating productive nonterminals ...");
 
-    std::set<symbol_type, symbol::symbol_key_comparator> term_set;
-    std::set<symbol_type, symbol::symbol_key_comparator> prev_set;
+    std::set<symbol_type, grammar_symbol::symbol_key_comparator> term_set;
+    std::set<symbol_type, grammar_symbol::symbol_key_comparator> prev_set;
 
     // collect nonterminals
     std::vector<symbol_type> nonterminals;
@@ -351,17 +351,17 @@ void grammar_algorithm::calculate_accessible_nonterminals(grammar& gr)
     // Sudkamp, 3rd edition, p.119
     log_info(L"Calculating accessible nonterminals ...");
 
-    std::set<symbol_type, symbol::symbol_key_comparator> reach_set;
+    std::set<symbol_type, grammar_symbol::symbol_key_comparator> reach_set;
 
     // REACH = { S }
     (*gr.start_symbol()).accessible() = true;
     reach_set.emplace(gr.start_symbol());
 
-    std::set<symbol_type, symbol::symbol_key_comparator> prev_set;
+    std::set<symbol_type, grammar_symbol::symbol_key_comparator> prev_set;
 
     do
     {
-        std::set<symbol_type, symbol::symbol_key_comparator> new_set;
+        std::set<symbol_type, grammar_symbol::symbol_key_comparator> new_set;
 
         std::set_difference(reach_set.begin(), reach_set.end(), prev_set.begin(), prev_set.end(), std::inserter(new_set, new_set.begin()));
 
@@ -454,22 +454,22 @@ void grammar_algorithm::remove_unit_productions(grammar& gr)
     collect_nonterminals(gr, nonterminals);
 
     // build CHAIN(A) sets
-    std::map<symbol_type, std::set<symbol_type, symbol::symbol_key_comparator>, symbol::symbol_key_comparator> chain_sets;
+    std::map<symbol_type, std::set<symbol_type, grammar_symbol::symbol_key_comparator>, grammar_symbol::symbol_key_comparator> chain_sets;
 
     std::vector<rule_type> chain_rules;
 
     for(const auto& nonterminal : nonterminals)
     {
-        std::set<symbol_type, symbol::symbol_key_comparator> chain_set;
+        std::set<symbol_type, grammar_symbol::symbol_key_comparator> chain_set;
 
         // CHAIN(A) = { A }
         chain_set.emplace(nonterminal);
 
-        std::set<symbol_type, symbol::symbol_key_comparator> prev_set;
+        std::set<symbol_type, grammar_symbol::symbol_key_comparator> prev_set;
 
         do
         {
-            std::set<symbol_type, symbol::symbol_key_comparator> new_set;
+            std::set<symbol_type, grammar_symbol::symbol_key_comparator> new_set;
 
             std::set_difference(chain_set.begin(), chain_set.end(), prev_set.begin(), prev_set.end(), std::inserter(new_set, new_set.begin()));
 
@@ -536,7 +536,7 @@ void grammar_algorithm::remove_unit_productions(grammar& gr)
                 if((*(*gr_rule).lhs().front()).id() == (*chain_symb).id())
                 {
                     // add a new production A -> w
-                    rule_type production(factory::create<rule>(static_cast<std::size_t>(chain_rules_count++), (*nonterminal).name())); // rule name is the LHS's symbol name
+                    rule_type production(factory::create<grammar_rule>(static_cast<std::size_t>(chain_rules_count++), (*nonterminal).name())); // rule name is the LHS's symbol name
 
                     (*production).add_lhs_symbol(nonterminal);
                     std::for_each((*gr_rule).rhs().begin(), (*gr_rule).rhs().end(), [&production](const auto& symb){ (*production).add_rhs_symbol(symb); });
@@ -592,7 +592,7 @@ void grammar_algorithm::build_nullability_set(grammar& gr)
 
     collect_nonterminals(gr, nonterminals);
 
-    std::set<symbol_type, symbol::symbol_key_comparator> null_set;
+    std::set<symbol_type, grammar_symbol::symbol_key_comparator> null_set;
 
     // init NULL
     // NULL = { A | A -> λ ∈ P }
@@ -605,7 +605,7 @@ void grammar_algorithm::build_nullability_set(grammar& gr)
     }
 
     // calculate
-    std::set<symbol_type, symbol::symbol_key_comparator> prev_set;
+    std::set<symbol_type, grammar_symbol::symbol_key_comparator> prev_set;
 
     do
     {
@@ -622,7 +622,7 @@ void grammar_algorithm::build_nullability_set(grammar& gr)
 
                     for(const auto& symb : (*gr_rule).rhs())
                     {
-                        if (!(((*symb).nonterminal() && prev_set.find(symb) != prev_set.end()) || (*symb).id() == (*symbol::epsilon).id()))
+                        if (!(((*symb).nonterminal() && prev_set.find(symb) != prev_set.end()) || (*symb).id() == (*grammar_symbol::epsilon).id()))
                         {
                             nullable = false;
                             break;
@@ -728,7 +728,7 @@ void grammar_algorithm::remove_empty_productions(grammar& gr)
 
                 for(const auto& rhs : productions)
                 {
-                    rule_type production(factory::create<rule>(static_cast<std::size_t>(new_productions_count++), (*lhs_symbol).name())); // rule name is the LHS's symbol name
+                    rule_type production(factory::create<grammar_rule>(static_cast<std::size_t>(new_productions_count++), (*lhs_symbol).name())); // rule name is the LHS's symbol name
 
                     (*production).add_lhs_symbol(lhs_symbol);
                     std::for_each(rhs.begin(), rhs.end(), [&production](const auto& symb){ (*production).add_rhs_symbol(symb); });
@@ -759,10 +759,10 @@ void grammar_algorithm::remove_empty_productions(grammar& gr)
     // preserve S -> λ
     if((*start_symbol).nullable())
     {
-        rule_type production(factory::create<rule>(static_cast<std::size_t>(new_productions_count), (*start_symbol).name())); // rule name is the LHS's symbol name
+        rule_type production(factory::create<grammar_rule>(static_cast<std::size_t>(new_productions_count), (*start_symbol).name())); // rule name is the LHS's symbol name
 
         (*production).add_lhs_symbol(start_symbol);
-        (*production).add_rhs_symbol(symbol::epsilon);
+        (*production).add_rhs_symbol(grammar_symbol::epsilon);
 
         gr.rules().emplace_back(production);
     }
@@ -817,7 +817,7 @@ void grammar_algorithm::build_first_set(grammar& gr, uint8_t k, bool build_eff)
     collect_terminals(gr, terminals);
     collect_nonterminals(gr, nonterminals);
 
-    using first_set_type = std::map<symbol_type, sets_type, symbol::symbol_key_comparator>;
+    using first_set_type = std::map<symbol_type, sets_type, grammar_symbol::symbol_key_comparator>;
 
     first_set_type fas;       // F(A), A ∈ N, the current FIRST set
     first_set_type fas_prime; // F'(A), A ∈ N, the FIRST set from the previous iteration
@@ -826,7 +826,7 @@ void grammar_algorithm::build_first_set(grammar& gr, uint8_t k, bool build_eff)
     // FIRSTk(a) = { { a } }
     for(const auto& terminal : terminals)
     {
-        if(build_eff && (*terminal).id() == (*symbol::epsilon).id())
+        if(build_eff && (*terminal).id() == (*grammar_symbol::epsilon).id())
         {
             continue;
         }
@@ -837,21 +837,21 @@ void grammar_algorithm::build_first_set(grammar& gr, uint8_t k, bool build_eff)
     // FIRSTk(λ) = { { λ } }
     if(!build_eff)
     {
-        if((*symbol::epsilon).first_sets().empty())
+        if((*grammar_symbol::epsilon).first_sets().empty())
         {
-            fas.emplace(first_set_type::value_type(symbol::epsilon, sets_type { set_type { symbol::epsilon } }));
+            fas.emplace(first_set_type::value_type(grammar_symbol::epsilon, sets_type { set_type { grammar_symbol::epsilon } }));
         }
     }
     // FIRSTk($) = { { $ } }
-    if((*symbol::eof).first_sets().empty())
+    if((*grammar_symbol::eof).first_sets().empty())
     {
-        fas.emplace(first_set_type::value_type(symbol::eof, sets_type { set_type { symbol::eof } }));
+        fas.emplace(first_set_type::value_type(grammar_symbol::eof, sets_type { set_type { grammar_symbol::eof } }));
     }
 
     // FIRSTk(#) = { { # } }
-    if((*symbol::op_mark).first_sets().empty())
+    if((*grammar_symbol::op_mark).first_sets().empty())
     {
-        fas.emplace(first_set_type::value_type(symbol::op_mark, sets_type { set_type { symbol::op_mark } }));
+        fas.emplace(first_set_type::value_type(grammar_symbol::op_mark, sets_type { set_type { grammar_symbol::op_mark } }));
     }
 
     // 2. for each A ∈ N do F(A) = {λ} if A is nullable or empty otherwise
@@ -1067,7 +1067,7 @@ void grammar_algorithm::build_first_set(const typename grammar_algorithm::symbol
     // if all nullable add {λ}
     if(!symbols.empty() && std::all_of(symbols.begin(), symbols.end(), [](const auto& symb){ return (*symb).nullable(); }))
     {
-        result.emplace_back(set_type { symbol::epsilon });
+        result.emplace_back(set_type { grammar_symbol::epsilon });
     }
 
     make_vector_unique(result); // against { { e } { e } ... }
@@ -1194,13 +1194,13 @@ void grammar_algorithm::build_follow_set(grammar& gr, uint8_t k)
                   return (*symb1).id() < (*symb2).id();
               });
 
-    using follow_set_type = std::map<symbol_type, sets_type, symbol::symbol_key_comparator>;
+    using follow_set_type = std::map<symbol_type, sets_type, grammar_symbol::symbol_key_comparator>;
 
     follow_set_type flas;       // FL(A), A ∈ N
     follow_set_type flas_prime; // FL'(A), A ∈ N
 
     // 1. FL(S) = {λ} or {$}
-    flas.emplace(follow_set_type::value_type(gr.start_symbol(), sets_type { set_type { symbol::epsilon } }));
+    flas.emplace(follow_set_type::value_type(gr.start_symbol(), sets_type { set_type { grammar_symbol::epsilon } }));
     //flas.emplace(follow_set_type::value_type(gr.start_symbol(), sets_type { set_type { symbol::eof } }));
 
     // 2. for each A ∈ N-{S} do FL(A) = ∅
@@ -1381,21 +1381,21 @@ void grammar_algorithm::build_first1_set(grammar& gr)
     }
 
     // FIRSTk(λ) = { { λ } }
-    if((*symbol::epsilon).first_sets().empty())
+    if((*grammar_symbol::epsilon).first_sets().empty())
     {
-        (*symbol::epsilon).first_sets().emplace_back(set_type { symbol::epsilon });
+        (*grammar_symbol::epsilon).first_sets().emplace_back(set_type { grammar_symbol::epsilon });
     }
 
     // FIRSTk($) = { { $ } }
-    if((*symbol::eof).first_sets().empty())
+    if((*grammar_symbol::eof).first_sets().empty())
     {
-        (*symbol::eof).first_sets().emplace_back(set_type { symbol::eof });
+        (*grammar_symbol::eof).first_sets().emplace_back(set_type { grammar_symbol::eof });
     }
 
     // FIRSTk(#) = { { # } }
-    if((*symbol::op_mark).first_sets().empty())
+    if((*grammar_symbol::op_mark).first_sets().empty())
     {
-        (*symbol::op_mark).first_sets().emplace_back(set_type { symbol::op_mark });
+        (*grammar_symbol::op_mark).first_sets().emplace_back(set_type { grammar_symbol::op_mark });
     }
 
     // foreach A ∈ NONTERMS do First[A] = {}
@@ -1475,7 +1475,7 @@ void grammar_algorithm::build_first1_set(const typename grammar_algorithm::symbo
 
     if(!symbols.empty())
     {
-        const set_type epsilon_set { symbol::epsilon };
+        const set_type epsilon_set { grammar_symbol::epsilon };
 
         sets_type tmp_result;
 
@@ -1558,13 +1558,13 @@ void grammar_algorithm::build_follow1_set(grammar& gr)
     //  end while
     log_info(L"Building follow set for k = 1 ...");
 
-    const set_type epsilon_set { symbol::epsilon };
+    const set_type epsilon_set { grammar_symbol::epsilon };
 
     //  foreach A ∈ NONTERMS do Follow[A] = {}
     //      do nothing
 
     // Follow(S) := {eof}, where S is the start symbol of G
-    (*gr.start_symbol()).follow_sets().emplace_back(set_type { symbol::epsilon });
+    (*gr.start_symbol()).follow_sets().emplace_back(set_type { grammar_symbol::epsilon });
 
     // calculate
     volatile bool changing = false;
@@ -1858,7 +1858,7 @@ void grammar_algorithm::remove_immediate_left_recursion(grammar& gr,
             {
                 auto new_symbol_name((*nonterminal).name() + std::to_wstring(suffix_number++));
 
-                new_nonterminal = (factory::create<symbol>(static_cast<std::size_t>(symbols_count++), new_symbol_name, symbol::kind::nonterminal));
+                new_nonterminal = (factory::create<grammar_symbol>(static_cast<std::size_t>(symbols_count++), new_symbol_name, grammar_symbol::kind::nonterminal));
 
                 gr.pool().emplace(pool_type::value_type(new_symbol_name, new_nonterminal)); // add to symbols pool
 
@@ -1877,7 +1877,7 @@ void grammar_algorithm::remove_immediate_left_recursion(grammar& gr,
                 if((*(*nonterminal_rule).lhs().front()).id() == (*(*nonterminal_rule).rhs().front()).id()) // A -> A b c ...
                 {
                     // alpha
-                    rule_type production(factory::create<rule>(static_cast<std::size_t>(rules_count++), (*new_nonterminal).name()));
+                    rule_type production(factory::create<grammar_rule>(static_cast<std::size_t>(rules_count++), (*new_nonterminal).name()));
 
                     (*production).add_lhs_symbol(new_nonterminal);
 
@@ -1907,10 +1907,10 @@ void grammar_algorithm::remove_immediate_left_recursion(grammar& gr,
             }
 
             // A' -> λ
-            rule_type production(factory::create<rule>(static_cast<std::size_t>(rules_count++), (*new_nonterminal).name()));
+            rule_type production(factory::create<grammar_rule>(static_cast<std::size_t>(rules_count++), (*new_nonterminal).name()));
 
             (*production).add_lhs_symbol(new_nonterminal);
-            (*production).add_rhs_symbol(symbol::epsilon);
+            (*production).add_rhs_symbol(grammar_symbol::epsilon);
 
             gr.rules().emplace_back(production);
             add_nonterminal_rule(gr, new_nonterminal, production); // nonterminal-rules mapping ...
@@ -1982,7 +1982,7 @@ void grammar_algorithm::remove_left_recursion(grammar& gr)
                         for(auto& aj_production : aj_nt_rules)
                         {
                             // add Ai -> β α to the grammar
-                            rule_type ai_production(factory::create<rule>(static_cast<std::size_t>(rules_count++), (*ai_nonterminal).name()));
+                            rule_type ai_production(factory::create<grammar_rule>(static_cast<std::size_t>(rules_count++), (*ai_nonterminal).name()));
 
                             (*ai_production).add_lhs_symbol(ai_nonterminal);
 
@@ -2268,12 +2268,12 @@ void grammar_algorithm::factor_rules(grammar& gr,
 {
     // A'
     auto new_factored_symbol_name((*nonterminal).name() + std::to_wstring(suffix_number++));
-    auto new_factored_symbol((factory::create<symbol>(static_cast<std::size_t>(symbols_count++), new_factored_symbol_name, symbol::kind::nonterminal)));
+    auto new_factored_symbol((factory::create<grammar_symbol>(static_cast<std::size_t>(symbols_count++), new_factored_symbol_name, grammar_symbol::kind::nonterminal)));
 
     gr.pool().emplace(pool_type::value_type(new_factored_symbol_name, new_factored_symbol)); // add to symbols pool
 
     // A -> α A'
-    rule_type production(factory::create<rule>(static_cast<std::size_t>(rules_count++), (*nonterminal).name()));
+    rule_type production(factory::create<grammar_rule>(static_cast<std::size_t>(rules_count++), (*nonterminal).name()));
 
     (*production).add_lhs_symbol(nonterminal);
 
@@ -2292,7 +2292,7 @@ void grammar_algorithm::factor_rules(grammar& gr,
     // A' -> β1 | ... | βN
     for(const auto& factored_rule : factored_rules)
     {
-        rule_type factored_production(factory::create<rule>(static_cast<std::size_t>(rules_count++), new_factored_symbol_name));
+        rule_type factored_production(factory::create<grammar_rule>(static_cast<std::size_t>(rules_count++), new_factored_symbol_name));
 
         (*factored_production).add_lhs_symbol(new_factored_symbol);
 
@@ -2300,7 +2300,7 @@ void grammar_algorithm::factor_rules(grammar& gr,
         if((*factored_rule).rhs().begin() + factored_prefix.size() == (*factored_rule).rhs().end())
         {
             // S -> a b c
-            (*factored_production).add_rhs_symbol(symbol::epsilon);
+            (*factored_production).add_rhs_symbol(grammar_symbol::epsilon);
         }
         else
         {
@@ -2371,7 +2371,7 @@ void grammar_algorithm::infix_operator(const typename grammar_algorithm::sets_ty
                         result_set.end(),
                         [](auto& symb)
                         {
-                            return (*symb).id() == (*symbol::epsilon).id();
+                            return (*symb).id() == (*grammar_symbol::epsilon).id();
                         }))
         {
             result_set.resize(1);
@@ -2382,7 +2382,7 @@ void grammar_algorithm::infix_operator(const typename grammar_algorithm::sets_ty
                                             result_set.end(),
                                             [](auto& symb)
                                             {
-                                                return (*symb).id() == (*symbol::epsilon).id();
+                                                return (*symb).id() == (*grammar_symbol::epsilon).id();
                                             }),
                                             result_set.end());
         }
@@ -2450,7 +2450,7 @@ void grammar_algorithm::infix_operator(const std::vector<typename grammar_algori
         // special case ∅* = λ
         if(std::all_of(sets.begin(), sets.end(), [](const auto& set){ return set.empty(); }))
         {
-            result_sets.emplace_back(set_type { symbol::epsilon });
+            result_sets.emplace_back(set_type { grammar_symbol::epsilon });
         }
         else
         {
@@ -2518,7 +2518,7 @@ void grammar_algorithm::infix_operator(const std::vector<typename grammar_algori
                                result_set.end(),
                                [](auto& symb)
                                {
-                                   return (*symb).id() == (*symbol::epsilon).id();
+                                   return (*symb).id() == (*grammar_symbol::epsilon).id();
                                }))
                 {
                     result_set.resize(1);
@@ -2529,7 +2529,7 @@ void grammar_algorithm::infix_operator(const std::vector<typename grammar_algori
                                                     result_set.end(),
                                                     [](auto& symb)
                                                     {
-                                                        return (*symb).id() == (*symbol::epsilon).id();
+                                                        return (*symb).id() == (*grammar_symbol::epsilon).id();
                                                     }),
                                                     result_set.end());
                 }

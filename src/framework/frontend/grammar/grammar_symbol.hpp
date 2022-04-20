@@ -9,10 +9,10 @@
 BEGIN_NAMESPACE(frontend)
 USING_NAMESPACE(core)
 
-class symbol
+class grammar_symbol
 {
     public:
-        using symbol_type = std::shared_ptr<symbol>;
+        using symbol_type = std::shared_ptr<grammar_symbol>;
         using symbols_type = std::vector<symbol_type>;
 
         struct symbol_key_comparator
@@ -85,15 +85,15 @@ class symbol
         string_type                     my_semantic_action; // semantic action (C++ code)
 
     public:
-                                        symbol(std::size_t id, const string_type& name, kind type);
+                                        grammar_symbol(std::size_t id, const string_type& name, kind type);
 
-                                        symbol(const symbol& other);
-                                        symbol(symbol&& other);
+                                        grammar_symbol(const grammar_symbol& other);
+                                        grammar_symbol(grammar_symbol&& other);
 
-                                       ~symbol();
+                                       ~grammar_symbol();
 
-        symbol&                         operator = (const symbol& other);
-        symbol&                         operator = (symbol&& other);
+        grammar_symbol&                         operator = (const grammar_symbol& other);
+        grammar_symbol&                         operator = (grammar_symbol&& other);
 
         std::size_t                     id() const;
         std::size_t&                    id();
@@ -143,159 +143,159 @@ class symbol
         string_type&                    semantic_action();
 };
 
-inline std::size_t symbol::id() const
+inline std::size_t grammar_symbol::id() const
 {
     return my_id;
 }
 
-inline std::size_t& symbol::id()
+inline std::size_t& grammar_symbol::id()
 {
     return my_id;
 }
 
-inline const string_type& symbol::name() const
+inline const string_type& grammar_symbol::name() const
 {
     return my_name;
 }
 
-inline bool symbol::terminal() const
+inline bool grammar_symbol::terminal() const
 {
     return my_kind == kind::terminal;
 }
 
-inline bool symbol::nonterminal() const
+inline bool grammar_symbol::nonterminal() const
 {
     return my_kind == kind::nonterminal;
 }
 
-inline typename symbol::flags_type symbol::flags() const
+inline typename grammar_symbol::flags_type grammar_symbol::flags() const
 {
     return my_flags;
 }
 
-inline typename symbol::flags_type& symbol::flags()
+inline typename grammar_symbol::flags_type& grammar_symbol::flags()
 {
     return my_flags;
 }
 
-inline bool symbol::nullable() const
+inline bool grammar_symbol::nullable() const
 {
     return my_nullable;
 }
 
-inline bool& symbol::nullable()
+inline bool& grammar_symbol::nullable()
 {
     return my_nullable;
 }
 
-inline bool symbol::productive() const
+inline bool grammar_symbol::productive() const
 {
     return my_productive;
 }
 
-inline bool& symbol::productive()
+inline bool& grammar_symbol::productive()
 {
     return my_productive;
 }
 
-inline bool symbol::accessible() const
+inline bool grammar_symbol::accessible() const
 {
     return my_accessible;
 }
 
-inline bool& symbol::accessible()
+inline bool& grammar_symbol::accessible()
 {
     return my_accessible;
 }
 
-inline uint8_t symbol::precedence() const
+inline uint8_t grammar_symbol::precedence() const
 {
     return my_precedence;
 }
 
-inline uint8_t& symbol::precedence()
+inline uint8_t& grammar_symbol::precedence()
 {
     return my_precedence;
 }
         
-inline symbol::associativity_type symbol::associativity() const
+inline grammar_symbol::associativity_type grammar_symbol::associativity() const
 {
     return my_associativity;
 }
 
-inline symbol::associativity_type& symbol::associativity()
+inline grammar_symbol::associativity_type& grammar_symbol::associativity()
 {
     return my_associativity;
 }
 
-inline bool symbol::erroneous() const
+inline bool grammar_symbol::erroneous() const
 {
     return my_erroneous;
 }
 
-inline bool& symbol::erroneous()
+inline bool& grammar_symbol::erroneous()
 {
     return my_erroneous;
 }
 
-inline bool symbol::synched() const
+inline bool grammar_symbol::synched() const
 {
     return my_synched;
 }
 
-inline bool& symbol::synched()
+inline bool& grammar_symbol::synched()
 {
     return my_synched;
 }
 
-inline const symbol::sets_type& symbol::first_sets() const
+inline const grammar_symbol::sets_type& grammar_symbol::first_sets() const
 {
     return my_first_sets;
 }
 
-inline symbol::sets_type& symbol::first_sets()
+inline grammar_symbol::sets_type& grammar_symbol::first_sets()
 {
     return my_first_sets;
 }
 
-inline const symbol::sets_type& symbol::eff_sets() const
+inline const grammar_symbol::sets_type& grammar_symbol::eff_sets() const
 {
     return my_eff_sets;
 }
 
-inline symbol::sets_type& symbol::eff_sets()
+inline grammar_symbol::sets_type& grammar_symbol::eff_sets()
 {
     return my_eff_sets;
 }
 
-inline const symbol::sets_type& symbol::follow_sets() const
+inline const grammar_symbol::sets_type& grammar_symbol::follow_sets() const
 {
     return my_follow_sets;
 }
 
-inline symbol::sets_type& symbol::follow_sets()
+inline grammar_symbol::sets_type& grammar_symbol::follow_sets()
 {
     return my_follow_sets;
 }
 
-inline const symbol::sets_type& symbol::la_sets() const
+inline const grammar_symbol::sets_type& grammar_symbol::la_sets() const
 {
     return my_la_sets;
 }
 
-inline symbol::sets_type& symbol::la_sets()
+inline grammar_symbol::sets_type& grammar_symbol::la_sets()
 {
     return my_la_sets;
 }
 
-inline const string_type& symbol::semantic_action() const
+inline const string_type& grammar_symbol::semantic_action() const
 {
     return my_semantic_action;
 }
 
-inline string_type& symbol::semantic_action()
+inline string_type& grammar_symbol::semantic_action()
 {
-    return const_cast<string_type&>(static_cast<const symbol&>(*this).semantic_action());
+    return const_cast<string_type&>(static_cast<const grammar_symbol&>(*this).semantic_action());
 }
 
 END_NAMESPACE

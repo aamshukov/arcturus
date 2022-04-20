@@ -6,8 +6,8 @@
 #include <core/visitor.hpp>
 #include <core/tree.hpp>
 
-#include <frontend/grammar/symbol.hpp>
-#include <frontend/grammar/rule.hpp>
+#include <frontend/grammar/grammar_symbol.hpp>
+#include <frontend/grammar/grammar_rule.hpp>
 #include <frontend/grammar/grammar.hpp>
 
 BEGIN_NAMESPACE(frontend)
@@ -170,13 +170,13 @@ void grammar::load(const string_type& file_name)
             }
             else
             {
-                lhs_symbol = (factory::create<symbol>(symbol_number++, lhs_symbol_name, symbol::kind::nonterminal));
+                lhs_symbol = (factory::create<grammar_symbol>(symbol_number++, lhs_symbol_name, grammar_symbol::kind::nonterminal));
 
                 my_pool.insert(pool_type::value_type(lhs_symbol_name, lhs_symbol));
                 my_indexed_pool.insert(pool_index_type::value_type((*lhs_symbol).id(), lhs_symbol));
             }
 
-            rule_type rule0(factory::create<rule>(rule_number++, lhs_symbol_name)); // rule name is the LHS's symbol name
+            rule_type rule0(factory::create<grammar_rule>(rule_number++, lhs_symbol_name)); // rule name is the LHS's symbol name
 
             (*rule0).add_lhs_symbol(lhs_symbol);
 
@@ -216,30 +216,30 @@ void grammar::load(const string_type& file_name)
                 {
                     if(rhs_symbol_name.compare(L"λ") == 0 || rhs_symbol_name.compare(L"ε") == 0 || rhs_symbol_name.compare(L"e(psilon)") == 0)
                     {
-                        rhs_symbol_name = (*symbol::epsilon).name();
+                        rhs_symbol_name = (*grammar_symbol::epsilon).name();
                     }
                     else if(rhs_symbol_name.compare(L"#") == 0)
                     {
-                        rhs_symbol_name = (*symbol::op_mark).name();
+                        rhs_symbol_name = (*grammar_symbol::op_mark).name();
                     }
 
-                    if(rhs_symbol_name.compare((*symbol::epsilon).name()) == 0)
+                    if(rhs_symbol_name.compare((*grammar_symbol::epsilon).name()) == 0)
                     {
-                        (*rule0).add_rhs_symbol(symbol::epsilon);
+                        (*rule0).add_rhs_symbol(grammar_symbol::epsilon);
 
-                        my_pool.insert(pool_type::value_type(rhs_symbol_name, symbol::epsilon));
-                        my_indexed_pool.insert(pool_index_type::value_type((*symbol::epsilon).id(), symbol::epsilon));
+                        my_pool.insert(pool_type::value_type(rhs_symbol_name, grammar_symbol::epsilon));
+                        my_indexed_pool.insert(pool_index_type::value_type((*grammar_symbol::epsilon).id(), grammar_symbol::epsilon));
                     }
-                    else if(rhs_symbol_name.compare((*symbol::op_mark).name()) == 0)
+                    else if(rhs_symbol_name.compare((*grammar_symbol::op_mark).name()) == 0)
                     {
-                        (*rule0).add_rhs_symbol(symbol::op_mark);
+                        (*rule0).add_rhs_symbol(grammar_symbol::op_mark);
 
-                        my_pool.insert(pool_type::value_type(rhs_symbol_name, symbol::op_mark));
-                        my_indexed_pool.insert(pool_index_type::value_type((*symbol::op_mark).id(), symbol::op_mark));
+                        my_pool.insert(pool_type::value_type(rhs_symbol_name, grammar_symbol::op_mark));
+                        my_indexed_pool.insert(pool_index_type::value_type((*grammar_symbol::op_mark).id(), grammar_symbol::op_mark));
                     }
                     else
                     {
-                        symbol::kind kind = symbol::kind::nonterminal;
+                        grammar_symbol::kind kind = grammar_symbol::kind::nonterminal;
 
                         symbol_type rhs_symbol;
 
@@ -257,7 +257,7 @@ void grammar::load(const string_type& file_name)
                         if(rhs_symbol_name[0] == L'\'' && rhs_symbol_name.size() > 1)
                         {
                             rhs_symbol_name = rhs_symbol_name.substr(1, rhs_symbol_name.size() - 2); // -2 for ''
-                            kind = symbol::kind::terminal;
+                            kind = grammar_symbol::kind::terminal;
                         }
 
                         auto rhs_it(my_pool.find(rhs_symbol_name));
@@ -268,7 +268,7 @@ void grammar::load(const string_type& file_name)
                         }
                         else
                         {
-                            rhs_symbol = (factory::create<symbol>(symbol_number++, rhs_symbol_name, kind));
+                            rhs_symbol = (factory::create<grammar_symbol>(symbol_number++, rhs_symbol_name, kind));
 
                             my_pool.insert(pool_type::value_type(rhs_symbol_name, rhs_symbol));
                             my_indexed_pool.insert(pool_index_type::value_type((*rhs_symbol).id(), rhs_symbol));

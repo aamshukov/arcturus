@@ -2,30 +2,30 @@
 // UI Lab Inc. Arthur Amshukov .
 //..............................
 #include <core/pch.hpp>
-#include <frontend/grammar/symbol.hpp>
+#include <frontend/grammar/grammar_symbol.hpp>
 
 BEGIN_NAMESPACE(frontend)
 USING_NAMESPACE(core)
 
-typename symbol::symbol_type symbol::epsilon(factory::create<symbol>(std::numeric_limits<int32_t>::max() - 1, L"e", symbol::kind::terminal));
-typename symbol::symbol_type symbol::eof(factory::create<symbol>(std::numeric_limits<int32_t>::max() - 2, L"$", symbol::kind::terminal));
-typename symbol::symbol_type symbol::op_mark(factory::create<symbol>(std::numeric_limits<int32_t>::max() - 3, L"#", symbol::kind::terminal));
+typename grammar_symbol::symbol_type grammar_symbol::epsilon(factory::create<grammar_symbol>(std::numeric_limits<int32_t>::max() - 1, L"e", grammar_symbol::kind::terminal));
+typename grammar_symbol::symbol_type grammar_symbol::eof(factory::create<grammar_symbol>(std::numeric_limits<int32_t>::max() - 2, L"$", grammar_symbol::kind::terminal));
+typename grammar_symbol::symbol_type grammar_symbol::op_mark(factory::create<grammar_symbol>(std::numeric_limits<int32_t>::max() - 3, L"#", grammar_symbol::kind::terminal));
 
-symbol::symbol(std::size_t id, const string_type& name, symbol::kind type)
-      : my_id(id),
-        my_name(name),
-        my_kind(type),
-        my_flags(flags_type::clear),
-        my_nullable(false),
-        my_productive(false),
-        my_accessible(false),
-        my_precedence(0),
-        my_associativity(symbol::associativity_type::left),
-        my_erroneous(false)
+grammar_symbol::grammar_symbol(std::size_t id, const string_type& name, grammar_symbol::kind type)
+              : my_id(id),
+                my_name(name),
+                my_kind(type),
+                my_flags(flags_type::clear),
+                my_nullable(false),
+                my_productive(false),
+                my_accessible(false),
+                my_precedence(0),
+                my_associativity(grammar_symbol::associativity_type::left),
+                my_erroneous(false)
 {
 }
 
-symbol::symbol(const symbol& other)
+grammar_symbol::grammar_symbol(const grammar_symbol& other)
 {
     if(this != &other)
     {
@@ -56,7 +56,7 @@ symbol::symbol(const symbol& other)
     }
 }
 
-symbol::symbol(symbol&& other)
+grammar_symbol::grammar_symbol(grammar_symbol&& other)
 {
     if(this != &other)
     {
@@ -87,11 +87,11 @@ symbol::symbol(symbol&& other)
     }
 }
 
-symbol::~symbol()
+grammar_symbol::~grammar_symbol()
 {
 }
 
-symbol& symbol::operator = (const symbol& other)
+grammar_symbol& grammar_symbol::operator = (const grammar_symbol& other)
 {
     if(this != &other)
     {
@@ -124,7 +124,7 @@ symbol& symbol::operator = (const symbol& other)
     return *this;
 }
 
-symbol& symbol::operator = (symbol&& other)
+grammar_symbol& grammar_symbol::operator = (grammar_symbol&& other)
 {
     if(this != &other)
     {

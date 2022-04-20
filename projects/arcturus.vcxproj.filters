@@ -174,10 +174,10 @@
     <ClInclude Include="..\src\framework\frontend\grammar\grammar_visualization.hpp">
       <Filter>framework\frontend\grammar</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\framework\frontend\grammar\rule.hpp">
+    <ClInclude Include="..\src\framework\frontend\grammar\grammar_rule.hpp">
       <Filter>framework\frontend\grammar</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\framework\frontend\grammar\symbol.hpp">
+    <ClInclude Include="..\src\framework\frontend\grammar\grammar_symbol.hpp">
       <Filter>framework\frontend\grammar</Filter>
     </ClInclude>
     <ClInclude Include="..\src\framework\frontend\grammar\grammar.hpp">
@@ -470,10 +470,10 @@
     <ClCompile Include="..\src\framework\frontend\grammar\grammar_visualization.cpp">
       <Filter>framework\frontend\grammar</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\framework\frontend\grammar\rule.cpp">
+    <ClCompile Include="..\src\framework\frontend\grammar\grammar_rule.cpp">
       <Filter>framework\frontend\grammar</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\framework\frontend\grammar\symbol.cpp">
+    <ClCompile Include="..\src\framework\frontend\grammar\grammar_symbol.cpp">
       <Filter>framework\frontend\grammar</Filter>
     </ClCompile>
     <ClCompile Include="..\src\framework\frontend\grammar\grammar.cpp">

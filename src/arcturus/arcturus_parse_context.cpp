@@ -15,8 +15,8 @@
 #include <content/data_provider.hpp>
 #include <content/file_data_provider.hpp>
 
-#include <frontend/grammar/symbol.hpp>
-#include <frontend/grammar/rule.hpp>
+#include <frontend/grammar/grammar_symbol.hpp>
+#include <frontend/grammar/grammar_rule.hpp>
 #include <frontend/grammar/grammar.hpp>
 
 #include <content/content.hpp>

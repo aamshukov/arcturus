@@ -13,7 +13,7 @@ struct singleton : private noncopyable
 {
     static T& instance()
     {
-        static T result;
+        static T result = T();
         return result;
     }
 };

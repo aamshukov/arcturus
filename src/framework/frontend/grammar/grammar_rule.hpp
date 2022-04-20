@@ -9,11 +9,11 @@
 BEGIN_NAMESPACE(frontend)
 USING_NAMESPACE(core)
 
-class rule
+class grammar_rule
 {
     public:
-        using symbol_type = typename symbol::symbol_type;
-        using symbols_type = typename symbol::symbols_type;
+        using symbol_type = typename grammar_symbol::symbol_type;
+        using symbols_type = typename grammar_symbol::symbols_type;
 
         enum class flag : uint64_t
         {
@@ -47,15 +47,15 @@ class rule
         ast_operators_type          my_ast_operators; // indices of RHS
 
     public:
-                                    rule(std::size_t id, const string_type& name);
+                                    grammar_rule(std::size_t id, const string_type& name);
 
-                                    rule(const rule& other);
-                                    rule(rule&& other);
+                                    grammar_rule(const grammar_rule& other);
+                                    grammar_rule(grammar_rule&& other);
 
-                                   ~rule();
+                                   ~grammar_rule();
 
-        rule&                       operator = (const rule& other);
-        rule&                       operator = (rule&& other);
+        grammar_rule&                       operator = (const grammar_rule& other);
+        grammar_rule&                       operator = (grammar_rule&& other);
 
         std::size_t                 id() const;
         std::size_t&                id();
@@ -98,131 +98,131 @@ class rule
         void                        add_lhs_symbol(const symbol_type& sym);
         void                        add_rhs_symbol(const symbol_type& sym);
 
-        friend bool                 operator == (const rule& rule1, const rule& rule2);
-        friend bool                 operator != (const rule& rule1, const rule& rule2);
+        friend bool                 operator == (const grammar_rule& rule1, const grammar_rule& rule2);
+        friend bool                 operator != (const grammar_rule& rule1, const grammar_rule& rule2);
 };
 
-inline std::size_t rule::id() const
+inline std::size_t grammar_rule::id() const
 {
     return my_id;
 }
 
-inline std::size_t& rule::id()
+inline std::size_t& grammar_rule::id()
 {
     return my_id;
 }
 
-inline const string_type& rule::name() const
+inline const string_type& grammar_rule::name() const
 {
     return my_name;
 }
 
-inline string_type& rule::name()
+inline string_type& grammar_rule::name()
 {
-    return const_cast<string_type&>(static_cast<const rule&>(*this).name());
+    return const_cast<string_type&>(static_cast<const grammar_rule&>(*this).name());
 }
 
-inline uint8_t rule::lhs_terminal_count() const
-{
-    return my_lhs_terminal_count;
-}
-
-inline uint8_t& rule::lhs_terminal_count()
+inline uint8_t grammar_rule::lhs_terminal_count() const
 {
     return my_lhs_terminal_count;
 }
 
-inline uint8_t rule::lhs_nonterminal_count() const
+inline uint8_t& grammar_rule::lhs_terminal_count()
+{
+    return my_lhs_terminal_count;
+}
+
+inline uint8_t grammar_rule::lhs_nonterminal_count() const
 {
     return my_lhs_nonterminal_count;
 }
 
-inline uint8_t& rule::lhs_nonterminal_count()
+inline uint8_t& grammar_rule::lhs_nonterminal_count()
 {
     return my_lhs_nonterminal_count;
 }
 
-inline uint8_t rule::rhs_terminal_count() const
+inline uint8_t grammar_rule::rhs_terminal_count() const
 {
     return my_rhs_terminal_count;
 }
 
-inline uint8_t& rule::rhs_terminal_count()
+inline uint8_t& grammar_rule::rhs_terminal_count()
 {
     return my_rhs_terminal_count;
 }
 
-inline uint8_t rule::rhs_nonterminal_count() const
+inline uint8_t grammar_rule::rhs_nonterminal_count() const
 {
     return my_rhs_nonterminal_count;
 }
 
-inline uint8_t& rule::rhs_nonterminal_count()
+inline uint8_t& grammar_rule::rhs_nonterminal_count()
 {
     return my_rhs_nonterminal_count;
 }
 
-inline uint8_t rule::precedence() const
+inline uint8_t grammar_rule::precedence() const
 {
     return my_precedence;
 }
 
-inline uint8_t& rule::precedence()
+inline uint8_t& grammar_rule::precedence()
 {
     return my_precedence;
 }
 
-inline uint8_t rule::precedences() const
+inline uint8_t grammar_rule::precedences() const
 {
     return my_precedences;
 }
 
-inline uint8_t& rule::precedences()
+inline uint8_t& grammar_rule::precedences()
 {
     return my_precedences;
 }
 
-inline const rule::symbols_type& rule::lhs() const
+inline const grammar_rule::symbols_type& grammar_rule::lhs() const
 {
     return my_lhs;
 }
 
-inline rule::symbols_type& rule::lhs()
+inline grammar_rule::symbols_type& grammar_rule::lhs()
 {
-    return const_cast<rule::symbols_type&>(static_cast<const rule&>(*this).lhs());
+    return const_cast<grammar_rule::symbols_type&>(static_cast<const grammar_rule&>(*this).lhs());
 }
 
-inline const rule::symbols_type& rule::rhs() const
+inline const grammar_rule::symbols_type& grammar_rule::rhs() const
 {
     return my_rhs;
 }
 
-inline rule::symbols_type& rule::rhs()
+inline grammar_rule::symbols_type& grammar_rule::rhs()
 {
-    return const_cast<rule::symbols_type&>(static_cast<const rule&>(*this).rhs());
+    return const_cast<grammar_rule::symbols_type&>(static_cast<const grammar_rule&>(*this).rhs());
 }
 
-inline typename rule::flags_type rule::flags() const
-{
-    return my_flags;
-}
-
-inline typename rule::flags_type& rule::flags()
+inline typename grammar_rule::flags_type grammar_rule::flags() const
 {
     return my_flags;
 }
 
-inline const typename rule::ast_operators_type& rule::ast_operators() const
+inline typename grammar_rule::flags_type& grammar_rule::flags()
+{
+    return my_flags;
+}
+
+inline const typename grammar_rule::ast_operators_type& grammar_rule::ast_operators() const
 {
     return my_ast_operators;
 }
 
-inline typename rule::ast_operators_type& rule::ast_operators()
+inline typename grammar_rule::ast_operators_type& grammar_rule::ast_operators()
 {
     return my_ast_operators;
 }
 
-inline bool operator != (const rule& lhs, const rule& rhs)
+inline bool operator != (const grammar_rule& lhs, const grammar_rule& rhs)
 {
     return !(lhs == rhs);
 }
