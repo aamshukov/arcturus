@@ -45,6 +45,8 @@ class arcturus_array_type : public arcturus_type
 
         bool            rowbased_array() const;
         bool&           rowbased_array();
+
+        bool            equivalent(const type&) const override;
 };
 
 inline typename arcturus_array_type::base_type arcturus_array_type::base() const

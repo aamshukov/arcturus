@@ -80,30 +80,6 @@ inline std::size_t& type::cardinality()
     return my_cardinality;
 }
 
-
-template <typename Traits>
-abstract_type<Traits>::abstract_type(typename abstract_type<Traits>::kind_type kind)
-                     : my_kind(kind)
-{
-}
-
-template <typename Traits>
-abstract_type<Traits>::~abstract_type()
-{
-}
-
-template <typename Traits>
-inline typename abstract_type<Traits>::kind_type abstract_type<Traits>::kind() const
-{
-    return my_kind;
-}
-
-template <typename Traits>
-inline typename abstract_type<Traits>::kind_type& abstract_type<Traits>::kind()
-{
-    return my_kind;
-}
-
 END_NAMESPACE
 
 #endif // __TYPE_INL__

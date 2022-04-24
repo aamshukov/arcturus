@@ -64,32 +64,9 @@ class type : public visitable
         std::size_t         cardinality() const;
         std::size_t&        cardinality();
 
+        virtual bool        equivalent(const type& other) const = 0;
+
         ACCEPT_METHOD;
-};
-
-template <typename Traits>
-class abstract_type : public type
-{
-    public:
-        using traits_type = Traits;
-        using kind_type = typename traits_type::kind;
-
-    protected:
-        kind_type       my_kind; // kind of type
-
-    public:
-                        abstract_type(kind_type kind = abstract_type<traits_type>::kind_type::unknown_type);
-
-                        abstract_type(const abstract_type& other) = default;
-                        abstract_type(abstract_type&& other) = default;
-
-        virtual        ~abstract_type() = 0;
-
-        abstract_type&  operator = (const abstract_type& other) = default;
-        abstract_type&  operator = (abstract_type&& other) = default;
-
-        kind_type       kind() const;
-        kind_type&      kind();
 };
 
 END_NAMESPACE

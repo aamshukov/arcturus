@@ -8,6 +8,8 @@
 
 #include <frontend/type/type.hpp>
 #include <frontend/type/type.inl>
+#include <frontend/type/abstract_type.hpp>
+#include <frontend/type/abstract_type.inl>
 
 #include <arcturus_type.hpp>
 #include <arcturus_array_type.hpp>
@@ -29,6 +31,11 @@ arcturus_array_type::arcturus_array_type(const typename arcturus_array_type::bas
 
 arcturus_array_type::~arcturus_array_type()
 {
+}
+
+bool arcturus_array_type::equivalent(const type&) const
+{
+    return false; //??
 }
 
 bool operator == (const arcturus_array_type& lhs, const arcturus_array_type& rhs)

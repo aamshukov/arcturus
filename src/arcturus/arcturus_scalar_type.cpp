@@ -8,6 +8,8 @@
 
 #include <frontend/type/type.hpp>
 #include <frontend/type/type.inl>
+#include <frontend/type/abstract_type.hpp>
+#include <frontend/type/abstract_type.inl>
 
 #include <arcturus_type.hpp>
 #include <arcturus_scalar_type.hpp>
@@ -44,6 +46,11 @@ arcturus_scalar_type::arcturus_scalar_type(kind_type kind)
 
 arcturus_scalar_type::~arcturus_scalar_type()
 {
+}
+
+bool arcturus_scalar_type::equivalent(const type&) const
+{
+    return false; //??
 }
 
 bool operator == (const arcturus_scalar_type& lhs, const arcturus_scalar_type& rhs)

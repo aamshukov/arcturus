@@ -73,6 +73,18 @@
     <Filter Include="framework\core\crc32c">
       <UniqueIdentifier>{87d11654-035a-407a-bd20-941f2889b21c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="framework\frontend\parser\backtracking">
+      <UniqueIdentifier>{dd3d564b-9bfc-453e-94e4-c9c98c708e69}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="framework\frontend\parser\backtracking\packrat">
+      <UniqueIdentifier>{52b80e58-8e85-4ec4-866e-d0063be0059e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="framework\frontend\parser\backtracking\recursive_descent">
+      <UniqueIdentifier>{17ff2d6e-3036-4e7b-9fbb-adb03c78af3e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="framework\frontend\parser\precedence">
+      <UniqueIdentifier>{753ff7f8-db22-4bf6-9375-8b1ffa2bb188}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\framework\core\edge.hpp">
@@ -216,9 +228,6 @@
     <ClInclude Include="..\src\arcturus\arcturus_parser.hpp">
       <Filter>arcturus</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\framework\frontend\parser\recursive_descent_parser.hpp">
-      <Filter>framework\frontend\parser</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\framework\frontend\parser\parse_dag.hpp">
       <Filter>framework\frontend\parser</Filter>
     </ClInclude>
@@ -348,9 +357,6 @@
     <ClInclude Include="..\src\framework\core\list.hpp">
       <Filter>framework\core</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\framework\frontend\parser\packrat_parser.hpp">
-      <Filter>framework\frontend\parser</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\framework\core\dominator_vertex.hpp">
       <Filter>framework\core</Filter>
     </ClInclude>
@@ -428,6 +434,15 @@
     </ClInclude>
     <ClInclude Include="..\src\framework\vfs\vfs_type_traits.hpp">
       <Filter>framework\vfs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\frontend\parser\packrat_parser.hpp">
+      <Filter>framework\frontend\parser\backtracking\packrat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\frontend\parser\recursive_descent_parser.hpp">
+      <Filter>framework\frontend\parser\backtracking\recursive_descent</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\frontend\type\abstract_type.hpp">
+      <Filter>framework\frontend\type</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -599,12 +614,6 @@
     <ClCompile Include="..\src\framework\frontend\parser\parser.cpp">
       <Filter>framework\frontend\parser</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\framework\frontend\parser\recursive_descent_parser.cpp">
-      <Filter>framework\frontend\parser</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\framework\frontend\parser\packrat_parser.cpp">
-      <Filter>framework\frontend\parser</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\framework\frontend\semantics\semantics.cpp">
       <Filter>framework\frontend\semantics</Filter>
     </ClCompile>
@@ -620,6 +629,12 @@
     <ClCompile Include="..\src\framework\vfs\vfs_name_pool.cpp">
       <Filter>framework\vfs</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\framework\frontend\parser\packrat_parser.cpp">
+      <Filter>framework\frontend\parser\backtracking\packrat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\framework\frontend\parser\recursive_descent_parser.cpp">
+      <Filter>framework\frontend\parser\backtracking\recursive_descent</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\src\framework\frontend\type\type.inl">
@@ -633,6 +648,9 @@
     </None>
     <None Include="..\src\arcturus\token_traits.defs">
       <Filter>arcturus</Filter>
+    </None>
+    <None Include="..\src\framework\frontend\type\abstract_type.inl">
+      <Filter>framework\frontend\type</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

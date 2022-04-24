@@ -26,6 +26,8 @@ class arcturus_scalar_type : public arcturus_type
 
         friend bool             operator == (const arcturus_scalar_type& lhs, const arcturus_scalar_type& rhs);
         friend bool             operator != (const arcturus_scalar_type& lhs, const arcturus_scalar_type& rhs);
+
+        bool                    equivalent(const type& other) const override;
 };
 
 END_NAMESPACE

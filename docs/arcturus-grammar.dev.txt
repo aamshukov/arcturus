@@ -1,4 +1,4 @@
-﻿// lexical
+﻿// Lexical
 // -------
 
 comments                            : oneline-comment
@@ -304,7 +304,7 @@ assignment-operator                 : '=' '+=' '-=' '*=' '/=' '>>=' '<<=' '&=' '
 
 
 
-// syntax
+// Syntax
 // ------
 
 // TYPES
@@ -788,12 +788,13 @@ compilation composition:
             ...
             moduleN - compilation-unit-N (file or other persistent content)
 
-    namespace(logical) - spans modules
+    namespace(logical) - spans modules, each namespace - scope(s)
 
 
 comment:
-    //  single line comment
+    --- single line comment
     #   single line comment
+    //  single line comment
     /*
         /* miltiline
            nested

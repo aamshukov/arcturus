@@ -108,6 +108,7 @@
     <ClInclude Include="..\src\framework\frontend\parser\parse_tree_base.hpp" />
     <ClInclude Include="..\src\framework\frontend\parser\recursive_descent_parser.hpp" />
     <ClInclude Include="..\src\framework\frontend\semantics\semantics.hpp" />
+    <ClInclude Include="..\src\framework\frontend\type\abstract_type.hpp" />
     <ClInclude Include="..\src\framework\frontend\type\type.hpp" />
     <ClInclude Include="..\src\framework\ir\basic_block.hpp" />
     <ClInclude Include="..\src\framework\ir\code.hpp" />
@@ -227,6 +228,7 @@
       <MakeAllSymbolsPublic Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</MakeAllSymbolsPublic>
     </MASM>
     <None Include="..\src\arcturus\token_traits.defs" />
+    <None Include="..\src\framework\frontend\type\abstract_type.inl" />
     <None Include="..\src\framework\frontend\type\type.inl" />
     <None Include="..\src\framework\ir\ir.inl" />
     <None Include="..\src\framework\ir\ir_visualization.inl" />
