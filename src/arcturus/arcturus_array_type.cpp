@@ -40,8 +40,7 @@ bool arcturus_array_type::equivalent(const type&) const
 
 bool operator == (const arcturus_array_type& lhs, const arcturus_array_type& rhs)
 {
-    lhs; rhs;
-    return false; //??
+    return lhs.equivalent(rhs);
 }
 
 bool operator != (const arcturus_array_type& lhs, const arcturus_array_type& rhs)

@@ -55,7 +55,7 @@ bool arcturus_scalar_type::equivalent(const type&) const
 
 bool operator == (const arcturus_scalar_type& lhs, const arcturus_scalar_type& rhs)
 {
-    return lhs.my_kind == rhs.my_kind;
+    return lhs.equivalent(rhs);
 }
 
 bool operator != (const arcturus_scalar_type& lhs, const arcturus_scalar_type& rhs)
