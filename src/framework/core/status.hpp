@@ -160,7 +160,7 @@ inline string_type& status::text()
     return const_cast<string_type&>(static_cast<const status&>(*this).text());
 }
 
-using operation_status = status;
+using status_type = status;
 
 END_NAMESPACE
 

@@ -172,7 +172,7 @@ inline string_type diagnostics::format(uint64_t code, ...)
 {                                                                                           \
     result = false;                                                                         \
                                                                                             \
-    operation_status status;                                                                \
+    status_type status;                                                                \
                                                                                             \
     status.custom_code() = __custom_code;                                                   \
     status.system_code() = ::GetLastError();                                                \

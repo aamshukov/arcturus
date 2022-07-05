@@ -275,7 +275,7 @@ keyword                             : 'integer' 'int'                           
                                     | 'enum'
                                     | 'struct'                                      --- collection of related data, mutable
                                     | 'record'                                      --- collection of related data, immutable
-                                    | 'extends'                                     --- struct/record hierarchy -  watch for names collisions
+                                    | 'inherit'                                     --- struct/record hierarchy -  watch for names collisions
                                     | 'const'                                       --- readonly semantics is only for structs' members
                                     | 'partial'                                     --- natively support generated files
                                     | 'if' 'else'
@@ -325,7 +325,7 @@ integral-type-opt                   : integral-type
 integral-type                       : 'byte'                                                                            --- 0-255
                                     | 'integer'                                                                         --- int64
                                     | 'real'                                                                            --- double
-                                    | 'string'                                                                          --- " 'c' "  ' "c" '
+                                    | 'string'                                                                          --- " 'c' "  ' "c" ' as UTF32
                                     | 'boolean'                                                                         --- true false
                                     ;
 
@@ -486,7 +486,7 @@ struct-extension-opt                : struct-extension
                                     | e(psilon)
                                     ;
 
-struct-extension                    : 'extends' base-structs                                                            --- only one name can be declared in the structs' hierarchy
+struct-extension                    : 'inherit' base-structs                                                            --- only one name can be declared in the structs' hierarchy
                                     ;
 
 base-structs                        : base-struct
@@ -988,7 +988,7 @@ declarations:
                 x : T,                                                          x : T,                                              
                 y : U                                                           y : U                                               
                                                                                                                                     
-            point3D<T, U, V> struct/record extends point2D<T, U>            type point3D <T, U, V> extends point2D<T, U>    
+            point3D<T, U, V> struct/record inherit point2D<T, U>            type point3D <T, U, V> inherit point2D<T, U>    
             {                                                               {                                                       
                 z : T,                                                          z : T,                                              
                 w : real = 1.0                                                  w : real = 1.0                                      
@@ -1083,18 +1083,18 @@ declarations:
             weight : TWeight,
             text : TText
 
-        user struct <T> extends tree<T>
+        user struct <T> inherit tree<T>
             name : string,
             age : integer,
             married : boolean = false,
             status : string = 'active',
             salary : real = 1.0
 
-        manager<T> struct extends user<T>
+        manager<T> struct inherit user<T>
             occupation : string,
             bonus : real
 
-        boss<T> struct extends manager<T>
+        boss<T> struct inherit manager<T>
             rank : string,
             big_bonus : real
 
@@ -1274,17 +1274,35 @@ pattern matching, case/when, switch C# 8
         x : T = 0.0,
         y : T = 0.0,
 
-    point3d struct<T> partial extends point2d<T>
+    point3d struct<T> partial inherit point2d<T>
         z : T = 0.0,
         w : T = 1.0
 
 
+
     geometry interface
         distance : func<T>(p1 : point<T>, p2 : point<T>) -> real
+        slope    : func<T>(p1 : point<T>, p2 : point<T>) -> real
+
+    shape interface inherit geometry
+        distance : func<T>(p1 : point<T>, p2 : point<T>) -> real
+        slope    : func<T>(p1 : point<T>, p2 : point<T>) -> real
+
+    circle implements shape
+        distance : func<T>(p1 : point<T>, p2 : point<T>) -> real
+            return π
         slope : func<T>(p1 : point<T>, p2 : point<T>) -> real
+            return π
+
+    rectangle implements shape
+        distance : func<T>(p1 : point<T>, p2 : point<T>) -> real
+            return π
+        slope : func<T>(p1 : point<T>, p2 : point<T>) -> real
+            return π
 
 
-
+    foo : func<T>(geometry geometry)
+        geometry.distance()
 
     
     p1 : point<real> = ( 1.2, 3.2, 5.0, 3.12 )
@@ -1317,6 +1335,28 @@ return-expression
 ||  --– disjunction (logical OR)
 !   --- negation (logical NOT)
 
+
+
+https://soc.me/languages/unified-condition-expressions
+
+trait Comparable[T]
+  fun < (that: T): Bool
+  fun > (that: T): Bool
+
+
+trait Sortable[T]
+  fun sortsBefore(that: T): Bool
+  fun sortsAfter (that: T): Bool
+
+
+// example of comparing values using Comparable
+fun compareReversed[T : Comparable](x: T, y: T) = y < x
+
+// example of sorting values using Sortable
+fun sort[T : Sortable](values: Array[T]) =
+  ...
+  if values(i).sortsBefore(values(j)) { ... }
+  ...
 
 
 

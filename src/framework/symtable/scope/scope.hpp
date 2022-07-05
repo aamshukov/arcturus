@@ -42,7 +42,7 @@ class scope : public tree
         string_type     my_name;    // x:level
 
         symbols_type    my_symbols; // content
-        types_type      mt_types;   // introduced types
+        types_type      my_types;   // introduced types
 
     public:
                        // scope();

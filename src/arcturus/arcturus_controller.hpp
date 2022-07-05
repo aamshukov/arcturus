@@ -40,7 +40,7 @@ class arcturus_controller : public controller<arcturus_operation_code_traits>
         void        parse(const context_type& context) override;
         void        converge(const context_type& context) override;
         void        optimize(const context_type& context) override;
-        void        codegen(const context_type& context) override;
+        void        generate(const context_type& context) override;
         void        finalize(const context_type& context) override;
 
     public:

@@ -43,7 +43,7 @@ class controller : private noncopyable
         virtual void            parse(const context_type& context) = 0;
         virtual void            converge(const context_type& context) = 0;
         virtual void            optimize(const context_type& context) = 0;
-        virtual void            codegen(const context_type& context) = 0;
+        virtual void            generate(const context_type& context) = 0;
         virtual void            finalize(const context_type& context) = 0;
 
         virtual void            compile() = 0;

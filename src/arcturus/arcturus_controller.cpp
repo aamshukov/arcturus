@@ -137,20 +137,23 @@ void arcturus_controller::converge(const typename arcturus_controller::context_t
     // cst to ast
     // populate symbol table
     // semantics analisys
-    // linearize
+    // linearize - flatten AST
     // build basic blocks BB
-    // build SSA form
 }
 
 void arcturus_controller::optimize(const typename arcturus_controller::context_type& context)
 {
     context;//??
 
+    // build SSA form
+
     //for pass in passes
     //    pass.execute
+
+    // un-build SSA form
 }
 
-void arcturus_controller::codegen(const typename arcturus_controller::context_type& context)
+void arcturus_controller::generate(const typename arcturus_controller::context_type& context)
 {
     context;//??
 }
@@ -166,7 +169,7 @@ void arcturus_controller::compile()
     parse(my_context);
     converge(my_context);
     optimize(my_context);
-    codegen(my_context);
+    generate(my_context);
     finalize(my_context);
 }
 

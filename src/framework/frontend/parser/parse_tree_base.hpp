@@ -23,7 +23,7 @@ class parse_tree_base
 
     protected:
         grammar_symbol_type         my_grammar_symbol; // populated by parser
-        ir_symbol_type              my_ir_symbol; // populated by further passes
+        ir_symbol_type              my_ir_symbol;      // populated by further passes
 
     public:
                                     parse_tree_base();

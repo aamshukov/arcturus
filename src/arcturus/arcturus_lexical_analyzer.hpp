@@ -72,7 +72,7 @@ class arcturus_lexical_analyzer : public lexical_analyzer
 
     //    static bool             create(const string_type& file_name,
     //                                   lexical_analyzer_type& result_lexical_analyzer,
-    //                                   operation_status& status,
+    //                                   status_type& status,
     //                                   uint8_t tab_size = 4);
 };
 

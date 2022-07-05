@@ -30,7 +30,7 @@ class parser : private noncopyable
 
         parse_trees_type        my_trees;
 
-        operation_status        my_status;
+        status_type             my_status;
 
     protected:
         virtual void            parse() = 0;
@@ -43,8 +43,8 @@ class parser : private noncopyable
 
         const parse_trees_type& trees() const;
 
-        const operation_status& status() const;
-        operation_status&       status();
+        const status_type&      status() const;
+        status_type&            status();
 };
 
 inline const typename parser::parse_trees_type& parser::trees() const
@@ -52,12 +52,12 @@ inline const typename parser::parse_trees_type& parser::trees() const
     return my_trees;
 }
 
-inline const operation_status& parser::status() const
+inline const status_type& parser::status() const
 {
     return my_status;
 }
 
-inline operation_status& parser::status()
+inline status_type& parser::status()
 {
     return my_status;
 }

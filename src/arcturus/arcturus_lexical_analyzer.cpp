@@ -69,7 +69,7 @@ USING_NAMESPACE(frontend)
 //{
 //}
 //
-//bool java_lexical_analyzer::create(const string_type& file_name, lexical_analyzer_type& result_lexical_analyzer, operation_status& status, uint8_t tab_size)
+//bool java_lexical_analyzer::create(const string_type& file_name, lexical_analyzer_type& result_lexical_analyzer, status_type& status, uint8_t tab_size)
 //{
 //    file_data_provider provider(file_name);
 //
@@ -95,7 +95,7 @@ USING_NAMESPACE(frontend)
 //                                              const string_type& escape_predicate,
 //                                              typename java_lexical_analyzer::fsa_type& result_fsa)
 //{
-//    operation_status status; //??
+//    status_type status; //??
 //
 //    std::shared_ptr<datum_type[]> re_data;
 //
@@ -123,7 +123,7 @@ USING_NAMESPACE(frontend)
 //    const string_type java_decimal_floating_re(L"(((((((0|1|2|3|4|5|6|7|8|9)(_*(0|1|2|3|4|5|6|7|8|9))*)?)\\.((0|1|2|3|4|5|6|7|8|9)(_*?(0|1|2|3|4|5|6|7|8|9))*))|(((0|1|2|3|4|5|6|7|8|9)(_*(0|1|2|3|4|5|6|7|8|9))*)\\.))((e|E)(\\+|\\-)?(0|1|2|3|4|5|6|7|8|9)(_*(0|1|2|3|4|5|6|7|8|9))*)?)|(((0|1|2|3|4|5|6|7|8|9)(_*(0|1|2|3|4|5|6|7|8|9))*)((e|E)(\\+|\\-)?(0|1|2|3|4|5|6|7|8|9)(_*(0|1|2|3|4|5|6|7|8|9))*)))(f|d|F|D)?|(((0|1|2|3|4|5|6|7|8|9)(_*(0|1|2|3|4|5|6|7|8|9))*)(f|d|F|D))");
 //    const string_type java_hexadecimal_floating_re(L"0(x|X)(((0|1|2|3|4|5|6|7|8|9|a|b|c|d|e|f|A|B|C|D|E|F)(_*(0|1|2|3|4|5|6|7|8|9|a|b|c|d|e|f|A|B|C|D|E|F))*)*\\.(0|1|2|3|4|5|6|7|8|9|a|b|c|d|e|f|A|B|C|D|E|F)(_*(0|1|2|3|4|5|6|7|8|9|a|b|c|d|e|f|A|B|C|D|E|F))*|(0|1|2|3|4|5|6|7|8|9|a|b|c|d|e|f|A|B|C|D|E|F)(_*(0|1|2|3|4|5|6|7|8|9|a|b|c|d|e|f|A|B|C|D|E|F))*\\.|(0|1|2|3|4|5|6|7|8|9|a|b|c|d|e|f|A|B|C|D|E|F)(_*(0|1|2|3|4|5|6|7|8|9|a|b|c|d|e|f|A|B|C|D|E|F))*)((p|P)(\\+|\\-)?(0|1|2|3|4|5|6|7|8|9)(_*(0|1|2|3|4|5|6|7|8|9))*)(f|d|F|D)?");
 //
-//    operation_status status; //??
+//    status_type status; //??
 //
 //    fsa::fsa_type binary_fsa;
 //    build_fsa_from_re(java_binary_re, token_type::traits::type::binary_integer_lit, token_type::traits::type::unknown, empty_string(), binary_fsa);
@@ -170,7 +170,7 @@ USING_NAMESPACE(frontend)
 //
 //void java_lexical_analyzer::build_identifiers_and_keywords(const string_type& file_name, const string_type& label_prefix)
 //{
-//    operation_status status; //??
+//    status_type status; //??
 //
 //    fsa::fsa_type abstract_fsa;
 //    build_fsa_from_re(L"abstract", token_type::traits::type::abstract_kw, token_type::traits::type::identifier, IDENTIFIER_PART, abstract_fsa);
