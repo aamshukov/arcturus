@@ -52,9 +52,9 @@ void qpf_timer::stop()
 
     SetThreadAffinityMask(GetCurrentThread(), thread_affinity_mask);
 
-    my_elapsed_time = (((my_stop.QuadPart-my_start.QuadPart)*static_cast<double>(qpf_timer::kNanosecs)) / (my_frequency.QuadPart != 0 ?
-                                                                                                           my_frequency.QuadPart :
-                                                                                                           static_cast<double>(qpf_timer::kFrequency)));
+    my_elapsed_time = (((my_stop.QuadPart - my_start.QuadPart)*static_cast<double>(qpf_timer::kNanosecs)) / (my_frequency.QuadPart != 0 ?
+                                                                                                             my_frequency.QuadPart :
+                                                                                                             static_cast<double>(qpf_timer::kFrequency)));
     my_total_elapsed_time += my_elapsed_time;
 }
 
