@@ -52,6 +52,7 @@ class status
         using library_code_type = std::size_t;
 
         using contributor_type = contributor;
+        using timestamp_type = int;//??
 
         using counter_type = counter<correlation_type>;
 
@@ -63,8 +64,8 @@ class status
         library_code_type   my_library_code;
 
         contributor_type    my_contributor;
-
         string_type         my_text;
+        timestamp_type      my_timestamp;
 
         static counter_type our_counter;
 
@@ -92,6 +93,9 @@ class status
 
         contributor_type    contributor() const;
         contributor_type&   contributor();
+
+        timestamp_type      timestamp() const;
+        timestamp_type&     timestamp();
 
         const string_type&  text() const;
         string_type&        text();
@@ -148,6 +152,16 @@ inline status::contributor_type status::contributor() const
 inline status::contributor_type& status::contributor()
 {
     return my_contributor;
+}
+
+inline status::timestamp_type status::timestamp() const
+{
+    return my_timestamp;
+}
+
+inline status::timestamp_type& status::timestamp()
+{
+    return my_timestamp;
 }
 
 inline const string_type& status::text() const

@@ -100,6 +100,8 @@
     <ClInclude Include="..\src\framework\frontend\lexical_analyzer\lexical_analyzer.hpp" />
     <ClInclude Include="..\src\framework\frontend\lexical_analyzer\lexical_content.hpp" />
     <ClInclude Include="..\src\framework\frontend\lexical_analyzer\token.hpp" />
+    <ClInclude Include="..\src\framework\frontend\parser\glr_parser.hpp" />
+    <ClInclude Include="..\src\framework\frontend\parser\glr_parser_gss.hpp" />
     <ClInclude Include="..\src\framework\frontend\parser\packrat_parser.hpp" />
     <ClInclude Include="..\src\framework\frontend\parser\parser.hpp" />
     <ClInclude Include="..\src\framework\frontend\parser\parse_context.hpp" />
@@ -212,6 +214,7 @@
     <ClCompile Include="..\src\framework\frontend\lexical_analyzer\lexical_analyzer.cpp" />
     <ClCompile Include="..\src\framework\frontend\lexical_analyzer\lexical_content.cpp" />
     <ClCompile Include="..\src\framework\frontend\lexical_analyzer\token.cpp" />
+    <ClCompile Include="..\src\framework\frontend\parser\glr_parser.cpp" />
     <ClCompile Include="..\src\framework\frontend\parser\packrat_parser.cpp" />
     <ClCompile Include="..\src\framework\frontend\parser\parser.cpp" />
     <ClCompile Include="..\src\framework\frontend\parser\recursive_descent_parser.cpp" />

@@ -104,7 +104,11 @@ class vertex : public visitable
 
 template <typename TValue>
 inline vertex<TValue>::vertex(const typename vertex<TValue>::id_type& id, const string_type& label)
-                     : my_id(id), my_label(label), my_flags(vertex<TValue>::flag::clear), my_ref_count(0)
+                     : my_id(id),
+                       my_label(label),
+                       my_value(value_type{}),
+                       my_flags(vertex<TValue>::flag::clear),
+                       my_ref_count(0)
 {
 }
 

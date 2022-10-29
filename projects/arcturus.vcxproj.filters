@@ -85,6 +85,9 @@
     <Filter Include="framework\frontend\parser\precedence">
       <UniqueIdentifier>{753ff7f8-db22-4bf6-9375-8b1ffa2bb188}</UniqueIdentifier>
     </Filter>
+    <Filter Include="framework\frontend\parser\glr">
+      <UniqueIdentifier>{a046bbd1-b611-49a6-98ee-52d38bb7c005}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\framework\core\edge.hpp">
@@ -444,6 +447,12 @@
     <ClInclude Include="..\src\framework\frontend\type\abstract_type.hpp">
       <Filter>framework\frontend\type</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\framework\frontend\parser\glr_parser.hpp">
+      <Filter>framework\frontend\parser\glr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\framework\frontend\parser\glr_parser_gss.hpp">
+      <Filter>framework\frontend\parser\glr</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\framework\core\logger.cpp">
@@ -634,6 +643,9 @@
     </ClCompile>
     <ClCompile Include="..\src\framework\frontend\parser\recursive_descent_parser.cpp">
       <Filter>framework\frontend\parser\backtracking\recursive_descent</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\framework\frontend\parser\glr_parser.cpp">
+      <Filter>framework\frontend\parser\glr</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
