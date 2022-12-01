@@ -7,7 +7,7 @@
 BEGIN_NAMESPACE(core)
 
 tree::tree()
-    : my_flags(tree::flags_type::clear)
+    : my_id(0), my_flags(tree::flags_type::clear)
 {
 }
 

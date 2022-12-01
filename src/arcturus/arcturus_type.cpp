@@ -7,9 +7,7 @@
 #include <core/visitor.hpp>
 
 #include <frontend/type/type.hpp>
-#include <frontend/type/type.inl>
 #include <frontend/type/abstract_type.hpp>
-#include <frontend/type/abstract_type.inl>
 
 #include <arcturus_type.hpp>
 

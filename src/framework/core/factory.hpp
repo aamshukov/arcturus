@@ -11,12 +11,12 @@ BEGIN_NAMESPACE(core)
 class factory : private noncopyable
 {
     public:
-        template <typename T, typename ... ARGS>
-        static std::shared_ptr<T> create(const ARGS& ... args);
+        template <typename T, typename ... TArgs>
+        static std::shared_ptr<T> create(const TArgs& ... args);
 };
 
-template <typename T, typename ... ARGS>
-inline static std::shared_ptr<T> factory::create(const ARGS& ... args)
+template <typename T, typename ... TArgs>
+inline static std::shared_ptr<T> factory::create(const TArgs& ... args)
 {
     return std::make_shared<T>(args...);
 }

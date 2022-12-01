@@ -20,9 +20,7 @@
 #include <frontend/lexical_analyzer/token.hpp>
 
 #include <frontend/type/type.hpp>
-#include <frontend/type/type.inl>
 #include <frontend/type/abstract_type.hpp>
-#include <frontend/type/abstract_type.inl>
 
 #include <symtable/symbol.hpp>
 #include <symtable/scope/scope.hpp>

@@ -649,9 +649,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\src\framework\frontend\type\type.inl">
-      <Filter>framework\frontend\type</Filter>
-    </None>
     <None Include="..\src\framework\ir\ir.inl">
       <Filter>framework\ir</Filter>
     </None>
@@ -660,9 +657,6 @@
     </None>
     <None Include="..\src\arcturus\token_traits.defs">
       <Filter>arcturus</Filter>
-    </None>
-    <None Include="..\src\framework\frontend\type\abstract_type.inl">
-      <Filter>framework\frontend\type</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
