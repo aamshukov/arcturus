@@ -52,7 +52,7 @@ class status
         using library_code_type = std::size_t;
 
         using contributor_type = contributor;
-        using timestamp_type = int;//??
+        using timestamp_type = std::chrono::system_clock::time_point;
 
         using counter_type = counter<correlation_type>;
 
