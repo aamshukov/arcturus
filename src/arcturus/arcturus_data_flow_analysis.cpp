@@ -79,6 +79,7 @@
 
 #include <arcturus_configurator.hpp>
 #include <arcturus_token.hpp>
+#include <arcturus_type_traits.hpp>
 #include <arcturus_type.hpp>
 #include <arcturus_scalar_type.hpp>
 #include <arcturus_array_type.hpp>
@@ -150,7 +151,7 @@ void arcturus_data_flow_analysis::collect_liveness_def_use_sets(typename arcturu
 
 void arcturus_data_flow_analysis::calculate_liveness_in_outs_sets(typename arcturus_data_flow_analysis::control_flow_graph_type& cfg)
 {
-    // 'Compilers : principles, techniques, and tools' by Alfred V. Aho, Ravi Sethi, Jeffrey D. Ullman. 2nd ed.
+    // 'Compilers : principles, techniques, and tools' by Alfred V. Aho, Ravi Sethi, Jeffrey D. Ullman. 2nd ed. pp.607
     for(auto& block : (*cfg).vertices())
     {
         (*block).ins().clear();

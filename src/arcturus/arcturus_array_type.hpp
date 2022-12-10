@@ -16,6 +16,9 @@ class arcturus_array_type : public arcturus_type
     public:
         using base_type = std::shared_ptr<arcturus_type>;
 
+        using kind_type = typename arcturus_type::kind_type;
+        using attributes_type = typename arcturus_type::attributes_type;
+
     private:
         base_type       my_base;                // element type
 

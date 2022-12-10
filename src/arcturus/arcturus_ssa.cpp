@@ -81,6 +81,7 @@
 
 #include <arcturus_configurator.hpp>
 #include <arcturus_token.hpp>
+#include <arcturus_type_traits.hpp>
 #include <arcturus_type.hpp>
 #include <arcturus_scalar_type.hpp>
 #include <arcturus_array_type.hpp>

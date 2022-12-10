@@ -14,7 +14,12 @@ USING_NAMESPACE(frontend)
 class arcturus_scalar_type : public arcturus_type
 {
     public:
-                                arcturus_scalar_type(kind_type kind);
+        using kind_type = typename arcturus_type::kind_type;
+        using attributes_type = typename arcturus_type::attributes_type;
+
+    public:
+                                arcturus_scalar_type(kind_type kind = kind_type::unknown_type,
+                                                     attributes_type attributes = attributes_type::unknown_type);
 
                                 arcturus_scalar_type(const arcturus_scalar_type& other) = default;
                                 arcturus_scalar_type(arcturus_scalar_type&& other) = default;

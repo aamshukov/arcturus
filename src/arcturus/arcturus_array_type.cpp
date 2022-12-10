@@ -9,6 +9,7 @@
 #include <frontend/type/type.hpp>
 #include <frontend/type/abstract_type.hpp>
 
+#include <arcturus_type_traits.hpp>
 #include <arcturus_type.hpp>
 #include <arcturus_array_type.hpp>
 
@@ -18,7 +19,7 @@ USING_NAMESPACE(core)
 USING_NAMESPACE(frontend)
 
 arcturus_array_type::arcturus_array_type(const typename arcturus_array_type::base_type& base_type)
-                   : arcturus_type(abstract_type<traits_type>::kind_type::array_type),
+                   : arcturus_type(kind_type::array_type, attributes_type::unknown_type),
                      my_base(base_type),
                      my_array_lower_bound(0),
                      my_array_upper_bound(0),

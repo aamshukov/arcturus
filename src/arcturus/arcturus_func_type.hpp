@@ -18,6 +18,9 @@ class arcturus_func_type : public arcturus_scalar_type
         using params_type = std::vector<param_type>;
         using return_type = std::shared_ptr<arcturus_type>;
 
+        using kind_type = typename arcturus_type::kind_type;
+        using attributes_type = typename arcturus_type::attributes_type;
+
     private:
         params_type         my_type_params;   // type params <T, R, P, ...>
         params_type         my_formal_params; // value params integer, real, ...
@@ -27,7 +30,8 @@ class arcturus_func_type : public arcturus_scalar_type
         bool                my_variadic;
 
     public:
-                            arcturus_func_type(kind_type kind); // function_type or procedure_type
+                            arcturus_func_type(kind_type kind = kind_type::unknown_type,
+                                               attributes_type attributes = attributes_type::unknown_type); // function_type or procedure_type
                            ~arcturus_func_type();
 
         friend bool         operator == (const arcturus_func_type& lhs, const arcturus_func_type& rhs);

@@ -9,6 +9,7 @@
 #include <frontend/type/type.hpp>
 #include <frontend/type/abstract_type.hpp>
 
+#include <arcturus_type_traits.hpp>
 #include <arcturus_type.hpp>
 #include <arcturus_scalar_type.hpp>
 
@@ -17,8 +18,8 @@ BEGIN_NAMESPACE(arcturus)
 USING_NAMESPACE(core)
 USING_NAMESPACE(frontend)
 
-arcturus_scalar_type::arcturus_scalar_type(kind_type kind)
-                    : arcturus_type(kind)
+arcturus_scalar_type::arcturus_scalar_type(kind_type kind, attributes_type attributes)
+                    : arcturus_type(kind, attributes)
 {
     if(my_kind == arcturus_type::kind_type::integer_type)
     {

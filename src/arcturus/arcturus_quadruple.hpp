@@ -70,7 +70,7 @@ struct arcturus_operation_code_traits
         mir_size,
 
         // LIR - low-level intermediate representation (IR)
-        address_of          = mir_size + 128,
+        address_of_lir        = mir_size + 128,
 
         //load_integer        = 20,
         //store_integer       = 21, // assignment
@@ -90,6 +90,7 @@ struct arcturus_operation_code_traits
         //gt_integer          = 35,
         //ge_integer          = 36,
         //negation_integer    = 37, // -
+        move_lir,
 
         //load_real           = 50,
         //store_real          = 51, // assignment

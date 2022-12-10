@@ -43,6 +43,7 @@
     <ClInclude Include="..\src\arcturus\arcturus_symbol.hpp" />
     <ClInclude Include="..\src\arcturus\arcturus_token.hpp" />
     <ClInclude Include="..\src\arcturus\arcturus_type.hpp" />
+    <ClInclude Include="..\src\arcturus\arcturus_type_traits.hpp" />
     <ClInclude Include="..\src\framework\backend\codegen\activation_record.hpp" />
     <ClInclude Include="..\src\framework\backend\codegen\amd64\activation_record_amd64.hpp" />
     <ClInclude Include="..\src\framework\backend\codegen\codegen.hpp" />
@@ -54,6 +55,7 @@
     <ClInclude Include="..\src\framework\controller\controller.hpp" />
     <ClInclude Include="..\src\framework\core\bitset.hpp" />
     <ClInclude Include="..\src\framework\core\cache.hpp" />
+    <ClInclude Include="..\src\framework\core\color.hpp" />
     <ClInclude Include="..\src\framework\core\configurator.hpp" />
     <ClInclude Include="..\src\framework\core\context.hpp" />
     <ClInclude Include="..\src\framework\core\counter.hpp" />

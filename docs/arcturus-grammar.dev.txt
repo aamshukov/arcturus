@@ -1014,7 +1014,7 @@ declarations:
 
         scope:
             types
-            varaibles
+            variables
 
         point : point<int> = default
         point : point<int> = { x = 1 }

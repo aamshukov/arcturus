@@ -14,6 +14,8 @@ USING_NAMESPACE(frontend)
 class symbol
 {
     public:
+        using color_type = color;
+
         using token_type = token<token_traits>;
         using symbol_type = std::shared_ptr<symbol>;
 
@@ -85,6 +87,7 @@ class symbol
         flags_type              my_flags;               // flags
 
         metadata_type           my_metadata;            // custom attributes
+        color_type              my_color;
 
         static counter_type     our_counter;
 
@@ -127,6 +130,9 @@ class symbol
         const metadata_type&    metadata() const;
         metadata_type&          metadata();
 
+        const color_type        color() const;
+        color_type&             color();
+
         static symbol_type      get_new_temporary();
 
         string_type             to_string() const;
@@ -168,7 +174,8 @@ inline symbol::symbol()
                my_offset(0),
                my_size(0),
                my_bitsize(0),
-               my_flags(flags_type::clear)
+               my_flags(flags_type::clear),
+               my_color(color_type::white)
 {
 }
 
@@ -188,6 +195,7 @@ inline symbol::symbol(const symbol& other)
         my_align_required = other.my_align_required;
         my_flags = other.my_flags;
         my_metadata = other.my_metadata;
+        my_color = other.my_color;
     }
 }
 
@@ -207,6 +215,7 @@ inline symbol::symbol(symbol&& other)
         my_align_required = other.my_align_required;
         my_flags = other.my_flags;
         my_metadata = std::move(other.my_metadata);
+        my_color = other.my_color;
     }
 }
 
@@ -227,6 +236,7 @@ inline symbol& symbol::operator = (const symbol& other)
         my_align_required = other.my_align_required;
         my_flags = other.my_flags;
         my_metadata = other.my_metadata;
+        my_color = other.my_color;
     }
 
     return *this;
@@ -248,6 +258,7 @@ inline symbol& symbol::operator = (symbol&& other)
         my_align_required = other.my_align_required;
         my_flags = other.my_flags;
         my_metadata = std::move(other.my_metadata);
+        my_color = other.my_color;
     }
 
     return *this;
@@ -345,6 +356,16 @@ inline const typename symbol::metadata_type& symbol::metadata() const
 inline typename symbol::metadata_type& symbol::metadata()
 {
     return my_metadata;
+}
+
+inline const typename symbol::color_type symbol::color() const
+{
+    return my_color;
+}
+
+inline typename symbol::color_type& symbol::color()
+{
+    return my_color;
 }
 
 inline typename symbol::symbol_type symbol::get_new_temporary()

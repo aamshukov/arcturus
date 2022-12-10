@@ -453,6 +453,12 @@
     <ClInclude Include="..\src\framework\frontend\parser\glr_parser_gss.hpp">
       <Filter>framework\frontend\parser\glr</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\framework\core\color.hpp">
+      <Filter>framework\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\arcturus\arcturus_type_traits.hpp">
+      <Filter>arcturus\type</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\framework\core\logger.cpp">

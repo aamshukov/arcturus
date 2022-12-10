@@ -9,6 +9,7 @@
 #include <frontend/type/type.hpp>
 #include <frontend/type/abstract_type.hpp>
 
+#include <arcturus_type_traits.hpp>
 #include <arcturus_type.hpp>
 
 BEGIN_NAMESPACE(arcturus)
@@ -16,9 +17,7 @@ BEGIN_NAMESPACE(arcturus)
 USING_NAMESPACE(core)
 USING_NAMESPACE(frontend)
 
-typename arcturus_type_traits::enum_map_type arcturus_type_traits::mapping;
-
-arcturus_type::arcturus_type(kind_type kind) : abstract_type<arcturus_type_traits>(kind)
+arcturus_type::arcturus_type(kind_type kind, attributes_type attributes) : abstract_type<arcturus_type_traits>(kind, attributes)
 {
 }
 

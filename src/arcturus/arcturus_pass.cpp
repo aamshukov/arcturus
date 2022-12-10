@@ -73,6 +73,7 @@
 #include <backend/codegen/amd64/activation_record_amd64.hpp>
 
 #include <arcturus_token.hpp>
+#include <arcturus_type_traits.hpp>
 #include <arcturus_type.hpp>
 #include <arcturus_pass.hpp>
 

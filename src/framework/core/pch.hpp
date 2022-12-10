@@ -122,6 +122,7 @@ END_NAMESPACE
 #include <core/logger.hpp>
 #include <core/unicode.hpp>
 #include <core/text.hpp>
+#include <core/color.hpp>
 #include <core/enum.hpp>
 #include <core/enumerate.hpp>
 #include <core/endianness.hpp>

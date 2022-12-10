@@ -14,6 +14,10 @@ USING_NAMESPACE(frontend)
 class arcturus_enum_type : public arcturus_scalar_type
 {
     public:
+        using kind_type = typename arcturus_type::kind_type;
+        using attributes_type = typename arcturus_type::attributes_type;
+
+    public:
                     arcturus_enum_type();
                    ~arcturus_enum_type();
 

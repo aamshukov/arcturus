@@ -35,6 +35,7 @@
 #include <frontend/parser/parse_tree.hpp>
 
 #include <arcturus_token.hpp>
+#include <arcturus_type_traits.hpp>
 #include <arcturus_type.hpp>
 #include <arcturus_lexical_analyzer.hpp>
 #include <arcturus_parse_tree.hpp>

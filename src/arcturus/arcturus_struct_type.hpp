@@ -17,6 +17,9 @@ class arcturus_struct_type : public arcturus_scalar_type
         using member_type = std::shared_ptr<arcturus_type>;
         using members_type = std::vector<member_type>;
 
+        using kind_type = typename arcturus_type::kind_type;
+        using attributes_type = typename arcturus_type::attributes_type;
+
     private:
         members_type            my_members;
 
