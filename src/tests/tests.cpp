@@ -2588,6 +2588,32 @@ namespace tests
                 Logger::WriteMessage(("Def-Use construction:       " + std::to_string(elapsed)).c_str());
             }
 
+            TEST_METHOD(BuildInterferenceGrpah)
+            {
+                auto acfg(factory::create<arcturus_control_flow_graph>());
+
+                auto code(build_cytron_code());
+
+                (*acfg).collect_basic_blocks(code);
+
+                auto start = std::chrono::high_resolution_clock::now();
+
+                arcturus_data_flow_analysis dfa;
+
+                auto cfg = std::static_pointer_cast<control_flow_graph<basic_block<arcturus_quadruple>>>(acfg);
+
+                dfa.collect_liveness_def_use_sets(cfg);
+                dfa.calculate_liveness_in_outs_sets(cfg);
+
+                auto ifg { dfa.build_interference_graph(cfg) };
+                dfa.generate_interference_graph_graphviz_file(ifg, LR"(d:\tmp\ifg.dot)");
+
+                auto finish = std::chrono::high_resolution_clock::now();
+                auto elapsed = std::chrono::duration_cast<duration_type>(finish - start).count();
+
+                Logger::WriteMessage(("Interference graph construction:       " + std::to_string(elapsed)).c_str());
+            }
+
             TEST_METHOD(BuildDisjointSets)
             {
                 std::shared_ptr<graph<dominator_vertex>> gr(factory::create<graph<dominator_vertex>>());

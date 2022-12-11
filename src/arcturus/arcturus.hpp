@@ -73,6 +73,8 @@
 #include <ir/code.hpp>
 #include <ir/basic_block.hpp>
 #include <ir/control_flow_graph.hpp>
+#include <ir/interference_vertex.hpp>
+#include <ir/interference_graph.hpp>
 #include <ir/data_flow_analysis.hpp>
 #include <ir/interference_vertex.hpp>
 #include <ir/interference_graph.hpp>

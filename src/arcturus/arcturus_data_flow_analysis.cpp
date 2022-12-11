@@ -64,6 +64,8 @@
 #include <ir/code.hpp>
 #include <ir/basic_block.hpp>
 #include <ir/control_flow_graph.hpp>
+#include <ir/interference_vertex.hpp>
+#include <ir/interference_graph.hpp>
 #include <ir/data_flow_analysis.hpp>
 #include <ir/ir_visitor.hpp>
 #include <ir/ir.hpp>
@@ -223,6 +225,114 @@ void arcturus_data_flow_analysis::calculate_liveness_in_outs_sets(typename arctu
 
         ins_count = ins_curr_count;
     }
+}
+
+typename arcturus_data_flow_analysis::interference_graph_type arcturus_data_flow_analysis::build_interference_graph(const typename arcturus_data_flow_analysis::control_flow_graph_type& cfg)
+{
+    // 'Engineering a Compiler' by Keith D. Cooper, Linda Torczon, p.p. 701
+    interference_graph_type result {factory::create<interference_graph>() };
+
+    // for each basic block
+    for(auto& block : (*cfg).vertices())
+    {
+        symbols_type live_now;
+
+        std::for_each((*block).outs().begin(), (*block).outs().end(), [&live_now](const auto& out) { live_now.emplace(out); });
+
+        auto& code((*block).code());
+
+        for(auto instruction = code.end_instruction(); // in reverse order - OPn, OPn-1, OP n-1 ... OP1 in basic block
+            instruction != code.start_instruction();
+            instruction = std::dynamic_pointer_cast<arcturus_quadruple>((*instruction).next()))
+        {
+            // using such instructions we cover special treatment of MOVE instructions ...
+            if((*instruction).operation == arcturus_operation_code_traits::operation_code::binary_op_add_mir ||
+               (*instruction).operation == arcturus_operation_code_traits::operation_code::binary_op_subtract_mir ||
+               (*instruction).operation == arcturus_operation_code_traits::operation_code::binary_op_multiply_mir ||
+               (*instruction).operation == arcturus_operation_code_traits::operation_code::binary_op_divide_mir)
+            {
+                auto& lr_a_sym { (*instruction).argument1.first };
+                auto& lr_b_sym { (*instruction).argument2.first };
+                auto& lr_c_sym { std::get<arcturus_quadruple::argument_type>((*instruction).result).first };
+
+                auto lr_c { factory::create<interference_vertex>(lr_c_sym) };
+
+                (*result).add_vertex(lr_c);
+
+                std::for_each(live_now.begin(),
+                              live_now.end(),
+                              [&lr_c, &result](const auto& live_now_sym)
+                              {
+                                  auto lr_j { factory::create<interference_vertex>(live_now_sym) };
+
+                                  (*result).add_vertex(lr_j);
+                                  (*result).add_edge(lr_c, lr_j, 0.0);
+                              });
+
+                live_now.erase(lr_c_sym);
+
+                live_now.emplace(lr_a_sym);
+                live_now.emplace(lr_b_sym);
+            }
+        }
+    }
+
+    return result;
+}
+
+void arcturus_data_flow_analysis::generate_interference_graph_graphviz_file(const typename arcturus_data_flow_analysis::interference_graph_type& interference_graph,
+                                                                            const string_type& file_name)
+{
+    log_info(L"Generating interference graph graphviz file ...");
+
+    std::wofstream stream;
+
+    try
+    {
+        stream.open(file_name.c_str(), std::ios::out | std::ios::binary);
+
+        if(!stream.is_open() || stream.bad() || stream.fail())
+        {
+            log_error(L"Failed to generate interference graph graphviz file: stream is either open or in a bad condition.");
+        }
+
+        const char_type *indent(get_indent(4));
+
+        stream << L"digraph CFG" << std::endl;
+        stream << L"{" << std::endl;
+
+        for(const auto& vertex : (*interference_graph).vertices())
+        {
+            string_type label((*vertex).label() + L"<br/>");
+            stream << indent << (*vertex).id() << L" [shape=box label=<" << label << L">];" << std::endl;
+        }
+
+        for(const auto& edge : (*interference_graph).edges())
+        {
+            const auto& vertex_u((*edge).endpoints()[0]);
+            const auto& vertex_v((*edge).endpoints()[1]);
+
+            // generate label for U
+            string_type u_label(std::to_wstring((*vertex_u).id()));
+
+            // generate label for V
+            string_type v_label(std::to_wstring((*vertex_v).id()));
+
+            stream << indent << u_label << L" -> " << v_label  << L";" << std::endl;
+        }
+
+        stream << L"}" << std::endl;
+
+        stream.flush();
+        stream.clear();
+        stream.close();
+    }
+    catch(const std::exception& ex)
+    {
+        log_exception(ex, L"Failed to generate interference graph graphviz file: error occurred.");
+    }
+
+    log_info(L"Generated interference graph graphviz file.");
 }
 
 END_NAMESPACE

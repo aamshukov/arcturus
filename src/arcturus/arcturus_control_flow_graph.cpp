@@ -310,7 +310,7 @@ void arcturus_control_flow_graph::flat_basic_blocks(typename arcturus_control_fl
 
 void arcturus_control_flow_graph::generate_graphviz_file(const string_type& file_name)
 {
-    log_info(L"Generating graphviz file ...");
+    log_info(L"Generating arcturus_control_flow_graph graphviz file ...");
 
     std::wofstream stream;
 
@@ -320,7 +320,7 @@ void arcturus_control_flow_graph::generate_graphviz_file(const string_type& file
 
         if(!stream.is_open() || stream.bad() || stream.fail())
         {
-            log_error(L"Failed to generate graphviz file: stream is either open or in a bad condition.");
+            log_error(L"Failed to generate arcturus_control_flow_graph graphviz file: stream is either open or in a bad condition.");
         }
 
         const char_type *indent(get_indent(4));
@@ -366,10 +366,10 @@ void arcturus_control_flow_graph::generate_graphviz_file(const string_type& file
     }
     catch(const std::exception& ex)
     {
-        log_exception(ex, L"Failed to generate graphviz file: error occurred.");
+        log_exception(ex, L"Failed to generate arcturus_control_flow_graph graphviz file: error occurred.");
     }
 
-    log_info(L"Generated graphviz file.");
+    log_info(L"Generated arcturus_control_flow_graph graphviz file.");
 }
 
 END_NAMESPACE

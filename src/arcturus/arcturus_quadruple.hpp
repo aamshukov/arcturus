@@ -21,14 +21,15 @@ struct arcturus_operation_code_traits
         std::size_t,
         unknown = 0,
 
-        noop = 5,
+        noop_hir = 5,
 
         // HIR - high-level intermediate representation (IR), usually AST/CST forest
         hir_size,
 
 
         // MIR - mid-level intermediate representation (IR)
-        declaration_mir = hir_size + 128,
+        noop_mir = hir_size + 128,
+        declaration_mir,
 
         assignment_mir,
 
@@ -70,7 +71,8 @@ struct arcturus_operation_code_traits
         mir_size,
 
         // LIR - low-level intermediate representation (IR)
-        address_of_lir        = mir_size + 128,
+        noop_lir = mir_size + 128,
+        address_of_lir,
 
         //load_integer        = 20,
         //store_integer       = 21, // assignment
@@ -225,7 +227,7 @@ struct arcturus_quadruple : public quadruple<arcturus_symbol, arcturus_operation
 
         switch(operation)
         {
-            case arcturus_operation_code_traits::operation_code::noop:
+            case arcturus_operation_code_traits::operation_code::noop_mir:
                 op = L"noop";
                 break;
             case arcturus_operation_code_traits::operation_code::assignment_mir:

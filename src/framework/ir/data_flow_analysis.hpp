@@ -23,6 +23,7 @@ class data_flow_analysis : private noncopyable
         using basic_blocks_type = std::vector<basic_block_type>;
 
         using control_flow_graph_type = std::shared_ptr<control_flow_graph<TBasicBlock>>;
+        using interference_graph_type = std::shared_ptr<interference_graph>;
 
     public:
                         data_flow_analysis();
@@ -30,6 +31,9 @@ class data_flow_analysis : private noncopyable
 
         virtual void    collect_liveness_def_use_sets(control_flow_graph_type& cfg) = 0;
         virtual void    calculate_liveness_in_outs_sets(control_flow_graph_type& cfg) = 0;
+
+        virtual interference_graph_type
+                        build_interference_graph(const control_flow_graph_type& cfg) = 0;
 };
 
 template <typename TBasicBlock>
