@@ -243,7 +243,7 @@ typename arcturus_data_flow_analysis::interference_graph_type arcturus_data_flow
 
         for(auto instruction = code.end_instruction(); // in reverse order - OPn, OPn-1, OP n-1 ... OP1 in basic block
             instruction != code.start_instruction();
-            instruction = std::dynamic_pointer_cast<arcturus_quadruple>((*instruction).next()))
+            instruction = std::dynamic_pointer_cast<arcturus_quadruple>((*instruction).prev()))
         {
             // using such instructions we cover special treatment of MOVE instructions ...
             if((*instruction).operation == arcturus_operation_code_traits::operation_code::binary_op_add_mir ||
@@ -261,12 +261,15 @@ typename arcturus_data_flow_analysis::interference_graph_type arcturus_data_flow
 
                 std::for_each(live_now.begin(),
                               live_now.end(),
-                              [&lr_c, &result](const auto& live_now_sym)
+                              [&lr_a_sym, &lr_b_sym, &lr_c_sym, &lr_c, &result](const auto& live_now_sym)
                               {
-                                  auto lr_j { factory::create<interference_vertex>(live_now_sym) };
+                                  if(live_now_sym != lr_a_sym && live_now_sym != lr_b_sym && live_now_sym != lr_c_sym) // except LRa and LRb and LRc
+                                  {
+                                      auto lr_j { factory::create<interference_vertex>(live_now_sym) };
 
-                                  (*result).add_vertex(lr_j);
-                                  (*result).add_edge(lr_c, lr_j, 0.0);
+                                      (*result).add_vertex(lr_j);
+                                      (*result).add_edge(lr_c, lr_j, 0.0);
+                                  }
                               });
 
                 live_now.erase(lr_c_sym);
