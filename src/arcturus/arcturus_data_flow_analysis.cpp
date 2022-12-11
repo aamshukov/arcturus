@@ -232,8 +232,7 @@ typename arcturus_data_flow_analysis::interference_graph_type arcturus_data_flow
     // 'Engineering a Compiler' by Keith D. Cooper, Linda Torczon, p.p. 701
     interference_graph_type result {factory::create<interference_graph>() };
 
-    // for each basic block
-    for(auto& block : (*cfg).vertices())
+    for(const auto& block : (*cfg).vertices())
     {
         symbols_type live_now;
 
@@ -241,15 +240,12 @@ typename arcturus_data_flow_analysis::interference_graph_type arcturus_data_flow
 
         auto& code((*block).code());
 
-        for(auto instruction = (*code.end_instruction()).prev(); // in reverse order - OPn, OPn-1, OP n-1 ... OP1 in basic block
+        // in reverse order - OPn, OPn-1, OP n-1 ... OP1 in basic block
+        for(auto instruction = std::dynamic_pointer_cast<arcturus_quadruple>((*code.end_instruction()).prev());
             instruction != code.start_instruction();
             instruction = std::dynamic_pointer_cast<arcturus_quadruple>((*instruction).prev()))
         {
-            //?? treatment of MOVE instructions ...
-            if((*instruction).operation == arcturus_operation_code_traits::operation_code::binary_op_add_mir ||
-               (*instruction).operation == arcturus_operation_code_traits::operation_code::binary_op_subtract_mir ||
-               (*instruction).operation == arcturus_operation_code_traits::operation_code::binary_op_multiply_mir ||
-               (*instruction).operation == arcturus_operation_code_traits::operation_code::binary_op_divide_mir)
+            if(arcturus_quadruple::is_x_y_op_z((*instruction).operation))
             {
                 auto& lr_a_sym { (*instruction).argument1.first };
                 auto& lr_b_sym { (*instruction).argument2.first };
@@ -263,7 +259,9 @@ typename arcturus_data_flow_analysis::interference_graph_type arcturus_data_flow
                               live_now.end(),
                               [&lr_a_sym, &lr_b_sym, &lr_c_sym, &lr_c, &result](const auto& live_now_sym)
                               {
-                                  if(live_now_sym != lr_a_sym && live_now_sym != lr_b_sym && live_now_sym != lr_c_sym) // except LRa and LRb and LRc
+                                  if(live_now_sym != lr_a_sym && // except LRa and LRb
+                                     live_now_sym != lr_b_sym &&
+                                     live_now_sym != lr_c_sym) // treatment of MOVE instructions
                                   {
                                       auto lr_j { factory::create<interference_vertex>(live_now_sym) };
 
@@ -274,8 +272,44 @@ typename arcturus_data_flow_analysis::interference_graph_type arcturus_data_flow
 
                 live_now.erase(lr_c_sym);
 
-                live_now.emplace(lr_a_sym);
-                live_now.emplace(lr_b_sym);
+                if(lr_a_sym != nullptr)
+                    live_now.emplace(lr_a_sym);
+
+                if(lr_b_sym != nullptr)
+                    live_now.emplace(lr_b_sym);
+            }
+        }
+    }
+
+    return result;
+}
+
+typename arcturus_data_flow_analysis::interference_graph_type arcturus_data_flow_analysis::build_interference_graph_appel(const typename arcturus_data_flow_analysis::control_flow_graph_type& cfg)
+{
+    // 'Modern Compiler Implementation in Java' 2nd edition, by Andrew W. Appel
+    interference_graph_type result {factory::create<interference_graph>() };
+
+    // for each flow graph node n do
+    for(const auto& block : (*cfg).vertices())
+    {
+        // for each def in def(n) d
+        for(const auto& def : (*block).defs())
+        {
+            // for each temp in liveout(n) do
+            for(const auto& tmp : (*block).outs())
+            {
+                // if(not stmt(n) isa MOVE or def != temp) then
+                if(/* treatment of MOVE instructions OR ... */ def != tmp)
+                {
+                    // E ← E ∪ (def, temp)
+                    auto vertex_def { factory::create<interference_vertex>(def) };
+                    auto vertex_tmp { factory::create<interference_vertex>(tmp) };
+
+                    (*result).add_vertex(vertex_def);
+                    (*result).add_vertex(vertex_tmp);
+
+                    (*result).add_edge(vertex_def, vertex_tmp, 0.0);
+                }
             }
         }
     }

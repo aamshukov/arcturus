@@ -34,6 +34,8 @@ class data_flow_analysis : private noncopyable
 
         virtual interference_graph_type
                         build_interference_graph(const control_flow_graph_type& cfg) = 0;
+        virtual interference_graph_type
+                        build_interference_graph_appel(const control_flow_graph_type& cfg) = 0;
 };
 
 template <typename TBasicBlock>
