@@ -241,11 +241,11 @@ typename arcturus_data_flow_analysis::interference_graph_type arcturus_data_flow
 
         auto& code((*block).code());
 
-        for(auto instruction = code.end_instruction(); // in reverse order - OPn, OPn-1, OP n-1 ... OP1 in basic block
+        for(auto instruction = (*code.end_instruction()).prev(); // in reverse order - OPn, OPn-1, OP n-1 ... OP1 in basic block
             instruction != code.start_instruction();
             instruction = std::dynamic_pointer_cast<arcturus_quadruple>((*instruction).prev()))
         {
-            // using such instructions we cover special treatment of MOVE instructions ...
+            //?? treatment of MOVE instructions ...
             if((*instruction).operation == arcturus_operation_code_traits::operation_code::binary_op_add_mir ||
                (*instruction).operation == arcturus_operation_code_traits::operation_code::binary_op_subtract_mir ||
                (*instruction).operation == arcturus_operation_code_traits::operation_code::binary_op_multiply_mir ||
@@ -253,7 +253,7 @@ typename arcturus_data_flow_analysis::interference_graph_type arcturus_data_flow
             {
                 auto& lr_a_sym { (*instruction).argument1.first };
                 auto& lr_b_sym { (*instruction).argument2.first };
-                auto& lr_c_sym { std::get<arcturus_quadruple::argument_type>((*instruction).result).first };
+                auto& lr_c_sym { std::get<arcturus_quadruple::argument_type>((*instruction).result).first }; // implicit def()
 
                 auto lr_c { factory::create<interference_vertex>(lr_c_sym) };
 
