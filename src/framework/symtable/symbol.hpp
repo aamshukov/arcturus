@@ -89,6 +89,8 @@ class symbol
         metadata_type           my_metadata;            // custom attributes
         color_type              my_color;
 
+        bool                    my_variable; //?? temporary
+
         static counter_type     our_counter;
 
     public:
@@ -133,6 +135,9 @@ class symbol
         const color_type        color() const;
         color_type&             color();
 
+        bool                    variable() const; //?? temporary
+        bool&                   variable();
+
         static symbol_type      get_new_temporary();
 
         string_type             to_string() const;
@@ -175,7 +180,8 @@ inline symbol::symbol()
                my_size(0),
                my_bitsize(0),
                my_flags(flags_type::clear),
-               my_color(color_type::white)
+               my_color(color_type::white),
+               my_variable(false) //?? temporary
 {
 }
 
@@ -366,6 +372,16 @@ inline const typename symbol::color_type symbol::color() const
 inline typename symbol::color_type& symbol::color()
 {
     return my_color;
+}
+
+inline bool symbol::variable() const //?? temporary
+{
+    return my_variable;
+}
+
+inline bool& symbol::variable()
+{
+    return my_variable;
 }
 
 inline typename symbol::symbol_type symbol::get_new_temporary()

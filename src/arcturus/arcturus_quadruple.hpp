@@ -33,11 +33,11 @@ struct arcturus_operation_code_traits
 
         assignment_mir,
 
-        unary_op_plus_mir,
-        unary_op_negation_mir,
-        unary_op_multiply_mir,
-        unary_op_divide_mir,
-        unary_op_negate_mir,
+        unary_op_plus_mir,          // +
+        unary_op_negation_mir,      // -
+        unary_op_multiply_mir,      // *
+        unary_op_divide_mir,        // /
+        unary_op_negate_mir,        // !
         unary_op_complement_mir,    // ~
 
         binary_op_add_mir,
@@ -58,11 +58,11 @@ struct arcturus_operation_code_traits
         if_false_mir,
         goto_mir,
         label_mir,
+        return_mir,
 
         function_mir,               // foo
         function_formal_param_mir,
         function_begin_mir,
-        function_return_mir,
         function_end_mir,
 
         function_argument_mir,
@@ -270,10 +270,10 @@ struct arcturus_quadruple : public quadruple<arcturus_symbol, arcturus_operation
                 op = L"!=";
                 break;
             case arcturus_operation_code_traits::operation_code::binary_op_lessthan_mir:
-                op = L"<";
+                op = L"lt";
                 break;
             case arcturus_operation_code_traits::operation_code::binary_op_biggerthan_mir:
-                op = L">";
+                op = L"gt";
                 break;
             case arcturus_operation_code_traits::operation_code::binary_op_logical_and_mir:
                 op = L"&&";
@@ -305,7 +305,7 @@ struct arcturus_quadruple : public quadruple<arcturus_symbol, arcturus_operation
             case arcturus_operation_code_traits::operation_code::declaration_mir:
                 op = L"decl";
                 break;
-            case arcturus_operation_code_traits::operation_code::function_return_mir:
+            case arcturus_operation_code_traits::operation_code::return_mir:
                 op = L"return";
                 break;
             case arcturus_operation_code_traits::operation_code::function_argument_mir:

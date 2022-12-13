@@ -138,10 +138,10 @@ void arcturus_data_flow_analysis::collect_liveness_def_use_sets(typename arcturu
 
                 auto& result(std::get<arcturus_quadruple::argument_type>((*instruction).result).first);
 
-                if(arg1 != nullptr) // && defs.find(arg1) == defs.end())
+                if(arg1 != nullptr && (*arg1).variable()) //?? only variables for now
                     uses.emplace(arg1);
 
-                if(arg2 != nullptr) // && defs.find(arg2) == defs.end())
+                if(arg2 != nullptr && (*arg2).variable()) //?? only variables for now
                     uses.emplace(arg2);
 
                 if(result != nullptr)
@@ -163,9 +163,13 @@ void arcturus_data_flow_analysis::calculate_liveness_in_outs_sets(typename arctu
     std::size_t ins_count = 0;
     std::size_t ins_curr_count = 0;
 
+    std::size_t outs_count = 0;
+    std::size_t outs_curr_count = 0;
+
     for(;;)
     {
         ins_curr_count = 0;
+        outs_curr_count = 0;
 
         for(auto& block : (*cfg).vertices())
         {
@@ -216,14 +220,16 @@ void arcturus_data_flow_analysis::calculate_liveness_in_outs_sets(typename arctu
                            symtable::symbol::symbol_key_comparator());
 
             ins_curr_count += (*block).ins().size();
+            outs_curr_count += (*block).outs().size();
         }
 
-        if(ins_curr_count == ins_count)
+        if(ins_curr_count == ins_count && outs_curr_count == outs_count) // also check if any changes occurred in OUTs (Appel, alg 10.4)
         {
             break;
         }
 
         ins_count = ins_curr_count;
+        outs_count = outs_curr_count;
     }
 }
 
@@ -304,6 +310,9 @@ typename arcturus_data_flow_analysis::interference_graph_type arcturus_data_flow
                     // E ← E ∪ (def, temp)
                     auto vertex_def { factory::create<interference_vertex>(def) };
                     auto vertex_tmp { factory::create<interference_vertex>(tmp) };
+
+                    (*vertex_def).label() = (*def).to_string();
+                    (*vertex_tmp).label() = (*tmp).to_string();
 
                     (*result).add_vertex(vertex_def);
                     (*result).add_vertex(vertex_tmp);

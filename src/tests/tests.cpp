@@ -2234,30 +2234,39 @@ namespace tests
 
                 auto symbol_i(factory::create<arcturus_symbol>());
                 (*symbol_i).name() = text::chars_to_codepoints("I", 1);
+                (*symbol_i).variable() = true;
 
                 auto symbol_j(factory::create<arcturus_symbol>());
                 (*symbol_j).name() = text::chars_to_codepoints("J", 1);
+                (*symbol_j).variable() = true;
 
                 auto symbol_k(factory::create<arcturus_symbol>());
                 (*symbol_k).name() = text::chars_to_codepoints("K", 1);
+                (*symbol_k).variable() = true;
 
                 auto symbol_l(factory::create<arcturus_symbol>());
                 (*symbol_l).name() = text::chars_to_codepoints("L", 1);
+                (*symbol_l).variable() = true;
 
                 auto symbol_p(factory::create<arcturus_symbol>());
                 (*symbol_p).name() = text::chars_to_codepoints("P", 1);
+                (*symbol_p).variable() = true;
 
                 auto symbol_q(factory::create<arcturus_symbol>());
                 (*symbol_q).name() = text::chars_to_codepoints("Q", 1);
+                (*symbol_q).variable() = true;
 
                 auto symbol_r(factory::create<arcturus_symbol>());
                 (*symbol_r).name() = text::chars_to_codepoints("R", 1);
+                (*symbol_r).variable() = true;
 
                 auto symbol_s(factory::create<arcturus_symbol>());
                 (*symbol_s).name() = text::chars_to_codepoints("S", 1);
+                (*symbol_s).variable() = true;
 
                 auto symbol_t(factory::create<arcturus_symbol>());
                 (*symbol_t).name() = text::chars_to_codepoints("T", 1);
+                (*symbol_t).variable() = true;
 
                 auto symbol_m0(factory::create<arcturus_symbol>());
                 (*symbol_m0).name() = text::chars_to_codepoints("M0", 2);
@@ -2588,54 +2597,365 @@ namespace tests
                 Logger::WriteMessage(("Def-Use construction:       " + std::to_string(elapsed)).c_str());
             }
 
-            TEST_METHOD(BuildInterferenceGrpah)
+            std::shared_ptr<arcturus_code> build_interference_graph_code()
             {
-                auto acfg(factory::create<arcturus_control_flow_graph>());
+                //                                                  op                          arg1    arg2    res
+                //                                                  ...............................................
+                //  a := b * b                                    1 unary_op_multiply_mir       b       b       a
+                //  c := a + b                                    2 binary_op_add_mir   a       b       c
+                //  g := c > b                                    3 binary_op_biggerthan_mir    c       b       g
+                //  e := c == b                                   4 binary_op_equal_mir         c       b       e
+                //  if(c > b || c == b)                           5 if_true_mir                 g               L0 - true
+                //                                                6 if_true_mir                 e               L0 - true
+                //                                                7 goto_mir                                    L1 - false
+                //                                                8 label_mir                                   L0
+                //      r := a                                    9 assignment_mir              a               r
+                //                                               10 goto_mir                                    L2 - exit
+                //  else                                         11 label                                       L1
+                //      r := c                                   12 assignment_mir              c               r
+                //                                               13 label                                       L2
+                //                                               14 return_mir
+                using arcturus_instruction = arcturus_quadruple;
 
-                auto code(build_cytron_code());
+                using op = arcturus_operation_code_traits::operation_code;
+
+                counter symb_counter;
+                counter instr_counter;
+
+                symb_counter.number();  // starts from 1
+                instr_counter.number(); // starts from 1
+
+                auto code { factory::create<arcturus_code>() };
+
+                auto symbol_a { factory::create<arcturus_symbol>() };
+                (*symbol_a).id() = symb_counter.number();
+                (*symbol_a).name() = text::chars_to_codepoints("a", 1);
+                (*symbol_a).variable() = true;
+
+                auto symbol_b { factory::create<arcturus_symbol>() };
+                (*symbol_b).id() = symb_counter.number();
+                (*symbol_b).name() = text::chars_to_codepoints("b", 1);
+                (*symbol_b).variable() = true;
+
+                auto symbol_c { factory::create<arcturus_symbol>() };
+                (*symbol_c).id() = symb_counter.number();
+                (*symbol_c).name() = text::chars_to_codepoints("c", 1);
+                (*symbol_c).variable() = true;
+
+                auto symbol_g { factory::create<arcturus_symbol>() };
+                (*symbol_g).id() = symb_counter.number();
+                (*symbol_g).name() = text::chars_to_codepoints("g", 1);
+                (*symbol_g).variable() = true;
+
+                auto symbol_e { factory::create<arcturus_symbol>() };
+                (*symbol_e).id() = symb_counter.number();
+                (*symbol_e).name() = text::chars_to_codepoints("e", 1);
+                (*symbol_e).variable() = true;
+
+                auto symbol_r { factory::create<arcturus_symbol>() };
+                (*symbol_r).id() = symb_counter.number();
+                (*symbol_r).name() = text::chars_to_codepoints("r", 1);
+                (*symbol_r).variable() = true;
+
+                auto symbol_l0 { factory::create<arcturus_symbol>() };
+                (*symbol_l0).id() = symb_counter.number();
+                (*symbol_l0).name() = text::chars_to_codepoints("L0", 1);
+
+                auto symbol_l1 { factory::create<arcturus_symbol>() };
+                (*symbol_l1).id() = symb_counter.number();
+                (*symbol_l1).name() = text::chars_to_codepoints("L1", 1);
+
+                auto symbol_l2 { factory::create<arcturus_symbol>() };
+                (*symbol_l2).id() = symb_counter.number();
+                (*symbol_l2).name() = text::chars_to_codepoints("L2", 1);
+
+                std::shared_ptr<arcturus_instruction> instr1;
+                std::shared_ptr<arcturus_instruction> instr2;
+                std::shared_ptr<arcturus_instruction> instr3;
+                std::shared_ptr<arcturus_instruction> instr4;
+                std::shared_ptr<arcturus_instruction> instr5;
+                std::shared_ptr<arcturus_instruction> instr6;
+                std::shared_ptr<arcturus_instruction> instr7;
+                std::shared_ptr<arcturus_instruction> instr8;
+                std::shared_ptr<arcturus_instruction> instr9;
+                std::shared_ptr<arcturus_instruction> instr10;
+                std::shared_ptr<arcturus_instruction> instr11;
+                std::shared_ptr<arcturus_instruction> instr12;
+                std::shared_ptr<arcturus_instruction> instr13;
+                std::shared_ptr<arcturus_instruction> instr14;
+
+                //  a := b * b                                     1 binary_op_mul_mir   b       b       a
+                instr1 = factory::create<arcturus_instruction>(instr_counter.number(),
+                                                               op::binary_op_multiply_mir,
+                                                               std::make_pair(symbol_b, 0),
+                                                               std::make_pair(symbol_b, 0),
+                                                               std::make_pair(symbol_a, 0));
+                (*code).add_instruction(instr1);
+
+                //  c := a + b                                     2 binary_op_add_mir   a       b       c
+                instr2 = factory::create<arcturus_instruction>(instr_counter.number(),
+                                                               op::binary_op_add_mir,
+                                                               std::make_pair(symbol_a, 0),
+                                                               std::make_pair(symbol_b, 0),
+                                                               std::make_pair(symbol_c, 0));
+                (*code).add_instruction(instr2);
+
+                //  g := c > b                                     3 binary_op_bt_mir    c       b       g
+                instr3 = factory::create<arcturus_instruction>(instr_counter.number(),
+                                                               op::binary_op_biggerthan_mir,
+                                                               std::make_pair(symbol_c, 0),
+                                                               std::make_pair(symbol_b, 0),
+                                                               std::make_pair(symbol_g, 0));
+                (*code).add_instruction(instr3);
+
+                //  e := c == b                                    4 binary_op_eq_mir    c       b       e
+                instr4 = factory::create<arcturus_instruction>(instr_counter.number(),
+                                                               op::binary_op_equal_mir,
+                                                               std::make_pair(symbol_c, 0),
+                                                               std::make_pair(symbol_b, 0),
+                                                               std::make_pair(symbol_e, 0));
+                (*code).add_instruction(instr4);
+
+                //  if(c > b || c == b)                           5 if_true_mir         g               L0 - true
+                instr5 = factory::create<arcturus_instruction>(instr_counter.number(),
+                                                               op::if_true_mir,
+                                                               std::make_pair(symbol_g, 0),
+                                                               instr8);
+                (*code).add_instruction(instr5);
+
+                //                                                6 if_true_mir         e               L0 - true
+                instr6 = factory::create<arcturus_instruction>(instr_counter.number(),
+                                                               op::if_true_mir,
+                                                               std::make_pair(symbol_e, 0),
+                                                               instr8);
+                (*code).add_instruction(instr6);
+
+                //                                                7 goto_mir                            L1 - false
+                instr7 = factory::create<arcturus_instruction>(instr_counter.number(),
+                                                               op::goto_mir,
+                                                               instr11);
+                (*code).add_instruction(instr7);
+
+                //                                                8 label_mir                           L0
+                instr8 = factory::create<arcturus_instruction>(instr_counter.number(),
+                                                               op::label_mir,
+                                                               std::make_pair(symbol_l0, 0));
+                (*instr5).result = instr8;
+                (*instr6).result = instr8;
+                (*code).add_instruction(instr8);
+
+                //      r := a                                     9 assignment_mir      a               r
+                instr9 = factory::create<arcturus_instruction>(instr_counter.number(),
+                                                               op::assignment_mir,
+                                                               std::make_pair(symbol_a, 0),
+                                                               std::make_pair(symbol_r, 0));
+                (*code).add_instruction(instr9);
+
+                //                                               10 goto_mir                            L2 - exit
+                instr10 = factory::create<arcturus_instruction>(instr_counter.number(),
+                                                                op::goto_mir,
+                                                                instr13);
+                (*code).add_instruction(instr10);
+
+                //  else                                         11 label                               L1
+                instr11 = factory::create<arcturus_instruction>(instr_counter.number(),
+                                                                op::label_mir,
+                                                                std::make_pair(symbol_l1, 0));
+                (*instr7).result = instr11;
+                (*code).add_instruction(instr11);
+
+                //      r := c                                    12 assignment_mir      c               r
+                instr12 = factory::create<arcturus_instruction>(instr_counter.number(),
+                                                                op::assignment_mir,
+                                                                std::make_pair(symbol_c, 0),
+                                                                std::make_pair(symbol_r, 0));
+                (*code).add_instruction(instr12);
+
+                //                                               13 label                               L2
+                instr13 = factory::create<arcturus_instruction>(instr_counter.number(),
+                                                                op::label_mir,
+                                                                std::make_pair(symbol_l2, 0));
+                (*instr10).result = instr13;
+                (*code).add_instruction(instr13);
+
+                //                                               14 return_mir
+                instr14 = factory::create<arcturus_instruction>(instr_counter.number(),
+                                                                op::return_mir);
+                (*code).add_instruction(instr14);
+
+                for(auto it = (*code).instructions(); it != (*code).end_instruction(); it = std::static_pointer_cast<arcturus_quadruple>((*it).next()))
+                {
+                    Logger::WriteMessage((*it).to_string().c_str());
+                    Logger::WriteMessage(L"\n");
+                }
+
+                return code;
+            }
+
+            std::shared_ptr<arcturus_code> build_interference_graph_appel_code()
+            {
+                //                      op                          arg1    arg2    res
+                //                      ...............................................
+                //  a = 0               1 assignment_mir            0               a
+                // L:                   2 label_mir                                 L
+                //  b = a + 1           3 binary_op_add_mir         a       1       b
+                //  c = c + b           4 binary_op_add_mir         c       b       c
+                //  a = b * 2           5 binary_op_multiply_mir    b       2       a
+                //  if(a < 2) goto L    6 if_true_mir               a               L - true
+                //  return              8 return_mir
+                using arcturus_instruction = arcturus_quadruple;
+
+                using op = arcturus_operation_code_traits::operation_code;
+
+                counter symb_counter;
+                counter instr_counter;
+
+                symb_counter.number();  // starts from 1
+                instr_counter.number(); // starts from 1
+
+                auto code { factory::create<arcturus_code>() };
+
+                auto symbol_a { factory::create<arcturus_symbol>() };
+                (*symbol_a).id() = symb_counter.number();
+                (*symbol_a).name() = text::chars_to_codepoints("a", 1);
+                (*symbol_a).variable() = true;
+
+                auto symbol_b { factory::create<arcturus_symbol>() };
+                (*symbol_b).id() = symb_counter.number();
+                (*symbol_b).name() = text::chars_to_codepoints("b", 1);
+                (*symbol_b).variable() = true;
+
+                auto symbol_c { factory::create<arcturus_symbol>() };
+                (*symbol_c).id() = symb_counter.number();
+                (*symbol_c).name() = text::chars_to_codepoints("c", 1);
+                (*symbol_c).variable() = true;
+
+                auto symbol_0 { factory::create<arcturus_symbol>() };
+                (*symbol_0).id() = symb_counter.number();
+                (*symbol_0).name() = text::chars_to_codepoints("0", 1);
+
+                auto symbol_1 { factory::create<arcturus_symbol>() };
+                (*symbol_1).id() = symb_counter.number();
+                (*symbol_1).name() = text::chars_to_codepoints("1", 1);
+
+                auto symbol_2 { factory::create<arcturus_symbol>() };
+                (*symbol_2).id() = symb_counter.number();
+                (*symbol_2).name() = text::chars_to_codepoints("2", 1);
+
+                auto symbol_l { factory::create<arcturus_symbol>() };
+                (*symbol_l).id() = symb_counter.number();
+                (*symbol_l).name() = text::chars_to_codepoints("L", 1);
+
+                //  a = 0           1 assignment_mir            0               a
+                auto instr1 = factory::create<arcturus_instruction>(instr_counter.number(),
+                                                                    op::assignment_mir,
+                                                                    std::make_pair(symbol_0, 0),
+                                                                    std::make_pair(symbol_a, 0));
+                (*code).add_instruction(instr1);
+
+                // L:                   2 label_mir                                 L
+                auto instr_l = factory::create<arcturus_instruction>(instr_counter.number(),
+                                                                     op::label_mir,
+                                                                     std::make_pair(symbol_l, 0));
+                (*code).add_instruction(instr_l);
+
+                //  b = a + 1       2 binary_op_add_mir         a       1       b
+                auto instr2 = factory::create<arcturus_instruction>(instr_counter.number(),
+                                                                    op::binary_op_add_mir,
+                                                                    std::make_pair(symbol_a, 0),
+                                                                    std::make_pair(symbol_1, 0),
+                                                                    std::make_pair(symbol_b, 0));
+                (*code).add_instruction(instr2);
+
+                //  c = c + b       3 binary_op_add_mir         c       b       c
+                auto instr3 = factory::create<arcturus_instruction>(instr_counter.number(),
+                                                                    op::binary_op_add_mir,
+                                                                    std::make_pair(symbol_c, 0),
+                                                                    std::make_pair(symbol_b, 0),
+                                                                    std::make_pair(symbol_c, 0));
+                (*code).add_instruction(instr3);
+
+                //  a = b * 2       4 binary_op_multiply_mir    b       2       a
+                auto instr4 = factory::create<arcturus_instruction>(instr_counter.number(),
+                                                                    op::binary_op_multiply_mir,
+                                                                    std::make_pair(symbol_b, 0),
+                                                                    std::make_pair(symbol_2, 0),
+                                                                    std::make_pair(symbol_a, 0));
+                (*code).add_instruction(instr4);
+
+                //  if(a < 2) goto L    6 if_true_mir               a               L - true
+                auto instr_iftrue = factory::create<arcturus_instruction>(instr_counter.number(),
+                                                                          op::if_true_mir,
+                                                                          std::make_pair(symbol_a, 0),
+                                                                          instr_l);
+                (*code).add_instruction(instr_iftrue);
+
+                //  return          5 return_mir
+                auto instr5 = factory::create<arcturus_instruction>(instr_counter.number(),
+                                                                    op::return_mir);
+                (*code).add_instruction(instr5);
+
+                for(auto it = (*code).instructions(); it != (*code).end_instruction(); it = std::static_pointer_cast<arcturus_quadruple>((*it).next()))
+                {
+                    Logger::WriteMessage((*it).to_string().c_str());
+                    Logger::WriteMessage(L"\n");
+                }
+
+                return code;
+            }
+
+            TEST_METHOD(BuildInterferenceGraph)
+            {
+                auto code { build_interference_graph_code() };
+                auto acfg { factory::create<arcturus_control_flow_graph>() };
 
                 (*acfg).collect_basic_blocks(code);
 
-                auto start = std::chrono::high_resolution_clock::now();
-
                 arcturus_data_flow_analysis dfa;
 
-                auto cfg = std::static_pointer_cast<control_flow_graph<basic_block<arcturus_quadruple>>>(acfg);
+                auto cfg { std::static_pointer_cast<control_flow_graph<basic_block<arcturus_quadruple>>>(acfg) };
 
                 dfa.collect_liveness_def_use_sets(cfg);
                 dfa.calculate_liveness_in_outs_sets(cfg);
 
+                (*acfg).generate_graphviz_file(LR"(d:\tmp\bbs.dot)");
+
+                auto start = std::chrono::high_resolution_clock::now();
+
                 auto ifg { dfa.build_interference_graph(cfg) };
-                dfa.generate_interference_graph_graphviz_file(ifg, LR"(d:\tmp\ifg.dot)");
 
                 auto finish = std::chrono::high_resolution_clock::now();
                 auto elapsed = std::chrono::duration_cast<duration_type>(finish - start).count();
+
+                dfa.generate_interference_graph_graphviz_file(ifg, LR"(d:\tmp\ifg.dot)");
 
                 Logger::WriteMessage(("Interference graph construction:       " + std::to_string(elapsed)).c_str());
             }
 
-            TEST_METHOD(BuildInterferenceGrpahAppel)
+            TEST_METHOD(BuildInterferenceGraphAppel)
             {
-                auto acfg(factory::create<arcturus_control_flow_graph>());
-
-                auto code(build_cytron_code());
+                auto code { build_interference_graph_appel_code() };
+                auto acfg { factory::create<arcturus_control_flow_graph>() };
 
                 (*acfg).collect_basic_blocks(code);
 
-                auto start = std::chrono::high_resolution_clock::now();
-
                 arcturus_data_flow_analysis dfa;
 
-                auto cfg = std::static_pointer_cast<control_flow_graph<basic_block<arcturus_quadruple>>>(acfg);
+                auto cfg { std::static_pointer_cast<control_flow_graph<basic_block<arcturus_quadruple>>>(acfg) };
 
                 dfa.collect_liveness_def_use_sets(cfg);
                 dfa.calculate_liveness_in_outs_sets(cfg);
 
+                (*acfg).generate_graphviz_file(LR"(d:\tmp\bbs_appel.dot)");
+
+                auto start = std::chrono::high_resolution_clock::now();
+
                 auto ifg { dfa.build_interference_graph_appel(cfg) };
-                dfa.generate_interference_graph_graphviz_file(ifg, LR"(d:\tmp\ifg_appel.dot)");
 
                 auto finish = std::chrono::high_resolution_clock::now();
                 auto elapsed = std::chrono::duration_cast<duration_type>(finish - start).count();
+
+                dfa.generate_interference_graph_graphviz_file(ifg, LR"(d:\tmp\ifg_appel.dot)");
 
                 Logger::WriteMessage(("Interference graph construction:       " + std::to_string(elapsed)).c_str());
             }

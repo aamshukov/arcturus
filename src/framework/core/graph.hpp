@@ -58,6 +58,7 @@ class graph : private noncopyable
 
         edge_type                           create_edge(const vertex_type& vertex_u, const vertex_type& vertex_v, const edge_value_type& value);
         void                                link_edge(const vertex_type& vertex_u, const vertex_type& vertex_v, const edge_type& edge);
+
     public:
                                             graph(bool digraph = true);
         virtual                            ~graph();
@@ -85,7 +86,9 @@ class graph : private noncopyable
 
 template <typename TVertex, typename TEdgeValue, std::size_t N>
 graph<TVertex, TEdgeValue, N>::graph(bool digraph)
-                             : my_digraph(digraph)
+                             : my_digraph(digraph),
+                               my_vertices_counter(1),
+                               my_edges_counter(1)
 {
 }
 
@@ -216,11 +219,9 @@ void graph<TVertex, TEdgeValue, N>::add_edge(const typename graph<TVertex, TEdge
 template <typename TVertex, typename TEdgeValue, std::size_t N>
 inline void graph<TVertex, TEdgeValue, N>::adjust_vertex_id(const vertex_type& vertex)
 {
-    auto id = my_vertices_counter.number(); // always increment
-
-    if((*vertex).id() == 0)
+    if((*vertex).id() == std::numeric_limits<id_type>::min())
     {
-        (*vertex).id() = id;
+        (*vertex).id() = my_vertices_counter.number();
     }
 }
 

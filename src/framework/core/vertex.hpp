@@ -77,7 +77,7 @@ class vertex : public visitable
         std::size_t             my_ref_count; // if the vertex is referenced by another vertices
 
     public:
-                                vertex(const id_type& id = 0, const string_type& label = empty_string());
+                                vertex(const id_type& id = std::numeric_limits<id_type>::min(), const string_type& label = empty_string());
         virtual                ~vertex();
 
         const id_type&          id() const;

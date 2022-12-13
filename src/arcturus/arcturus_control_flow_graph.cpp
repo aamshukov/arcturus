@@ -141,7 +141,7 @@ void arcturus_control_flow_graph::collect_basic_blocks(typename arcturus_control
                     (*instruction).flags |= arcturus_quadruple::flags_type::leader;
                 }
             }
-            else if((*instruction).operation == arcturus_operation_code_traits::operation_code::function_return_mir)
+            else if((*instruction).operation == arcturus_operation_code_traits::operation_code::return_mir)
             {
                 // Любая команда (instruction), следующая непосредственно за ... or 'return', является лидером.
                 instruction = std::dynamic_pointer_cast<arcturus_quadruple>((*instruction).next());
@@ -160,7 +160,7 @@ void arcturus_control_flow_graph::collect_basic_blocks(typename arcturus_control
         // phase II (build basic blocks)
         //  Базовый блок каждого лидера определяется как содержащий самого лидера и все команды до (но не включая) следующего лидера или
         //  до конца промежуточной программы.
-        id_type id = 0;
+        id_type id = 1;
 
         const char_type *label(L"BB-%ld");
 
@@ -259,7 +259,7 @@ void arcturus_control_flow_graph::collect_basic_blocks(typename arcturus_control
 
                 // B2 immediately follows B1, and B1 DOES NOT end in an unconditional branch ...
                 if((*instruction).operation != arcturus_operation_code_traits::operation_code::goto_mir &&
-                   (*instruction).operation != arcturus_operation_code_traits::operation_code::function_return_mir)
+                   (*instruction).operation != arcturus_operation_code_traits::operation_code::return_mir)
                 {
                     // link block -> target_block
                     auto& target_block(blocks[i + 1]);
@@ -286,7 +286,7 @@ void arcturus_control_flow_graph::collect_basic_blocks(typename arcturus_control
                     instr != (*block).code().end_instruction();
                     instr = std::dynamic_pointer_cast<arcturus_quadruple>((*instr).next()))
                 {
-                    if((*instr).operation == arcturus_operation_code_traits::operation_code::function_return_mir)
+                    if((*instr).operation == arcturus_operation_code_traits::operation_code::return_mir)
                     {
                         link_to_exit_block = true;
                         break;
@@ -330,9 +330,46 @@ void arcturus_control_flow_graph::generate_graphviz_file(const string_type& file
 
         for(const auto& vertex : vertices())
         {
-            string_type label((*vertex).label() + L"<br/>");
+            string_type label { (*vertex).label() + L"<br/>" };
 
             auto bb = std::dynamic_pointer_cast<basic_block<arcturus_quadruple>>(vertex);
+
+            label += L"\"DEFS{";
+            std::for_each((*bb).defs().begin(),
+                          (*bb).defs().end(),
+                          [&label](const auto& sym)
+                          {
+                              label += (*sym).to_string();
+                              label += L" ";
+                          });
+            label += L"}\"<br/>";
+            label += L"\"USES{";
+            std::for_each((*bb).uses().begin(),
+                          (*bb).uses().end(),
+                          [&label](const auto& sym)
+                          {
+                              label += (*sym).to_string();
+                              label += L" ";
+                          });
+            label += L"}\"<br/>";
+            label += L"\"INS{";
+            std::for_each((*bb).ins().begin(),
+                          (*bb).ins().end(),
+                          [&label](const auto& sym)
+                          {
+                              label += (*sym).to_string();
+                              label += L" ";
+                          });
+            label += L"}\"<br/>";
+            label += L"\"OUTS{";
+            std::for_each((*bb).outs().begin(),
+                          (*bb).outs().end(),
+                          [&label](const auto& sym)
+                          {
+                              label += (*sym).to_string();
+                              label += L" ";
+                          });
+            label += L"}\"<br/>";
 
             for(auto instruction = (*bb).code().instructions();
                 instruction != (*bb).code().end_instruction();
