@@ -2904,9 +2904,37 @@ namespace tests
                 return code;
             }
 
-            TEST_METHOD(BuildInterferenceGraph)
+            //TEST_METHOD(BuildInterferenceGraph)
+            //{
+            //    auto code { build_interference_graph_code() };
+            //    auto acfg { factory::create<arcturus_control_flow_graph>() };
+
+            //    (*acfg).collect_basic_blocks(code);
+
+            //    arcturus_data_flow_analysis dfa;
+
+            //    auto cfg { std::static_pointer_cast<control_flow_graph<basic_block<arcturus_quadruple>>>(acfg) };
+
+            //    dfa.collect_liveness_def_use_sets(cfg);
+            //    dfa.calculate_liveness_in_outs_sets(cfg);
+
+            //    (*acfg).generate_graphviz_file(LR"(d:\tmp\bbs.dot)");
+
+            //    auto start = std::chrono::high_resolution_clock::now();
+
+            //    auto ifg { dfa.build_interference_graph(cfg) };
+
+            //    auto finish = std::chrono::high_resolution_clock::now();
+            //    auto elapsed = std::chrono::duration_cast<duration_type>(finish - start).count();
+
+            //    dfa.generate_interference_graph_graphviz_file(ifg, LR"(d:\tmp\ifg.dot)");
+
+            //    Logger::WriteMessage(("Interference graph construction:       " + std::to_string(elapsed)).c_str());
+            //}
+
+            TEST_METHOD(BuildInterferenceGraphAppel0)
             {
-                auto code { build_interference_graph_code() };
+                auto code { build_interference_graph_appel_code() };
                 auto acfg { factory::create<arcturus_control_flow_graph>() };
 
                 (*acfg).collect_basic_blocks(code);
@@ -2918,23 +2946,23 @@ namespace tests
                 dfa.collect_liveness_def_use_sets(cfg);
                 dfa.calculate_liveness_in_outs_sets(cfg);
 
-                (*acfg).generate_graphviz_file(LR"(d:\tmp\bbs.dot)");
+                (*acfg).generate_graphviz_file(LR"(d:\tmp\bbs_appel0.dot)");
 
                 auto start = std::chrono::high_resolution_clock::now();
 
-                auto ifg { dfa.build_interference_graph(cfg) };
+                auto ifg { dfa.build_interference_graph_appel0(cfg) };
 
                 auto finish = std::chrono::high_resolution_clock::now();
                 auto elapsed = std::chrono::duration_cast<duration_type>(finish - start).count();
 
-                dfa.generate_interference_graph_graphviz_file(ifg, LR"(d:\tmp\ifg.dot)");
+                dfa.generate_interference_graph_graphviz_file(ifg, LR"(d:\tmp\ifg_appel0.dot)");
 
                 Logger::WriteMessage(("Interference graph construction:       " + std::to_string(elapsed)).c_str());
             }
 
             TEST_METHOD(BuildInterferenceGraphAppel)
             {
-                auto code { build_interference_graph_appel_code() };
+                auto code { build_interference_graph_code() };
                 auto acfg { factory::create<arcturus_control_flow_graph>() };
 
                 (*acfg).collect_basic_blocks(code);

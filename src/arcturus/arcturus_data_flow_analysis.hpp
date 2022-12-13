@@ -39,6 +39,8 @@ class arcturus_data_flow_analysis : public data_flow_analysis<basic_block<arctur
         virtual interference_graph_type
                         build_interference_graph(const control_flow_graph_type& cfg) override;
         virtual interference_graph_type
+                        build_interference_graph_appel0(const control_flow_graph_type& cfg);
+        virtual interference_graph_type
                         build_interference_graph_appel(const control_flow_graph_type& cfg) override;
 
         static void     generate_interference_graph_graphviz_file(const interference_graph_type& interference_graph, const string_type& file_name);

@@ -236,6 +236,7 @@ void arcturus_data_flow_analysis::calculate_liveness_in_outs_sets(typename arctu
 typename arcturus_data_flow_analysis::interference_graph_type arcturus_data_flow_analysis::build_interference_graph(const typename arcturus_data_flow_analysis::control_flow_graph_type& cfg)
 {
     // 'Engineering a Compiler' by Keith D. Cooper, Linda Torczon, p.p. 701
+    // !!!NOT TESTED, DO NOT USE!!!
     interference_graph_type result {factory::create<interference_graph>() };
 
     for(const auto& block : (*cfg).vertices())
@@ -290,10 +291,15 @@ typename arcturus_data_flow_analysis::interference_graph_type arcturus_data_flow
     return result;
 }
 
-typename arcturus_data_flow_analysis::interference_graph_type arcturus_data_flow_analysis::build_interference_graph_appel(const typename arcturus_data_flow_analysis::control_flow_graph_type& cfg)
+typename arcturus_data_flow_analysis::interference_graph_type arcturus_data_flow_analysis::build_interference_graph_appel0(const typename arcturus_data_flow_analysis::control_flow_graph_type& cfg)
 {
     // 'Modern Compiler Implementation in Java' 2nd edition, by Andrew W. Appel
     interference_graph_type result {factory::create<interference_graph>() };
+
+    using interference_vertex_type = std::shared_ptr<interference_vertex>;
+    using vertices_type = std::unordered_map<symbol::id_type, interference_vertex_type>;
+
+    vertices_type vertices;
 
     // for each flow graph node n do
     for(const auto& block : (*cfg).vertices())
@@ -307,17 +313,134 @@ typename arcturus_data_flow_analysis::interference_graph_type arcturus_data_flow
                 // if(not stmt(n) isa MOVE or def != temp) then
                 if(/* treatment of MOVE instructions OR ... */ def != tmp)
                 {
+                    auto prev_vertices_count = vertices.size(); // found vertices
+
                     // E ← E ∪ (def, temp)
-                    auto vertex_def { factory::create<interference_vertex>(def) };
-                    auto vertex_tmp { factory::create<interference_vertex>(tmp) };
+                    auto vertex_def_it { vertices.find((*def).id()) };
 
-                    (*vertex_def).label() = (*def).to_string();
-                    (*vertex_tmp).label() = (*tmp).to_string();
+                    interference_vertex_type vertex_def;
 
-                    (*result).add_vertex(vertex_def);
-                    (*result).add_vertex(vertex_tmp);
+                    if(vertex_def_it == vertices.end())
+                    {
+                        vertex_def = factory::create<interference_vertex>(def);
 
-                    (*result).add_edge(vertex_def, vertex_tmp, 0.0);
+                        (*vertex_def).label() = (*def).to_string();
+
+                        (*result).add_vertex(vertex_def);
+                        vertices.emplace((*def).id(), vertex_def);
+                    }
+                    else
+                    {
+                        vertex_def = (*vertex_def_it).second;
+                    }
+
+                    auto vertex_tmp_it { vertices.find((*tmp).id()) };
+
+                    interference_vertex_type vertex_tmp;
+
+                    if(vertex_tmp_it == vertices.end())
+                    {
+                        vertex_tmp = factory::create<interference_vertex>(tmp);
+
+                        (*vertex_tmp).label() = (*tmp).to_string();
+
+                        (*result).add_vertex(vertex_tmp);
+                        vertices.emplace((*tmp).id(), vertex_tmp);
+                    }
+                    else
+                    {
+                        vertex_tmp = (*vertex_tmp_it).second;
+                    }
+
+                    if(vertices.size() - prev_vertices_count > 0)
+                        (*result).add_edge(vertex_def, vertex_tmp, 0.0);
+                }
+            }
+        }
+    }
+
+    return result;
+}
+
+typename arcturus_data_flow_analysis::interference_graph_type arcturus_data_flow_analysis::build_interference_graph_appel(const typename arcturus_data_flow_analysis::control_flow_graph_type& cfg)
+{
+    // 'Modern Compiler Implementation in Java' 2nd edition, by Andrew W. Appel, pp. 214
+    // 1. At any nonmove instruction that defines a variable a, where the live-out variables are b1, . . . , bj, add interference edges (a, b1), . . . , (a, bj).
+    // 2. At a move instruction a ← c, where variables b1, . . . , bj are live-out, add interference edges (a, b1), . . . , (a, bj) for any bi that is not the same as c.
+    interference_graph_type result {factory::create<interference_graph>() };
+
+    using interference_vertex_type = std::shared_ptr<interference_vertex>;
+    using vertices_type = std::unordered_map<symbol::id_type, interference_vertex_type>;
+
+    vertices_type vertices;
+
+    for(const auto& block : (*cfg).vertices())
+    {
+        auto& code((*block).code());
+
+        for(auto instruction = code.instructions();
+            instruction != code.end_instruction();
+            instruction = std::dynamic_pointer_cast<arcturus_quadruple>((*instruction).next()))
+        {
+            if(arcturus_quadruple::is_x_y_op_z((*instruction).operation))
+            {
+                auto& arg1((*instruction).argument1.first);
+                auto& arg2((*instruction).argument2.first);
+
+                auto& res(std::get<arcturus_quadruple::argument_type>((*instruction).result).first);
+
+                bool is_move_instruction = arg1 != nullptr && arg2 == nullptr && (*arg1).variable();
+
+                auto prev_vertices_count = vertices.size(); // found vertices
+
+                auto vertex_a_it { vertices.find((*res).id()) };
+
+                interference_vertex_type vertex_a;
+
+                if(vertex_a_it == vertices.end())
+                {
+                    vertex_a = factory::create<interference_vertex>(res);
+
+                    (*vertex_a).label() = (*res).to_string();
+
+                    (*result).add_vertex(vertex_a);
+                    vertices.emplace((*res).id(), vertex_a);
+                }
+                else
+                {
+                    vertex_a = (*vertex_a_it).second;
+                }
+
+                for(const auto& b : (*block).outs())
+                {
+                    if(b == res)
+                        continue;
+
+                    if(is_move_instruction && b == arg1) // arg1 is 'c'
+                        continue;
+
+                    auto vertex_b_it { vertices.find((*b).id()) };
+
+                    interference_vertex_type vertex_b;
+
+                    if(vertex_b_it == vertices.end())
+                    {
+                        vertex_b = factory::create<interference_vertex>(b);
+
+                        (*vertex_b).label() = (*b).to_string();
+
+                        (*result).add_vertex(vertex_b);
+                        vertices.emplace((*b).id(), vertex_b);
+                    }
+                    else
+                    {
+                        vertex_b = (*vertex_b_it).second;
+                    }
+
+                    if(vertices.size() - prev_vertices_count > 0)
+                        (*result).add_edge(vertex_a, vertex_b, 0.0);
+
+                    prev_vertices_count = vertices.size();
                 }
             }
         }
