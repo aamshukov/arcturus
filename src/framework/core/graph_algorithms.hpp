@@ -182,7 +182,7 @@ void graph_algorithms<TVertex, TEdgeValue, N>::dfs_postorder_to_vector(const typ
 
             auto vertex(entry.first);
 
-            if(entry.second) // all kids have been processed ...  enqueue papa
+            if(entry.second) // all kids have been processed ... enqueue papa
             {
                 vertices.emplace_back(std::dynamic_pointer_cast<vertex_type::element_type>(vertex));
             }
