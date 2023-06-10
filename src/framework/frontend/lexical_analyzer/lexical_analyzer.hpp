@@ -26,7 +26,7 @@ class lexical_analyzer : private noncopyable
 
         content_type                my_content;         // loaded content
 
-        const cp_type*              my_start_content;   // begining of content
+        const cp_type*              my_start_content;   // beginning of content
         const cp_type*              my_end_content;     // end of content
 
         token_type                  my_token;           // current lexeme
@@ -35,7 +35,7 @@ class lexical_analyzer : private noncopyable
         token_type                  my_prev_token;      // previous lexeme
 
         const cp_type*              my_ptr;             // current position in content
-        const cp_type*              my_ptr_lexeme;      // begining position of lexeme in content
+        const cp_type*              my_ptr_lexeme;      // beginning position of lexeme in content
 
         snapshots_type              my_snapshots;       // backtracking's snapshots
 
@@ -153,6 +153,7 @@ inline void lexical_analyzer::rewind_to_snapshot()
         my_snapshots.pop();
 
         my_token.reset();
+        my_prev_token.reset();
 
         tokens_type empty;
         std::swap(my_tokens, empty);

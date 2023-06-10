@@ -1373,3 +1373,112 @@ fun sort[T : Sortable](values: Array[T]) =
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+INTEGER = auto()
+INT = auto()
+REAL = auto()
+FLOAT = auto()
+DOUBLE = auto()
+DECIMAL = auto()
+BOOLEAN = auto()
+BOOL = auto()
+STRING = auto()
+DEFAULT = auto()
+TRUE = auto()
+FALSE = auto()
+ENUM = auto()
+STRUCT = auto()
+RECORD = auto()
+CONST = auto()
+READONLY = auto()
+PARTIAL = auto()
+LET = auto()
+VAR = auto()
+IF = auto()
+ELSE = auto()
+FOR = auto()
+WHILE = auto()
+DO = auto()
+SWITCH = auto()
+CASE = auto()
+WHEN = auto()
+MATCH = auto()
+PATTERN = auto()
+CONTINUE = auto()
+BREAK = auto()
+LEAVE = auto()
+GOTO = auto()
+RETURN = auto()
+IMPORT = auto()
+NAMESPACE = auto()
+IS = auto()
+AS = auto()
+AND = auto()
+OR = auto()
+NOT = auto()
+LAZY = auto()
+NOOP = auto()
+FN = auto()
+DEF = auto()
+TYPE = auto()
+
+:
+.
+..
+...
+,
+[
+]
+(
+)
+{
+}
+
++
+-
+*
+/
+>>
+<<
+=
+==
+!=
+<
+<=
+>
+>=
+<=>
+&
+&&
+|
+||
+^
+!
+
+=
++=
+-=
+*=
+/=
+>>=
+<<=
+&=
+|=
+^=
+
