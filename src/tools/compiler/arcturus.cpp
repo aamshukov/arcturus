@@ -109,6 +109,10 @@ void build_code(arcturus_code& code) //??
 
 int _tmain(int argc, _TCHAR *argv[])
 {
+    auto o = 077;
+    auto d = 77;
+    o, d;
+
     _setmode(_fileno(stdout), _O_U16TEXT);
 
     std::ios::sync_with_stdio(false);

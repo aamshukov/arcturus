@@ -70,7 +70,7 @@ class symbol
         cps_type                my_name;
 
         token_type              my_token;               // link with content
-        value_type              my_value;               // inffered value if any, might be integer value, real value or
+        value_type              my_value;               // inferred value if any, might be integer value, real value or
                                                         // identifier (correlated with name)
         type_type               my_type;
 

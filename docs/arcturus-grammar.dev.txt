@@ -279,7 +279,7 @@ keyword                             : 'integer' 'int'                           
                                     | 'const'                                       --- readonly semantics is only for structs' members
                                     | 'partial'                                     --- natively support generated files
                                     | 'if' 'else'
-                                    | 'for' 'while' 'dp while'
+                                    | 'for' 'while' 'do while'
                                     | 'switch' 'case' 'when' 'match' ????
                                     | 'continue' 'break' 'leave' 'goto' 'return'    --- 'leave' exits any nested loops (very common pattern to break two or more loops), aka 'goto' shortcut
                                     | 'import'                                      --- brings another module in scope
@@ -287,7 +287,7 @@ keyword                             : 'integer' 'int'                           
                                     | 'is'
                                     | 'and' 'or' 'not'                              --- logical synonyms of &&, ||, !
                                     | 'lazy'                                        --- mark parameters to defer evaluation till necessity in functions
-                                    | 'noop'                                 --- no-operation usefull in empty blocks
+                                    | 'noop'                                        --- no-operation usefull in empty blocks
                                     | 'fn' ???
                                     | 'unchecked' 'checked' ???
                                     ;
@@ -738,6 +738,8 @@ conditional-expression              : logical-or-expression
 assignment-expression               : expression assignment-operator assignment-expression                              --- assignment occurs only as a separate statement
                                     ;
 
+
+
 arguments-opt                       : arguments
                                     | e(psilon)
                                     ;
@@ -770,16 +772,16 @@ argument-name                       : identifier ':'
 
 //
 compilation composition:
-    imports all deps into one compilation-unit and then process
+    imports all deps into one compilation-unit and then process?
 
-                              program arcturus
+                              program art/arcturus
 
-                 namespace N1                   namespace N2
-
-    package1                      package2                         package3
-        module1                       module1                          module1
-        module2                       module2                          module2
-        module3                       module3                          module3
+                 namespace N1                    namespace N2
+                                                 
+    package1                     package2                       package3
+        module1                      module1                        module1
+        module2                      module2                        module2
+        module3                      module3                        module3
 
     package(physical) - spans compilation-units (might be a set of files or different entities with code in db),
                         distribution units (files or db entries/refs, etc.) can be placed in vfs
@@ -804,18 +806,31 @@ comment:
 
 type:
     scalar or array of:
-        boolean/bool
-        integer/int
+        int/integer
         real
+        bool/boolean
         string
         enum
-        struct/record <T>
-        struct/record <T>
+        struct/record <T,U>
+
+    U = int | real
+    W = string
+    T = int | real | string | bool | Point(U, W)
+    T = int or real or string or bool or Point(U, W)
+
+    foo = fn(π: T = 0 | 0.0 | "" | Point(0, ""))
+    foo = fn(π: int = 0 |
+                real = φ |
+                string = "" |
+                bool = false |
+                Point(U, W)) returns bool
+        return true
+    end
 
 callable:
-        function<T>
-        procedure<T>
-        lambda<T>
+        function<T>        fn/func
+        procedure<T>       pr/proc
+        lambda<T>          lm/lmbd
 
 
 statements:
@@ -828,6 +843,85 @@ statements:
     for
     pattern matching
     finally
+
+
+
+block/start
+    statements
+end
+
+if expr is not none
+    statements
+end
+
+expr ?   expr : expr
+expr if  expr else expr
+
+if expr is not none
+    statements
+else if expr is not none
+    statements
+else
+    statements
+end
+
+for expr in expr
+    statements
+end
+
+while expr is not none
+    statements
+end
+
+do
+    statements
+while expr is not none
+
+do ... until (condition) is equivalent to do ... while (not condition)
+repeat/do   
+    statements
+until expr is not none
+
+loop
+    statements
+end
+
+
+proc k: integer, r: real = π, s: string = ""
+    statements
+end
+
+fn k: integer, r: real = π, s: string = "" returns int, real
+    statements
+    return 0, π
+end
+
+compute = fn k: integer, r: real = π, s: string = "" returns int, real
+    statements
+    return 0, π
+end
+
+
+compute(0, π, test)
+call 0, π, test end
+
+2 + fn k: integer = 0, r: real = π, s: string = "" returns int, real return 3 end == 5
+
+2 + 
+    fn k: integer = 0,
+       r: real = π,
+       s: string = ""
+        returns int, real
+            result = 3
+            return result
+    end
+  == 5
+
+
+
+
+
+
 
 
 
@@ -854,7 +948,44 @@ namespace
 
 
 declarations:
-    let a : integer | string  --- first assignment freezes type
+    
+    local_declaration               : identifiers
+                                    | identifiers ':' type_alternatives local_declaration_modifiers_opt
+                                    | identifiers ':' type_alternatives local_declaration_modifiers_opt '=' local_variable_initializer
+                                    ;
+
+    local_declaration_modifiers_opt : local_declaration_modifiers
+                                    | ε
+                                    ;
+
+    local_declaration_modifiers     : local_declaration_modifier
+                                    | local_declaration_modifiers
+                                    ;
+
+    local_declaration_modifier      : 'const'
+                                    | 'readonly'
+                                    ;
+
+    type_alternatives               : type array_declaration_opt
+                                    | type_alternatives '|'
+                                    ;
+
+    variable_initializers           : variable_initializer
+                                    | variable_initializers ',' variable_initializer
+                                    ;
+
+    variable_initializer            : expression
+                                    | array_initializer
+                                    ;
+
+    array_initializer               : '[' variable_initializers ']'
+                                    ;
+
+
+
+
+
+    let a : integer | string        --- first assignment freezes type
 
     type byte int 0..256            ---  range
     flags : byte = 0xDA
@@ -874,7 +1005,6 @@ declarations:
 
     number
         integer, default = 0
-
             bin     oct   dec  hex
             0b0101, 0123, 123, 0xBAD
 
@@ -900,6 +1030,40 @@ declarations:
                     
             a, b, c : int const [1..5, -1..8; 0..4] = [ [3,4], [2,3,3], [5,6,6] ]       --- initialized arrays, row major (default)
             a, b, c : int readonly (1..5, -1..8, 0..4) = ( (3,4), (2,3,3), (5,6,6) )    --- initialized arrays, column major
+
+            a, b, c : T const [1..5, -1..8; 0..4] = [ [3,4], [2,3,3], [5,6,6] ]       --- initialized arrays, row major (default)
+            a, b, c : const T [1..5, -1..8; 0..4] = [ [3,4], [2,3,3], [5,6,6] ]       --- initialized arrays, row major (default)
+
+
+
+
+
+            array literal:
+
+            array_creation_expression : array_type_specifier_opt array_initializer
+                                      ;
+
+            array_type_specifier      : '[' array_dimensions ']' array_modifiers_opt
+                                      ;
+
+                                    [] not allowed if no specification
+                                    [0, 1, 2]
+                [1..5, -1..8, 0..4] column|row jagged sparse unchecked []
+                [1..5, -1..8, 0..4] [ [3, 4], [], [1]  ]
+                [1..5, -1..8, 0..4] [ [3, 4], [2, 3, 8], [5, 6, 1]  ]
+                                    [ [3, 4], [2, 3, 8], [5, 6, 1]  ]
+
+
+
+
+
+            color = red, green, blue;
+            rgbvalue = 0 .. 255;
+            picture: array[0 .. 63, 0 .. 63, color] of rgbvalue
+
+            [1, 1 + 1, 1 + 2]
+            [1, [1 + 1, [1 + 2]]]
+
 
             a[2, -1, 0] = 5
             a(2, -1, 0) = 5
@@ -1001,7 +1165,7 @@ declarations:
                 x : T,                                                          x : T,                                              
                 y : U                                                           y : U                                               
                                                                                                                                     
-            point3D<T, U, V> struct/record inherit point2D<T, U>            type point3D <T, U, V> inherit point2D<T, U>    
+            point3D<T, U, V> struct/record extends point2D<T, U>            type point3D <T, U, V> inherit point2D<T, U>    
             {                                                               {                                                       
                 z : T,                                                          z : T,                                              
                 w : real = 1.0                                                  w : real = 1.0                                      
@@ -1023,6 +1187,35 @@ declarations:
                 w : -1.0E+3 * θ + φ / π      --- inferred as real
 
 
+        struct/record Circle<T, U, V> (radius, x, y) extends  Shape<T> (x, y) implements Drawable
+        struct/record Circle<T, U, V> extends Shape<V> implements Drawable<T, U, V>:
+            ctor:
+                nop
+
+            ctor():
+                nop
+
+            ctor(x: int = 0):
+                nop
+
+            fn draw():
+                nop
+
+            proc draw:
+                nop
+
+
+        point(T)
+            x, y: real
+
+        point3d(T) : point(T)
+            z: real
+
+        fn foo(p: type T: real)
+            return p
+
+
+
         point<int>$default { x = default, y = default, z = default, w = default } --- internally created, one instance for lifetime of program, placed in 'type$instance' scope
 
         scope:
@@ -1035,6 +1228,36 @@ declarations:
         point : point<int> = { x = 1, y = 2, z = 3 }
         point : point<int> readonly = { x = 1, y = 2, z = 3, w = 5.2 }
         point : const point<int> = { w = 5.2, x = 1, y = 2, z = 3 }
+
+
+        point : point<int>
+        point : point<int> { x = 1 }
+        point : { x = 1 }
+        point : point<int> { x = 1, y = 2 }
+        point : point<int> { x = 1, y = 2, z = 3 }
+        point : point<int> readonly = { x = 1, y = 2, z = 3, w = 5.2 }
+        point : point<int> { x = 1, y = 2, z = 3, w = 5.2 } readonly
+        point : { x = 1, y = 2, z = 3, w = 5.2 } struct - mutable, anonymous, when compared uses structural equivalence
+        point : { x = 1, y = 2, z = 3, w = 5.2 } record - immutable
+        point : const point<int> { w = 5.2, x = 1, y = 2, z = 3 }
+        point : point<int> { w = 5.2, x = 1, y = 2, z = 3 } const
+
+        point : { x = 1, y = 2, z = 3, w = 5.2 } struct - mutable, anonymous, when compared uses structural equivalence
+        point : { x = 1, y = 2, z = 3, w = 5.2 } record - immutable, anonymous, when compared uses structural equivalence
+
+        point : Point { x = 1, y = 2, z = 3, w = 5.2 } struct - mutable, typed, when compared uses named and structural equivalence
+        point :       { x = 1, y = 2, z = 3, w = 5.2 } record - immutable, typed, when compared uses named and structural equivalence
+
+        point :       { θ φ π: real = 3.14159, w = 1.0 } record - immutable, typed, when compared uses named and structural equivalence
+        point :       { θ φ π: 3.14159, w: 1.0 } record - immutable, typed, when compared uses named and structural equivalence
+        point =       { θ φ π = 3.14159, w = 1.0 } record - immutable, typed, when compared uses named and structural equivalence
+
+
+        point : point<real>(x, y, z, w=1.0)
+        point : point<real>(x, y, z, w=1.0) = (w = 5.2, x = 1, y = 2, z = 3)
+
+        p = point<real>(x, y, z, w=1.0) (w = w, x = x, y = y, z = z)
+        p = point<real>() (x = 1, y = 2, z = 3)
 
         point : get_point()   --- deconstruction
         p1, p2 : get_points() --- deconstruction
@@ -1072,6 +1295,8 @@ declarations:
             val0 T, val1 U,
             next, prev node
         }
+
+
 
 
 
@@ -1158,6 +1383,31 @@ declarations:
                     inner(232, 2.52)                    --- call nested local function
 
                     return inner                        --- return nested local function
+
+                declaration with initialization for:
+                    callable
+                    struct
+                    record
+
+         fn/proc/record/struct (
+                                k: integer,
+                                r: real = π,
+                                s: string = "abc",
+                                b: bool = true,
+                                p: lazy node<point<real>> = { 1.0, 2.3, 3.2, w }
+                               )
+         fn/proc               ->  (int, real, (bool, Point<real>))
+
+
+         foo: fn (k: integer, r: real = π, s: string = "abc", b: bool = true, p: lazy node<point<real>> = { 1.0, 2.3, 3.2, w } ) ->  (int, real, (bool, Point<real>))
+         foo: proc (k: integer, r: real = π, s: string = "abc", b: bool = true, p: lazy node<point<real>> = { 1.0, 2.3, 3.2, w } )
+         foo: record(k: integer,
+                     r: real = π,
+                     s: string = "abc",
+                     b: bool = true,
+                     p: node<point<real>> = { 1.0, 2.3, 3.2, w })
+
+
 
 
                 i, j, k, r = calculate(5, π, "dd", { 1.1, 3.2, 3.5 })
@@ -1283,13 +1533,66 @@ pattern matching, case/when, switch C# 8
 
 
 
-    point2d struct<T>
+    point2d struct<T: real, bool, int>
         x : T = 0.0,
         y : T = 0.0,
 
     point3d struct<T> partial inherit point2d<T>
         z : T = 0.0,
         w : T = 1.0
+
+
+trait Hash
+    fn hash(&self) -> u64
+
+Hash: interface
+    fn hash(&self) -> u64
+end
+
+
+impl Hash for bool
+    fn hash(&self) -> u64
+        ...
+
+impl Hash for i64 {
+    fn hash(&self) -> u64
+        ...
+
+
+    Geometry: interface
+        distance: fn(p1 : point<T>, p2 : point<T>)
+        slope: fn(p1 : point<T>, p2 : point<T>)
+    end
+
+    Geometry2d: implements Geometry, Observable
+        distance: fn(p1 : point<T>, p2 : point<T>) -> real
+        slope: fn(p1 : point<T>, p2 : point<T>) -> real
+    end
+
+
+
+    Visitable
+        accept
+
+    Traceable
+        trace
+
+    Observable
+        notify
+
+
+    Point2d: record
+        x: real
+        y: real
+    end
+
+    Point3d: record extends Point2d
+        z: real
+    end
+
+    PointH: record extends Point3d implements Observable, Traceable
+        w: real = 1.0
+    end
 
 
 
@@ -1307,11 +1610,35 @@ pattern matching, case/when, switch C# 8
         slope : func<T>(p1 : point<T>, p2 : point<T>) -> real
             return π
 
+
+
     rectangle implements shape
         distance : func<T>(p1 : point<T>, p2 : point<T>) -> real
             return π
         slope : func<T>(p1 : point<T>, p2 : point<T>) -> real
             return π
+
+
+
+    geometry interface
+        distance()
+        slope()
+
+    shape interface inherits geometry
+        name()
+
+    circle implements shape
+    distance(circle)
+    slope(circle)
+    name(circle)
+
+    rectangle implements shape
+    distance(rectangle)
+    slope(rectangle)
+    name(rectangle)
+
+
+
 
 
     foo : func<T>(geometry geometry)
@@ -1482,3 +1809,984 @@ TYPE = auto()
 |=
 ^=
 
+
+
+    Left Parenthesis                (
+    Right Parenthesis               )
+    Left Square Bracket             [
+    Right Square Bracket            ]
+    Left Curly Bracket              {
+    Right Curly Bracket             }
+
+    Plus Sign                       +
+    Hyphen-Minus                    -
+    Asterisk (Mul)                  *
+    Solidus (Div) (Forward slash)   /
+    Reverse Solidus (Back slash)    \
+
+    Equals Sign                     =
+    Less-Than Sign                  <
+    Greater-Than Sign               >
+
+    Full Stop (Dot)                 .
+    Colon                           :
+    Comma                           ,
+    Semicolon                       ;
+
+    Vertical Line (Bar)             |
+
+    Grave Accent                    `
+    Tilde                           ~
+    Apostrophe                      '
+    Exclamation Mark                !
+    Commercial At                   @
+    Number Sign                     #
+    Dollar Sign                     $
+    Percent Sign                    %
+    Circumflex Accent (Xor)         ^
+    Ampersand                       &
+    Low Line (Underscore)           _
+    Quotation Mark                  "
+    Question Mark                   ?
+
+
+
+
+    Left Parenthesis                (
+    Right Parenthesis               )
+    Left Square Bracket             [
+    Right Square Bracket            ]
+    Left Curly Bracket              {
+    Right Curly Bracket             }
+    Plus Sign                       +
+    Hyphen-Minus                    -
+    Asterisk (Mul)                  *
+    Solidus (Div) (Forward slash)   /
+    Reverse Solidus (Back slash)    \
+    Equals Sign                     =
+    Less-Than Sign                  <
+    Greater-Than Sign               >
+    Full Stop (Dot)                 .
+    Colon                           :
+    Comma                           ,
+    Semicolon                       ;
+    Vertical Line (Bar)             |
+    Grave Accent                    `
+    Tilde                           ~
+    Apostrophe                      '
+    Exclamation Mark                !
+    Commercial At                   @
+    Number Sign                     #
+    Dollar Sign                     $
+    Percent Sign                    %
+    Circumflex Accent (Xor)         ^
+    Ampersand                       &
+    Low Line (Underscore)           _
+    Quotation Mark                  "
+    Question Mark                   ?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    @staticmethod
+    def right_parenthesis(ch):
+        """
+        Right Parenthesis )
+        """
+        return ch == ')' or '⁾' or '₎' or '﹚' or '）' or '︶'
+
+
+    Left Square Bracket             [
+    Right Square Bracket            ]
+    Left Curly Bracket              {
+    Right Curly Bracket             }
+    Plus Sign                       +
+    Hyphen-Minus                    -
+    Asterisk (Mul)                  *
+    Solidus (Div) (Forward slash)   /
+    Reverse Solidus (Back slash)    \
+    Equals Sign                     =
+    Less-Than Sign                  <
+    Greater-Than Sign               >
+    Full Stop (Dot)                 .
+    Colon                           :
+    Comma                           ,
+    Semicolon                       ;
+    Vertical Line (Bar)             |
+    Grave Accent                    `
+    Tilde                           ~
+    Apostrophe                      '
+    Exclamation Mark                !
+    Commercial At                   @
+    Number Sign                     #
+    Dollar Sign                     $
+    Percent Sign                    %
+    Circumflex Accent (Xor)         ^
+    Ampersand                       &
+    Low Line (Underscore)           _
+    Quotation Mark                  "
+    Question Mark                   ?
+
+
+
+    eq ne lt le gt ge
+    == != <  <= >  >=
+
+
+
+
+
+D -> A B C
+C -> A B
+C -> c
+Q -> Q a
+Q -> b
+B ->
+B -> b
+B -> a b D Q
+A ->
+A -> a
+
+
+
+
+
+                                    | array_literal                                                                     # [1, 2, 3]
+                                    | associative_array_literal                                                         # [1: "1", 2: "2", 3: "3"]  dictionary
+
+
+
+
+
+
+
+
+point : point(x, y, z, w=1.0)
+point : point(x, y, z, w=1.0) {w = 5.2, x = 1, y = 2, z = 3}
+
+p = point(x, y, z, w=1.0)
+    w = w
+    x = x
+    y = y
+    z = z
+
+p = point()
+    (x = 1, y = 2, z = 3)
+
+
+
+
+
+object_creation_expression          : type '(' arguments_opt ')' object_initializer_opt
+                                    ;
+
+object_initializer
+    : '{' member_initializer_list? '}'
+    | '{' member_initializer_list ',' '}'
+    ;
+
+member_initializer_list
+    : member_initializer (',' member_initializer)*
+    ;
+
+member_initializer
+    : initializer_target '=' initializer_value
+    ;
+
+initializer_target
+    : identifier
+    | '[' argument_list ']'
+    ;
+
+initializer_value
+    : expression
+    | object_or_collection_initializer
+    ;
+
+collection_initializer
+    : '{' element_initializer_list '}'
+    | '{' element_initializer_list ',' '}'
+    ;
+
+element_initializer_list
+    : element_initializer (',' element_initializer)*
+    ;
+
+element_initializer
+    : non_assignment_expression
+    | '{' expression_list '}'
+    ;
+
+expression_list
+    : expression
+    | expression_list ',' expression
+    ;
+
+
+
+
+
+
+typeof_expression                   : 'typeof' '(' type ')'
+                                    ;
+
+sizeof_expression                   : 'sizeof' '(' type ')'
+                                    ;
+
+nameof_expression                   : 'nameof' '(' fully_qualified_identifier type_arguments_opt ')'
+                                    ;
+
+
+
+
+
+
+
+
+array_specifier_opt                 : array_specifier                                                                   # [0] [1 , 2, 3] [-1..2, 5 .. 25, -1000.. 1000]
+                                    | ε
+                                    ;
+
+array_specifier                     : '[' array_dimensions ']' array_modifier_opt                                       # checked array, row based, optionally column based and/or unchecked
+                                    ;
+
+array_dimensions                    : array_dimension                                                                   # array_dimension (',' array_dimension)*
+                                    | array_dimensions ',' array_dimension                                              # all ',' as a separator of a dimension
+                                    ;
+
+array_bound_expression              : non_assignment_expression                                                         # must evaluate to integer
+                                    ;
+
+array_lower_bound                   : array_bound_expression
+                                    ;
+
+array_upper_bound                   : array_bound_expression
+                                    ;
+
+array_dimension                     : array_upper_bound                                                                 # array_lower_bound ('..' array_upper_bound)?
+                                    | array_lower_bound '..' array_upper_bound
+                                    ;
+
+array_modifier_opt                  : array_modifier
+                                    | ε
+                                    ;
+
+array_modifier                      : 'column'                                                                          # column based array specifier
+                                    | 'unchecked'                                                                       # unchecked array specifier
+                                    ;
+
+
+array_element_access                : primary_expression '[' arguments ']'                                              # except array creation
+                                    ;
+
+arguments                           : argument
+                                    | arguments ',' argument
+                                    ;
+
+argument                            : argument_name_opt argument_value
+                                    ;
+
+argument_name_opt                   : argument_name
+                                    | ε
+                                    ;
+
+argument_name                       : identifier ':'
+                                    ;
+
+argument_value                      : expression lazy_opt                                                               # lazy parameters evaluation only in invocation_expression
+                                    ;
+
+lazy_opt                            : 'lazy'                                                                            # lazy parameters evaluation
+                                    | ε
+                                    ;
+
+
+type_parameters_opt                 : '<' type_parameters '>'
+                                    | ε
+                                    ;
+
+type_parameters                     : type_parameter                                                                    # type_parameter (',' type_parameter)*
+                                    | type_parameters ',' type_parameter
+                                    ;
+
+type_parameter                      : identifier
+                                    ;
+
+type_arguments_opt                  : '<' type_arguments '>'
+                                    | ε
+                                    ;
+
+type_arguments                      : type_argument                                                                     # type_argument (',' type_argument)*
+                                    | type_arguments ',' type_argument
+                                    ;
+
+type_argument                       : type
+                                    ;
+
+
+type_opt                            : type
+                                    | e(psilon)
+                                    ;
+
+type                                : integral_type array_specifier_opt
+                                    | fully_qualified_identifier type_arguments_opt array_specifier_opt
+                                    | type_parameter
+                                    ;
+
+integral_type_opt                   : integral_type
+                                    | e(psilon)
+                                    ;
+
+integral_type                       : 'integer'
+                                    | 'real'
+                                    | 'string'
+                                    | 'boolean'
+                                    ;
+
+
+literal                             : integer_number_literal
+                                    | real_number_literal
+                                    | string_literal
+                                    | boolean_literal
+                                    ;
+
+identifier
+
+fully_qualified_identifier          : identifier
+                                    | fully_qualified_identifier '.' identifier
+                                    ;
+
+
+
+
+
+array_specifier_opt                 : array_specifier                                                                   # [0] [1 , 2, 3] [-1..2, 5 .. 25, -1000.. 1000]
+                                    | ε
+                                    ;
+
+array_specifier                     : '[' array_dimensions ']' array_modifier_opt                                       # checked array, row based, optionally column based and/or unchecked
+                                    ;
+
+array_dimensions                    : array_dimension                                                                   # array_dimension (',' array_dimension)*
+                                    | array_dimensions ',' array_dimension                                              # all ',' as a separator of a dimension
+                                    ;
+
+array_dimension                     : expression                                                                        # expression ('..' expression)?
+                                    | expression '..' expression
+                                    ;
+
+array_modifier_opt                  : array_modifier
+                                    | ε
+                                    ;
+
+array_modifier                      : 'column'                                                                          # column based array specifier
+                                    | 'row'                                                                             # row based array specifier - default
+                                    | 'unchecked'                                                                       # unchecked array specifier
+                                    ;
+
+
+
+
+
+ 
+
+
+
+
+
+TYPE                                : integral_type array_type_rank_specifier_opt
+                                    | type_name array_type_rank_specifier_opt
+                                    | type_parameter
+                                    ;
+
+
+
+
+
+
+
+
+
+# ARRAY
+array_creation_expression_opt       : array_creation_expression                                                         # TYPE [0] [1, 2, 3] [-1..2, 5 .. 25, -1000.. 1000]
+                                    | ε
+                                    ;
+
+array_creation_expression           : TYPE array_declaration
+                                    ;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+FIRST: [identifier ., identifier, identifier <]
+FOLLOW:[> <=, lazy ,, ] <=, ] unchecked, le -, and !, ) |=, is identifier, <= real_number_literal, ) <<, ) -=, == !, == (, eq !, le string_literal, ) gt, < real_number_literal, ] =, ] /=, != ++, lazy ], && ++, ^ !, .. +, & !, & (, or (, lt ~, .. boolean_literal, ) +=, > ., [ integer_number_literal, , integer_number_literal, .. ++, and ~, ) <=, > lt, gt +, ] lt, == ~, eq ~, || integer_number_literal, | ++, ] >, ne --, is boolean, .. real_number_literal, <= --, ] column, gt ++, : +, ne -, le +, ^ ~, & ~, <= -, ) =, ) /=, le boolean_literal, [ !, [ (, , identifier, <= integer_number_literal, , (, ], ne string_literal, ] &=, <= string_literal, : ++, < -, ) ., < integer_number_literal, || !, > (, ? ++, : real_number_literal, ] ,, le real_number_literal, && --, , bool, ] >>=, <= !, > [, ] [, [ ~, .. --, && string_literal, .. -, < !, || ~, .. integer_number_literal, ge +, ) *, .. string_literal, ] ge, eq integer_number_literal, gt --, ge boolean_literal, ne boolean_literal, ] !=, ] +, ε, gt -, ge ++, > ==, ] ^=, ] ==, lt (, ] eq, <= ~, ] :, : --, gt string_literal, > ++, ] ++, , string, : -, ) [, ge real_number_literal, ne real_number_literal, < ~, and (, .. !, ? --, le integer_number_literal, : string_literal, != +, , real, eq (, && +, ? -, != boolean_literal, && boolean_literal, >= +, ? string_literal, ) lazy, ] <, >= boolean_literal, ^ (, is bool, >= ++, ) ^=, ) ==, | +, != real_number_literal, ] ||, > .., ) ++, ] .., le !, && real_number_literal, .. ~, | boolean_literal, >= real_number_literal, lt ++, > >, gt boolean_literal, > ne, ] ne, ge --, == +, ] jagged, ge -, == boolean_literal, and ++, , int, ] --, : boolean_literal, | real_number_literal, ] row, ne integer_number_literal, ] *=, == ++, ] ^, ge string_literal, & +, ] -, ? +, or +, gt real_number_literal, & boolean_literal, ? boolean_literal, or boolean_literal, le ~, ] <<=, > >=, is string, ] >=, || (, ^ ++, ] %, & ++, ] is, or ++, == real_number_literal, ) .., > ,, != --, ) lt, is real, ) >, > |, ] |, != -, ) ne, >= --, && -, ge !, ne !, ne (, & real_number_literal, > or, ? real_number_literal, or real_number_literal, <= (, ] or, != integer_number_literal, ] &&, && integer_number_literal, != string_literal, >= -, >= integer_number_literal, > ], ] ], [ +, < (, >= string_literal, , +, ) &=, | --, , boolean_literal, > ge, ) <<=, | -, ) >=, [ ++, > !=, , ++, > +, and --, . identifier, | integer_number_literal, , integer, ] |=, lt string_literal, | string_literal, ) ,, ] <<, > boolean_literal, != !, == --, ge ~, ne ~, > eq, && !, > :, gt integer_number_literal, || ++, ) |, ] gt, == -, >= !, , real_number_literal, ) >>=, and string_literal, is int, ) or, ^ --, & --, .. (, == string_literal, or --, : integer_number_literal, ) ], > real_number_literal, & -, <= ++, or -, > and, | !, ] and, ? integer_number_literal, > le, ^ string_literal, ) ge, & string_literal, > &, ] le, ] &, or string_literal, > <, gt (, gt !, < ++, != ~, ) !=, ) +, && ~, >, >= ~, lt +, ) eq, ) :, > ||, : !, : (, lt boolean_literal, le (, [ --, , --, and +, ? !, ? (, or !, | ~, [ -, and boolean_literal, , -, eq +, || --, ] ., ) and, gt ~, eq boolean_literal, > --, [ string_literal, , string_literal, lt real_number_literal, ) le, ) &, is integer, ge integer_number_literal, || -, > ^, ) <, eq ++, > -, ^ +, > integer_number_literal, || string_literal, : ~, ^ boolean_literal, > string_literal, and real_number_literal, ) ||, > is, eq real_number_literal, ? ~, or ~, ] /, < --, , !, ] >>, le ++, ge (, ^ real_number_literal, ] *, > &&, ) --, > ?, < string_literal, > !, ] ?, ) *=, ) ^, lt --, ) -, [ boolean_literal, > ), ] ), lt -, ] %=, || +, ) %, lt integer_number_literal, ) is, , ~, || boolean_literal, != (, ) /, eq --, ] -=, and -, && (, ) >>, > gt, and integer_number_literal, [ real_number_literal, , boolean, eq -, >= (, ne +, > ~, <= +, > lazy, ] lazy, ) &&, == integer_number_literal, eq string_literal, <= boolean_literal, ) ?, || real_number_literal, ne ++, ^ -, < +, ] +=, lt !, | (, ^ integer_number_literal, & integer_number_literal, < boolean_literal, or integer_number_literal, le --, ) ), ) %=]
+
+LA:    [identifier ., identifier >, identifier lazy, identifier ], identifier le, identifier and, identifier ), identifier is, identifier <=, identifier ==, identifier eq, identifier <, identifier !=, identifier &&, identifier ^, identifier .., identifier &, identifier or, identifier lt, identifier [, identifier ,, identifier gt, identifier ||, identifier |, identifier ne, identifier :, identifier ?, identifier ge, identifier, identifier >=]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+....................................................................................................................................................................................................................
+compilation composition:
+    imports all deps into one compilation-unit and then process?
+
+                              program art/arcturus
+
+                 namespace N1                    namespace N2
+                                                 
+    package1                     package2                       package3
+        module1                      module1                        module1
+        module2                      module2                        module2
+        module3                      module3                        module3
+
+    package(physical) - spans compilation-units (might be a set of files or different entities with code in db),
+                        distribution units (files or db entries/refs, etc.) can be placed in vfs
+        modules
+            module1 - compilation-unit-1 (file or other persistent content)
+            ...
+            moduleN - compilation-unit-N (file or other persistent content)
+
+    namespace(logical) - spans modules, each namespace - scope(s)
+
+
+comment:
+    #   single line comment
+    //  single line comment
+    /*
+        /* miltiline
+           nested
+           comment */
+    */
+
+
+types:
+    scalar:
+        built-in:
+            x, y, z: int/integer = 0
+            x, y, z: int/integer = 1, 2, 3
+            θ, φ, π: real/number/float/double = 0.1
+            θ, φ, π: real/number/float/double = 0.1, 1.2, 3.14
+            c: bool/boolean = true/false
+            s: string = "a '1' b"
+            s: string = 'a "1" b'
+            a: int | real | bool | string = 0 | π | false | ""
+            let a int | real | bool | string = 0 | π | false | ""
+            let a int or real or bool or string = 0 or π or false or ""
+
+        custom:
+            Color: enum/enumeration
+                R = 0,
+                G = 1,
+                B = 2
+            end
+
+            User: struct/record
+                id: int = 1,
+                name: string = 'art'
+                age: int = 18
+            end
+
+            Point2d: record
+                x: real,
+                y: real
+            end
+
+            Point3d: record extends Point2d
+                z: real
+            end
+
+            PointH: record extends Point3d
+                w: real = 1.0
+            end
+
+            Visitable: interface
+                accept
+            end
+
+            Traceable: interface
+                trace
+            end
+
+            Observable: interface
+                notify
+            end
+
+            PointUi: record extends PointH implements Observable, Traceable
+                color: color = color.R
+            end
+
+    array:
+        built-in:
+            x, y, z: int/integer [1]
+            x, y, z: int/integer [-1..5]
+            x, y, z: int/integer [column row jagged sparse unchecked dynamic: 1..5, -1..8, 0..4]
+            x, y, z: int/integer [column row jagged sparse unchecked dynamic: 1..5, -1..8, 0..4]
+            θ, φ, π: real/number/float/double [column row jagged sparse unchecked dynamic: 1..5, -1..8, 0..4]
+            θ, φ, π: real/number/float/double [column row jagged sparse unchecked dynamic: 1..5, -1..8, 0..4]
+            c: bool/boolean [column row jagged sparse unchecked dynamic: 1..5, -1..8, 0..4]
+            s: string [column row jagged sparse unchecked dynamic: 1..5, -1..8, 0..4]
+            s: string [column row jagged sparse unchecked dynamic: 1..5, -1..8, 0..4]
+            a: int [1..5, -1..8, 0..4] | real [1..5, -1..8, 0..4] | bool [1..5, -1..8, 0..4] | string [1..5, -1..8, 0..4]
+
+        custom:
+            colors: Color [column row jagged sparse unchecked dynamic: 1..5, -1..8, 0..4]
+            users: User [column row jagged sparse unchecked dynamic: 1..5, -1..8, 0..4]
+            Points: Point [column row jagged sparse unchecked dynamic: 1..5, -1..8, 0..4]
+
+    aliasing:
+        Number: type = int | real
+        Text: type = string
+        BuiltIns: type = Number | bool | Text
+        BuiltIns: type = Number or bool or Text
+        BuiltInsPoint: type = BuiltIns | PointUi
+
+        subtype: Color = R, G
+        range: real = -π .. π
+        range: int = 0 .. 128
+
+        A: int [1..5, -1..8, 0..4]
+        slice: A[1:3, -1:5, 0:2]
+
+
+    callable:
+        fn
+        proc
+        lambda/closure
+
+
+
+
+
+
+
+    foo = fn(π: T = 0 | 0.0 | "" | Point(0, ""))
+    foo = fn(π: int = 0 |
+                real = φ |
+                string = "" |
+                bool = false |
+                Point(U, W)) returns bool
+        return true
+    end
+
+
+
+statements:
+    import
+    declaration
+    expression
+    if
+    while
+    do while
+    for
+    pattern matching
+    finally
+
+
+blocks can be shared and act as macros or inlined functions???
+for example, there might be a library with a bunch of common/patterns blocks
+similar what programmers using every day - Copy Paste.
+a particular function might consist just of a bunch of blocks pulled from the library
+need to think about type-oriended blocks, not macros, probably inlined functions the best approach - evaluate params
+
+namespace A
+    namespace B
+        namespace C
+            foo: fn ...
+        end
+    end
+end
+
+A.B.C.foo()
+
+foo: struct ...
+end
+
+struct User
+end
+
+record CorrelationId
+end
+
+
+interface Visitable
+    accept
+end
+
+interface Traceable
+    trace
+end
+
+interface Observable
+    notify
+end
+
+record Point2d
+end
+
+record Point3d extends Point2d
+end
+
+record Point extends Point3d
+end
+
+interface Shape
+end
+
+interface Shape2d extends Shape
+end
+
+interface Shape3d extends Shape2d
+end
+
+block Geometry implements Shape3d Visitable Traceable Observable
+end
+
+block
+    statements
+end
+
+if expr is not none
+    statements
+end
+
+expr ?   expr : expr
+expr if  expr else expr
+
+if expr is not none
+    statements
+else if expr is not none
+    statements
+else
+    statements
+end
+
+for expr in expr
+    statements
+end
+
+while expr is not none
+    statements
+end
+
+do
+    statements
+while expr is not none
+
+do ... until (condition) is equivalent to do ... while (not condition)
+repeat/do   
+    statements
+until expr is not none
+
+loop
+    statements
+end
+
+
+proc k: integer, r: real = π, s: string = ""
+    statements
+end
+
+fn k: integer, r: real = π, s: string = "" returns int, real
+    statements
+    return 0, π
+end
+
+compute = fn k: integer, r: real = π, s: string = "" returns int, real
+    statements
+    return 0, π
+end
+
+
+compute(0, π, test)
+call 0, π, test end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+============================================================= ART ===================================================================
+
+    imports all deps into one compilation-unit and then process
+
+                              program art/arcturus
+
+                 namespace N1                    namespace N2
+                                                 
+    package1                     package2                       package3
+        module1                      module1                        module1
+        module2                      module2                        module2
+        module3                      module3                        module3
+
+    package(physical) - spans compilation-units (might be a set of files or different entities with code in db),
+                        distribution units (files or db entries/refs, etc.) can be placed in vfs
+        modules
+            module1 - compilation-unit-1 (file or other persistent content)
+            ...
+            moduleN - compilation-unit-N (file or other persistent content)
+
+    namespace(logical) - spans modules, each namespace - scope(s)
+
+
+comment:
+    --- single line comment
+    #   single line comment
+    //  single line comment
+    /*
+        /* miltiline
+           nested
+           comment */
+    */
+
+namespace A
+    namespace B
+        namespace C
+            foo: fn ...
+        end
+    end
+end
+
+A.B.C.foo()
+
+type:
+    scalar or array of:
+        int/integer
+        real
+        bool/boolean
+        string
+        enum
+        struct/record <T,U>
+        interface
+
+    type U int | real | string | Observable | Point end     --- first assignment freezes type
+    type U
+        int or
+        real or
+        string or
+        Observable or
+        Point
+    end
+
+    type wchar integer 0..32635 end     --- range
+    type byte                           --- range
+        int 0..256
+    end
+    type range int -10 .. 100 end
+    type range real -π .. +π end
+
+    interface Visitable
+        ... --- list of fn/proc
+    end
+
+    interface Traceable
+        trace
+    end
+
+    interface Observable
+        notify
+    end
+
+    record Point2d
+    end
+
+    record Point3d extends Point2d
+    end
+
+    record Point extends Point3d
+    end
+
+    interface Shape
+    end
+
+    interface Shape2d extends Shape
+    end
+
+    interface Shape3d extends Shape2d
+    end
+
+declaration:
+    integer, default = 0
+        bin     oct   dec  hex
+        0b0101, 0123, 123, 0xBAD
+
+        i, j, k: integer                        --- uninitialized, all have the same value which is default - 0
+        i, j, k: integer = 1_2_345_678_90       --- initialization, all have the same value
+        i, j, k: integer = 1'2'34'5'67'890      --- initialization, all have the same value
+        i, j, k: integer const = 100            --- initialization of constants, all have the same value, must be assigned
+        i, j, k: const integer = 100            --- 
+        i, j, k: 10                             --- initialization, all have the same value, type integer is inferred
+        i, j, k: const = 100                    --- initialization of constants, all have the same value, type integer is inferred
+        i, j, k: integer readonly               --- uninitialized variables of read-only constants, might be called later after declaration, all have the same value
+        i, j, k: integer readonly = 100         --- initialization of read-only constants, might be called later after declaration, all have the same value
+        i, j, k: readonly integer = 100         --- 
+        i, j, k: range                          --- uninitialized, all values in the range -10..100
+        i, j, k: range = 5                      --- initialized with 5, i = j = k = 5
+
+        i, j, k = foo()                         --- assignment/deconstruction, types are inferred from foo() return values
+
+    real, default = 0.0
+        θ, φ, π: real
+        θ, φ, π: 0.1                           --- inferred as real
+        θ, φ, π: real = 0.1
+        θ, φ, π: real const = 0.1
+        θ, φ, π: const real = 0.1
+        θ, φ, π: real readonly = 0.1
+        θ, φ, π: readonly real = 0.1
+        π      : real const = 3.14159
+        θ, φ   : real -π .. +π                 --- π must be const expression
+        θ, φ   : real -π .. +π = π/2           --- might be initialized with expression
+        θ, φ   : const real -π .. +π = π/2     --- might be initialized with expression
+        θ, φ   : real const -π .. +π = π/2     --- might be initialized with expression
+
+    boolean, default = false
+        flag: bool/boolean
+        flag: bool/boolean = true
+        flag: const bool = true
+        flag: bool const = true
+        flag: bool readonly = true
+        flag: readonly bool = true
+
+    string, default = ""
+        name: string
+        name: string = " ' text ' "
+        name: string = ' " text " '
+        name: " ' text ' "
+        name: ' " text " '
+        name: const string = ' " text " '
+        name: readonly string = ' " text " '
+        name: string const = ' " text " '
+        name: string readonly = ' " text " '
+
+    flags: byte = 0xDA
+    bits: byte = 0b1_0_00_10_1  OR  0b1'0'00'10'1
+
+    struct User
+        name: string = ' " arthur " '
+        age: int = 15
+        weight: real = 72.5
+    end
+
+    record CorrelationId
+        guid: int
+    end
+
+    enum Colors
+        RED = 0, GREEN, BLUE = 10, WHITE = RED | GREEN | BLUE
+        RED: 0, GREEN, BLUE: 10, WHITE: RED | GREEN | BLUE
+    end
+
+    fn compute k: int, r: real = π, s: string = "" returns int, real
+        statements
+        return 0, π
+    end
+
+    proc compute k: int, r: real = π, s: string = ""
+        statements
+    end
+
+statements
+    block Geometry implements Shape3d Visitable Traceable Observable
+        statements
+        yield
+    end
+
+    block
+        statements
+        yield
+    end
+
+    if expr is not none
+        statements
+        yield
+    end
+
+    expr ?   expr : expr
+    expr if  expr else expr
+
+    if expr is not none             if expr is none
+        statements
+        yield
+    else if expr is not none        else if expr is none
+        statements
+        yield
+    else
+        statements
+        yield
+    end
+
+    for expr in expr
+        statements
+        yield
+    end
+
+    while expr is not none
+        statements
+        yield
+    end
+
+    do
+        statements
+        yield
+    while expr is not none
+
+    do ... until (condition) is equivalent to do ... while (not condition)
+    repeat/do   
+        statements
+        yield
+    until expr is not none
+
+    loop
+        statements
+        yield
+    end

@@ -237,6 +237,7 @@
     <None Include="..\src\framework\ir\ir_visualization.inl" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="..\docs\arcturus-expressions.txt" />
     <Text Include="..\docs\arcturus-grammar.dev.txt" />
     <Text Include="..\docs\arcturus-grammar.txt" />
   </ItemGroup>

@@ -672,6 +672,9 @@
     <Text Include="..\docs\arcturus-grammar.txt">
       <Filter>docs</Filter>
     </Text>
+    <Text Include="..\docs\arcturus-expressions.txt">
+      <Filter>docs</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <MASM Include="..\src\framework\backend\codegen\amd64\masm.test.asm">

@@ -1,0 +1,330 @@
+﻿# TYPE
+TYPE                                : integral_type array_type_rank_specifier_opt
+                                    | type_name array_type_rank_specifier_opt
+                                    | type_parameter array_type_rank_specifier_opt
+                                    ;
+
+type_name                           : fully_qualified_identifier
+                                    ;
+
+type_parameter_seq_opt              : type_parameter_seq
+                                    | ε
+                                    ;
+
+type_parameter_seq                  : '<' type_parameters '>'
+                                    ;
+
+type_parameters                     : type_parameter                                                                    # type_parameter (',' type_parameter)*
+                                    | type_parameters ',' type_parameter
+                                    ;
+
+type_parameter                      : identifier
+                                    ;
+
+type_argument_seq_opt               : type_argument_seq
+                                    | ε
+                                    ;
+
+type_argument_seq                   : '<' type_arguments '>'
+                                    ;
+
+type_arguments                      : type_argument                                                                     # type_argument (',' type_argument)*
+                                    | type_arguments ',' type_argument
+                                    ;
+
+type_argument                       : TYPE
+                                    ;
+
+array_type_rank_specifier_opt       : array_type_rank_specifier
+                                    | ε
+                                    ;
+
+array_type_rank_specifier           : '[' array_type_ranks_opt ']'
+                                    ;
+
+array_type_ranks_opt                : array_type_ranks
+                                    | ε
+                                    ;
+
+array_type_ranks                    : ','
+                                    | array_type_ranks ','
+                                    ;
+
+array_type_specifier_opt            : array_type_specifier
+                                    | ε
+                                    ;
+
+array_type_specifier                : '[' array_dimensions ']' array_modifiers_opt                                      # zero based, checked array, row based, optionally column based and/or unchecked
+                                    ;
+
+array_dimensions                    : array_dimension                                                                   # array_dimension (',' array_dimension)*
+                                    | array_dimensions ',' array_dimension                                              # all ',' as a separator of a dimension
+                                    ;
+
+array_dimension                     : array_upper_bound                                                                 # array_lower_bound ('..' array_upper_bound)?  a[2]
+                                    | array_lower_bound '..' array_upper_bound                                          # array_lower_bound ('..' array_upper_bound)?  a[1..2]
+                                    ;
+
+array_lower_bound                   : array_bound_expression
+                                    ;
+
+array_upper_bound                   : array_bound_expression
+                                    ;
+
+array_bound_expression              : non_assignment_expression                                                         # must evaluate to compilation time constant integer
+                                    ;
+
+array_modifiers_opt                 : array_modifiers
+                                    | ε
+                                    ;
+
+array_modifiers                     : array_modifier
+                                    | array_modifiers ',' array_modifier
+                                    ;
+
+array_modifier                      : 'column'                                                                          # column based array specifier
+                                    | 'row'                                                                             # row based array specifier - default
+                                    | 'jagged'                                                                          # array of arrays, possibly of different sizes
+                                    | 'unchecked'                                                                       # unchecked array specifier
+                                    ;
+
+integral_type_opt                   : integral_type
+                                    | ε
+                                    ;
+
+integral_type                       : 'int'
+                                    | 'integer'
+                                    | 'real'
+                                    | 'float'
+                                    | 'double'
+                                    | 'decimal'
+                                    | 'number'
+                                    | 'bool'
+                                    | 'boolean'
+                                    | 'string'
+                                    ;
+
+
+# DECLARATIONS
+local_declaration                   : identifiers
+                                    | identifiers ':' declaration_modifiers_opt TYPE declaration_modifiers_opt
+                                    | identifiers ':' declaration_modifiers_opt TYPE declaration_modifiers_opt '=' variable_initializer
+                                    | identifiers ':' variable_initializer
+                                    ;
+
+variable_initializers               : variable_initializer
+                                    | variable_initializers ',' variable_initializer
+                                    ;
+
+variable_initializer                : expression
+                                    | array_initializer
+                                    ;
+
+array_initializer                   : '[' variable_initializers ']'
+                                    ;
+
+declaration_modifiers_opt           : declaration_modifiers
+                                    | ε
+                                    ;
+
+declaration_modifiers               : declaration_modifier
+                                    | declaration_modifiers
+                                    ;
+
+declaration_modifier                : 'const'
+                                    | 'readonly'
+                                    ;
+
+
+
+# EXPRESSIONS
+expressions                         : expression
+                                    | expressions ',' expression
+                                    ;
+
+expression                          : non_assignment_expression
+                                    | assignment_expression
+                                    ;
+
+non_assignment_expression           : conditional_expression
+                                    ;
+
+assignment_expression               : unary_expression assignment_operator expression
+                                    ;
+
+unary_expression                    : primary_expression
+                                    | '+' unary_expression
+                                    | '-' unary_expression
+                                    | '!' unary_expression
+                                    | '~' unary_expression
+                                    | pre_increment_expression                                                          # ++i
+                                    | pre_decrement_expression                                                          # --i
+                                    ;
+
+multiplicative_expression           : unary_expression
+                                    | multiplicative_expression '*' unary_expression
+                                    | multiplicative_expression '/' unary_expression
+                                    | multiplicative_expression '%' unary_expression
+                                    ;
+
+additive_expression                 : multiplicative_expression
+                                    | additive_expression '+' multiplicative_expression
+                                    | additive_expression '-' multiplicative_expression
+                                    ;
+
+shift_expression                    : additive_expression
+                                    | shift_expression '<<' additive_expression
+                                    | shift_expression '>>' additive_expression                                         # > >
+                                    ;
+
+relational_expression               : shift_expression
+                                    | relational_expression '<' shift_expression
+                                    | relational_expression 'lt' shift_expression
+                                    | relational_expression '>' shift_expression
+                                    | relational_expression 'gt' shift_expression
+                                    | relational_expression '<=' shift_expression
+                                    | relational_expression 'le' shift_expression
+                                    | relational_expression '>=' shift_expression
+                                    | relational_expression 'ge' shift_expression
+                                    | relational_expression 'is' TYPE
+                                    ;
+
+equality_expression                 : relational_expression
+                                    | equality_expression '==' relational_expression
+                                    | equality_expression 'eq' relational_expression
+                                    | equality_expression '!=' relational_expression
+                                    | equality_expression 'ne' relational_expression
+                                    ;
+
+and_expression                      : equality_expression
+                                    | and_expression '&' equality_expression
+                                    ;
+
+exclusive_or_expression             : and_expression
+                                    | exclusive_or_expression '^' and_expression
+                                    ;
+
+inclusive_or_expression             : exclusive_or_expression
+                                    | inclusive_or_expression '|' exclusive_or_expression
+                                    ;
+
+conditional_and_expression          : inclusive_or_expression
+                                    | conditional_and_expression '&&' inclusive_or_expression
+                                    | conditional_and_expression 'and' inclusive_or_expression
+                                    ;
+
+conditional_or_expression           : conditional_and_expression
+                                    | conditional_or_expression '||' conditional_and_expression
+                                    | conditional_or_expression 'or' conditional_and_expression
+                                    ;
+
+primary_expression                  : literal                                                                           # 5, 3.14, 'text', true
+                                    | identifier type_argument_seq_opt
+                                    | member_access                                                                     # Foo.name, foo.name
+                                    | array_element_access                                                              # array[0]
+                                    | array_creation_expression
+                                    | invocation_expression                                                             # foo(...)
+                                    | post_increment_expression                                                         # i++
+                                    | post_decrement_expression                                                         # i--
+                                    | object_creation_expression
+                                    | parenthesized_expression                                                          # '(' expression ')'
+                                    ;
+
+conditional_expression              : conditional_or_expression
+                                    | conditional_or_expression '?' expression ':' expression
+                                    ;
+
+member_access                       : primary_expression '.' identifier type_argument_seq_opt                           # geo.point<T>, point<real>
+                                    ;
+
+array_element_access                : primary_expression '[' arguments ']'                                              # except array creation
+                                    ;
+
+array_creation_expression           : array_type_specifier_opt array_initializer
+                                    ;
+
+invocation_expression               : primary_expression '(' arguments_opt ')'
+                                    ;
+
+object_creation_expression          : TYPE '{' arguments_opt '}'
+                                    ;
+
+pre_increment_expression            : '++' unary_expression
+                                    ;
+
+pre_decrement_expression            : '--' unary_expression
+                                    ;
+
+post_increment_expression           : primary_expression '++'
+                                    ;
+
+post_decrement_expression           : primary_expression '--'
+                                    ;
+
+parenthesized_expression            : '(' expression ')'
+                                    ;
+
+arguments_opt                       : arguments
+                                    | ε
+                                    ;
+
+arguments                           : argument
+                                    | arguments ',' argument
+                                    ;
+
+argument                            : argument_name_opt argument_value
+                                    ;
+
+argument_name_opt                   : argument_name
+                                    | ε
+                                    ;
+
+argument_name                       : identifier ':'
+                                    ;
+
+argument_value                      : expression lazy_opt                                                               # lazy parameters evaluation only in invocation_expression
+                                    ;
+
+lazy_opt                            : 'lazy'                                                                            # lazy parameters evaluation
+                                    | ε
+                                    ;
+
+assignment_operator                 : '='
+                                    | '+='
+                                    | '-='
+                                    | '*='
+                                    | '/='
+                                    | '%='
+                                    | '&='
+                                    | '|='
+                                    | '^='
+                                    | '<<='
+                                    | '>>='                                                                             # > >=
+                                    ;
+
+fully_qualified_identifier          : identifier type_argument_seq_opt                                                  # A<T>
+                                    | fully_qualified_identifier '.' identifier type_argument_seq_opt                   # A<T>.B<U>.C<A<B<U>>>
+                                    ;
+
+identifiers                         : identifier
+                                    | identifiers ',' identifier
+                                    ;
+
+identifier                          : 'identifier'
+                                    ;
+
+literal                             : 'integer_number_literal'
+                                    | 'real_number_literal'
+                                    | 'boolean_literal'                                                                 # true false
+                                    | 'string_literal'
+                                    ;
+
+terminal                            : 'terminal'                                                                        # wrapper for terminals
+                                    ;
+
+INDENT                              : 'indent'
+                                    ;
+
+DEDENT                              : 'dedent'
+                                    ;
+
