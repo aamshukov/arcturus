@@ -114,7 +114,7 @@ struct quadruple : public list
     result_type     result;
 
     quadruple(const id_type& i)
-        : id(i)
+        : id(i), operation(operation_code::unknown)
     {
     }
 
