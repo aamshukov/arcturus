@@ -85,7 +85,7 @@ class btree : public noncopyable
 
             keys_type keys; // index node payload - keys
 
-            index_node(std::size_t level, std::size_t capacity) : node(level, capacity)
+            index_node(size_t level, size_t capacity) : node(level, capacity)
             {
                 static_assert(capacity > 0, L"Invalid B+ tree order (branching factor).");
                 keys.reserve(capacity - 1);
@@ -122,7 +122,7 @@ class btree : public noncopyable
 
             kvps_type kvps; // leaf node payload - key/value pairs
 
-            leaf_node(size_t level, std::size_t capacity)
+            leaf_node(size_t level, size_t capacity)
                 : node(level, capacity), next_node(nullptr), prev_node(nullptr)
             {
                 static_assert(capacity > 0, L"Invalid B+ tree order (branching factor).");
